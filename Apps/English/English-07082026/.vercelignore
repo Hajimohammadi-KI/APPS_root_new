@@ -7,6 +7,8 @@ playwright-report/
 node_modules/
 # This cache is local-only; excluding it keeps free Vercel uploads below the file limit.
 .bun-install-cache/
+# Local Vercel links are deployment metadata, not application assets.
+.vercel*/
 apps/api/dist/
 apps/web/.next/
 EnglishGrammar-Setup.exe

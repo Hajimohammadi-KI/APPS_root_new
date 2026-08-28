@@ -1,9 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rootDirectory": "Apps/English/English-07082026",
   "framework": "nextjs",
-  "installCommand": "bun install --cwd Apps/English/English-07082026 --frozen-lockfile",
-  "buildCommand": "bun run --cwd Apps/English/English-07082026 build",
-  "outputDirectory": "Apps/English/English-07082026/apps/web/.next",
+  "installCommand": "bun install --frozen-lockfile",
+  "buildCommand": "bun run build",
+  "outputDirectory": "apps/web/.next",
   "bunVersion": "1.x",
   "env": {
     "VERCEL_PREVIEW_FEEDBACK_ENABLED": "0",

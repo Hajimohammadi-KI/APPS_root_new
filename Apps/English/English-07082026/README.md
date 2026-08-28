@@ -27,11 +27,9 @@ bun run start
 ## Free Vercel deployment
 
 The repository root contains `vercel.json` for the English production site.
-It deliberately installs and builds this app from
-`Apps/English/English-07082026`, because `APPS_root_new` holds several
-independent apps and has no root `package.json`. In the Vercel project, leave
-the Root Directory empty so that this repository-level deployment contract is
-used.
+It declares `Apps/English/English-07082026` as Vercel's root directory,
+because `APPS_root_new` holds several independent apps and has no root
+`package.json`. Do not override that root directory in the Vercel dashboard.
 
 To run the preserved source application independently:
 

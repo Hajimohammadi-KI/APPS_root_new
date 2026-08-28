@@ -16,6 +16,7 @@ import {
 } from "@/components/human-audio-player";
 import {
   deleteTeacherContent,
+  ensureTeacherContextKey,
   listTeacherContent,
   saveTeacherContent,
   type TeacherContentItem,
@@ -45,15 +46,17 @@ export default function LehrkraftPage() {
     void refresh();
   }, [refresh]);
   async function save() {
-    if (!draft.title.trim() || !draft.contextKey.trim()) {
-      setMessage("Titel und Inhaltsschlüssel sind erforderlich.");
+    if (!draft.title.trim()) {
+      setMessage("Bitte gib einen Titel ein.");
       return;
     }
     const next: TeacherContentItem = {
       ...draft,
       title: draft.title.trim(),
       body: draft.body.trim(),
-      contextKey: draft.contextKey.trim(),
+      // Keep existing links when editing, but create a safe internal key for
+      // new content so teachers never have to invent a technical identifier.
+      contextKey: ensureTeacherContextKey(draft),
       ...(audio
         ? { audioName: "menschliche-aufnahme", audioType: audio.type }
         : {}),
@@ -128,19 +131,10 @@ export default function LehrkraftPage() {
               onChange={(e) => setDraft({ ...draft, title: e.target.value })}
             />
           </label>
-          <label>
-            Inhaltsschlüssel
-            <input
-              value={draft.contextKey}
-              onChange={(e) =>
-                setDraft({ ...draft, contextKey: e.target.value })
-              }
-              placeholder="grammatik.perfekt.beispiel.1"
-            />
-            <small>
-              Verbindet Inhalt und Aufnahme mit der richtigen Stelle in der App.
-            </small>
-          </label>
+          <p className="teacher-helper" role="note">
+            Die App erstellt die interne Verknüpfung für Inhalt und Aufnahme
+            automatisch. Du brauchst keinen technischen Schlüssel einzugeben.
+          </p>
           <label>
             Text
             <textarea
@@ -201,7 +195,9 @@ export default function LehrkraftPage() {
                   <div className="teacher-item-meta">
                     <span>{item.level}</span>
                     <span>{item.kind}</span>
-                    <code>{item.contextKey}</code>
+                    <span className="teacher-auto-link">
+                      Automatisch verknüpft
+                    </span>
                   </div>
                   <h3>{item.title}</h3>
                   <p>{item.body}</p>

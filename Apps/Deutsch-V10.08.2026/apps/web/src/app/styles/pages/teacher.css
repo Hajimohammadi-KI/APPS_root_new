@@ -75,6 +75,15 @@
   font-weight: 400;
   color: #6d6475;
 }
+.teacher-helper {
+  margin: 1rem 0;
+  border-left: 3px solid #7546b7;
+  border-radius: 0 12px 12px 0;
+  padding: 0.75rem 1rem;
+  background: #f7f1fd;
+  color: #5d378f;
+  line-height: 1.5;
+}
 .teacher-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -155,8 +164,9 @@
   border-radius: 999px;
   padding: 0.2rem 0.55rem;
 }
-.teacher-item-meta code {
-  overflow-wrap: anywhere;
+.teacher-auto-link {
+  color: #5d378f;
+  font-weight: 700;
 }
 .teacher-item-actions {
   display: flex;

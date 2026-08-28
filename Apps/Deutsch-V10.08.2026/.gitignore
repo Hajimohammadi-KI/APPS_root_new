@@ -1,6 +1,8 @@
 # Dependencies and Bun
 node_modules/
 .bun/
+# Temporary cache used when Bun retries a Windows install lock; never source.
+.bun-install-cache/
 
 # Application builds
 .next/

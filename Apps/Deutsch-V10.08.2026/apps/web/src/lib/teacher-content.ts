@@ -14,6 +14,28 @@ export interface TeacherContentItem {
   updatedAt: string;
 }
 
+function contextSlug(value: string) {
+  return value
+    .toLocaleLowerCase("de-DE")
+    .replaceAll("ä", "ae")
+    .replaceAll("ö", "oe")
+    .replaceAll("ü", "ue")
+    .replaceAll("ß", "ss")
+    .normalize("NFD")
+    .replace(/[^a-z0-9]+/gu, "-")
+    .replace(/(^-|-$)/gu, "")
+    .slice(0, 48);
+}
+
+export function ensureTeacherContextKey(item: TeacherContentItem) {
+  if (item.contextKey.trim()) return item.contextKey.trim();
+
+  // Teachers enter learning information, not implementation IDs.  The stable
+  // item id prevents collisions while keeping the app-to-audio link automatic.
+  const title = contextSlug(item.title) || "inhalt";
+  return `teacher.${item.level.toLowerCase()}.${item.kind}.${title}.${item.id.slice(0, 8)}`;
+}
+
 const DB_NAME = "deutsch-automaticity-teacher-content";
 const CONTENT_STORE = "content";
 const AUDIO_STORE = "audio";

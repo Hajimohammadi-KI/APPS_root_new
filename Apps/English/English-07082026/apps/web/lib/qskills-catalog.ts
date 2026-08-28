@@ -46,18 +46,29 @@ function assetKind(filename: string): QSkillsAssetKind | undefined {
 }
 
 function unitFor(relativePath: string) {
-  const match = /(?:^|[^a-z0-9])(?:unit[-_ ]?|u)0?([1-8])(?:[^a-z0-9]|$)/iu.exec(
-    relativePath,
-  );
+  const match =
+    /(?:^|[^a-z0-9])(?:unit[-_ ]?|u)0?([1-8])(?:[^a-z0-9]|$)/iu.exec(
+      relativePath,
+    );
   return match ? Number(match[1]) : undefined;
 }
 
-function readableLabel(relativePath: string) {
-  return path
-    .basename(relativePath, path.extname(relativePath))
+export function formatQSkillsAssetLabel(relativePath: string) {
+  const filename = path.basename(relativePath, path.extname(relativePath));
+  const activityMatch =
+    /(?:^|[_ -])(?:u)?\d{1,2}[_ -](\d{1,2})[_ -](.+)$/iu.exec(filename);
+  const activity = activityMatch?.[1];
+  const title = (activityMatch?.[2] ?? filename)
+    .replace(/([a-z])([A-Z])/gu, "$1 $2")
     .replaceAll("_", " ")
+    .replace(/\bQClassroom\b/giu, "Classroom")
+    .replace(/\bActivities\s*([A-Z])\s+([A-Z])\b/gu, "Activities $1–$2")
     .replace(/[- ]+/gu, " ")
     .trim();
+
+  // Source filenames contain publisher codes.  Keep the activity number but
+  // turn the visible label into a teacher- and learner-readable task name.
+  return activity ? `Activity ${activity.padStart(2, "0")} · ${title}` : title;
 }
 
 async function filesUnder(directory: string): Promise<string[]> {
@@ -111,7 +122,11 @@ export async function getQSkillsCatalog(): Promise<QSkillsCatalog> {
           const unit = unitFor(relativePath);
           if (!kind || !unit) continue;
           const assets = assetsByUnit.get(unit) ?? [];
-          assets.push({ kind, label: readableLabel(relativePath), path: relativePath });
+          assets.push({
+            kind,
+            label: formatQSkillsAssetLabel(relativePath),
+            path: relativePath,
+          });
           assetsByUnit.set(unit, assets);
         }
         return {
@@ -141,7 +156,8 @@ export async function getQSkillsCatalog(): Promise<QSkillsCatalog> {
 export async function resolveQSkillsResource(relativePath: string) {
   const root = qskillsRoot();
   const resolved = path.resolve(/* turbopackIgnore: true */ root, relativePath);
-  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`)) return undefined;
+  if (resolved !== root && !resolved.startsWith(`${root}${path.sep}`))
+    return undefined;
   try {
     const info = await stat(resolved);
     return info.isFile() ? resolved : undefined;
@@ -151,7 +167,9 @@ export async function resolveQSkillsResource(relativePath: string) {
 }
 
 export function qskillsResourceStream(filePath: string) {
-  return Readable.toWeb(createReadStream(filePath)) as unknown as ReadableStream;
+  return Readable.toWeb(
+    createReadStream(filePath),
+  ) as unknown as ReadableStream;
 }
 
 export function qskillsContentType(filePath: string) {
@@ -164,8 +182,13 @@ export function qskillsContentType(filePath: string) {
     ".webm": "video/webm",
     ".mov": "video/quicktime",
     ".pdf": "application/pdf",
-    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ".pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ".docx":
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ".pptx":
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
   };
-  return contentTypes[path.extname(filePath).toLowerCase()] ?? "application/octet-stream";
+  return (
+    contentTypes[path.extname(filePath).toLowerCase()] ??
+    "application/octet-stream"
+  );
 }

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "installCommand": "bun install --cwd Apps/English/English-07082026 --frozen-lockfile",
+  "buildCommand": "bun run --cwd Apps/English/English-07082026 build",
+  "outputDirectory": "Apps/English/English-07082026/apps/web/.next",
+  "bunVersion": "1.x",
+  "env": {
+    "VERCEL_PREVIEW_FEEDBACK_ENABLED": "0",
+    "NEXT_PUBLIC_PDF_READER_URL": "https://research-pdf-studio.vercel.app/"
+  }
+}

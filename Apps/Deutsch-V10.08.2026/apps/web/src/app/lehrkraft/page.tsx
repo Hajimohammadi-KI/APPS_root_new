@@ -21,6 +21,7 @@ import {
   saveTeacherContent,
   type TeacherContentItem,
   type TeacherContentKind,
+  type TeacherContentStatus,
 } from "@/lib/teacher-content";
 
 const empty = (): TeacherContentItem => ({
@@ -30,8 +31,15 @@ const empty = (): TeacherContentItem => ({
   title: "",
   body: "",
   contextKey: "",
+  status: "draft",
   updatedAt: new Date().toISOString(),
 });
+
+const publicationLabels: Record<TeacherContentStatus, string> = {
+  draft: "Entwurf",
+  review: "Zur Prüfung",
+  published: "Veröffentlicht",
+};
 
 export default function LehrkraftPage() {
   const [items, setItems] = React.useState<TeacherContentItem[]>([]);
@@ -65,7 +73,7 @@ export default function LehrkraftPage() {
     await saveTeacherContent(next, audio);
     setDraft(empty());
     setAudio(null);
-    setMessage("Inhalt und menschliche Aufnahme wurden gespeichert.");
+    setMessage(`${publicationLabels[next.status ?? "draft"]} gespeichert.`);
     await refresh();
   }
   return (
@@ -121,6 +129,26 @@ export default function LehrkraftPage() {
                 {["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => (
                   <option key={level}>{level}</option>
                 ))}
+              </select>
+            </label>
+            <label>
+              Arbeitsstand
+              <select
+                value={draft.status ?? "published"}
+                onChange={(e) =>
+                  setDraft({
+                    ...draft,
+                    status: e.target.value as TeacherContentStatus,
+                  })
+                }
+              >
+                {(Object.keys(publicationLabels) as TeacherContentStatus[]).map(
+                  (status) => (
+                    <option key={status} value={status}>
+                      {publicationLabels[status]}
+                    </option>
+                  ),
+                )}
               </select>
             </label>
           </div>
@@ -195,6 +223,11 @@ export default function LehrkraftPage() {
                   <div className="teacher-item-meta">
                     <span>{item.level}</span>
                     <span>{item.kind}</span>
+                    <span
+                      className={`teacher-status teacher-status-${item.status ?? "published"}`}
+                    >
+                      {publicationLabels[item.status ?? "published"]}
+                    </span>
                     <span className="teacher-auto-link">
                       Automatisch verknüpft
                     </span>

@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 
 import {
   ensureTeacherContextKey,
+  isPublishedTeacherContent,
   type TeacherContentItem,
 } from "./teacher-content";
 
@@ -29,5 +30,18 @@ describe("teacher content linking", () => {
         contextKey: "conversation.a1.family",
       }),
     ).toBe("conversation.a1.family");
+  });
+
+  test("keeps old content available but protects new drafts from learners", () => {
+    expect(isPublishedTeacherContent(baseItem)).toBe(true);
+    expect(isPublishedTeacherContent({ ...baseItem, status: "draft" })).toBe(
+      false,
+    );
+    expect(isPublishedTeacherContent({ ...baseItem, status: "review" })).toBe(
+      false,
+    );
+    expect(
+      isPublishedTeacherContent({ ...baseItem, status: "published" }),
+    ).toBe(true);
   });
 });

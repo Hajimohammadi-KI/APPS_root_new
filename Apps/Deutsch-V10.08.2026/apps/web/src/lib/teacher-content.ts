@@ -1,5 +1,6 @@
 export type TeacherContentKind =
   "verb" | "example" | "exercise" | "conversation";
+export type TeacherContentStatus = "draft" | "review" | "published";
 export type CefrLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
 export interface TeacherContentItem {
@@ -9,6 +10,7 @@ export interface TeacherContentItem {
   title: string;
   body: string;
   contextKey: string;
+  status?: TeacherContentStatus;
   audioName?: string;
   audioType?: string;
   updatedAt: string;
@@ -34,6 +36,12 @@ export function ensureTeacherContextKey(item: TeacherContentItem) {
   // item id prevents collisions while keeping the app-to-audio link automatic.
   const title = contextSlug(item.title) || "inhalt";
   return `teacher.${item.level.toLowerCase()}.${item.kind}.${title}.${item.id.slice(0, 8)}`;
+}
+
+export function isPublishedTeacherContent(item: TeacherContentItem) {
+  // Content saved before publishing states existed remains available to learners.
+  // New teacher content must be explicitly published before learner playback.
+  return (item.status ?? "published") === "published";
 }
 
 const DB_NAME = "deutsch-automaticity-teacher-content";
@@ -147,7 +155,8 @@ export async function findTeacherContentByContextKey(
 ): Promise<TeacherContentItem | null> {
   return (
     (await listTeacherContent()).find(
-      (item) => item.contextKey === contextKey,
+      (item) =>
+        item.contextKey === contextKey && isPublishedTeacherContent(item),
     ) ?? null
   );
 }

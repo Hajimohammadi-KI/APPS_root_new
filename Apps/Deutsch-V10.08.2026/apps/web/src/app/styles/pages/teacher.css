@@ -164,6 +164,18 @@
   border-radius: 999px;
   padding: 0.2rem 0.55rem;
 }
+.teacher-item-meta .teacher-status-draft {
+  background: #fff4df;
+  color: #8a4b00;
+}
+.teacher-item-meta .teacher-status-review {
+  background: #e9f3ff;
+  color: #1b5c93;
+}
+.teacher-item-meta .teacher-status-published {
+  background: #eaf8ef;
+  color: #17633a;
+}
 .teacher-auto-link {
   color: #5d378f;
   font-weight: 700;

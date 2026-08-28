@@ -403,6 +403,10 @@ export function IntegratedSkillsScreen({
 
   const SkillIcon = skillMeta[skill].icon;
 
+  /* Progressive disclosure keeps the lesson short: selection, library, and
+     companion material stay available in named drop-downs instead of making
+     every learner scroll past content that is not the current practice step. */
+
   return (
     <div className="page-stack">
       <ScreenHeading
@@ -411,6 +415,21 @@ export function IntegratedSkillsScreen({
         title="Integrated Skills Path"
       />
 
+      <details className="overflow-hidden rounded-2xl border border-violet-300 bg-white shadow-sm">
+        <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 bg-violet-50/80 px-5 py-4 marker:content-none">
+          <span>
+            <span className="block text-sm font-black text-violet-900">
+              Lesson setup
+            </span>
+            <span className="mt-1 block text-sm text-violet-950/75">
+              {level.cefr} · Unit {unit.number} · {skillMeta[skill].label}
+            </span>
+          </span>
+          <span aria-hidden className="text-lg font-black text-violet-800">
+            ▾
+          </span>
+        </summary>
+        <div className="space-y-4 border-t border-violet-200 p-4 sm:p-5">
       <Card className="border-violet-300 bg-violet-50/80">
         <CardContent className="grid gap-4 pt-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
@@ -592,6 +611,9 @@ export function IntegratedSkillsScreen({
         </CardContent>
       </Card>
 
+        </div>
+      </details>
+
       <Card
         className="overflow-hidden border-2 border-violet-300"
         id="active-mission"
@@ -620,6 +642,27 @@ export function IntegratedSkillsScreen({
           />
         </CardHeader>
         <CardContent className="space-y-5 pt-6">
+          <details className="rounded-xl border border-violet-200 bg-white">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-black text-violet-950 marker:content-none">
+              <span>
+                Lesson steps · {activeStep + 1}/7: {step.title}
+              </span>
+              <span aria-hidden className="text-lg text-violet-800">▾</span>
+            </summary>
+            <div className="grid gap-2 border-t border-violet-100 p-3 sm:grid-cols-2 xl:grid-cols-3">
+              {steps.map((candidate, index) => (
+                <Button
+                  aria-current={index === activeStep ? "step" : undefined}
+                  key={candidate.id}
+                  onClick={() => moveToStep(index)}
+                  variant={index === activeStep ? "default" : "outline"}
+                >
+                  {index + 1}. {candidate.title}
+                </Button>
+              ))}
+            </div>
+          </details>
+
           <div className="flex items-center justify-between gap-3">
             <Badge variant="secondary">Step {activeStep + 1} of 7</Badge>
             {progressState.completedAt[step.id] ? (
@@ -829,17 +872,36 @@ export function IntegratedSkillsScreen({
         </CardContent>
       </Card>
 
-      <QSkillsResources cefr={level.cefr} />
+      <details className="overflow-hidden rounded-2xl border border-sky-200 bg-sky-50/70 shadow-sm">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 marker:content-none">
+          <span>
+            <span className="block text-base font-black text-sky-950">
+              QSkills companion material
+            </span>
+            <span className="mt-1 block text-sm text-sky-950/75">
+              Optional local audio, video, and book files
+            </span>
+          </span>
+          <span aria-hidden className="text-lg font-black text-sky-900">▾</span>
+        </summary>
+        <div className="border-t border-sky-200 p-4 sm:p-5">
+          <QSkillsResources cefr={level.cefr} />
+        </div>
+      </details>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>All {level.cefr} real-life units</CardTitle>
-          <CardDescription>
-            These units are independently written for English Automaticity. No
-            external textbook files are required.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-3 md:grid-cols-2">
+      <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 marker:content-none">
+          <span>
+            <span className="block text-base font-black text-slate-950">
+              All {level.cefr} real-life units
+            </span>
+            <span className="mt-1 block text-sm text-slate-600">
+              Change the current unit without leaving this lesson.
+            </span>
+          </span>
+          <span aria-hidden className="text-lg font-black text-slate-700">▾</span>
+        </summary>
+        <div className="grid gap-3 border-t border-slate-200 p-4 sm:p-5 md:grid-cols-2">
           {level.units.map((candidate) => (
             <button
               className={`rounded-2xl border p-4 text-left transition-[border-color,background-color,transform] active:scale-[.98] ${
@@ -862,8 +924,8 @@ export function IntegratedSkillsScreen({
               </span>
             </button>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </details>
 
       <Card className="border-blue-200 bg-blue-50/70">
         <CardContent className="flex gap-3 pt-5">

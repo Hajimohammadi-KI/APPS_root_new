@@ -4,6 +4,26 @@ body {
   overflow-x: clip;
 }
 
+/* Responsive repair: the sidebar can make this content area much narrower
+   than the browser. Container queries therefore reflow cards by usable space,
+   preventing the two-column daily cards from colliding when the window changes. */
+.app-content { container-type: inline-size; }
+
+@container (max-width: 930px) {
+  .daily-overview { grid-template-columns: 1fr; }
+  .daily-overview-aside { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .daily-activity-grid-two,
+  .daily-activity-grid-three { grid-template-columns: 1fr; }
+}
+
+@container (max-width: 620px) {
+  .daily-overview-main { padding: 12px; }
+  .daily-overview-hero { grid-template-columns: 1fr; padding: 17px 14px; }
+  .daily-progress-ring { width: 94px; justify-self: center; }
+  .daily-overview-aside { grid-template-columns: 1fr; }
+  .daily-activity-card { min-height: 0; }
+}
+
 /* Keep the studio evidence column inside the available area beside the app
    sidebar. The original 620px minimum made controls leave the viewport. */
 .workspace {

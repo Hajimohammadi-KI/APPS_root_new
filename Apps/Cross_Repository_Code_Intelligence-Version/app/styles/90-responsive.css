@@ -236,6 +236,37 @@ body {
   overflow-x: clip;
 }
 
+/* Responsive repair: this column sits beside a persistent sidebar, so its
+   usable width can cross a layout breakpoint while the browser does not.
+   Container queries keep tracker cards from squeezing or overlapping. */
+.main-content { container-type: inline-size; }
+
+@container (max-width: 1080px) {
+  .dashboard-primary-grid,
+  .rhythm-content { grid-template-columns: 1fr; }
+  .hero { grid-template-columns: 1fr 190px; }
+  .integration-grid,
+  .settings-plan-overview,
+  .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@container (max-width: 660px) {
+  .hero,
+  .progress-orbit,
+  .filter-panel,
+  .integration-grid,
+  .settings-plan-overview,
+  .metric-grid { grid-template-columns: 1fr; }
+  .dashboard-metrics { grid-template-columns: 1fr; }
+  .journey-track { grid-template-columns: 1fr !important; }
+  .today-card-controls,
+  .today-actions,
+  .hero-actions { align-items: stretch; flex-direction: column; }
+  .today-card-controls > *,
+  .today-actions > *,
+  .hero-actions > * { width: 100%; }
+}
+
 :where(.workspace, .main-content, .topbar, .dashboard-primary-grid, .today-card,
   .milestone-card, .rhythm-card, .journey-card, .plan-section,
   .integrations-section, .settings-scroll) {

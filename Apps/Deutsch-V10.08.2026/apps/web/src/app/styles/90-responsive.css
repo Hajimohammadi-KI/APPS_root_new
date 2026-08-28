@@ -5,6 +5,46 @@ body {
   overflow-x: clip;
 }
 
+/* Responsive repair: the navigation rail reduces main-content width before
+   viewport media queries fire. Query this container so daily cards reflow by
+   the space learners can actually see, rather than becoming compressed. */
+.german-app-main {
+  container-type: inline-size;
+}
+
+@container (max-width: 930px) {
+  .daily-overview {
+    grid-template-columns: 1fr !important;
+  }
+  .daily-overview-aside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .daily-activity-grid-two,
+  .daily-activity-grid-three {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container (max-width: 620px) {
+  .daily-overview-main {
+    padding: 10px;
+  }
+  .daily-overview-hero {
+    grid-template-columns: 1fr;
+    padding: 17px 14px;
+  }
+  .daily-progress-ring {
+    width: 94px;
+    justify-self: center;
+  }
+  .daily-overview-aside {
+    grid-template-columns: 1fr;
+  }
+  .daily-activity-card {
+    min-height: 0;
+  }
+}
+
 /* The studio lives beside the application sidebar, so viewport-based media
    queries alone are not enough. Let both workspace columns shrink inside the
    actual content area instead of pushing the evidence panel off-screen. */

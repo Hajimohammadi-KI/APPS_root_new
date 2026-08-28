@@ -138,6 +138,34 @@ body {
   overflow-x: clip;
 }
 
+/* Responsive repair: the reader may be embedded beside another app sidebar.
+   Its controls now respond to the reader's available width, so panels and
+   toolbars cannot overlap merely because the surrounding page is narrower. */
+.pdf-reader-root { container-type: inline-size; }
+
+@container (max-width: 1360px) {
+  .pdf-reader-root .study-panel { position: absolute; right: 0; top: 60px; bottom: 0; width: min(94cqw, 600px) !important; min-width: 360px; z-index: 14; box-shadow: -14px 12px 42px #17243a2f; }
+  .pdf-reader-root .resize-handle { display: none; }
+  .pdf-reader-root .connection small { display: none; }
+}
+
+@container (max-width: 920px) {
+  .pdf-reader-root .sidebar,
+  .pdf-reader-root .document-title-input,
+  .pdf-reader-root .toolbar-spacer { display: none; }
+  .pdf-reader-root .topbar { height: auto; min-height: 62px; flex-wrap: wrap; gap: 8px; padding: 7px 10px; }
+  .pdf-reader-root .reader-toolbar { overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-width: thin; }
+  .pdf-reader-root .reader-toolbar > * { flex: 0 0 auto; }
+  .pdf-reader-root .study-panel { position: absolute; inset: auto 0 0; width: 100% !important; height: min(72dvh, 680px); min-width: 0 !important; max-width: none; border-radius: 22px 22px 0 0; }
+  .pdf-reader-root .panel-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)) 46px; border-radius: 22px 22px 0 0; }
+}
+
+@container (max-width: 720px) {
+  .pdf-reader-root .reader-toolbar { height: auto !important; flex-wrap: wrap !important; overflow: visible !important; }
+  .pdf-reader-root .reader-toolbar > * { flex: 0 1 auto !important; min-width: 0 !important; max-width: 100%; }
+  .pdf-reader-root .study-panel { top: auto; }
+}
+
 .pdf-reader-root,
 .pdf-reader-root :where(.reader-workspace, .document-area, .pdf-document, .study-panel,
   .panel-content, .reader-toolbar, .topbar, .top-actions) {

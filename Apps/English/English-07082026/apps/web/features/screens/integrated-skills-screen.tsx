@@ -179,6 +179,9 @@ export function IntegratedSkillsScreen({
   const [missionMode, setMissionMode] = React.useState<"standard" | "rescue">(
     "standard",
   );
+  const [visibleSkills, setVisibleSkills] = React.useState<IntegratedSkill[]>(
+    () => [...INTEGRATED_SKILLS],
+  );
   const [dictating, setDictating] = React.useState(false);
   const recognitionRef = React.useRef<SpeechRecognitionLike | null>(null);
 
@@ -260,6 +263,18 @@ export function IntegratedSkillsScreen({
       draft.integratedSkills.activeStep = 0;
     });
     setMessage(`${skillMeta[nextSkill].label} path selected.`);
+  }
+
+  function toggleVisibleSkill(nextSkill: IntegratedSkill) {
+    setVisibleSkills((currentSkills) => {
+      const isVisible = currentSkills.includes(nextSkill);
+      // Keep one visible option: a filter with no choices gives learners a
+      // confusing empty menu and hides the current learning path.
+      if (isVisible && currentSkills.length === 1) return currentSkills;
+      return isVisible
+        ? currentSkills.filter((candidate) => candidate !== nextSkill)
+        : [...currentSkills, nextSkill];
+    });
   }
 
   function moveToStep(nextStep: number) {
@@ -415,14 +430,14 @@ export function IntegratedSkillsScreen({
         title="Integrated Skills Path"
       />
 
-      <details className="overflow-hidden rounded-2xl border border-violet-300 bg-white shadow-sm">
+      <details className="integrated-navigator overflow-hidden rounded-2xl border border-violet-300 bg-white shadow-sm">
         <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 bg-violet-50/80 px-5 py-4 marker:content-none">
           <span>
             <span className="block text-sm font-black text-violet-900">
-              Lesson setup
+              Lesson navigator
             </span>
             <span className="mt-1 block text-sm text-violet-950/75">
-              {level.cefr} · Unit {unit.number} · {skillMeta[skill].label}
+              {level.cefr} · Unit {unit.number} · {skillMeta[skill].label} · {visibleSkills.length}/4 skills shown
             </span>
           </span>
           <span aria-hidden className="text-lg font-black text-violet-800">
@@ -430,6 +445,49 @@ export function IntegratedSkillsScreen({
           </span>
         </summary>
         <div className="space-y-4 border-t border-violet-200 p-4 sm:p-5">
+          {/* Multi-select is intentionally only a display filter. The active
+              evidence path remains one skill at a time, so evidence cannot be
+              accidentally mixed across listening, speaking, reading, and writing. */}
+          <section aria-labelledby="skill-filter-label" className="rounded-2xl border border-violet-200 bg-white p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-base font-black text-violet-950" id="skill-filter-label">
+                  Show skills in this navigator
+                </h2>
+                <p className="mt-1 text-sm leading-6 text-slate-700">
+                  Select one or more skills to keep the menu compact. Choose one card below to open its evidence path.
+                </p>
+              </div>
+              <Badge variant="secondary">{visibleSkills.length} selected</Badge>
+            </div>
+            <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+              {INTEGRATED_SKILLS.map((candidate) => {
+                const meta = skillMeta[candidate];
+                const Icon = meta.icon;
+                const checked = visibleSkills.includes(candidate);
+                return (
+                  <label
+                    className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${
+                      checked
+                        ? "border-violet-400 bg-violet-50 text-violet-950"
+                        : "border-slate-200 bg-white text-slate-700"
+                    }`}
+                    key={candidate}
+                  >
+                    <input
+                      aria-label={`Show ${meta.label} in the lesson navigator`}
+                      checked={checked}
+                      className="size-4 accent-violet-700"
+                      onChange={() => toggleVisibleSkill(candidate)}
+                      type="checkbox"
+                    />
+                    <Icon aria-hidden className="size-4 shrink-0" />
+                    {meta.label}
+                  </label>
+                );
+              })}
+            </div>
+          </section>
       <Card className="border-violet-300 bg-violet-50/80">
         <CardContent className="grid gap-4 pt-6 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
@@ -584,7 +642,7 @@ export function IntegratedSkillsScreen({
             </Select>
           </label>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {INTEGRATED_SKILLS.map((candidate) => {
+            {visibleSkills.map((candidate) => {
               const meta = skillMeta[candidate];
               const Icon = meta.icon;
               return (

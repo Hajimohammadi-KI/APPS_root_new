@@ -193,3 +193,24 @@ body {
     display: none !important;
   }
 }
+
+/* Navigation refresh: a compact collection rail keeps the reader's menu
+   visually distinct from document tools and remains easy to scan at desktop widths. */
+.pdf-reader-root .sidebar {
+  gap: 6px;
+  border-right-color: #e4dce9;
+  background: linear-gradient(180deg, #fff, #faf7fd);
+}
+.pdf-reader-root .sidebar > .nav-item,
+.pdf-reader-root .nav-bottom .nav-item {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.pdf-reader-root .sidebar > .nav-item:hover,
+.pdf-reader-root .sidebar > .nav-item.active {
+  border-color: #dfd0e9;
+  background: #f2ebf8;
+  transform: translateX(2px);
+}

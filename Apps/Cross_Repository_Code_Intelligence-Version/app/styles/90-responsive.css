@@ -279,6 +279,19 @@ body {
   overflow-wrap: anywhere;
 }
 
+/* Navigation refresh: retain the short mobile grid but give desktop links a
+   consistent selected surface, making a long workspace menu easier to scan. */
+.sidebar .side-nav a,
+.sidebar .side-nav button {
+  border-radius: 13px;
+  transition: background-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.sidebar .side-nav a:hover,
+.sidebar .side-nav button:hover {
+  background: var(--mint-100, #f1ebf8);
+  transform: translateX(2px);
+}
+
 @media (max-width: 720px) {
   .pdf-reader-root .reader-toolbar {
     height: auto !important;

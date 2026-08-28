@@ -380,3 +380,30 @@
     transition: none;
   }
 }
+
+/* Navigation refresh: card-like groups and one clear active row borrow the
+   compact side-rail pattern, so long product menus scan quickly without
+   forcing every subgroup to remain open. */
+.app-sidebar .nav-group {
+  border: 1px solid rgba(111, 83, 140, 0.16);
+  border-radius: 18px;
+  margin-bottom: 8px;
+  padding: 6px;
+}
+
+.app-sidebar .nav-group + .nav-group { padding-top: 6px; }
+.app-sidebar .nav-section-label { margin: 8px 8px 5px; font-size: 11px; }
+.app-sidebar .nav-group-trigger { border-radius: 13px; }
+.app-sidebar .nav-button { min-height: 46px; border-radius: 12px; }
+.app-sidebar .nav-button[data-active="true"] { box-shadow: 0 8px 18px rgba(93, 58, 142, 0.2); }
+
+/* The Integrated Skills filter is a true checkbox multi-select, while the
+   lesson itself still opens exactly one evidence path at a time. This avoids
+   the long, permanently expanded grid shown in the previous design. */
+.integrated-navigator > summary { transition: background-color 160ms ease; }
+.integrated-navigator > summary:hover { background: rgb(245 243 255); }
+.integrated-navigator[open] > summary { background: rgb(237 233 254); }
+.integrated-navigator input[type="checkbox"]:focus-visible {
+  outline: 3px solid rgba(109, 40, 217, 0.35);
+  outline-offset: 3px;
+}

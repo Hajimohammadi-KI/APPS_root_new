@@ -377,3 +377,34 @@ body {
     transition: none;
   }
 }
+
+/* Navigation refresh: grouped cards make the long sidebar easier to scan and
+   preserve the existing accordion behaviour, so learners see one section at
+   a time instead of a permanently tall navigation column. */
+.german-sidebar-section {
+  border: 1px solid rgb(111 83 140 / 16%);
+  border-radius: 18px;
+  margin-bottom: 8px;
+  padding: 6px;
+}
+.german-sidebar-section + .german-sidebar-section {
+  padding-top: 6px;
+}
+
+.german-sidebar-label {
+  margin: 8px 8px 5px;
+  font-size: 11px;
+}
+
+.german-sidebar-trigger {
+  border-radius: 13px;
+}
+
+.german-sidebar-section nav a {
+  min-height: 46px;
+  border-radius: 12px;
+}
+
+.german-sidebar-section nav a[aria-current="page"] {
+  box-shadow: 0 8px 18px rgb(93 58 142 / 20%);
+}

@@ -5,6 +5,8 @@ artifacts/
 test-results/
 playwright-report/
 node_modules/
+# This cache is local-only; excluding it keeps free Vercel uploads below the file limit.
+.bun-install-cache/
 apps/api/dist/
 apps/web/.next/
 EnglishGrammar-Setup.exe

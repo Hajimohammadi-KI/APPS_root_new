@@ -7,21 +7,41 @@ body {
 /* Responsive repair: the sidebar can make this content area much narrower
    than the browser. Container queries therefore reflow cards by usable space,
    preventing the two-column daily cards from colliding when the window changes. */
-.app-content { container-type: inline-size; }
+.app-content {
+  container-type: inline-size;
+}
 
 @container (max-width: 930px) {
-  .daily-overview { grid-template-columns: 1fr; }
-  .daily-overview-aside { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .daily-overview {
+    grid-template-columns: 1fr;
+  }
+  .daily-overview-aside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .daily-activity-grid-two,
-  .daily-activity-grid-three { grid-template-columns: 1fr; }
+  .daily-activity-grid-three {
+    grid-template-columns: 1fr;
+  }
 }
 
 @container (max-width: 620px) {
-  .daily-overview-main { padding: 12px; }
-  .daily-overview-hero { grid-template-columns: 1fr; padding: 17px 14px; }
-  .daily-progress-ring { width: 94px; justify-self: center; }
-  .daily-overview-aside { grid-template-columns: 1fr; }
-  .daily-activity-card { min-height: 0; }
+  .daily-overview-main {
+    padding: 12px;
+  }
+  .daily-overview-hero {
+    grid-template-columns: 1fr;
+    padding: 17px 14px;
+  }
+  .daily-progress-ring {
+    width: 94px;
+    justify-self: center;
+  }
+  .daily-overview-aside {
+    grid-template-columns: 1fr;
+  }
+  .daily-activity-card {
+    min-height: 0;
+  }
 }
 
 /* Keep the studio evidence column inside the available area beside the app
@@ -37,10 +57,23 @@ body {
   max-width: 100%;
 }
 
-:where(.app-main, .app-content, .app-topbar, .topbar-actions, .page-heading,
-  .dashboard-hero, .daily-overview, .daily-overview-main, .daily-overview-aside,
-  .daily-activity-card, .daily-activity-copy, .studio-grid, .grammar-layout,
-  .learning-card, .settings-page) {
+:where(
+  .app-main,
+  .app-content,
+  .app-topbar,
+  .topbar-actions,
+  .page-heading,
+  .dashboard-hero,
+  .daily-overview,
+  .daily-overview-main,
+  .daily-overview-aside,
+  .daily-activity-card,
+  .daily-activity-copy,
+  .studio-grid,
+  .grammar-layout,
+  .learning-card,
+  .settings-page
+) {
   min-width: 0;
   max-width: 100%;
 }
@@ -229,21 +262,36 @@ body {
     padding-inline: 10px;
   }
 
-  .topbar-actions { gap: 5px; }
+  .topbar-actions {
+    gap: 5px;
+  }
 
-  .daily-overview-main { padding: 10px; }
-  .daily-overview-hero { grid-template-columns: 1fr; padding: 17px 14px; }
-  .daily-progress-ring { width: 94px; justify-self: center; }
+  .daily-overview-main {
+    padding: 10px;
+  }
+  .daily-overview-hero {
+    grid-template-columns: 1fr;
+    padding: 17px 14px;
+  }
+  .daily-progress-ring {
+    width: 94px;
+    justify-self: center;
+  }
   .daily-overview-aside,
   .daily-activity-grid-two,
-  .daily-activity-grid-three { grid-template-columns: 1fr; }
+  .daily-activity-grid-three {
+    grid-template-columns: 1fr;
+  }
   .daily-activity-card {
     grid-template-columns: 28px 38px minmax(0, 1fr);
     min-height: 0;
     padding: 12px;
   }
   .daily-activity-title-row,
-  .daily-activity-actions { align-items: flex-start; flex-wrap: wrap; }
+  .daily-activity-actions {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
 
   :where(.app-content, .learning-card) :where(input, select, textarea) {
     width: 100%;
@@ -256,8 +304,9 @@ body {
     flex-direction: column;
   }
 
-  :where(.button-row, .action-row, .daily-complete-actions) > * { width: 100%; }
-
+  :where(.button-row, .action-row, .daily-complete-actions) > * {
+    width: 100%;
+  }
 
   .app-content:not([data-screen="home"]) .page-heading {
     min-height: 0;
@@ -439,14 +488,9 @@ body {
   *,
   *::before,
   *::after {
-    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion preferences must override component transitions */
     scroll-behavior: auto !important;
-    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion preferences must override component transitions */
     transition-duration: 0.01ms !important;
-    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion preferences must override component animations */
     animation-duration: 0.01ms !important;
-    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion preferences must override repeating animations */
     animation-iteration-count: 1 !important;
   }
 }
-

@@ -182,6 +182,10 @@ export function IntegratedSkillsScreen({
   const [visibleSkills, setVisibleSkills] = React.useState<IntegratedSkill[]>(
     () => [...INTEGRATED_SKILLS],
   );
+  const [visibleUnitIds, setVisibleUnitIds] = React.useState<string[]>(
+    () => level.units.map((candidate) => candidate.id),
+  );
+  const [unitQuery, setUnitQuery] = React.useState("");
   const [dictating, setDictating] = React.useState(false);
   const recognitionRef = React.useRef<SpeechRecognitionLike | null>(null);
 
@@ -198,6 +202,13 @@ export function IntegratedSkillsScreen({
       draft.integratedSkills.activeStep = 0;
     });
   }, [mutate, progressState.activeUnitId, unit.id]);
+
+  React.useEffect(() => {
+    // A level change gets a fresh, compact menu instead of retaining filters
+    // for units that do not exist at the newly selected CEFR level.
+    setVisibleUnitIds(level.units.map((candidate) => candidate.id));
+    setUnitQuery("");
+  }, [level.cefr, level.units]);
 
   React.useEffect(
     () => () => {
@@ -274,6 +285,17 @@ export function IntegratedSkillsScreen({
       return isVisible
         ? currentSkills.filter((candidate) => candidate !== nextSkill)
         : [...currentSkills, nextSkill];
+    });
+  }
+
+  function toggleVisibleUnit(unitId: string) {
+    setVisibleUnitIds((currentUnitIds) => {
+      if (currentUnitIds.includes(unitId)) {
+        return currentUnitIds.length === 1
+          ? currentUnitIds
+          : currentUnitIds.filter((candidate) => candidate !== unitId);
+      }
+      return [...currentUnitIds, unitId];
     });
   }
 
@@ -417,6 +439,11 @@ export function IntegratedSkillsScreen({
   }
 
   const SkillIcon = skillMeta[skill].icon;
+  const filteredUnits = level.units.filter((candidate) =>
+    `${candidate.number} ${candidate.title} ${candidate.outcome}`
+      .toLowerCase()
+      .includes(unitQuery.trim().toLowerCase()),
+  );
 
   /* Progressive disclosure keeps the lesson short: selection, library, and
      companion material stay available in named drop-downs instead of making
@@ -951,37 +978,50 @@ export function IntegratedSkillsScreen({
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 marker:content-none">
           <span>
             <span className="block text-base font-black text-slate-950">
-              All {level.cefr} real-life units
+              Unit multi-select
             </span>
             <span className="mt-1 block text-sm text-slate-600">
-              Change the current unit without leaving this lesson.
+              {visibleUnitIds.length} of {level.units.length} {level.cefr} units shown · current: Unit {unit.number}
             </span>
           </span>
           <span aria-hidden className="text-lg font-black text-slate-700">▾</span>
         </summary>
-        <div className="grid gap-3 border-t border-slate-200 p-4 sm:p-5 md:grid-cols-2">
-          {level.units.map((candidate) => (
-            <button
-              className={`rounded-2xl border p-4 text-left transition-[border-color,background-color,transform] active:scale-[.98] ${
-                candidate.id === unit.id
-                  ? "border-violet-500 bg-violet-50"
-                  : "border-slate-200 bg-white"
-              }`}
-              key={candidate.id}
-              onClick={() => chooseUnit(candidate.id)}
-              type="button"
-            >
-              <span className="text-sm font-bold text-violet-800">
-                Unit {candidate.number}
-              </span>
-              <strong className="mt-1 block text-base">
-                {candidate.title}
-              </strong>
-              <span className="mt-2 block text-sm leading-6 text-slate-700">
-                {candidate.outcome}
-              </span>
-            </button>
-          ))}
+        <div className="space-y-3 border-t border-slate-200 p-4 sm:p-5">
+          {/* This is a display filter, not a second progress state: learners
+              can compare several units, but opening one still keeps evidence
+              tied to exactly one unit and skill. */}
+          <label className="block text-sm font-bold text-slate-800">
+            Search units
+            <input
+              className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 px-3 text-base"
+              onChange={(event) => setUnitQuery(event.target.value)}
+              placeholder="Search title, outcome, or unit number"
+              type="search"
+              value={unitQuery}
+            />
+          </label>
+          <div aria-label={`${level.cefr} unit multi-select`} className="grid max-h-72 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
+            {filteredUnits.map((candidate) => {
+              const checked = visibleUnitIds.includes(candidate.id);
+              return (
+                <div className={`flex min-w-0 items-center gap-2 rounded-xl border p-3 ${checked ? "border-violet-400 bg-violet-50" : "border-slate-200 bg-white"}`} key={candidate.id}>
+                  <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-sm font-bold">
+                    <input
+                      aria-label={`Show Unit ${candidate.number}: ${candidate.title}`}
+                      checked={checked}
+                      onChange={() => toggleVisibleUnit(candidate.id)}
+                      type="checkbox"
+                    />
+                    <span className="min-w-0 truncate">Unit {candidate.number} · {candidate.title}</span>
+                  </label>
+                  <Button onClick={() => chooseUnit(candidate.id)} size="sm" variant={candidate.id === unit.id ? "default" : "outline"}>
+                    {candidate.id === unit.id ? "Current" : "Open"}
+                  </Button>
+                </div>
+              );
+            })}
+            {!filteredUnits.length ? <p className="p-3 text-sm text-slate-600">No unit matches this search.</p> : null}
+          </div>
         </div>
       </details>
 

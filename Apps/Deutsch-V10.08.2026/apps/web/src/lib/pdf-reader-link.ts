@@ -58,5 +58,10 @@ export function pdfReaderHrefForMaterial({
   url.searchParams.set("name", name.trim().slice(0, 600));
   url.searchParams.set("focus", focus.trim().slice(0, 600));
   url.searchParams.set("context", context.trim().slice(0, 600));
+  // Keep cross-app study flows reversible instead of trapping the learner in the PDF app.
+  if (typeof window !== "undefined") {
+    url.searchParams.set("return", window.location.href);
+    url.searchParams.set("returnLabel", "Zurück zu DeutschFlow");
+  }
   return url.toString();
 }

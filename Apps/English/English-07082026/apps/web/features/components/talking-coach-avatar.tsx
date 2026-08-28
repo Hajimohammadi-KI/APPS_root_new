@@ -1,12 +1,10 @@
-import Image from "next/image";
+import { AvaCoachAvatar } from "./ava-coach-avatar";
 
 interface TalkingCoachAvatarProps {
   listening: boolean;
   speaking: boolean;
   status: string;
 }
-
-const coachImage = "/coach/ava-language-coach.png";
 
 export function TalkingCoachAvatar({
   listening,
@@ -18,24 +16,9 @@ export function TalkingCoachAvatar({
       className="talking-coach"
       data-listening={listening}
       data-speaking={speaking}
-    >
+      >
       <div className="talking-coach-frame">
-        <Image
-          alt="Ava, your original animated English speaking coach"
-          className="talking-coach-image"
-          height={360}
-          priority
-          src={coachImage}
-          width={360}
-        />
-        <Image
-          alt=""
-          aria-hidden
-          className="talking-coach-mouth-layer"
-          height={360}
-          src={coachImage}
-          width={360}
-        />
+        <AvaCoachAvatar className="talking-coach-image" />
         <span aria-hidden className="talking-coach-sound-wave">
           <i />
           <i />

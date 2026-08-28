@@ -59,6 +59,16 @@ const MARK_STORE = "research-pdf-studio:marks:v2";
 const READER_STATE_STORE = "research-pdf-studio:reader-state:v1";
 const READING_RULER_STORE = "research-pdf-studio:reading-ruler:v1";
 
+function safeReturnUrl(value: string | null) {
+  if (!value) return "";
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : "";
+  } catch {
+    return "";
+  }
+}
+
 function extractDriveTarget(value: string): DriveTarget {
   const trimmed = value.trim();
   const folder = trimmed.match(/\/folders\/([a-zA-Z0-9_-]+)/)?.[1];
@@ -196,6 +206,9 @@ export default function Home() {
   const [dailyTopic, setDailyTopic] = useState("");
   const [dailyLanguage, setDailyLanguage] = useState<"en" | "de">("de");
   const [dailyComplete, setDailyComplete] = useState(false);
+  const [returnUrl, setReturnUrl] = useState("");
+  const [returnLabel, setReturnLabel] = useState("Back");
+  const [activeCollection, setActiveCollection] = useState("Bibliothek");
   const dragStart = useRef<{ x: number; width: number } | null>(null);
   const selectionMenuRef = useRef<HTMLDivElement>(null);
   const requestedPage = useRef<number | null>(null);
@@ -204,6 +217,11 @@ export default function Home() {
     const timer = window.setTimeout(() => {
       const params = new URLSearchParams(window.location.search);
       setEmbed(params.get("embed") === "1");
+      const safeReturn = safeReturnUrl(params.get("return"));
+      if (safeReturn) {
+        setReturnUrl(safeReturn);
+        setReturnLabel(params.get("returnLabel")?.slice(0, 80) || "Back");
+      }
       if (params.get("from") === "daily") {
         setDailyActivity(Number(params.get("activity")) || 7);
         setDailyReturn(params.get("return") || (params.get("lang") === "en" ? "/daily" : "/heute"));
@@ -738,6 +756,23 @@ export default function Home() {
     setConnections((value) => ({ ...value, calendar: true }));
   };
 
+  const returnToCallingApp = () => {
+    if (returnUrl) {
+      window.location.assign(returnUrl);
+      return;
+    }
+    window.history.back();
+  };
+
+  const selectCollection = (collection: string) => {
+    setActiveCollection(collection);
+    if (collection === "Markierungen") {
+      setTab("notes");
+      setPanelOpen(true);
+    }
+    showToast(`${collection} ausgewählt`);
+  };
+
   const downloadOriginal = () => {
     if (!pdfBytes) return showToast("Öffne zuerst eine PDF.");
     downloadBlob(new Blob([pdfBytes], { type: "application/pdf" }), `${safeFileName(pdfName)}.pdf`);
@@ -970,6 +1005,9 @@ export default function Home() {
     <main className={`app-shell pdf-reader-root ${embed ? "embed" : ""}`}>
       <ReadingRuler enabled={readingRuler} onToggle={setReadingRuler} zoom={zoom} />
       <header className="topbar">
+        <div className="reader-history">
+          <button type="button" onClick={returnToCallingApp} aria-label={returnLabel}>← <b>{returnLabel}</b></button>
+        </div>
         <div className="brand"><span className="brand-mark">▣</span><span>Research PDF Studio</span></div>
         <input className="document-title-input" value={pdfName} onChange={(event) => setPdfName(event.target.value)} aria-label="Dokumentname bearbeiten" />
         <div className="top-actions">
@@ -994,12 +1032,12 @@ export default function Home() {
 
       <section className="workspace">
         <nav className="sidebar">
-          <button className="nav-item active">▥ <span>Bibliothek</span></button>
-          <button className="nav-item">◷ <span>Heute lesen</span></button>
+          <button className={`nav-item ${activeCollection === "Bibliothek" ? "active" : ""}`} onClick={() => selectCollection("Bibliothek")}>▥ <span>Bibliothek</span></button>
+          <button className={`nav-item ${activeCollection === "Heute lesen" ? "active" : ""}`} onClick={() => selectCollection("Heute lesen")}>◷ <span>Heute lesen</span></button>
           <p className="nav-label">SAMMLUNGEN</p>
-          {["Dissertation", "Methoden", "Literatur", "Sprachen"].map((label) => <button className="nav-item" key={label}>□ <span>{label}</span></button>)}
+          {["Dissertation", "Methoden", "Literatur", "Sprachen"].map((label) => <button className={`nav-item ${activeCollection === label ? "active" : ""}`} key={label} onClick={() => selectCollection(label)}>□ <span>{label}</span></button>)}
           <div className="nav-bottom">
-            <button className="nav-item" onClick={() => { setTab("notes"); setPanelOpen(true); }}>◇ <span>Markierungen</span></button>
+            <button className={`nav-item ${activeCollection === "Markierungen" ? "active" : ""}`} onClick={() => selectCollection("Markierungen")}>◇ <span>Markierungen</span></button>
             <button className="nav-item" onClick={() => setSettingsOpen(true)}>⚙ <span>Einstellungen</span></button>
           </div>
         </nav>

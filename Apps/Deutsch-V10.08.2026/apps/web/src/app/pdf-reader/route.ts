@@ -8,5 +8,7 @@ export function GET(request: Request) {
   incoming.searchParams.forEach((value, key) =>
     target.searchParams.set(key, value),
   );
+  if (!target.searchParams.has("return")) target.searchParams.set("return", `${incoming.origin}/`);
+  if (!target.searchParams.has("returnLabel")) target.searchParams.set("returnLabel", "Zurück zu DeutschFlow");
   return Response.redirect(target, 307);
 }

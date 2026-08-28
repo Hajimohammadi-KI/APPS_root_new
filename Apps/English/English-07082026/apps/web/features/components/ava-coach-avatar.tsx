@@ -7,7 +7,7 @@ interface AvaCoachAvatarProps {
 export function AvaCoachAvatar({ className }: AvaCoachAvatarProps) {
   return (
     <svg
-      aria-label="Ava, the English speaking coach"
+      aria-label="Ava, the speaking coach"
       className={className}
       fill="none"
       role="img"

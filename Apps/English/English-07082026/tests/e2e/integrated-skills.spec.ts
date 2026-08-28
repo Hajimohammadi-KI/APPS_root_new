@@ -40,6 +40,9 @@ test("keeps the daily mission readable on a narrow mobile screen", async ({
   await expect(
     page.getByRole("heading", { level: 1, name: "Integrated Skills Path" }),
   ).toBeVisible();
+  // The mission choices now live in the compact Lesson navigator on small
+  // screens, so opening it is part of the responsive learner journey.
+  await page.getByText("Lesson navigator", { exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Rescue: one step" }),
   ).toBeVisible();
@@ -77,6 +80,7 @@ test("plays original listening and opens the exact speaking lesson in the studio
     });
   });
   await page.goto("/?screen=integrated-skills");
+  await page.getByText("Lesson navigator", { exact: true }).click();
 
   await page
     .getByRole("button", { name: "Play original listening" })

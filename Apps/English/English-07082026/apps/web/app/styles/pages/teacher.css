@@ -146,6 +146,21 @@
   justify-content: space-between;
   gap: 14px;
 }
+.teacher-library-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+.teacher-import-button {
+  position: relative;
+}
+.teacher-import-button input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+}
 .teacher-items {
   display: grid;
   gap: 14px;
@@ -230,6 +245,9 @@
   .teacher-library-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+  .teacher-library-actions {
+    inline-size: 100%;
   }
   .teacher-secondary-button,
   .teacher-primary-button {

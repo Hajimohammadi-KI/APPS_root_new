@@ -3,6 +3,13 @@ export type TeacherContentKind =
 export type TeacherContentStatus = "draft" | "review" | "published";
 export type CefrLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
+export type TeacherContentPackage = {
+  readonly format: "automaticity-teacher-content";
+  readonly version: 1;
+  readonly exportedAt: string;
+  readonly items: readonly TeacherContentItem[];
+};
+
 export interface TeacherContentItem {
   id: string;
   kind: TeacherContentKind;
@@ -42,6 +49,91 @@ export function isPublishedTeacherContent(item: TeacherContentItem) {
   // Content saved before publishing states existed remains available to learners.
   // New teacher content must be explicitly published before learner playback.
   return (item.status ?? "published") === "published";
+}
+
+const teacherContentKinds = new Set<TeacherContentKind>([
+  "verb",
+  "example",
+  "exercise",
+  "conversation",
+]);
+const teacherContentLevels = new Set<CefrLevel>([
+  "A1",
+  "A2",
+  "B1",
+  "B2",
+  "C1",
+  "C2",
+]);
+const teacherContentStatuses = new Set<TeacherContentStatus>([
+  "draft",
+  "review",
+  "published",
+]);
+
+export function createTeacherContentPackage(
+  items: readonly TeacherContentItem[],
+): TeacherContentPackage {
+  // Text-only export is intentional: it is a free, portable backup and avoids
+  // silently copying human recordings without the teacher's explicit consent.
+  return {
+    format: "automaticity-teacher-content",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    items: items.map(
+      ({ audioName: _audioName, audioType: _audioType, ...item }) => item,
+    ),
+  };
+}
+
+export function parseTeacherContentPackage(
+  value: unknown,
+): TeacherContentItem[] {
+  if (!value || typeof value !== "object") {
+    throw new Error("Wähle eine Lehrkraft-Inhaltsdatei im JSON-Format.");
+  }
+  const source = value as Partial<TeacherContentPackage>;
+  if (
+    source.format !== "automaticity-teacher-content" ||
+    source.version !== 1 ||
+    !Array.isArray(source.items)
+  ) {
+    throw new Error("Diese Datei ist kein unterstütztes Inhalts-Paket.");
+  }
+  return source.items.map((item, index) => {
+    if (!item || typeof item !== "object") {
+      throw new Error(`Eintrag ${index + 1} ist ungültig.`);
+    }
+    const candidate = item as Partial<TeacherContentItem>;
+    if (
+      typeof candidate.id !== "string" ||
+      !teacherContentKinds.has(candidate.kind as TeacherContentKind) ||
+      !teacherContentLevels.has(candidate.level as CefrLevel) ||
+      typeof candidate.title !== "string" ||
+      typeof candidate.body !== "string" ||
+      typeof candidate.contextKey !== "string" ||
+      typeof candidate.updatedAt !== "string" ||
+      (candidate.status !== undefined &&
+        !teacherContentStatuses.has(candidate.status))
+    ) {
+      throw new Error(
+        `Eintrag ${index + 1} ist unvollständig oder nicht unterstützt.`,
+      );
+    }
+    const kind = candidate.kind as TeacherContentKind;
+    const level = candidate.level as CefrLevel;
+    const status = candidate.status as TeacherContentStatus | undefined;
+    return {
+      id: candidate.id,
+      kind,
+      level,
+      title: candidate.title,
+      body: candidate.body,
+      contextKey: candidate.contextKey,
+      ...(status ? { status } : {}),
+      updatedAt: candidate.updatedAt,
+    };
+  });
 }
 
 const DB_NAME = "deutsch-automaticity-teacher-content";

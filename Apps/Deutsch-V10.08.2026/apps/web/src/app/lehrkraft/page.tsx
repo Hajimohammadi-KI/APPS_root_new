@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   ArrowLeft,
+  Download,
   FileAudio,
   Pencil,
   Plus,
@@ -15,9 +16,11 @@ import {
   HumanAudioRecorder,
 } from "@/components/human-audio-player";
 import {
+  createTeacherContentPackage,
   deleteTeacherContent,
   ensureTeacherContextKey,
   listTeacherContent,
+  parseTeacherContentPackage,
   saveTeacherContent,
   type TeacherContentItem,
   type TeacherContentKind,
@@ -46,6 +49,7 @@ export default function LehrkraftPage() {
   const [draft, setDraft] = React.useState<TeacherContentItem>(empty);
   const [audio, setAudio] = React.useState<Blob | null>(null);
   const [message, setMessage] = React.useState("");
+  const importInputRef = React.useRef<HTMLInputElement>(null);
   const refresh = React.useCallback(
     async () => setItems(await listTeacherContent()),
     [],
@@ -75,6 +79,45 @@ export default function LehrkraftPage() {
     setAudio(null);
     setMessage(`${publicationLabels[next.status ?? "draft"]} gespeichert.`);
     await refresh();
+  }
+
+  function exportContent() {
+    const file = new Blob(
+      [JSON.stringify(createTeacherContentPackage(items), null, 2)],
+      { type: "application/json" },
+    );
+    const url = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "deutsch-automaticity-lehrkraft-inhalte.json";
+    link.click();
+    URL.revokeObjectURL(url);
+    setMessage(
+      "Text-Inhalte und Arbeitsstände exportiert. Audio bleibt privat auf diesem Gerät.",
+    );
+  }
+
+  async function importContent(file: File) {
+    try {
+      const imported = parseTeacherContentPackage(
+        JSON.parse(await file.text()),
+      );
+      // Beim Import bleiben Lern-Verknüpfung und Arbeitsstand erhalten. Echte
+      // Audioaufnahmen werden bewusst erst auf dem Zielgerät ergänzt.
+      await Promise.all(imported.map((item) => saveTeacherContent(item)));
+      setMessage(
+        `${imported.length} Text-Inhalt${imported.length === 1 ? "" : "e"} importiert. Bitte menschliche Aufnahmen bei Bedarf erneut anhängen.`,
+      );
+      await refresh();
+    } catch (error) {
+      setMessage(
+        error instanceof Error
+          ? error.message
+          : "Diese Datei konnte nicht importiert werden.",
+      );
+    } finally {
+      if (importInputRef.current) importInputRef.current.value = "";
+    }
   }
   return (
     <main className="teacher-page">
@@ -205,17 +248,44 @@ export default function LehrkraftPage() {
               <span className="teacher-kicker">BIBLIOTHEK</span>
               <h2>Verwaltete Inhalte</h2>
             </div>
-            <button
-              className="teacher-secondary-button"
-              onClick={() => {
-                setDraft(empty());
-                setAudio(null);
-              }}
-              type="button"
-            >
-              <Plus /> Neu
-            </button>
+            <div className="teacher-library-actions">
+              <button
+                className="teacher-secondary-button"
+                disabled={!items.length}
+                onClick={exportContent}
+                type="button"
+              >
+                <Download /> Text exportieren
+              </button>
+              <label className="teacher-secondary-button teacher-import-button">
+                <Upload /> Text importieren
+                <input
+                  accept="application/json,.json"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) void importContent(file);
+                  }}
+                  ref={importInputRef}
+                  type="file"
+                />
+              </label>
+              <button
+                className="teacher-secondary-button"
+                onClick={() => {
+                  setDraft(empty());
+                  setAudio(null);
+                }}
+                type="button"
+              >
+                <Plus /> Neu
+              </button>
+            </div>
           </div>
+          <p className="teacher-helper" role="note">
+            Export und Import sind ein kostenloses Text-Backup zum Teilen.
+            Menschliche Audioaufnahmen bleiben auf dem Gerät der Lehrkraft und
+            werden nach dem Import erneut angehängt.
+          </p>
           {items.length ? (
             <div className="teacher-items">
               {items.map((item) => (

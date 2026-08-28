@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
 import {
+  createTeacherContentPackage,
   ensureTeacherContextKey,
   isPublishedTeacherContent,
+  parseTeacherContentPackage,
   type TeacherContentItem,
 } from "./teacher-content";
 
@@ -32,5 +34,22 @@ describe("English teacher content workflow", () => {
     expect(isPublishedTeacherContent({ ...item, status: "published" })).toBe(
       true,
     );
+  });
+
+  test("exports portable text without human audio and validates imports", () => {
+    const exported = createTeacherContentPackage([
+      {
+        ...item,
+        status: "published",
+        audioName: "teacher.mp3",
+        audioType: "audio/mpeg",
+      },
+    ]);
+
+    expect(exported.items[0]).not.toHaveProperty("audioName");
+    expect(parseTeacherContentPackage(exported)).toEqual([
+      { ...item, status: "published" },
+    ]);
+    expect(() => parseTeacherContentPackage({ format: "wrong" })).toThrow();
   });
 });

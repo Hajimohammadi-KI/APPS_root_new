@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test";
 
+import { GET as openNotebook } from "../app/notebook/route";
 import { GET as openPdfReader } from "../app/pdf-reader/route";
 import { pdfReaderHrefForResource } from "./pdf-reader-link";
 
@@ -14,6 +15,20 @@ afterEach(() => {
 });
 
 describe("shared PDF reader links", () => {
+  test("notebook hands off with a visible return destination", () => {
+    delete process.env.NEXT_PUBLIC_PDF_READER_URL;
+    const response = openNotebook(
+      new Request("https://english.example/notebook?activity=5"),
+    );
+    const location = new URL(response.headers.get("location") ?? "");
+
+    expect(location.origin).toBe("http://127.0.0.1:4332");
+    expect(location.searchParams.get("return")).toBe("https://english.example/");
+    expect(location.searchParams.get("returnLabel")).toBe(
+      "Back to English Automaticity",
+    );
+  });
+
   test("sends an exact Drive PDF to the shared reader", () => {
     const href = pdfReaderHrefForResource({
       sourceUrl: "https://drive.google.com/file/d/1TV1AAAHkng5USBOeewMc3NpHFk97eMwi/view",

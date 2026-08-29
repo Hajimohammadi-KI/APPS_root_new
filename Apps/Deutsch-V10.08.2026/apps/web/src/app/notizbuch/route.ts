@@ -11,5 +11,10 @@ export function GET(request: Request) {
   incoming.searchParams.forEach((value, key) =>
     target.searchParams.set(key, value),
   );
+  // PDF Studio turns these parameters into a visible return button, avoiding a dead-end notebook handoff.
+  if (!target.searchParams.has("return"))
+    target.searchParams.set("return", `${incoming.origin}/`);
+  if (!target.searchParams.has("returnLabel"))
+    target.searchParams.set("returnLabel", "Zurück zu DeutschFlow");
   return Response.redirect(target, 307);
 }

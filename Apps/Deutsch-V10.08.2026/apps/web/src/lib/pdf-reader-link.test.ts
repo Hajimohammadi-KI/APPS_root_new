@@ -26,6 +26,21 @@ describe("gemeinsame PDF-Reader-Links", () => {
     expect(location.origin).toBe("http://127.0.0.1:4332");
   });
 
+  test("Notizbuch-Übergabe enthält einen sichtbaren Rückweg", () => {
+    delete process.env.NEXT_PUBLIC_PDF_READER_URL;
+    const response = openNotebook(
+      new Request("https://deutsch.example/notizbuch?activity=7"),
+    );
+    const location = new URL(response.headers.get("location") ?? "");
+
+    expect(location.searchParams.get("return")).toBe(
+      "https://deutsch.example/",
+    );
+    expect(location.searchParams.get("returnLabel")).toBe(
+      "Zurück zu DeutschFlow",
+    );
+  });
+
   test("öffnet genau die ausgewählte Drive-Datei mit Lesefokus", () => {
     const href = pdfReaderHrefForMaterial({
       sourceUrl:

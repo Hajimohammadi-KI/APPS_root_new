@@ -91,19 +91,23 @@ test("loads the focused dashboard and complete product navigation", async ({
   });
 });
 
-// Checks the dashboard shows the learner's saved CEFR level and that its
-// "continue practice" button actually lands on the daily-practice route.
-test("shows the learner's current level and starts today's practice from the dashboard", async ({
+// Checks the dashboard presents one explained, state-driven continuation
+// action and that a fresh learner resumes the saved daily-practice plan.
+test("shows one explained next action and continues the learner's plan", async ({
   page,
 }) => {
   await expect(
     page.getByText("Current level · A1", { exact: true }),
   ).toBeVisible();
 
-  const continueButton = page
-    .getByRole("button", { name: "Continue today’s practice" })
-    .first();
+  const continueButton = page.getByRole("button", {
+    name: "Continue my plan",
+  });
+  await expect(continueButton).toHaveCount(1);
   await expect(continueButton).toBeVisible();
+  await expect(
+    page.getByText("3 practice steps remain in today’s saved plan."),
+  ).toBeVisible();
   await continueButton.click();
 
   await expect(page).toHaveURL(/\/daily$/);

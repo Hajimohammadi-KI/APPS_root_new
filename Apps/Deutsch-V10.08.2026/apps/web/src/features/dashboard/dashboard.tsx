@@ -94,6 +94,26 @@ export function Dashboard() {
   const dueReviews = state.reviews.filter(
     (review) => !review.mastered && review.due <= Date.now(),
   ).length;
+  const remainingDailySteps = Math.max(
+    0,
+    DAILY_PRACTICE_STEPS.length - new Set(plan.completed).size,
+  );
+  const continuePlan =
+    dueReviews > 0
+      ? {
+          href: "/wiederholungen" as const,
+          reason: `${dueReviews} Wiederholung${dueReviews === 1 ? " ist" : "en sind"} jetzt fällig; Abruf kommt vor neuem Stoff.`,
+        }
+      : remainingDailySteps > 0
+        ? {
+            href: "/heute" as const,
+            reason: `${remainingDailySteps} Schritt${remainingDailySteps === 1 ? " ist" : "e sind"} im heute gespeicherten Plan noch offen.`,
+          }
+        : {
+            href: "/fertigkeiten" as const,
+            reason:
+              "Der heutige Kernplan ist fertig; setze den auf diesem Gerät gespeicherten Fertigkeiten-Pfad fort.",
+          };
   const automatic = levelRecords.filter(
     (record) => record.status === "automatic",
   ).length;
@@ -160,6 +180,18 @@ export function Dashboard() {
           </Link>
         </div>
       </header>
+
+      <section className="home-v2-continue" aria-labelledby="continue-plan-title">
+        <div>
+          <p>Empfohlener nächster Schritt</p>
+          <h2 id="continue-plan-title">Meinen Plan fortsetzen</h2>
+          <span>{continuePlan.reason}</span>
+        </div>
+        {/* Genau eine zustandsbasierte Aktion setzt den wirklich gespeicherten Lernweg fort. */}
+        <Link href={continuePlan.href}>
+          Meinen Plan fortsetzen <ChevronRight />
+        </Link>
+      </section>
 
       <div className="home-v2-grid">
         <main className="home-v2-main">
@@ -248,9 +280,6 @@ export function Dashboard() {
               />
               <ProgressRow label="Heutige Übung" value={todayProgress} />
               <ProgressRow label="Sprechgenauigkeit" value={speakingAccuracy} />
-              <a className="home-v2-primary" href="/heute">
-                Heutiges Training fortsetzen <ChevronRight />
-              </a>
             </article>
 
             <article className="home-v2-focus-card">

@@ -50,6 +50,13 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
     return count;
   })();
   const dueReviews = state.reviews.filter((review) => review.status === "pending" && review.dueAt <= Date.now()).length;
+  const completedDailySteps = new Set(plan.completed).size;
+  const remainingDailySteps = Math.max(0, 3 - completedDailySteps);
+  const continuePlan = dueReviews > 0
+    ? { screen: "progress", reason: `${dueReviews} review${dueReviews === 1 ? " is" : "s are"} due now, so recall comes before new material.` }
+    : remainingDailySteps > 0
+      ? { screen: "daily", reason: `${remainingDailySteps} practice step${remainingDailySteps === 1 ? " remains" : "s remain"} in today’s saved plan.` }
+      : { screen: "integrated-skills", reason: "Today’s core plan is complete; continue the exact Integrated Skills path saved on this device." };
   const automatic = Object.values(state.mastery).filter((item) => item.status === "automatic").length;
   const speakingAverage = state.sessions.length
     ? Math.min(100, Math.round(state.sessions.reduce((total, session) => total + Math.min(100, session.seconds), 0) / state.sessions.length))
@@ -77,6 +84,12 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
           </button>
         </div>
       </header>
+
+      <section className="home-v2-continue" aria-labelledby="continue-plan-title">
+        <div><p>Recommended next action</p><h2 id="continue-plan-title">Continue my plan</h2><span>{continuePlan.reason}</span></div>
+        {/* One state-driven CTA removes competing choices and always resumes real saved work. */}
+        <button type="button" onClick={() => navigate(continuePlan.screen)}>Continue my plan <ChevronRight /></button>
+      </section>
 
       <div className="home-v2-grid">
         <main className="home-v2-main">
@@ -112,7 +125,6 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
               <ProgressRow label="Finished lessons" value={progress} />
               <ProgressRow label="Today’s practice" value={todayProgress} />
               <ProgressRow label="Speaking evidence" value={Math.min(100, state.sessions.length * 10)} />
-              <button className="home-v2-primary" type="button" onClick={() => navigate("daily")}>Continue today’s practice <ChevronRight /></button>
             </article>
 
             <article className="home-v2-focus-card">
@@ -131,7 +143,6 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
           <section className="home-v2-courses" aria-labelledby="courses-title">
             <div className="home-v2-card-head"><div><p>Start learning today</p><h2 id="courses-title">Select a course</h2></div><button aria-label="Open learning resources" type="button" onClick={() => navigate("resources")}><ArrowUpRight /></button></div>
             <div className="home-v2-course-list">
-              <button className="home-v2-primary" type="button" onClick={() => navigate("daily")}>Continue today’s practice <ChevronRight /></button>
               {courses.map(({ title, detail, tone, screen, icon: Icon }) => (
                 <button className={`home-v2-course home-v2-course-${tone}`} key={title} type="button" onClick={() => navigate(screen)}>
                   <span className="home-v2-course-icon"><Icon /></span>

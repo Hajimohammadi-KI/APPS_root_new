@@ -71,6 +71,16 @@ test("dashboard exposes the automaticity journey, full inventory, and live state
   await expect(
     page.getByRole("heading", { name: "Lernweg auswählen" }),
   ).toBeVisible();
+  // A fresh learner gets exactly one explained continuation action; saved
+  // reviews or completed daily work can change its destination later.
+  const continuePlan = page.getByRole("link", {
+    name: "Meinen Plan fortsetzen",
+  });
+  await expect(continuePlan).toHaveCount(1);
+  await expect(
+    page.getByText("3 Schritte sind im heute gespeicherten Plan noch offen."),
+  ).toBeVisible();
+  await expect(continuePlan).toHaveAttribute("href", "/heute");
   await expect(
     page.getByRole("button", {
       name: /App installieren|App ist installiert/,

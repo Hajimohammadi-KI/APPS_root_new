@@ -53,3 +53,5 @@ release/
 *.downloads
 *.exe
 *.msi
+.vercel
+.env*

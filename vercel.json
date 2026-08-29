@@ -3,7 +3,7 @@
   "rootDirectory": "Apps/English/English-07082026",
   "framework": "nextjs",
   "installCommand": "bun install --frozen-lockfile",
-  "buildCommand": "bun run build",
+  "buildCommand": "bun run --cwd apps/web build",
   "outputDirectory": "apps/web/.next",
   "bunVersion": "1.x",
   "env": {

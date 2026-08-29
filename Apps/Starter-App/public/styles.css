@@ -51,3 +51,13 @@ code { color:var(--purple-dark); font-weight:700; }
 @media (max-width:900px) { .shell{display:block}.sidebar{position:static;height:auto}.sidebar nav,.privacy{display:none} main{padding:24px} header{align-items:flex-start;flex-direction:column}.app-grid{grid-template-columns:1fr}.app-card.wide{grid-column:auto} }
 @media (max-width:560px) { main{padding:14px}header{padding:26px 22px}.summary{grid-template-columns:1fr}.app-top,.help{align-items:flex-start;flex-direction:column}.actions{flex-direction:column}.action{width:100%} }
 
+/* Interactive boxes get hover and keyboard-focus parity; language blocks own direction. */
+html[lang="en"],html[lang^="en-"],html[lang="de"],html[lang^="de-"]{direction:ltr}
+html[lang="fa"],html[lang^="fa-"],html[lang="ar"],html[lang^="ar-"]{direction:rtl}
+:where([lang="en"]:not(html),[lang^="en-"]:not(html),[lang="de"]:not(html),[lang^="de-"]:not(html),[dir="ltr"]){direction:ltr;unicode-bidi:isolate}
+:where([lang="fa"]:not(html),[lang^="fa-"]:not(html),[lang="ar"]:not(html),[lang^="ar-"]:not(html),[dir="rtl"]){direction:rtl;unicode-bidi:isolate;text-align:start}
+:where(button:not(:disabled),summary,select:not(:disabled),[role="button"]:not([aria-disabled="true"]),nav a[href],a[class*="button"],a[class*="card"],a.action){transition:border-color 160ms ease,background-color 160ms ease,box-shadow 160ms ease,color 160ms ease,transform 160ms ease}
+@media(hover:hover){:where(button:not(:disabled),summary,select:not(:disabled),[role="button"]:not([aria-disabled="true"]),nav a[href],a[class*="button"],a[class*="card"],a.action):hover{border-color:#9f83c4;box-shadow:0 7px 18px #49346524;transform:translateY(-1px)}}
+:where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action):focus-visible{outline:3px solid #7546b76b;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){:where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action){transition:none!important}:where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action):hover{transform:none!important}}
+

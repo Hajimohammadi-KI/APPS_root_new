@@ -28,6 +28,14 @@
 /* Sichtbare Navigationsüberschriften sind bedienbare Akkordeons: Das verringert die Scanlast,
    und aria-expanded macht den Zustand für Tastatur- und Hilfstechnik-Nutzende eindeutig. */
 .nav-parent:not([data-route]){cursor:pointer}.nav-parent .chev{transition:transform 160ms ease}.nav-section.is-collapsed .nav-item{display:none}.nav-section.is-collapsed .nav-parent .chev{transform:rotate(180deg)}
+    /* Menus and interactive boxes share hover/focus feedback; language blocks own direction. */
+    html[lang="en"],html[lang^="en-"],html[lang="de"],html[lang^="de-"]{direction:ltr}
+    html[lang="fa"],html[lang^="fa-"],html[lang="ar"],html[lang^="ar-"]{direction:rtl}
+    :where([lang="en"]:not(html),[lang^="en-"]:not(html),[lang="de"]:not(html),[lang^="de-"]:not(html),[dir="ltr"]){direction:ltr;unicode-bidi:isolate}
+    :where([lang="fa"]:not(html),[lang^="fa-"]:not(html),[lang="ar"]:not(html),[lang^="ar-"]:not(html),[dir="rtl"]){direction:rtl;unicode-bidi:isolate;text-align:start}
+    :where(button:not(:disabled),summary,select:not(:disabled),[role="button"]:not([aria-disabled="true"]),nav a[href],a[class*="button"],a[class*="card"],a.action){transition:border-color 160ms ease,background-color 160ms ease,box-shadow 160ms ease,color 160ms ease,transform 160ms ease}
+    @media(hover:hover){:where(button:not(:disabled),summary,select:not(:disabled),[role="button"]:not([aria-disabled="true"]),nav a[href],a[class*="button"],a[class*="card"],a.action):hover{border-color:#9f83c4;box-shadow:0 7px 18px #49346524;transform:translateY(-1px)}}
+    :where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action):focus-visible{outline:3px solid #7546b76b;outline-offset:3px}
 </style>
 </head>
 <body>

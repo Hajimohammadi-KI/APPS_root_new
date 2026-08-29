@@ -1,0 +1,51 @@
+/* Keep language direction and interaction feedback consistent across app shells. */
+html[lang="en"],
+html[lang^="en-"],
+html[lang="de"],
+html[lang^="de-"] {
+  direction: ltr;
+}
+html[lang="fa"],
+html[lang^="fa-"],
+html[lang="ar"],
+html[lang^="ar-"] {
+  direction: rtl;
+}
+
+:where([lang="en"]:not(html), [lang^="en-"]:not(html), [lang="de"]:not(html), [lang^="de-"]:not(html), [dir="ltr"]) {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+:where([lang="fa"]:not(html), [lang^="fa-"]:not(html), [lang="ar"]:not(html), [lang^="ar-"]:not(html), [dir="rtl"]) {
+  direction: rtl;
+  unicode-bidi: isolate;
+  text-align: start;
+}
+
+:where(button:not(:disabled), summary, select:not(:disabled), [role="button"]:not([aria-disabled="true"]), nav a[href], a[class*="button"], a[class*="card"], a.action) {
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+@media (hover: hover) {
+  :where(button:not(:disabled), summary, select:not(:disabled), [role="button"]:not([aria-disabled="true"]), nav a[href], a[class*="button"], a[class*="card"], a.action):hover {
+    border-color: #9f83c4;
+    box-shadow: 0 7px 18px rgba(73, 52, 101, 0.14);
+    transform: translateY(-1px);
+  }
+}
+
+:where(button, summary, select, [role="button"], nav a[href], a[class*="button"], a[class*="card"], a.action):focus-visible {
+  outline: 3px solid rgba(117, 70, 183, 0.42);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(button, summary, select, [role="button"], nav a[href], a[class*="button"], a[class*="card"], a.action) {
+    transition: none !important;
+  }
+
+  :where(button, summary, select, [role="button"], nav a[href], a[class*="button"], a[class*="card"], a.action):hover {
+    transform: none !important;
+  }
+}

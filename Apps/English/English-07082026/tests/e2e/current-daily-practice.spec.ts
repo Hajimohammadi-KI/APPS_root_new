@@ -73,3 +73,29 @@ test("daily hero starts the first practice with return context", async ({ page }
   expect(destination.searchParams.get("activity")).toBe("1");
   expect(destination.searchParams.get("return")).toBe("/daily");
 });
+
+test("interactive boxes show hover and focus while language blocks keep direction", async ({
+  page,
+}) => {
+  await page.goto("/daily");
+  const menuItem = page.getByRole("button", { name: "Grammar Lab" });
+
+  // Pointer feedback and keyboard focus are paired so hover is never the only cue.
+  await menuItem.hover();
+  expect(await menuItem.evaluate((element) => getComputedStyle(element).boxShadow)).not.toBe("none");
+  await menuItem.focus();
+  expect(await menuItem.evaluate((element) => getComputedStyle(element).outlineStyle)).not.toBe("none");
+
+  const directions = await page.evaluate(() =>
+    Object.fromEntries(
+      ["en", "de", "fa", "ar"].map((language) => {
+        const sample = document.createElement("span");
+        sample.lang = language;
+        sample.textContent = language;
+        document.body.append(sample);
+        return [language, getComputedStyle(sample).direction];
+      }),
+    ),
+  );
+  expect(directions).toEqual({ en: "ltr", de: "ltr", fa: "rtl", ar: "rtl" });
+});

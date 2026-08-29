@@ -29,8 +29,9 @@ test("Phase drei hält Status und Öffnen-Aktion im schmalen Desktop-Kartenrahme
   await page.setViewportSize({ width: 1366, height: 900 });
   await page.goto("/heute");
 
-  const escapedControls = await page.locator(".cards.three .activity").evaluateAll(
-    (cards) =>
+  const escapedControls = await page
+    .locator(".cards.three .activity")
+    .evaluateAll((cards) =>
       cards.flatMap((card) => {
         const cardBox = card.getBoundingClientRect();
         return [...card.querySelectorAll(".tag, .open")].flatMap((control) => {
@@ -42,14 +43,18 @@ test("Phase drei hält Status und Öffnen-Aktion im schmalen Desktop-Kartenrahme
             : [];
         });
       }),
-  );
+    );
 
   expect(escapedControls).toEqual([]);
 });
 
-test("Navigationsüberschriften falten nur ihre eigene Linkgruppe", async ({ page }) => {
+test("Navigationsüberschriften falten nur ihre eigene Linkgruppe", async ({
+  page,
+}) => {
   await page.goto("/heute");
-  const heading = page.getByRole("button", { name: /Grammatik und Deutsch lernen/ });
+  const heading = page.getByRole("button", {
+    name: /Grammatik und Deutsch lernen/,
+  });
   const linkedItem = page.getByRole("button", { name: "Grammatik-Labor" });
 
   await expect(heading).toHaveAttribute("aria-expanded", "true");
@@ -60,8 +65,42 @@ test("Navigationsüberschriften falten nur ihre eigene Linkgruppe", async ({ pag
   await expect(linkedItem).toBeVisible();
 });
 
-test("Integrierte Fertigkeiten verwendet den kanonischen App-Pfad", async ({ page }) => {
+test("Integrierte Fertigkeiten verwendet den kanonischen App-Pfad", async ({
+  page,
+}) => {
   await page.goto("/heute");
   await page.getByRole("button", { name: "Integrierte Fertigkeiten" }).click();
   await expect(page).toHaveURL(/\/fertigkeiten$/);
+});
+
+test("Interaktive Kästen zeigen Hover und Fokus bei korrekter Schreibrichtung", async ({
+  page,
+}) => {
+  await page.goto("/heute");
+  const menuItem = page.getByRole("button", { name: "Grammatik-Labor" });
+
+  // Hover and keyboard focus use the same semantic control instead of a mouse-only effect.
+  await menuItem.hover();
+  expect(
+    await menuItem.evaluate((element) => getComputedStyle(element).boxShadow),
+  ).not.toBe("none");
+  await menuItem.focus();
+  expect(
+    await menuItem.evaluate(
+      (element) => getComputedStyle(element).outlineStyle,
+    ),
+  ).not.toBe("none");
+
+  const directions = await page.evaluate(() =>
+    Object.fromEntries(
+      ["en", "de", "fa", "ar"].map((language) => {
+        const sample = document.createElement("span");
+        sample.lang = language;
+        sample.textContent = language;
+        document.body.append(sample);
+        return [language, getComputedStyle(sample).direction];
+      }),
+    ),
+  );
+  expect(directions).toEqual({ en: "ltr", de: "ltr", fa: "rtl", ar: "rtl" });
 });

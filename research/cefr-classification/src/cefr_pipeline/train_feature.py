@@ -48,6 +48,7 @@ def train_feature_baseline(
         import joblib  # type: ignore[import-not-found]
         from sklearn.feature_extraction.text import TfidfVectorizer  # type: ignore[import-not-found]
         from sklearn.linear_model import LogisticRegression  # type: ignore[import-not-found]
+        from sklearn.multiclass import OneVsRestClassifier  # type: ignore[import-not-found]
         from sklearn.pipeline import FeatureUnion, Pipeline  # type: ignore[import-not-found]
         from sklearn.preprocessing import MaxAbsScaler  # type: ignore[import-not-found]
     except ImportError as error:
@@ -94,12 +95,15 @@ def train_feature_baseline(
             ("style", Pipeline([("extract", TextStyleTransformer()), ("scale", MaxAbsScaler())])),
         ]
     )
-    classifier = LogisticRegression(
-        max_iter=2_000,
-        class_weight="balanced",
-        random_state=random_seed,
-        solver="liblinear",
-        multi_class="ovr",
+    # OneVsRestClassifier makes the intended six-head strategy explicit and
+    # avoids the removed multi_class constructor argument in scikit-learn 1.9+.
+    classifier = OneVsRestClassifier(
+        LogisticRegression(
+            max_iter=2_000,
+            class_weight="balanced",
+            random_state=random_seed,
+            solver="liblinear",
+        )
     )
     pipeline = Pipeline([("features", features), ("classifier", classifier)])
     started = time.perf_counter()
@@ -152,4 +156,3 @@ def train_feature_baseline(
     artifact["dev_metrics"] = evaluations["dev"]
     write_run_artifact(output_dir / "run.json", artifact)
     return artifact
-

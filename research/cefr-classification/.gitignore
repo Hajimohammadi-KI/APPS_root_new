@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+*.egg-info/
 
 # Licensed/raw corpora, trained weights, and learner predictions stay local.
 data/raw/*

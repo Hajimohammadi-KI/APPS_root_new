@@ -618,5 +618,6 @@
       $('[data-action="filter"]').addEventListener('click', () => notify('All CEFR levels are currently visible.'));
     })();
   </script>
-<script>const navMap={'Heute üben und sprechen':'/','Heutiges Training':'/heute','Konversationsstudio':'/studio','Grammatik und Deutsch lernen':'/grammatik','Lernressourcen':'/ressourcen','Integrierte Fertigkeiten':'/integrierte-fertigkeiten','Fehler und Aufnahmen':'/fehler','Speicher und persönliche Optionen':'/einstellungen'};document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{const u=navMap[b.dataset.nav];if(u)location.href=u}));</script></body>
+<script>// Navigation uses canonical page paths so visible Grammar menu actions never send learners to removed aliases.
+const navMap={'Heute üben und sprechen':'/','Heutiges Training':'/heute','Konversationsstudio':'/studio','Grammatik und Deutsch lernen':'/grammatik','Lernressourcen':'/ressourcen','Integrierte Fertigkeiten':'/fertigkeiten','Fehler und Aufnahmen':'/fehler','Speicher und persönliche Optionen':'/einstellungen'};document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{const u=navMap[b.dataset.nav];if(u)location.href=u}));</script></body>
 </html>

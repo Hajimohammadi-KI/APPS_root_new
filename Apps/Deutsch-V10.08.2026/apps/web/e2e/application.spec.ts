@@ -11,6 +11,7 @@ const routes = [
   "/themen",
   "/ressourcen",
   "/einstellungen",
+  "/fertigkeiten",
   "/klassik",
 ] as const;
 

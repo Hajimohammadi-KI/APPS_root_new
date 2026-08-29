@@ -125,6 +125,11 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
               <ProgressRow label="Finished lessons" value={progress} />
               <ProgressRow label="Today’s practice" value={todayProgress} />
               <ProgressRow label="Speaking evidence" value={Math.min(100, state.sessions.length * 10)} />
+              {/* Keep machine-derived practice signals visibly separate from human judgement. */}
+              <div className="home-v2-evidence-legend" role="note">
+                <span><strong>Automated practice signals</strong> Activity, accuracy, and app-checked evidence.</span>
+                <span><strong>Teacher-verified mastery</strong> Not recorded on this device.</span>
+              </div>
             </article>
 
             <article className="home-v2-focus-card">

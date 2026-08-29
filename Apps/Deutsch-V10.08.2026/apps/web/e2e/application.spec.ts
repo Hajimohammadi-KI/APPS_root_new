@@ -104,6 +104,8 @@ test("dashboard exposes the automaticity journey, full inventory, and live state
   await expect(
     page.getByRole("heading", { name: "Lernweg auswählen" }),
   ).toBeVisible();
+  await expect(page.getByText("Automatische Übungssignale", { exact: true })).toBeVisible();
+  await expect(page.getByText("Durch Lehrkraft bestätigte Beherrschung", { exact: true })).toBeVisible();
   // A fresh learner gets exactly one explained continuation action; saved
   // reviews or completed daily work can change its destination later.
   const continuePlan = page.getByRole("link", {
@@ -125,6 +127,10 @@ test("dashboard exposes the automaticity journey, full inventory, and live state
   await expect(
     page.getByRole("link", { name: /Alltagsgespräche sicher meistern/i }),
   ).toHaveAttribute("href", "/studio");
+
+  await page.goto("/fortschritt");
+  await expect(page.getByText(/Automatische Übungssignale:/)).toBeVisible();
+  await expect(page.getByRole("note").filter({ hasText: "Durch Lehrkraft bestätigte Beherrschung:" })).toContainText("nicht erfasst");
 });
 
 test("grammar lab exposes all 144 CEFR units and working search", async ({

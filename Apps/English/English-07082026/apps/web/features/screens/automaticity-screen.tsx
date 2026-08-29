@@ -1061,6 +1061,12 @@ export function AutomaticityScreen({
                 Verified mastery: {verifiedMastery?.automaticityScore ?? 0}%
               </Badge>
             </div>
+            {/* External app checks are evidence signals, not a teacher decision. */}
+            <p className="rounded-xl border border-violet-200 bg-violet-50 p-3 text-sm" role="note">
+              <strong>Teacher-verified mastery:</strong> not recorded. The score
+              above is externally app-checked evidence and remains labelled
+              separately from human verification.
+            </p>
           </CardContent>
         </Card>
         <Card>

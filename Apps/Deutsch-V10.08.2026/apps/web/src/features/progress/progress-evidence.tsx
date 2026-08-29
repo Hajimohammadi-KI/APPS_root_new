@@ -190,6 +190,11 @@ export function ProgressEvidence() {
           Die Startseite bleibt ruhig. Öffne hier nur den Bereich, den du gerade
           prüfen möchtest. Alle Gruppen sind zunächst geschlossen.
         </p>
+        {/* Diese Legende verhindert, dass App-Scores als Lehrkrafturteil gelesen werden. */}
+        <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2" role="note">
+          <p className="rounded-xl border border-sky-200 bg-sky-50 p-3"><strong>Automatische Übungssignale:</strong> Aktivität, App-Prüfungen und berechnete Stabilität.</p>
+          <p className="rounded-xl border border-violet-200 bg-violet-50 p-3"><strong>Durch Lehrkraft bestätigte Beherrschung:</strong> auf diesem Gerät nicht erfasst.</p>
+        </div>
       </header>
 
       <LearningAccordion

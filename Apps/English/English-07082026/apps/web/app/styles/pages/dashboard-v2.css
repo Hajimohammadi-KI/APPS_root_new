@@ -63,6 +63,9 @@
 .home-v2-focus-card dl div { display: flex; justify-content: space-between; border-bottom: 1px solid #f0ebf1; padding-bottom: 7px; font-size: 11px; }
 .home-v2-focus-card dt { color: var(--v2-muted); }
 .home-v2-focus-card dd { margin: 0; font-weight: 850; }
+.home-v2-evidence-legend { display: grid; gap: 7px; margin-top: 13px; border-top: 1px solid var(--v2-line); padding-top: 12px; color: var(--v2-muted); font-size: 11px; line-height: 1.45; }
+.home-v2-evidence-legend span { display: grid; gap: 2px; }
+.home-v2-evidence-legend strong { color: var(--v2-ink); }
 .home-v2-course-list { display: grid; gap: 11px; margin-top: 18px; }
 .home-v2-course { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 11px; width: 100%; border: 1px solid rgba(255,255,255,.9); border-radius: 17px; padding: 13px; color: var(--v2-ink); text-align: left; cursor: pointer; transition: transform 160ms cubic-bezier(.23,1,.32,1), box-shadow 160ms ease; }
 .home-v2-course:hover { transform: translateY(-2px); box-shadow: 0 12px 25px rgba(94,67,102,.09); }

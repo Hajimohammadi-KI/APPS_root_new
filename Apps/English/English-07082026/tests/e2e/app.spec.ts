@@ -90,6 +90,8 @@ test("loads the focused dashboard and complete product navigation", async ({
   await expect(
     page.getByRole("navigation", { name: "Product navigation" }),
   ).toBeVisible();
+  await expect(page.getByText("Automated practice signals", { exact: true })).toBeVisible();
+  await expect(page.getByText("Teacher-verified mastery", { exact: true })).toBeVisible();
   const productNavigation = page.getByRole("navigation", {
     name: "Product navigation",
   });
@@ -122,6 +124,12 @@ test("loads the focused dashboard and complete product navigation", async ({
     fullPage: true,
     path: "test-results/dashboard-desktop.png",
   });
+});
+
+test("progress views separate app signals from teacher verification", async ({ page }) => {
+  await page.goto("/?screen=progress");
+  await expect(page.getByRole("note").filter({ hasText: "Teacher-verified mastery:" })).toContainText("not recorded");
+  await expect(page.getByText(/externally app-checked evidence/)).toBeVisible();
 });
 
 // Checks the dashboard presents one explained, state-driven continuation

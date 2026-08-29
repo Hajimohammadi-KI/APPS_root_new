@@ -280,6 +280,11 @@ export function Dashboard() {
               />
               <ProgressRow label="Heutige Übung" value={todayProgress} />
               <ProgressRow label="Sprechgenauigkeit" value={speakingAccuracy} />
+              {/* Automatische Übungssignale dürfen nicht wie ein Lehrkrafturteil aussehen. */}
+              <div className="home-v2-evidence-legend" role="note">
+                <span><strong>Automatische Übungssignale</strong> Aktivität, Genauigkeit und App-Prüfungen.</span>
+                <span><strong>Durch Lehrkraft bestätigte Beherrschung</strong> Auf diesem Gerät nicht erfasst.</span>
+              </div>
             </article>
 
             <article className="home-v2-focus-card">

@@ -8,6 +8,7 @@ import {
   Pencil,
   Plus,
   Save,
+  Sparkles,
   Trash2,
   Upload,
 } from "lucide-react";
@@ -26,6 +27,7 @@ import {
   type TeacherContentKind,
   type TeacherContentStatus,
 } from "@/lib/teacher-content";
+import { originalGermanStarterContent } from "@/lib/original-starter-content";
 
 const empty = (): TeacherContentItem => ({
   id: crypto.randomUUID(),
@@ -118,6 +120,18 @@ export default function LehrkraftPage() {
     } finally {
       if (importInputRef.current) importInputRef.current.value = "";
     }
+  }
+
+  async function addOriginalStarterContent() {
+    // Stabile IDs machen den Vorgang wiederholbar: Ein erneuter Klick
+    // aktualisiert diese Startinhalte, statt die Bibliothek zu duplizieren.
+    await Promise.all(
+      originalGermanStarterContent.map((item) => saveTeacherContent(item)),
+    );
+    setMessage(
+      `${originalGermanStarterContent.length} eigene, veröffentlichte Startinhalte hinzugefügt. Es wurden keine QSkills-Texte oder -Medien kopiert.`,
+    );
+    await refresh();
   }
   return (
     <main className="teacher-page">
@@ -251,6 +265,13 @@ export default function LehrkraftPage() {
             <div className="teacher-library-actions">
               <button
                 className="teacher-secondary-button"
+                onClick={() => void addOriginalStarterContent()}
+                type="button"
+              >
+                <Sparkles aria-hidden /> Eigene Startinhalte hinzufügen
+              </button>
+              <button
+                className="teacher-secondary-button"
                 disabled={!items.length}
                 onClick={exportContent}
                 type="button"
@@ -285,6 +306,10 @@ export default function LehrkraftPage() {
             Export und Import sind ein kostenloses Text-Backup zum Teilen.
             Menschliche Audioaufnahmen bleiben auf dem Gerät der Lehrkraft und
             werden nach dem Import erneut angehängt.
+          </p>
+          <p className="teacher-helper" role="note">
+            Die Startinhalte sind neue A1–C2-Texte für diese App und vom lokal
+            lizenzierten QSkills-Begleitmaterial getrennt.
           </p>
           {items.length ? (
             <div className="teacher-items">

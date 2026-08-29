@@ -7,6 +7,7 @@ import {
   parseTeacherContentPackage,
   type TeacherContentItem,
 } from "./teacher-content";
+import { originalGermanStarterContent } from "./original-starter-content";
 
 const baseItem: TeacherContentItem = {
   id: "8d5a6ed2-a1ef-4a76-b716-9aecefba7c42",
@@ -62,5 +63,23 @@ describe("teacher content linking", () => {
       { ...baseItem, status: "published" },
     ]);
     expect(() => parseTeacherContentPackage({ format: "wrong" })).toThrow();
+  });
+
+  test("stellt vollständige eigene Startinhalte ohne gebündeltes Audio bereit", () => {
+    expect(originalGermanStarterContent).toHaveLength(24);
+    expect(
+      new Set(originalGermanStarterContent.map((entry) => entry.id)).size,
+    ).toBe(24);
+    expect(
+      new Set(originalGermanStarterContent.map((entry) => entry.level)),
+    ).toEqual(new Set(["A1", "A2", "B1", "B2", "C1", "C2"]));
+    expect(
+      originalGermanStarterContent.every(
+        (entry) => entry.status === "published",
+      ),
+    ).toBe(true);
+    expect(originalGermanStarterContent.some((entry) => entry.audioName)).toBe(
+      false,
+    );
   });
 });

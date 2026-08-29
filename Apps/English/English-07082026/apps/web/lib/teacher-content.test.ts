@@ -7,6 +7,7 @@ import {
   parseTeacherContentPackage,
   type TeacherContentItem,
 } from "./teacher-content";
+import { originalEnglishStarterContent } from "./original-starter-content";
 
 const item: TeacherContentItem = {
   id: "4a4ffb30-9af9-4132-8e5d-d39ad4e16298",
@@ -51,5 +52,23 @@ describe("English teacher content workflow", () => {
       { ...item, status: "published" },
     ]);
     expect(() => parseTeacherContentPackage({ format: "wrong" })).toThrow();
+  });
+
+  test("provides a complete original starter set without bundled audio", () => {
+    expect(originalEnglishStarterContent).toHaveLength(24);
+    expect(
+      new Set(originalEnglishStarterContent.map((entry) => entry.id)).size,
+    ).toBe(24);
+    expect(
+      new Set(originalEnglishStarterContent.map((entry) => entry.level)),
+    ).toEqual(new Set(["A1", "A2", "B1", "B2", "C1", "C2"]));
+    expect(
+      originalEnglishStarterContent.every(
+        (entry) => entry.status === "published",
+      ),
+    ).toBe(true);
+    expect(originalEnglishStarterContent.some((entry) => entry.audioName)).toBe(
+      false,
+    );
   });
 });

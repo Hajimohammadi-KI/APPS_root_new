@@ -8,6 +8,7 @@ import {
   Pencil,
   Plus,
   Save,
+  Sparkles,
   Trash2,
   Upload,
 } from "lucide-react";
@@ -26,6 +27,7 @@ import {
   type TeacherContentKind,
   type TeacherContentStatus,
 } from "@/lib/teacher-content";
+import { originalEnglishStarterContent } from "@/lib/original-starter-content";
 
 const empty = (): TeacherContentItem => ({
   id: crypto.randomUUID(),
@@ -116,6 +118,18 @@ export default function TeacherPage() {
     } finally {
       if (importInputRef.current) importInputRef.current.value = "";
     }
+  }
+
+  async function addOriginalStarterContent() {
+    // Stable IDs make this safe to use more than once: saving again updates
+    // the same original examples instead of duplicating a teacher's library.
+    await Promise.all(
+      originalEnglishStarterContent.map((item) => saveTeacherContent(item)),
+    );
+    setMessage(
+      `${originalEnglishStarterContent.length} original, published starter items added. No QSkills text or media was copied.`,
+    );
+    await refresh();
   }
 
   return (
@@ -253,6 +267,13 @@ export default function TeacherPage() {
             <div className="teacher-library-actions">
               <button
                 className="teacher-secondary-button"
+                onClick={() => void addOriginalStarterContent()}
+                type="button"
+              >
+                <Sparkles aria-hidden /> Add original starter set
+              </button>
+              <button
+                className="teacher-secondary-button"
                 disabled={!items.length}
                 onClick={exportContent}
                 type="button"
@@ -287,6 +308,10 @@ export default function TeacherPage() {
             Export and import are a free text backup and sharing method. Human
             audio is kept on the teacher&apos;s device and must be attached
             again after importing.
+          </p>
+          <p className="teacher-helper" role="note">
+            The starter set contains new in-app teaching text for A1–C2. It is
+            separate from the locally licensed QSkills companion material.
           </p>
           {items.length ? (
             <div className="teacher-items">

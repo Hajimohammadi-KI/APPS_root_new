@@ -32,7 +32,7 @@
     "@types/node": "24.10.14",
     "@playwright/test": "1.62.0",
     "concurrently": "10.0.4",
-    "next": "16.2.12",
-    "typescript": "7.0.2"
+    "next": "16.1.7",
+    "typescript": "5.9.3"
   }
 }

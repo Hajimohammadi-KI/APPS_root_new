@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Sequence
 
+from .dashboard import build_dashboard_artifact, write_dashboard_artifact
 from .preprocess import read_approved_csv
 from .split import SplitConfig, split_records, write_split_bundle
 from .train_feature import train_feature_baseline
@@ -53,6 +54,12 @@ def build_parser() -> argparse.ArgumentParser:
     transformer.add_argument("--output", required=True, type=Path)
     transformer.add_argument("--repo-root", required=True, type=_existing_path)
     transformer.add_argument("--run-id", required=True)
+
+    dashboard = subparsers.add_parser("build-dashboard", help="Build canonical dashboard JSON from catalogs and runs")
+    dashboard.add_argument("--models", required=True, type=_existing_path)
+    dashboard.add_argument("--corpora", required=True, type=_existing_path)
+    dashboard.add_argument("--runs", required=True, type=_existing_path)
+    dashboard.add_argument("--output", required=True, type=Path)
     return parser
 
 
@@ -86,7 +93,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             "run_id": artifact["run_id"],
             "output": str(args.output.resolve()),
         }
-    else:
+    elif args.command == "train-transformer":
         config = TransformerConfig.from_json(args.config)
         artifact = train_transformer(
             config=config,
@@ -101,10 +108,23 @@ def main(argv: Sequence[str] | None = None) -> int:
             "run_id": artifact["run_id"],
             "output": str(args.output.resolve()),
         }
+    else:
+        artifact = build_dashboard_artifact(
+            model_catalog_path=args.models,
+            corpus_inventory_path=args.corpora,
+            run_root=args.runs,
+        )
+        output = args.output.resolve()
+        write_dashboard_artifact(output, artifact)
+        receipt = {
+            "stage": "build-dashboard",
+            "status": artifact["snapshot"]["status"],
+            "measured_models": artifact["snapshot"]["datasets"]["summary"][0]["measured_models"],
+            "output": str(output),
+        }
     print(json.dumps(receipt, indent=2, ensure_ascii=False))
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

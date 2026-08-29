@@ -19,7 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
+    // German reader controls and document chrome always flow left-to-right.
+    <html lang="de" dir="ltr">
       <body>{children}</body>
     </html>
   );

@@ -52,7 +52,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
+    // Keep the German application LTR at the document boundary; Persian
+    // learning aids opt into RTL only on their own scoped containers.
+    <html lang="de" dir="ltr">
       <body>
         <Providers>
           <AppShell>{children}</AppShell>

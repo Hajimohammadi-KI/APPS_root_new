@@ -50,7 +50,9 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    // Keep the English application LTR at the document boundary; Persian
+    // learning aids opt into RTL only on their own scoped containers.
+    <html lang="en" dir="ltr">
       <body>
         <AppStoreProvider>
           {children}

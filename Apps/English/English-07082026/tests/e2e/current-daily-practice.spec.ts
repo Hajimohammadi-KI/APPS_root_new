@@ -2,6 +2,8 @@ import { expect, test } from "@playwright/test";
 
 test("current home and active daily route show one truthful learner state", async ({ page }) => {
   await page.goto("/");
+  // The React shell and standalone Daily document must share the same LTR contract.
+  await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await expect(page.getByRole("heading", { name: /Good (morning|afternoon|evening), Learner/ })).toBeVisible();
   await expect(page.getByText("Your chart will begin after your first saved practice.")).toBeVisible();
   await expect(page.getByText("Local app service ready")).toBeVisible();
@@ -22,6 +24,7 @@ test("phase-three cards keep their status and CTA inside a narrow desktop layout
   // cards 5–7 when the desktop window is narrowed.
   await page.setViewportSize({ width: 1366, height: 900 });
   await page.goto("/daily");
+  await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 
   const escapedControls = await page.locator(".cards.three .activity").evaluateAll(
     (cards) =>

@@ -20,7 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
+    // German settings labels always inherit a stable left-to-right direction.
+    <html lang="de" dir="ltr">
       <body>
         <ReadingRuler />
         {children}

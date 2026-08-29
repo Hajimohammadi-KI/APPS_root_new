@@ -24,6 +24,8 @@ test("all product and compatibility routes render successfully", async ({
     expect(response?.ok(), `${route} should return a successful response`).toBe(
       true,
     );
+    // Covers both Next.js routes and directly served German practice documents.
+    await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
     await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
   }
 });

@@ -16,6 +16,7 @@ function isLoopbackHost(hostname: string) {
 
 export function ApiConnectionStatus({ baseUrl }: { baseUrl: string }) {
 	const [status, setStatus] = React.useState<ConnectionState>("checking");
+	const [retryRequest, setRetryRequest] = React.useState(0);
 
 	React.useEffect(() => {
 		let active = true;
@@ -54,13 +55,21 @@ export function ApiConnectionStatus({ baseUrl }: { baseUrl: string }) {
 			active = false;
 			if (timer) clearTimeout(timer);
 		};
-	}, [baseUrl]);
+	}, [baseUrl, retryRequest]);
 
 	return (
-		<span
+		<button
+			aria-label={status === "offline" ? "Retry local app service" : statusCopy[status]}
 			aria-live="polite"
 			className="hidden min-h-9 items-center gap-2 rounded-full border border-slate-300 bg-white px-3 text-xs font-bold text-slate-800 sm:inline-flex"
+			disabled={status === "checking"}
+			onClick={() => {
+				// Retry without reloading the page, which protects an unsaved learner answer.
+				setStatus("checking");
+				setRetryRequest((request) => request + 1);
+			}}
 			title={`${statusCopy[status]} · ${baseUrl}`}
+			type="button"
 		>
 			<span
 				aria-hidden="true"
@@ -75,6 +84,6 @@ export function ApiConnectionStatus({ baseUrl }: { baseUrl: string }) {
 				}}
 			/>
 			{statusCopy[status]}
-		</span>
+		</button>
 	);
 }

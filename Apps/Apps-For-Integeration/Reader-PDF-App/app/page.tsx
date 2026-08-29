@@ -199,6 +199,7 @@ export default function Home() {
   const [driveFiles, setDriveFiles] = useState<DriveFile[]>([]);
   const [targetLanguage, setTargetLanguage] = useState("DE");
   const [toast, setToast] = useState("");
+  const [pdfError, setPdfError] = useState("");
   const [connections, setConnections] = useState({ drive: false, calendar: false, openai: false, deepl: false });
   const [embedCode, setEmbedCode] = useState("");
   const [dailyActivity, setDailyActivity] = useState<number | null>(null);
@@ -211,6 +212,7 @@ export default function Home() {
   const [activeCollection, setActiveCollection] = useState("Bibliothek");
   const dragStart = useRef<{ x: number; width: number } | null>(null);
   const selectionMenuRef = useRef<HTMLDivElement>(null);
+  const recoveryFileInputRef = useRef<HTMLInputElement>(null);
   const requestedPage = useRef<number | null>(null);
 
   useEffect(() => {
@@ -353,6 +355,13 @@ export default function Home() {
     window.setTimeout(() => setToast(""), 3_200);
   };
 
+  const reportPdfError = (error: unknown, fallback: string) => {
+    const message = error instanceof Error ? error.message : fallback;
+    // Keep document errors visible until the learner chooses a recovery action.
+    setPdfError(message);
+    showToast(message);
+  };
+
   const applyPdf = async (bytes: ArrayBuffer, name: string) => {
     if (bytes.byteLength > MAX_PDF_BYTES) throw new Error("Die PDF ist größer als 200 MB.");
     const signature = new TextDecoder().decode(bytes.slice(0, 5));
@@ -360,6 +369,7 @@ export default function Home() {
     const id = await documentFingerprint(bytes);
     const savedReaderState = readReaderStateStore()[id];
     setPdfBytes(bytes);
+    setPdfError("");
     setDocumentId(id);
     setMarks(readMarkStore()[id] ?? []);
     setPdfName(name.replace(/\.pdf$/i, ""));
@@ -413,7 +423,7 @@ export default function Home() {
         if (!cancelled) showToast(`${requestedName} im PDF Reader geöffnet`);
       } catch (error) {
         if (!cancelled) {
-          showToast(error instanceof Error ? error.message : "Die ausgewählte PDF konnte nicht geöffnet werden.");
+          reportPdfError(error, "Die ausgewählte PDF konnte nicht geöffnet werden.");
         }
       } finally {
         if (!cancelled) setDriveBusy(false);
@@ -430,7 +440,7 @@ export default function Home() {
       await applyPdf(await file.arrayBuffer(), file.name);
       showToast(`${file.name} geöffnet`);
     } catch (error) {
-      showToast(error instanceof Error ? error.message : "Die PDF konnte nicht geöffnet werden.");
+      reportPdfError(error, "Die PDF konnte nicht geöffnet werden.");
     }
   };
 
@@ -1052,12 +1062,14 @@ export default function Home() {
             <span className="page-chip">{Math.round(zoom * 100)}%</span>
             <button onClick={() => setZoom((value) => Math.min(1.8, value + 0.1))}>＋</button>
             <span className="toolbar-spacer" />
-            <label className="upload-button">Datei öffnen<input type="file" accept="application/pdf,.pdf" onChange={(event) => void importLocalPdf(event.target.files?.[0])} /></label>
+            <label className="upload-button">Datei öffnen<input ref={recoveryFileInputRef} type="file" accept="application/pdf,.pdf" onChange={(event) => void importLocalPdf(event.target.files?.[0])} /></label>
             <button onClick={() => setSettingsOpen(true)}>Drive</button>
             <button className="toolbar-secondary" onClick={downloadOriginal} disabled={!pdfBytes}>Original</button>
             <button className="toolbar-secondary" onClick={() => void exportAnnotatedPdf()} disabled={!pdfBytes}>PDF exportieren</button>
             <button className="panel-toggle" onClick={() => setPanelOpen((value) => !value)}>{panelOpen ? "Panel schließen" : "Panel öffnen"}</button>
           </div>
+
+          {pdfError ? <div className="reader-recovery" role="alert"><span><strong>PDF konnte nicht geöffnet werden.</strong>{pdfError}</span><button onClick={() => recoveryFileInputRef.current?.click()} type="button">Andere PDF auswählen</button></div> : null}
 
           {selectionMenu && selectedText && (
             <div

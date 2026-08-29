@@ -32,6 +32,19 @@ test("saves one automaticity step and restores the exact next step", async ({
   ).toBeVisible();
 });
 
+test("save for later confirms and restores the exact draft", async ({ page }) => {
+  const draft = "My draft stays local until I return to this exact step.";
+  const evidence = page.getByLabel("Integrated skills evidence");
+  await evidence.fill(draft);
+  await page.getByRole("button", { name: "Save and continue later" }).click();
+
+  await expect(
+    page.getByText("Saved locally. You can stop and continue from this exact step."),
+  ).toBeVisible();
+  await page.reload();
+  await expect(evidence).toHaveValue(draft);
+});
+
 test("keeps the daily mission readable on a narrow mobile screen", async ({
   page,
 }) => {

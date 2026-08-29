@@ -128,3 +128,50 @@ test("Interaktive Kästen zeigen Hover und Fokus bei korrekter Schreibrichtung",
   );
   expect(directions).toEqual({ en: "ltr", de: "ltr", fa: "rtl", ar: "rtl" });
 });
+
+test("Lokaler Dienst kann ohne Seitenverlust erneut geprüft werden", async ({
+  page,
+}) => {
+  let serviceReady = false;
+  await page.route("**/api/v1/health", async (route) => {
+    await route.fulfill({
+      body: JSON.stringify(
+        serviceReady ? { status: "ok" } : { error: "offline" },
+      ),
+      contentType: "application/json",
+      status: serviceReady ? 200 : 503,
+    });
+  });
+  await page.goto("/");
+
+  const retry = page.getByRole("button", {
+    name: "Lokalen App-Dienst erneut prüfen",
+  });
+  await expect(retry).toBeVisible();
+  serviceReady = true;
+  await retry.click();
+  await expect(
+    page.getByRole("button", { name: "Lokaler App-Dienst bereit" }),
+  ).toBeVisible();
+});
+
+test("Mikrofonfehler bietet Tippen als Wiederherstellung an", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: undefined,
+    });
+  });
+  await page.goto("/studio");
+  await page.getByRole("button", { name: "Record", exact: true }).click();
+
+  await expect(
+    page.getByRole("button", { name: "Durch Tippen fortfahren" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Durch Tippen fortfahren" }).click();
+  await expect(
+    page.getByRole("textbox", { name: "Dein Transkript" }),
+  ).toBeFocused();
+});

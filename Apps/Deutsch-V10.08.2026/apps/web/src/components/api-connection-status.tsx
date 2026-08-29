@@ -20,6 +20,7 @@ function isLoopbackHost(hostname: string) {
 
 export function ApiConnectionStatus() {
   const [status, setStatus] = useState<ConnectionState>("checking");
+  const [retryRequest, setRetryRequest] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -54,13 +55,26 @@ export function ApiConnectionStatus() {
       active = false;
       if (timer) clearTimeout(timer);
     };
-  }, []);
+  }, [retryRequest]);
 
   return (
-    <span
+    <button
+      aria-label={
+        status === "offline"
+          ? "Lokalen App-Dienst erneut prüfen"
+          : statusCopy[status]
+      }
       aria-live="polite"
       className="hidden min-h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-bold text-foreground lg:inline-flex"
+      disabled={status === "checking"}
+      onClick={() => {
+        // Erneut prüfen, ohne die Seite und damit einen ungespeicherten
+        // Lernschritt neu zu laden.
+        setStatus("checking");
+        setRetryRequest((request) => request + 1);
+      }}
       title={`${statusCopy[status]} · Bestätigt nur den lokalen API-Dienst, nicht KI- oder Übersetzungsanbieter. · ${API_BASE_URL}`}
+      type="button"
     >
       <span
         aria-hidden="true"
@@ -75,6 +89,6 @@ export function ApiConnectionStatus() {
         }}
       />
       {statusCopy[status]}
-    </span>
+    </button>
   );
 }

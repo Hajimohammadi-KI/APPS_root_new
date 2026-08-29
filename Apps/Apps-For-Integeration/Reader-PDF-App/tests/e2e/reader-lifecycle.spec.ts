@@ -108,3 +108,22 @@ test("keeps the Reader usable at an 800 by 1280 tablet viewport", async ({ page 
   expect(layout.fileInputs).toBeGreaterThan(0);
   expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth);
 });
+
+test("keeps PDF failure visible and recovers through another file", async ({ page }) => {
+  await page.goto("/");
+  await page.locator('input[type="file"][accept*="pdf"]').first().setInputFiles({
+    buffer: Buffer.from("not a pdf"),
+    mimeType: "application/pdf",
+    name: "broken.pdf",
+  });
+
+  const recovery = page.getByRole("alert");
+  await expect(recovery).toContainText("keine gültige PDF");
+  const chooserPromise = page.waitForEvent("filechooser");
+  await page.getByRole("button", { name: "Andere PDF auswählen" }).click();
+  const chooser = await chooserPromise;
+  await chooser.setFiles(fixture);
+
+  await expect(recovery).toBeHidden();
+  await expect(page.locator(".pdf-page")).toHaveCount(1);
+});

@@ -99,3 +99,33 @@ test("interactive boxes show hover and focus while language blocks keep directio
   );
   expect(directions).toEqual({ en: "ltr", de: "ltr", fa: "rtl", ar: "rtl" });
 });
+
+test("local service failure can be retried without reloading the learner page", async ({ page }) => {
+  let serviceReady = false;
+  await page.route("**/api/health", async (route) => {
+    await route.fulfill({
+      body: JSON.stringify(serviceReady ? { status: "ok" } : { error: "offline" }),
+      contentType: "application/json",
+      status: serviceReady ? 200 : 503,
+    });
+  });
+  await page.goto("/");
+
+  const retry = page.getByRole("button", { name: "Retry local app service" });
+  await expect(retry).toBeVisible();
+  serviceReady = true;
+  await retry.click();
+  await expect(page.getByRole("button", { name: "Local app service ready" })).toBeVisible();
+});
+
+test("microphone failure offers a typing recovery action", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "mediaDevices", { configurable: true, value: undefined });
+  });
+  await page.goto("/studio");
+  await page.getByRole("button", { name: "Record", exact: true }).click();
+
+  await expect(page.getByRole("button", { name: "Continue by typing" })).toBeVisible();
+  await page.getByRole("button", { name: "Continue by typing" }).click();
+  await expect(page.getByRole("textbox", { name: "Your transcript" })).toBeFocused();
+});

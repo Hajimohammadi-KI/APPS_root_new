@@ -57,5 +57,7 @@
 .reader-toolbar .toolbar-timer { border-color: #c8b5de; color: #493465; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .reader-toolbar .toolbar-timer.running::before { content: ""; width: 6px; height: 6px; display: inline-block; margin-right: 5px; border-radius: 50%; background: #8267a6; animation: timerBlink 1.3s ease-in-out infinite; }
 .reader-toolbar .toolbar-timer.paused { border-color: #e0bd78; background: #fff8e8; }
+.reader-recovery { display: flex; flex: 0 0 auto; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 10px 14px; border-bottom: 1px solid #efb4ad; background: #fff1ef; color: #73261f; }
+.reader-recovery span { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.reader-recovery button { min-height: 40px; flex: 0 0 auto; border: 1px solid #b94a40; border-radius: 9px; background: #fff; padding: 7px 12px; color: #73261f; font-weight: 800; }
 @keyframes timerBlink { 50% { opacity: .3; transform: scale(.75); } }
-

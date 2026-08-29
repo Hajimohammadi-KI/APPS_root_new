@@ -246,8 +246,10 @@ export default function Home() {
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const audioBlobRef = useRef<Blob | null>(null);
+  const transcriptRef = useRef<HTMLTextAreaElement | null>(null);
   const attemptIdRef = useRef<string | null>(null);
   const savedEvidenceIdRef = useRef<string | null>(null);
+  const [voiceRecoveryAvailable, setVoiceRecoveryAvailable] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -478,6 +480,7 @@ export default function Home() {
     keepBaseline = false,
   }: { keepBaseline?: boolean } = {}) {
     setMessage(null);
+    setVoiceRecoveryAvailable(false);
     if (
       !navigator.mediaDevices?.getUserMedia ||
       typeof MediaRecorder === "undefined"
@@ -487,6 +490,7 @@ export default function Home() {
           ? "Audioaufnahme wird von diesem Browser nicht unterstützt."
           : "Audio recording is not supported in this browser.",
       );
+      setVoiceRecoveryAvailable(true);
       return;
     }
     try {
@@ -539,6 +543,7 @@ export default function Home() {
             ? "Audio wird aufgenommen, aber Live-Transkription ist nicht verfügbar. Du kannst das Transkript manuell eingeben."
             : "Audio is recording, but live transcription is unavailable. You can enter the transcript manually.",
         );
+        setVoiceRecoveryAvailable(true);
       }
       recorder.start(250);
       setRecordingState("recording");
@@ -556,6 +561,7 @@ export default function Home() {
             ? "Das Mikrofon konnte nicht gestartet werden."
             : "The microphone could not be started.",
       );
+      setVoiceRecoveryAvailable(true);
     }
   }
 
@@ -1059,6 +1065,20 @@ export default function Home() {
                     {message}
                   </p>
                 )}
+                {voiceRecoveryAvailable && (
+                  <button
+                    className="prompt-audio"
+                    onClick={() => {
+                      // Manual text is the no-cost recovery path when browser
+                      // microphone or speech recognition is unavailable.
+                      setActive(1);
+                      transcriptRef.current?.focus();
+                    }}
+                    type="button"
+                  >
+                    Continue by typing
+                  </button>
+                )}
                 {audioUrl && (
                   <audio
                     ref={audioRef}
@@ -1111,6 +1131,7 @@ export default function Home() {
               <label className="transcript">
                 <b>{text.transcript}</b>
                 <textarea
+                  ref={transcriptRef}
                   value={`${transcript}${interimTranscript ? ` ${interimTranscript}` : ""}`}
                   placeholder={text.transcriptPlaceholder}
                   onChange={(event) => {

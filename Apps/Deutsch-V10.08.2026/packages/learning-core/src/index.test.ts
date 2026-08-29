@@ -10,7 +10,10 @@ import {
   isEvidenceActive,
   mergeLearningEvidenceBundle,
   normalizeDailySessionMinutes,
+  parseLearningDataExport,
+  readLearningEvidenceLedger,
   validateContentUnit,
+  writeLearningEvidenceLedger,
 } from "./index";
 
 describe("shared automaticity vertical slice", () => {
@@ -270,5 +273,37 @@ describe("shared automaticity vertical slice", () => {
     expect(exported.learningEvidence.events.map((event) => event.type)).toEqual(
       ["learning.response.submitted.v1", "learning.evidence.recorded.v1"],
     );
+
+    const imported = parseLearningDataExport<{ selectedLevel: string }>(
+      JSON.parse(JSON.stringify(exported)),
+      "en",
+    );
+    expect(imported?.learnerState.selectedLevel).toBe("B1");
+
+    writeLearningEvidenceLedger(storage, imported!.learningEvidence);
+    expect(readLearningEvidenceLedger(storage).responses).toHaveLength(1);
+  });
+
+  test("a local import rejects another language or an incomplete file", () => {
+    const valid = buildLearningDataExport({
+      language: "de",
+      exportedAt: "2026-08-30T08:00:00.000Z",
+      learnerState: { version: 11 },
+      storage: {
+        getItem: () => null,
+        setItem: () => undefined,
+      },
+    });
+
+    expect(parseLearningDataExport(valid, "en")).toBeNull();
+    expect(
+      parseLearningDataExport({ ...valid, exportedAt: "not-a-date" }, "de"),
+    ).toBeNull();
+    expect(
+      parseLearningDataExport(
+        { ...valid, learningEvidence: { schemaVersion: "1.0.0" } },
+        "de",
+      ),
+    ).toBeNull();
   });
 });

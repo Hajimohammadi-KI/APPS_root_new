@@ -109,6 +109,35 @@ fieldset.settings-row {
   gap: 10px;
 }
 
+/* Explain the backup lifecycle as three short decisions so learners do not
+   confuse a local JSON file with a cloud sync or an automatic overwrite. */
+.settings-backup-guide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.settings-backup-guide article {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 35%, white);
+}
+
+.settings-backup-guide span {
+  color: var(--muted-foreground);
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .settings-backup-guide {
+    grid-template-columns: 1fr;
+  }
+}
+
 .settings-export-status {
   margin-top: 10px;
   font-weight: 700;

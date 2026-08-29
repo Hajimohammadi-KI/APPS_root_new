@@ -525,6 +525,106 @@ test("teacher composes a reviewed local assignment with plain instructions", asy
   await expect(page.getByRole("heading", { name: "Aufgabe · Eine Frist klären" })).toBeVisible();
 });
 
+test("teacher reviews evidence and prepares one focused repair assignment within ten minutes", async ({ page }) => {
+  const startedAt = Date.now();
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "GrammarAutomaticityV11_de",
+      JSON.stringify({
+        learner: { displayName: "Elahe" },
+        errors: [{
+          id: "error-focused-workflow",
+          date: new Date().toISOString(),
+          topic: "Perfekt",
+          original: "Ich habe gegangen.",
+          corrected: "Ich bin gegangen.",
+          errorClass: "auxiliary",
+          explanation: "Bewegungsverben verwenden sein.",
+          occurrenceCount: 2,
+          lastSeenAt: Date.now(),
+          repairStatus: "new",
+          nextRepairAt: 0,
+          successfulRepairs: 0,
+          critical: true,
+        }],
+        reviews: [],
+      }),
+    );
+  });
+  await page.goto("/lehrkraft");
+  await expect(page.getByText("Ich habe gegangen. → Ich bin gegangen.", { exact: true })).toBeVisible();
+  await page.getByLabel("GER-Niveau").first().selectOption("B1");
+  await page.getByLabel("Fertigkeit").selectOption("speaking");
+  await page.getByLabel("Thema").selectOption({ label: "Eine Frist klären" });
+  await page.getByLabel("Klare Anweisung für Lernende").fill(
+    "Repariere das Verb und nimm danach vier Sätze über eine abgeschlossene Erfahrung auf.",
+  );
+  await page.getByLabel("Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.").check();
+  await page.getByRole("button", { name: "Aufgabe zur Prüfung speichern" }).click();
+  await expect(page.getByText("Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.")).toBeVisible();
+
+  // Der automatisierte Ablauf prüft die Zehn-Minuten-Grenze; eine echte
+  // Lehrerbeobachtung bleibt ein eigener Nachweis im Produktfahrplan.
+  expect(Date.now() - startedAt).toBeLessThan(10 * 60 * 1000);
+});
+
+test("settings explain local backups and restore a validated file with keyboard access", async ({ page }) => {
+  await page.goto("/einstellungen");
+  await expect(page.getByText("1. Kopie exportieren", { exact: true })).toBeVisible();
+  await expect(page.getByText(/nicht in einen Cloud-Dienst hoch/i)).toBeVisible();
+  await expect(page.getByText("3. Zum Wiederherstellen importieren", { exact: true })).toBeVisible();
+  for (const width of [320, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+  }
+
+  const currentState = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("GrammarAutomaticityV11_de") || "{}"),
+  );
+  const backup = {
+    kind: "automaticity.learning-data-export",
+    schemaVersion: "1.0.0",
+    exportedAt: "2026-08-30T08:00:00.000Z",
+    language: "de",
+    learnerState: {
+      ...currentState,
+      learner: { ...(currentState.learner || {}), displayName: "Wiederhergestellt" },
+    },
+    learningEvidence: {
+      schemaVersion: "1.0.0",
+      contentUnits: [],
+      dailyPlans: [],
+      responses: [],
+      evidence: [],
+      events: [],
+    },
+  };
+  page.on("dialog", (dialog) => dialog.accept());
+  const importButton = page.getByRole("button", { name: "Sicherung importieren" });
+  await importButton.focus();
+  await expect(importButton).toBeFocused();
+  const chooserPromise = page.waitForEvent("filechooser");
+  await page.keyboard.press("Enter");
+  const chooser = await chooserPromise;
+  await chooser.setFiles({
+    name: "deutsch-automaticity-sicherung.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(backup)),
+  });
+
+  await expect(page.getByRole("status")).toContainText("wiederhergestellt");
+  await expect.poll(() =>
+    page.evaluate(() => {
+      const state = JSON.parse(
+        localStorage.getItem("GrammarAutomaticityV11_de") || "{}",
+      );
+      return state.learner?.displayName;
+    }),
+  ).toBe("Wiederhergestellt");
+});
+
 test("daily cards contain long labels at all roadmap widths", async ({ page }) => {
   for (const width of [320, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });

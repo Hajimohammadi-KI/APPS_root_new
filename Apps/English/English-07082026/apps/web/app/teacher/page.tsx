@@ -213,9 +213,9 @@ export default function TeacherPage() {
           <strong>{reviewQueue.length} to review</strong>
         </div>
         {reviewQueue.length ? (
-          <div className="teacher-review-items" role="list">
+          <ul className="teacher-review-items">
             {reviewQueue.map((item) => (
-              <article key={item.id} role="listitem">
+              <li key={item.id}>
                 <header>
                   <div>
                     <span className={`teacher-review-priority teacher-review-priority-${item.priority}`}>
@@ -233,9 +233,9 @@ export default function TeacherPage() {
                   <div><dt>Recommended next step</dt><dd>{item.recommendedNextStep}</dd></div>
                 </dl>
                 <a className="teacher-review-action" href={item.href}>Open evidence and act</a>
-              </article>
+              </li>
             ))}
-          </div>
+          </ul>
         ) : (
           <div className="teacher-review-empty" role="status">
             {hydrated

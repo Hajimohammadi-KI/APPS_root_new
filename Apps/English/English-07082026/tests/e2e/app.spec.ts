@@ -242,6 +242,44 @@ test("teacher composes a reviewed local assignment with plain instructions", asy
   await expect(page.getByRole("heading", { name: "Assignment · Clarify a work deadline" })).toBeVisible();
 });
 
+test("teacher reviews evidence and prepares one focused repair assignment within ten minutes", async ({ page }) => {
+  const startedAt = Date.now();
+  await page.evaluate(() => {
+    const state = JSON.parse(
+      localStorage.getItem("grammar-automaticity:v27") || "{}",
+    );
+    state.errors = [{
+      id: "error-focused-workflow",
+      grammarTitle: "Present perfect",
+      topic: "Life experience",
+      errorClass: "auxiliary",
+      originalText: "I have went.",
+      correctedText: "I have gone.",
+      explanation: "Use the past participle.",
+      occurrenceCount: 2,
+      repairStatus: "new",
+      nextRepairAt: 0,
+      lastSeenAt: new Date().toISOString(),
+    }];
+    localStorage.setItem("grammar-automaticity:v27", JSON.stringify(state));
+  });
+  await page.goto("/teacher");
+  await expect(page.getByText("I have went. → I have gone.", { exact: true })).toBeVisible();
+  await page.getByLabel("CEFR level").first().selectOption("B1");
+  await page.getByLabel("Skill").selectOption("speaking");
+  await page.getByLabel("Topic").selectOption({ label: "Clarify a work deadline" });
+  await page.getByLabel("Plain-language learner instructions").fill(
+    "Repair the verb, then record four sentences about one completed experience.",
+  );
+  await page.getByLabel("I reviewed this original app content and the learner instructions.").check();
+  await page.getByRole("button", { name: "Save assignment for review" }).click();
+  await expect(page.getByText("Assignment saved locally as Ready for review.")).toBeVisible();
+
+  // The automated journey enforces the product's ten-minute ceiling; a real
+  // teacher observation remains a separate roadmap evidence requirement.
+  expect(Date.now() - startedAt).toBeLessThan(10 * 60 * 1000);
+});
+
 // Guards the catalog's actual size (72 speaking topics, 112 authored grammar
 // units with 672 controlled exercises, 43 resources), exercises search +
 // deep-link + reload, and
@@ -536,6 +574,65 @@ test("writes progress backups to the folder selected during setup", async ({
   });
   expect(backup.schemaVersion).toBe("1.0.0");
   expect(backup.learnerState?.version).toBe(27);
+});
+
+test("explains local backups and restores a validated file with keyboard access", async ({
+  page,
+}) => {
+  await page.goto("/settings");
+  await expect(page.getByText("1. Export a copy", { exact: true })).toBeVisible();
+  await expect(page.getByText(/does not upload it to a cloud service/i)).toBeVisible();
+  await expect(page.getByText("3. Import to restore", { exact: true })).toBeVisible();
+  for (const width of [320, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+  }
+
+  const currentState = await page.evaluate(() =>
+    JSON.parse(localStorage.getItem("grammar-automaticity:v27") || "{}"),
+  );
+  const backup = {
+    kind: "automaticity.learning-data-export",
+    schemaVersion: "1.0.0",
+    exportedAt: "2026-08-30T08:00:00.000Z",
+    language: "en",
+    learnerState: {
+      ...currentState,
+      learner: { ...(currentState.learner || {}), displayName: "Restored learner" },
+    },
+    learningEvidence: {
+      schemaVersion: "1.0.0",
+      contentUnits: [],
+      dailyPlans: [],
+      responses: [],
+      evidence: [],
+      events: [],
+    },
+  };
+  page.on("dialog", (dialog) => dialog.accept());
+  const importButton = page.getByRole("button", { name: "Import a backup" });
+  await importButton.focus();
+  await expect(importButton).toBeFocused();
+  const chooserPromise = page.waitForEvent("filechooser");
+  await page.keyboard.press("Enter");
+  const chooser = await chooserPromise;
+  await chooser.setFiles({
+    name: "english-automaticity-backup.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(backup)),
+  });
+
+  await expect(page.getByRole("status")).toContainText("restored on this device");
+  await expect.poll(() =>
+    page.evaluate(() => {
+      const state = JSON.parse(
+        localStorage.getItem("grammar-automaticity:v27") || "{}",
+      );
+      return state.learner?.displayName;
+    }),
+  ).toBe("Restored learner");
 });
 
 // Confirms the browser's own Back/Forward buttons work correctly across

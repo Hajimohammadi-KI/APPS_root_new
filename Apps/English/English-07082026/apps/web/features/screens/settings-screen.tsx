@@ -9,6 +9,7 @@ import {
 	PenLine,
 	ShieldCheck,
 	Trash2,
+	Upload,
 	Wand2,
 } from "lucide-react";
 import {
@@ -19,11 +20,13 @@ import {
 	enforceMeasurementRetention,
 	grantMeasurementConsent,
 	normalizeDailySessionMinutes,
+	parseLearningDataExport,
 	readLearningEvidenceLedger,
 	readMeasurementBaseline,
 	readMeasurementConsent,
 	revokeMeasurementConsent,
 	validatePrivacySafeMeasurementExport,
+	writeLearningEvidenceLedger,
 	type MeasurementBaseline,
 	type MeasurementConsent,
 } from "@automaticity/learning-core";
@@ -60,10 +63,12 @@ const MEASUREMENT_APP_VERSION = "27.3.13";
 const MEASUREMENT_FILE_NAME = "automaticity-measurement-en.json";
 
 export function SettingsScreen() {
-	const { state, mutate } = useAppStore();
+	const { state, mutate, replaceState } = useAppStore();
 	const { settings } = state;
 	const [exportStatus, setExportStatus] = React.useState("");
+	const [importStatus, setImportStatus] = React.useState("");
 	const [exporting, setExporting] = React.useState(false);
+	const importInputRef = React.useRef<HTMLInputElement>(null);
 	const [folderPickerSupported, setFolderPickerSupported] =
 		React.useState(false);
 	const [measurementConsent, setMeasurementConsent] =
@@ -228,6 +233,50 @@ export function SettingsScreen() {
 			// A normal download remains available if the chooser is cancelled.
 		}
 		await exportData();
+	}
+
+	async function importData(event: React.ChangeEvent<HTMLInputElement>) {
+		const input = event.currentTarget;
+		const file = input.files?.[0];
+		if (!file) return;
+		setImportStatus("");
+		try {
+			const backup = parseLearningDataExport<typeof state>(
+				JSON.parse(await file.text()),
+				"en",
+			);
+			if (!backup) {
+				setImportStatus(
+					"This file is not an English Automaticity backup. Nothing was changed.",
+				);
+				return;
+			}
+			if (
+				!window.confirm(
+					"Restore this backup? It will replace the learning progress currently stored on this device. The file is not uploaded.",
+				)
+			) {
+				setImportStatus("Restore cancelled. Your current progress was kept.");
+				return;
+			}
+			// Restore both halves of the versioned backup only after validation and
+			// confirmation, so a wrong JSON file cannot silently erase local work.
+			writeLearningEvidenceLedger(
+				window.localStorage,
+				backup.learningEvidence,
+			);
+			replaceState(backup.learnerState);
+			setImportStatus(
+				`Backup from ${new Date(backup.exportedAt).toLocaleDateString()} restored on this device.`,
+			);
+		} catch {
+			setImportStatus(
+				"This backup could not be read. Nothing was changed; try exporting a new backup.",
+			);
+		} finally {
+			// Reset the picker so the same file can be selected again after a cancel.
+			input.value = "";
+		}
 	}
 
 	return (
@@ -491,11 +540,34 @@ export function SettingsScreen() {
 						Backup your progress
 					</CardTitle>
 					<CardDescription>
-						Export learner state together with versioned responses, evidence,
-						and domain events.
+						Keep a private copy of your progress and move it back to this app
+						when you need it.
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="settings-section">
+					<div className="settings-backup-guide">
+						<article>
+							<strong>1. Export a copy</strong>
+							<span>
+								Downloads your saved progress, answers, and evidence as one JSON
+								backup file.
+							</span>
+						</article>
+						<article>
+							<strong>2. Keep it local</strong>
+							<span>
+								The file stays in the folder you choose on your device. This app
+								does not upload it to a cloud service.
+							</span>
+						</article>
+						<article>
+							<strong>3. Import to restore</strong>
+							<span>
+								Choose that file later. You can review a confirmation before it
+								replaces progress on this device.
+							</span>
+						</article>
+					</div>
 					<div className="settings-export-actions">
 						<Button disabled={exporting} onClick={() => void exportData()}>
 							<Download aria-hidden className="size-4" />
@@ -510,6 +582,21 @@ export function SettingsScreen() {
 								Choose backup folder
 							</Button>
 						) : null}
+						<Button
+							onClick={() => importInputRef.current?.click()}
+							variant="outline"
+						>
+							<Upload aria-hidden className="size-4" />
+							Import a backup
+						</Button>
+						<input
+							accept="application/json,.json"
+							aria-label="Choose an English Automaticity backup file"
+							hidden
+							onChange={(event) => void importData(event)}
+							ref={importInputRef}
+							type="file"
+						/>
 					</div>
 					{exportStatus ? (
 						<p
@@ -518,6 +605,11 @@ export function SettingsScreen() {
 							role="status"
 						>
 							{exportStatus}
+						</p>
+					) : null}
+					{importStatus ? (
+						<p aria-live="polite" className="settings-export-status" role="status">
+							{importStatus}
 						</p>
 					) : null}
 				</CardContent>

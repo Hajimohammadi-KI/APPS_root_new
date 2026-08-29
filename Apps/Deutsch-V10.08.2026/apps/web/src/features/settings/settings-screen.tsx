@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   Download,
   Eye,
@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   Smartphone,
   Trash2,
+  Upload,
 } from "lucide-react";
 
 import {
@@ -19,11 +20,13 @@ import {
   enforceMeasurementRetention,
   grantMeasurementConsent,
   normalizeDailySessionMinutes,
+  parseLearningDataExport,
   readLearningEvidenceLedger,
   readMeasurementBaseline,
   readMeasurementConsent,
   revokeMeasurementConsent,
   validatePrivacySafeMeasurementExport,
+  writeLearningEvidenceLedger,
   type MeasurementBaseline,
   type MeasurementConsent,
 } from "@automaticity/learning-core";
@@ -55,9 +58,11 @@ const MEASUREMENT_APP_VERSION = "20.8.23";
 const MEASUREMENT_FILE_NAME = "automaticity-messdaten-de.json";
 
 export function SettingsScreen() {
-  const { state, hydrated, updateLearnerProfile, updateSettings } =
+  const { state, hydrated, importState, updateLearnerProfile, updateSettings } =
     useLearnerState();
   const [exportStatus, setExportStatus] = useState("");
+  const [importStatus, setImportStatus] = useState("");
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [measurementConsent, setMeasurementConsent] =
     useState<MeasurementConsent | null>(null);
   const [measurementBaseline, setMeasurementBaseline] =
@@ -200,6 +205,52 @@ export function SettingsScreen() {
     anchor.click();
     URL.revokeObjectURL(url);
     setExportStatus("Die lokale Sicherungsdatei wurde heruntergeladen.");
+  }
+
+  async function importData(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    setImportStatus("");
+    try {
+      const backup = parseLearningDataExport<typeof state>(
+        JSON.parse(await file.text()),
+        "de",
+      );
+      if (!backup) {
+        setImportStatus(
+          "Diese Datei ist keine Deutsch-Automaticity-Sicherung. Es wurde nichts geändert.",
+        );
+        return;
+      }
+      if (
+        !window.confirm(
+          "Diese Sicherung wiederherstellen? Der aktuell auf diesem Gerät gespeicherte Lernfortschritt wird ersetzt. Die Datei wird nicht hochgeladen.",
+        )
+      ) {
+        setImportStatus(
+          "Wiederherstellung abgebrochen. Dein aktueller Fortschritt bleibt erhalten.",
+        );
+        return;
+      }
+      // Erst nach Formatprüfung und Bestätigung werden Fortschritt und Nachweise
+      // gemeinsam ersetzt; eine falsche JSON-Datei kann nichts still löschen.
+      writeLearningEvidenceLedger(
+        window.localStorage,
+        backup.learningEvidence,
+      );
+      importState(backup.learnerState);
+      setImportStatus(
+        `Sicherung vom ${new Date(backup.exportedAt).toLocaleDateString("de-DE")} auf diesem Gerät wiederhergestellt.`,
+      );
+    } catch {
+      setImportStatus(
+        "Die Sicherung konnte nicht gelesen werden. Es wurde nichts geändert; bitte exportiere eine neue Sicherung.",
+      );
+    } finally {
+      // Erlaubt nach Abbruch auch die erneute Auswahl derselben Datei.
+      input.value = "";
+    }
   }
 
   return (
@@ -471,8 +522,8 @@ export function SettingsScreen() {
             </h2>
           </CardTitle>
           <CardDescription>
-            Online-KI bleibt optional. Der Export enthält die aktuell lokal
-            gespeicherten Lerndaten.
+            Online-KI bleibt optional. Bewahre eine private Kopie deines
+            Lernfortschritts auf und stelle sie bei Bedarf wieder her.
           </CardDescription>
         </CardHeader>
         <CardContent className="settings-controls">
@@ -483,14 +534,61 @@ export function SettingsScreen() {
               updateLearnerProfile({ allowOnlineAI })
             }
           />
+          <div className="grid gap-3 md:grid-cols-3">
+            <article className="grid min-w-0 gap-1 rounded-2xl border border-violet-200 bg-violet-50/60 p-3">
+              <strong>1. Kopie exportieren</strong>
+              <span className="text-sm leading-relaxed text-muted-foreground">
+                Lädt Fortschritt, Antworten und Nachweise gemeinsam als
+                JSON-Sicherungsdatei herunter.
+              </span>
+            </article>
+            <article className="grid min-w-0 gap-1 rounded-2xl border border-violet-200 bg-violet-50/60 p-3">
+              <strong>2. Lokal aufbewahren</strong>
+              <span className="text-sm leading-relaxed text-muted-foreground">
+                Die Datei bleibt am gewählten Ort auf deinem Gerät. Diese App
+                lädt sie nicht in einen Cloud-Dienst hoch.
+              </span>
+            </article>
+            <article className="grid min-w-0 gap-1 rounded-2xl border border-violet-200 bg-violet-50/60 p-3">
+              <strong>3. Zum Wiederherstellen importieren</strong>
+              <span className="text-sm leading-relaxed text-muted-foreground">
+                Wähle die Datei später aus. Vor dem Ersetzen des lokalen
+                Fortschritts erscheint eine Bestätigung.
+              </span>
+            </article>
+          </div>
           <div className="flex flex-wrap items-center gap-3">
             <Button onClick={exportData}>
               <Download />
               Lerndaten exportieren
             </Button>
+            <Button
+              onClick={() => importInputRef.current?.click()}
+              variant="outline"
+            >
+              <Upload />
+              Sicherung importieren
+            </Button>
+            <input
+              accept="application/json,.json"
+              aria-label="Deutsch-Automaticity-Sicherungsdatei auswählen"
+              hidden
+              onChange={(event) => void importData(event)}
+              ref={importInputRef}
+              type="file"
+            />
             {exportStatus ? (
               <p aria-live="polite" className="text-sm text-emerald-800">
                 {exportStatus}
+              </p>
+            ) : null}
+            {importStatus ? (
+              <p
+                aria-live="polite"
+                className="text-sm font-semibold text-violet-800"
+                role="status"
+              >
+                {importStatus}
               </p>
             ) : null}
           </div>

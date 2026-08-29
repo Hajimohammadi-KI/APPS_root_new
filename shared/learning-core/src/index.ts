@@ -526,6 +526,19 @@ export function emptyLearningEvidenceLedger(): LearningEvidenceLedger {
   };
 }
 
+function isLearningEvidenceLedger(value: unknown): value is LearningEvidenceLedger {
+  if (!value || typeof value !== "object") return false;
+  const row = value as Record<string, unknown>;
+  return (
+    row.schemaVersion === LEARNING_SCHEMA_VERSION &&
+    Array.isArray(row.contentUnits) &&
+    Array.isArray(row.dailyPlans) &&
+    Array.isArray(row.responses) &&
+    Array.isArray(row.evidence) &&
+    Array.isArray(row.events)
+  );
+}
+
 export function readLearningEvidenceLedger(
   storage: KeyValueStorage,
   key = LEARNING_EVIDENCE_STORAGE_KEY,
@@ -534,21 +547,10 @@ export function readLearningEvidenceLedger(
     const raw = storage.getItem(key);
     if (!raw) return emptyLearningEvidenceLedger();
     const value: unknown = JSON.parse(raw);
-    if (!value || typeof value !== "object") {
+    if (!isLearningEvidenceLedger(value)) {
       return emptyLearningEvidenceLedger();
     }
-    const row = value as Record<string, unknown>;
-    if (
-      row.schemaVersion !== LEARNING_SCHEMA_VERSION ||
-      !Array.isArray(row.contentUnits) ||
-      !Array.isArray(row.dailyPlans) ||
-      !Array.isArray(row.responses) ||
-      !Array.isArray(row.evidence) ||
-      !Array.isArray(row.events)
-    ) {
-      return emptyLearningEvidenceLedger();
-    }
-    return value as LearningEvidenceLedger;
+    return value;
   } catch {
     return emptyLearningEvidenceLedger();
   }
@@ -565,6 +567,41 @@ export function buildLearningDataExport<TLearnerState>(
     learnerState: input.learnerState,
     learningEvidence: readLearningEvidenceLedger(input.storage),
   };
+}
+
+/**
+ * Accept only this app family's versioned backup envelope before a UI asks the
+ * learner to replace local progress. This keeps measurement exports, other
+ * languages, and arbitrary JSON files from being mistaken for a backup.
+ */
+export function parseLearningDataExport<TLearnerState = unknown>(
+  value: unknown,
+  expectedLanguage: LearningLanguage,
+): LearningDataExport<TLearnerState> | null {
+  if (!value || typeof value !== "object") return null;
+  const row = value as Record<string, unknown>;
+  if (
+    row.kind !== LEARNING_DATA_EXPORT_KIND ||
+    row.schemaVersion !== LEARNING_SCHEMA_VERSION ||
+    row.language !== expectedLanguage ||
+    typeof row.exportedAt !== "string" ||
+    !Number.isFinite(Date.parse(row.exportedAt)) ||
+    !row.learnerState ||
+    typeof row.learnerState !== "object" ||
+    !isLearningEvidenceLedger(row.learningEvidence)
+  ) {
+    return null;
+  }
+  return value as LearningDataExport<TLearnerState>;
+}
+
+/** Restore the normalized evidence half only after the caller confirms import. */
+export function writeLearningEvidenceLedger(
+  storage: KeyValueStorage,
+  ledger: LearningEvidenceLedger,
+  key = LEARNING_EVIDENCE_STORAGE_KEY,
+): void {
+  storage.setItem(key, JSON.stringify(ledger));
 }
 
 export function appendLearningEvidenceBundleToStorage(

@@ -37,9 +37,10 @@
 .teacher-review-heading h2 { margin: 0.35rem 0; }
 .teacher-review-heading p { margin: 0; max-width: 72ch; color: #655b72; line-height: 1.55; }
 .teacher-review-heading > strong { flex: 0 0 auto; border-radius: 999px; padding: 0.45rem 0.7rem; background: #eee5fb; color: #63379f; }
-.teacher-review-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 0.9rem; margin-top: 1.25rem; }
-.teacher-review-items article { min-width: 0; border: 1px solid #e0d5ee; border-radius: 18px; padding: 1rem; background: rgba(255, 255, 255, 0.96); transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
-.teacher-review-items article:hover { border-color: #a98bcf; box-shadow: 0 12px 26px #49306c1a; transform: translateY(-1px); }
+.teacher-review-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 0.9rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
+/* Native list semantics announce the queue length to screen-reader users. */
+.teacher-review-items > li { min-width: 0; border: 1px solid #e0d5ee; border-radius: 18px; padding: 1rem; background: rgba(255, 255, 255, 0.96); transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+.teacher-review-items > li:hover { border-color: #a98bcf; box-shadow: 0 12px 26px #49306c1a; transform: translateY(-1px); }
 .teacher-review-items header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
 .teacher-review-items header svg { width: 1.5rem; color: #7345ad; }
 .teacher-review-items h3 { margin: 0.45rem 0 0; overflow-wrap: anywhere; }

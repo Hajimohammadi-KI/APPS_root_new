@@ -1,7 +1,9 @@
 import localMaterialManifest from "./local-material-manifest.json";
 
 const DRIVE_FILE_ID = /^[a-zA-Z0-9_-]{10,200}$/;
-const DEFAULT_PDF_READER_URL = "http://127.0.0.1:4312/pdf-reader";
+// Material links share the canonical PDF Studio with Notizbuch handoffs;
+// the former Tracker proxy on 4312 is not the reader runtime.
+const DEFAULT_PDF_READER_URL = "http://127.0.0.1:4332/";
 const DEFAULT_LOCAL_MATERIAL_URL = "http://127.0.0.1:3199/api/materials";
 const localMaterialIds = new Set(Object.keys(localMaterialManifest));
 

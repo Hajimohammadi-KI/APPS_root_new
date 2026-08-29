@@ -1,5 +1,7 @@
 const DRIVE_FILE_ID = /^[a-zA-Z0-9_-]{10,200}$/;
-const DEFAULT_PDF_READER_URL = "http://127.0.0.1:4312/pdf-reader";
+// Resource cards must use the same live PDF Studio as Notebook handoffs;
+// the retired Tracker proxy on 4312 can leave learners on an unavailable page.
+const DEFAULT_PDF_READER_URL = "http://127.0.0.1:4332/";
 
 function driveFileId(value: string) {
   try {

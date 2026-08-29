@@ -53,6 +53,8 @@ describe("gemeinsame PDF-Reader-Links", () => {
     expect(href).not.toBeNull();
     const url = new URL(href ?? "");
 
+    expect(url.origin).toBe("http://127.0.0.1:4332");
+    expect(url.pathname).toBe("/");
     expect(url.searchParams.get("driveId")).toBe(
       "1TV1AAAHkng5USBOeewMc3NpHFk97eMwi",
     );

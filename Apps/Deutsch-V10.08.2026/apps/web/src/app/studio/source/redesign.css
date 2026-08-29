@@ -239,7 +239,7 @@
   background: radial-gradient(circle, #e7dcff, #f7f2ff 65%, transparent 66%);
   animation: coachGlow 3s ease-in-out infinite;
 }
-.coach-glow img {
+.coach-glow .coach-avatar {
   height: 225px;
   max-width: 100%;
   object-fit: contain;
@@ -455,7 +455,7 @@
   .coach-glow {
     height: 190px;
   }
-  .coach-glow img {
+  .coach-glow .coach-avatar {
     height: 185px;
   }
   .coach-dialogue {

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   appendEvidenceInvalidationToStorage,
@@ -20,6 +19,7 @@ import {
 } from "./conversation-storage";
 import { playTeacherAudioByContextKey } from "@/lib/teacher-content";
 import { useLearnerState } from "@/features/learner-state/learner-state-provider";
+import { AvaCoachAvatar } from "@/components/ava-coach-avatar";
 
 const nav = [
   "Tägliches Training",
@@ -856,13 +856,7 @@ export default function Home() {
               </div>
               <div className="coach-stage">
                 <div className="coach-glow">
-                  <Image
-                    src="/coach-ava.png"
-                    width={360}
-                    height={420}
-                    alt="Ava, the speaking coach"
-                    priority
-                  />
+                  <AvaCoachAvatar className="coach-avatar" />
                 </div>
                 <div className="coach-dialogue">
                   <strong>

@@ -127,6 +127,9 @@
     const query=new URLSearchParams({from:'daily',activity:String(activity),level,topic,return:'/daily'});
     location.href=`${routes[index]||'/daily'}?${query}`;
   }));
+  // The hero CTA starts the first real activity instead of stopping at a toast;
+  // reusing its button preserves the same saved session and return context.
+  document.querySelector('.hero-copy .primary').addEventListener('click',()=>document.querySelector('.activity .open').click());
   const boosterPatterns={
     A1:[String.raw`\b(?:I\s+am|(?:he|she|it)\s+is|(?:you|we|they)\s+are)\b`],
     A2:[String.raw`\b(?:I|you|we|they)\s+(?:work|study|live|like|need|want|go|do|have)\b`,String.raw`\b(?:he|she|it)\s+\p{L}+s\b`],

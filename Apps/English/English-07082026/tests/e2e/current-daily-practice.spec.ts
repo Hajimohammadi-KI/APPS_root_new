@@ -59,3 +59,14 @@ test("Integrated Skills uses the canonical app-shell route", async ({ page }) =>
   await page.getByRole("button", { name: "Integrated Skills" }).click();
   await expect(page).toHaveURL(/\/?screen=integrated-skills$/);
 });
+
+test("daily hero starts the first practice with return context", async ({ page }) => {
+  await page.goto("/daily");
+  await page.getByRole("button", { name: "Start today's practice" }).click();
+
+  await expect(page).toHaveURL(/\/grammar\?/);
+  const destination = new URL(page.url());
+  expect(destination.searchParams.get("from")).toBe("daily");
+  expect(destination.searchParams.get("activity")).toBe("1");
+  expect(destination.searchParams.get("return")).toBe("/daily");
+});

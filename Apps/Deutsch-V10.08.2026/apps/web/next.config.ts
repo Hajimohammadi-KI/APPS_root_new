@@ -2,7 +2,8 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Vercel packages the Next output itself; standalone is only required by the Windows installer runtime.
+  ...(process.env.VERCEL ? {} : { output: "standalone" }),
   outputFileTracingRoot: path.resolve(import.meta.dirname, "../.."),
   experimental: {
     useTypeScriptCli: true,

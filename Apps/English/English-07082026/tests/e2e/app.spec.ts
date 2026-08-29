@@ -216,6 +216,24 @@ test("teacher review queue turns saved evidence into a next action", async ({ pa
   await expect(queueItem.getByRole("link", { name: "Open evidence and act" })).toHaveAttribute("href", "/?screen=errors");
 });
 
+test("teacher composes a reviewed local assignment with plain instructions", async ({ page }) => {
+  await page.goto("/teacher");
+  await page.getByLabel("CEFR level").first().selectOption("B1");
+  await page.getByLabel("Skill").selectOption("speaking");
+  await page.getByLabel("Topic").selectOption({ label: "Clarify a work deadline" });
+  await expect(page.getByText("Could we check the original message?", { exact: false })).toBeVisible();
+  await page.getByLabel("Plain-language learner instructions").fill(
+    "Record four sentences. State the deadline, ask for confirmation, and check your verb forms before saving.",
+  );
+  const saveAssignment = page.getByRole("button", { name: "Save assignment for review" });
+  await expect(saveAssignment).toBeDisabled();
+  await page.getByLabel("I reviewed this original app content and the learner instructions.").check();
+  await saveAssignment.click();
+
+  await expect(page.getByText("Assignment saved locally as Ready for review.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Assignment · Clarify a work deadline" })).toBeVisible();
+});
+
 // Guards the catalog's actual size (72 speaking topics, 112 authored grammar
 // units with 672 controlled exercises, 43 resources), exercises search +
 // deep-link + reload, and

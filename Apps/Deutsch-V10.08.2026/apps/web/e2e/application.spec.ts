@@ -501,6 +501,24 @@ test("teacher review queue turns saved evidence into a next action", async ({ pa
   await expect(queueItem.getByRole("link", { name: "Nachweis öffnen und handeln" })).toHaveAttribute("href", "/fehler");
 });
 
+test("teacher composes a reviewed local assignment with plain instructions", async ({ page }) => {
+  await page.goto("/lehrkraft");
+  await page.getByLabel("GER-Niveau").first().selectOption("B1");
+  await page.getByLabel("Fertigkeit").selectOption("speaking");
+  await page.getByLabel("Thema").selectOption({ label: "Eine Frist klären" });
+  await expect(page.getByText("Können wir die ursprüngliche Nachricht prüfen?", { exact: false })).toBeVisible();
+  await page.getByLabel("Klare Anweisung für Lernende").fill(
+    "Nimm vier Sätze auf. Nenne die Frist, bitte um Bestätigung und prüfe vor dem Speichern die Verbformen.",
+  );
+  const saveAssignment = page.getByRole("button", { name: "Aufgabe zur Prüfung speichern" });
+  await expect(saveAssignment).toBeDisabled();
+  await page.getByLabel("Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.").check();
+  await saveAssignment.click();
+
+  await expect(page.getByText("Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Aufgabe · Eine Frist klären" })).toBeVisible();
+});
+
 test("daily cards contain long labels at all roadmap widths", async ({ page }) => {
   for (const width of [320, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });

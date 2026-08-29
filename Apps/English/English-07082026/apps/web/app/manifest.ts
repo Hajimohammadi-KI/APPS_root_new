@@ -16,45 +16,18 @@ export default function manifest(): MetadataRoute.Manifest {
 		lang: "en",
 		categories: ["education", "productivity"],
 		prefer_related_applications: false,
-		screenshots: [
-			{
-				src: "/screenshots/dashboard-wide.png",
-				sizes: "1280x720",
-				type: "image/png",
-				form_factor: "wide",
-				label: "Grammar Automaticity installation and learning dashboard",
-			},
-			{
-				src: "/screenshots/navigation-narrow.png",
-				sizes: "390x844",
-				type: "image/png",
-				form_factor: "narrow",
-				label: "Modern accordion navigation on a phone",
-			},
-		],
+		// Screenshots are optional; omit unavailable LFS placeholders instead of advertising malformed images to installers.
 		icons: [
 			{
-				src: "/icons/icon-192.png",
-				sizes: "192x192",
-				type: "image/png",
+				src: "/icons/automaticity.svg",
+				sizes: "any",
+				type: "image/svg+xml",
 				purpose: "any",
 			},
 			{
-				src: "/icons/icon-512.png",
-				sizes: "512x512",
-				type: "image/png",
-				purpose: "any",
-			},
-			{
-				src: "/icons/icon-192.png",
-				sizes: "192x192",
-				type: "image/png",
-				purpose: "maskable",
-			},
-			{
-				src: "/icons/icon-512.png",
-				sizes: "512x512",
-				type: "image/png",
+				src: "/icons/automaticity.svg",
+				sizes: "any",
+				type: "image/svg+xml",
 				purpose: "maskable",
 			},
 		],
@@ -66,9 +39,9 @@ export default function manifest(): MetadataRoute.Manifest {
 				url: "/daily",
 				icons: [
 					{
-						src: "/icons/icon-192.png",
-						sizes: "192x192",
-						type: "image/png",
+						src: "/icons/automaticity.svg",
+						sizes: "any",
+						type: "image/svg+xml",
 					},
 				],
 			},
@@ -79,9 +52,9 @@ export default function manifest(): MetadataRoute.Manifest {
 				url: "/studio",
 				icons: [
 					{
-						src: "/icons/icon-192.png",
-						sizes: "192x192",
-						type: "image/png",
+						src: "/icons/automaticity.svg",
+						sizes: "any",
+						type: "image/svg+xml",
 					},
 				],
 			},
@@ -92,9 +65,9 @@ export default function manifest(): MetadataRoute.Manifest {
 				url: "/grammar",
 				icons: [
 					{
-						src: "/icons/icon-192.png",
-						sizes: "192x192",
-						type: "image/png",
+						src: "/icons/automaticity.svg",
+						sizes: "any",
+						type: "image/svg+xml",
 					},
 				],
 			},

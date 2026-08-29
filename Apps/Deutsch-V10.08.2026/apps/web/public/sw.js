@@ -1,4 +1,5 @@
-const CACHE = "deutschflow-v22-complete-grammar-1";
+// Use only local, valid assets so installation can complete without unretrievable LFS media.
+const CACHE = "deutschflow-v23-local-icon-1";
 const CORE = [
   "/",
   "/audio",
@@ -11,10 +12,7 @@ const CORE = [
   "/einstellungen",
   "/manifest.webmanifest",
   "/offline.html",
-  "/assets/automaticity-journey-hero.png",
-  "/assets/automaticity-progress-story.png",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
+  "/icons/deutschflow.svg",
 ];
 
 self.addEventListener("install", (event) => {

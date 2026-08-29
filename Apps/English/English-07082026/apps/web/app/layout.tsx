@@ -27,15 +27,14 @@ export const metadata: Metadata = {
   openGraph: {
     description:
       "Build automatic English grammar through guided production, correction, repair, transfer, and spaced review.",
-    images: ["/automaticity-journey-hero.png"],
     title: "English Grammar Automaticity",
     type: "website",
   },
   icons: {
     apple: [
-      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/automaticity.svg", sizes: "any", type: "image/svg+xml" },
     ],
-    icon: "/icons/icon-192.png",
+    icon: "/icons/automaticity.svg",
   },
 };
 

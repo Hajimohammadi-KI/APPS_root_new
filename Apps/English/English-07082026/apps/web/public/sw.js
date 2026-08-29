@@ -1,4 +1,5 @@
-const CACHE = "english-automaticity-v28-canonical-grammar-1";
+// Use only local, valid assets so installation can complete without unretrievable LFS media.
+const CACHE = "english-automaticity-v29-local-icon-1";
 const PRECACHE = [
   "/",
   "/daily",
@@ -7,11 +8,8 @@ const PRECACHE = [
   "/replacements/en/grammar-curriculum.js",
   "/offline",
   "/manifest.webmanifest",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png",
+  "/icons/automaticity.svg",
   "/dashboard-banner.svg",
-  "/automaticity-journey-hero.png",
-  "/automaticity-progress-story.png",
 ];
 
 self.addEventListener("install", (event) => {

@@ -12,7 +12,6 @@ import {
   allDays,
   articleReadings,
   defaultSettings,
-  extractionSections,
   isNlpCatchUpSession,
   isNlpRemainingLiveSession,
   migrateLegacyId,
@@ -1811,6 +1810,10 @@ export default function StudyTracker({
       setToast("Bitte wähle ein gültiges Startdatum.");
       return;
     }
+    if (requestedStartDate < trackerRestartPlan.mainPlanStart) {
+      setToast(`Der Neustart beginnt frühestens am ${formatDate(trackerRestartPlan.mainPlanStart)}.`);
+      return;
+    }
     const isRouteChange = settings.planStatus === "running";
     const reason = routeChangeReason.trim();
     if (isRouteChange && !reason) {
@@ -2034,10 +2037,6 @@ export default function StudyTracker({
             return reading ? formatCourseReading(reading) : readingId;
           },
         );
-        const transfer = courseTransferForSession(session.number);
-        const transferDescription = transfer
-          ? `\nKurs→Thesis-Transfer: Notiz bis ${transfer.noteDue}; ${transfer.artifact} bis ${transfer.artifactDue}; maximal ${transfer.maxMinutes} Minuten; ersetzt ein Tagesergebnis und erzeugt keinen Zusatz-Backlog.`
-          : "";
         return [
           "BEGIN:VEVENT",
           `UID:nlp-live-${session.number}-2026@study-tracker`,
@@ -2045,7 +2044,7 @@ export default function StudyTracker({
           `DTSTART;TZID=Europe/Berlin:${start}`,
           `DTEND;TZID=Europe/Berlin:${end}`,
           `SUMMARY:${escapeIcs(`Study Tracker · NLP ${String(session.number).padStart(2, "0")}/10 · ${session.title}`)}`,
-          `DESCRIPTION:${escapeIcs(`${readingPlanDescription}${transferDescription}\nLesefokus: ${session.readingFocus.join("; ")}\nProjektbezug: ${session.projectConnection}\nExtraktion: ${extractionSections.join("; ")}`)}`,
+          `DESCRIPTION:${escapeIcs(readingPlanDescription)}`,
           "END:VEVENT",
         ].join("\r\n");
       })
@@ -2216,7 +2215,7 @@ export default function StudyTracker({
                 </h2>
                 <p>
                   {settings.planStatus === "not_started"
-                    ? "Wähle dein tatsächliches Startdatum. Das Enddatum und alle Plantage werden automatisch berechnet."
+                    ? "Wähle erst dann dein tatsächliches Startdatum, wenn du bereit bist. Ein späterer Start verschiebt alle 25 Wochen gemeinsam; nichts wird verdichtet oder doppelt geplant."
                     : settings.planStatus === "paused"
                       ? `Seit ${formatDate(settings.planPausedAt)} pausiert. Fortschritt, Notizen und Dateien bleiben erhalten.`
                       : `Beginn ${formatDate(settings.planStartDate)} · geplantes Ende ${formatDate(settings.planEndDate)}`}
@@ -2239,6 +2238,7 @@ export default function StudyTracker({
                     <span>{settings.planStatus === "running" ? "Neues Startdatum" : "Startdatum"}</span>
                     <input dir="ltr" type="date" min={trackerRestartPlan.mainPlanStart} value={requestedStartDate} onChange={(event) => setRequestedStartDate(event.target.value)} />
                     <small className="localized-date-preview">{formatDate(requestedStartDate, true)}</small>
+                    <small>Frühestens 19. Oktober · später ist erlaubt.</small>
                   </label>
                   <button className="button primary" type="button" onClick={() => void startPlan()}>
                     {settings.planStatus === "running" ? "Mit neuem Datum erneut starten" : "Lernplan starten"}
@@ -2255,14 +2255,14 @@ export default function StudyTracker({
             <section className="restart-plan-card" aria-labelledby="restart-plan-title">
               <header>
                 <span className="eyebrow quiet">Kalenderbasierter Neustart</span>
-                <h2 id="restart-plan-title">Kein Aufholen vor der Pause</h2>
-                <p>Der Plan zählt aktuell als noch nicht gestartet. Frühere Aufgaben bleiben sichtbar, werden aber nicht als Rückstand gewertet.</p>
+                <h2 id="restart-plan-title">Alte Pläne loslassen · W1–W6 beginnen später</h2>
+                <p><strong>0 / 438 ist korrekt:</strong> Der Plan ist noch nicht gestartet. Frühere Termine und Sitzungen 1–7 sind kein Rückstand.</p>
               </header>
               <ol>
                 <li>
                   <time dateTime="2026-09-02">2.–7. September</time>
-                  <strong>Nur Live-Sitzungen 8–10</strong>
-                  <span>Teilnahme und kurze Notiz, keine alte Kursarbeit nachholen.</span>
+                  <strong>Live-Sitzungen 8–10 nur beobachten</strong>
+                  <span>Keine Vorbereitung. Danach höchstens drei Zeilen: verstanden, Thesis-Bezug, offene Frage. Verpasst heißt: vorerst nicht nachholen.</span>
                 </li>
                 <li>
                   <time dateTime={trackerRestartPlan.protectedBreakStart}>{formatDate(trackerRestartPlan.protectedBreakStart)}–{formatDate(trackerRestartPlan.protectedBreakEnd)}</time>
@@ -2272,14 +2272,19 @@ export default function StudyTracker({
                 <li>
                   <time dateTime={trackerRestartPlan.gentleRestartStart}>{formatDate(trackerRestartPlan.gentleRestartStart)}–{formatDate(trackerRestartPlan.gentleRestartEnd)}</time>
                   <strong>Sanfter Wiedereinstieg</strong>
-                  <span>Optional 12 Minuten Rettungsmodus; stoppen, sobald es zu viel wird.</span>
+                  <span>Optional 12 Minuten: nur W1 öffnen und das Ziel ansehen. Der Plan bleibt dabei auf „noch nicht gestartet“.</span>
                 </li>
                 <li>
                   <time dateTime={trackerRestartPlan.mainPlanStart}>Ab {formatDate(trackerRestartPlan.mainPlanStart)}</time>
                   <strong>25 Wochen im Leichtmodus</strong>
-                  <span>70 Minuten ab 15:00 Uhr; geplantes Ende {formatDate(planMeta.end)}.</span>
+                  <span>Maximal 70 Minuten ab 15:00 Uhr. Wenn du noch nicht bereit bist, verschiebt ein späteres Startdatum den ganzen Plan ohne Verdichtung.</span>
                 </li>
               </ol>
+              <aside className="restart-catchup-rule" aria-label="Regel für alte Kurssitzungen">
+                <strong>Sitzungen 1–7 bleiben archiviert</strong>
+                <p>Erst nach dem verpflichtenden Wochenartefakt und höchstens eine Sitzung pro Woche. Nur öffnen, wenn sie Artefakt, Test oder Evidence der aktuellen Woche direkt blockiert; sonst endgültig überspringen.</p>
+              </aside>
+              <p className="restart-health-priority">Gesundheitliche und ärztliche Vorgaben haben immer Vorrang vor Uhrzeit, Startdatum und Streak.</p>
             </section>
 
             {todayCourseSession ? (
@@ -2287,10 +2292,10 @@ export default function StudyTracker({
                 <div>
                   <span>Live-Kurs · Sitzung {todayCourseSession.number} von 10</span>
                   <h2>{todayCourseSession.title}</h2>
-                  <p>{todayCourseSession.berlinTime} Berlin · {todayCourseSession.projectQuestion}</p>
+                  <p>{todayCourseSession.berlinTime} Berlin · nur beobachten, keine Vorbereitung · danach höchstens drei Notizzeilen</p>
                 </div>
                 <a className="button primary" href="/nlp-lab" {...internalLinkProps("/nlp-lab")}>
-                  Sitzung, Artikel und Extraktionsbogen öffnen <Icon name="arrow" size={17} />
+                  Sitzung ohne Vorbereitung öffnen <Icon name="arrow" size={17} />
                 </a>
               </article>
             ) : null}
@@ -2301,7 +2306,7 @@ export default function StudyTracker({
                 <span className="course-schedule-heading">
                   <strong>Onlinekurs · NLP, RNN, Transformer und LLM</strong>
                   <small>
-                    {nlpCourseMeta.instructor} · Sitzungen 8–10 live · Sitzungen 1–7 optional nachholen
+                    {nlpCourseMeta.instructor} · 8–10 nur live beobachten · 1–7 archiviert, kein Rückstand
                   </small>
                 </span>
                 <span className="course-schedule-time">
@@ -2313,8 +2318,9 @@ export default function StudyTracker({
                   const readings = getCourseReadings(session.readingIds);
                   const transfer = courseTransferForSession(session.number);
                   const catchUpSession = isNlpCatchUpSession(session.number);
+                  const liveObserverSession = isNlpRemainingLiveSession(session.number);
                   const transferDeferred = Boolean(transfer) && (
-                    catchUpSession || transfer!.artifactDue >= trackerRestartPlan.protectedBreakStart
+                    catchUpSession || liveObserverSession
                   );
                   const sessionState = catchUpSession
                     ? "catchup"
@@ -2326,7 +2332,7 @@ export default function StudyTracker({
                   return (
                     <article className={`course-session-card ${sessionState}`} key={session.number}>
                       <header>
-                        <span>{catchUpSession ? `Optional nachholen · ${session.number}/10` : `Live-Sitzung ${session.number}/10`}</span>
+                        <span>{catchUpSession ? `Archiviert · kein Rückstand · ${session.number}/10` : `Live beobachten · ${session.number}/10`}</span>
                         <time dateTime={session.date}>{formatDate(session.date, true)}</time>
                       </header>
                       <h3>{session.title}</h3>
@@ -2347,67 +2353,39 @@ export default function StudyTracker({
                         </section>
                       ) : transfer ? (
                         <section className="course-transfer-brief deferred" aria-label={`Nachholregel für Sitzung ${session.number}`}>
-                          <strong>Kein Alt-Rückstand</strong>
-                          <p>Diese Kursarbeit wird frühestens ab {formatDate(trackerRestartPlan.mainPlanStart)} optional nachgeholt.</p>
-                          <small>Die früheren Fristen zählen nicht gegen Fortschritt oder Streak.</small>
+                          <strong>{catchUpSession ? "Archiviert · nur bei direktem Wochenblocker" : "Keine Vorarbeit · maximal drei Zeilen danach"}</strong>
+                          {catchUpSession ? (
+                            <>
+                              <p>Frühestens ab {formatDate(trackerRestartPlan.mainPlanStart)}, erst nach dem Wochenartefakt und höchstens einmal pro Woche.</p>
+                              <small>Frage zuerst: Blockiert diese Sitzung Artefakt, Test oder Evidence dieser Woche? Wenn nein, überspringen.</small>
+                            </>
+                          ) : (
+                            <>
+                              <p>Nur teilnehmen, wenn es möglich ist. Bei Teilnahme: verstanden · Thesis-Bezug · offene Frage.</p>
+                              <small>Wenn verpasst, vor dem Projektneustart nicht nachholen. Frühere Transferfristen sind aufgehoben.</small>
+                            </>
+                          )}
                         </section>
                       ) : null}
                       <details className="course-session-readings">
                         <summary>
-                          {session.readingPlan
-                            ? `${session.readingPlan.deliverables.length} Pflicht-Ergebnisse · ${session.readingPlan.required.length} Pflichtquellen${session.readingPlan.reuse.length ? ` · ${session.readingPlan.reuse.length} Notizen wiederverwenden` : ""} · ${session.readingPlan.optional.length} optional`
-                            : `${readings.length} passende Artikel anzeigen`}
+                          {catchUpSession
+                            ? `Archiviertes Referenzmaterial anzeigen · ${readings.length} Artikel`
+                            : `Referenzmaterial anzeigen · keine Vorablektüre · ${readings.length} Artikel`}
                         </summary>
-                        {session.readingPlan ? (
-                          <div className="course-reading-priority">
-                            <section className="course-required-deliverables">
-                              <strong>Verpflichtende Ergebnisse</strong>
-                              <ol>
-                                {session.readingPlan.deliverables.map((deliverable) => (
-                                  <li key={deliverable.id}>
-                                    <b>{deliverable.title}</b>
-                                    <span>{deliverable.acceptance}</span>
-                                  </li>
-                                ))}
-                              </ol>
-                            </section>
-                            {[
-                              ["Verpflichtend", "required", session.readingPlan.required],
-                              ["Notizen wiederverwenden · nicht erneut lesen", "reuse", session.readingPlan.reuse],
-                              ["Optional / Related Work", "optional", session.readingPlan.optional],
-                            ].map(([label, tier, ids]) => {
-                              const tierReadings = getCourseReadings(ids as string[]);
-                              if (tierReadings.length === 0) return null;
-                              return (
-                                <section className={`course-reading-tier ${tier}`} key={tier as string}>
-                                  <strong>{label as string}</strong>
-                                  <ul>
-                                    {tierReadings.map((reading) => <li key={reading.id}>{reading.fileName}</li>)}
-                                  </ul>
-                                </section>
-                              );
-                            })}
-                            <section className="course-session-guidance" lang="fa" dir="rtl">
-                              <strong>سؤال‌هایی که از مدرس می‌پرسم</strong>
-                              <ol>{session.classQuestionsFa.map((question) => <li key={question}>{question}</li>)}</ol>
-                              <p><b>چرا مهم است:</b> {session.whyThisMattersFa}</p>
-                              <p><b>چه کاری انجام می‌دهم:</b> {session.plannedActionFa}</p>
-                            </section>
-                          </div>
-                        ) : (
-                          <ul>
-                            {readings.map((reading) => (
-                              <li key={reading.id}>{reading.fileName}</li>
-                            ))}
-                          </ul>
-                        )}
+                        <p className="course-reference-boundary">Diese Dateien erzeugen keine Pflichtaufgabe. Erst nach dem Neustart und nur bei direktem Wochenblocker verwenden.</p>
+                        <ul>
+                          {readings.map((reading) => (
+                            <li key={reading.id}>{reading.fileName}</li>
+                          ))}
+                        </ul>
                       </details>
                     </article>
                   );
                 })}
               </div>
               <footer className="course-schedule-footer">
-                <span>Kontrastfarbe kennzeichnet alle Kurstermine und die zugehörigen NLP-Phasen im Lernplan.</span>
+                <span>Der Kurskalender enthält keine Vorablektüre und keinen automatischen Nachholtermin.</span>
                 <a className="button secondary" href="/nlp-lab" {...internalLinkProps("/nlp-lab")}>
                   NLP-Lab und Artikelauswahl öffnen <Icon name="arrow" size={17} />
                 </a>
@@ -2547,7 +2525,7 @@ export default function StudyTracker({
             <details className="critical-path-card dashboard-disclosure" open>
               <summary>
                 <h2><Icon name="flag" size={20} /> Kritischer Pfad · erste 6 Wochen</h2>
-                <span>Design und ausführbarer Beleg parallel</span>
+                <span>Zukünftige Wochen ab deinem tatsächlichen Start · kein Rückstand</span>
               </summary>
               <ol className="critical-path-list">
                 <li><b>W1</b><span>Scope + eine prüfbare End-to-End-Frage</span></li>
@@ -2558,7 +2536,7 @@ export default function StudyTracker({
                 <li className="is-gate"><b>W6</b><span>Mini-Demo + Readiness Gate; kein Design ohne Laufbeleg</span></li>
               </ol>
               <footer>
-                <span>Eine Woche zählt erst als bestanden, wenn Artefakt, Test und rückverfolgbarer Beleg vorhanden sind.</span>
+                <span>W1 beginnt erst mit deinem gewählten Startdatum. Eine Woche zählt dann nur mit Artefakt, Test und rückverfolgbarem Beleg.</span>
                 <a className="button secondary" href="/projekt-fahrplan" {...internalLinkProps("/projekt-fahrplan")}>Projekt-Fahrplan öffnen <Icon name="arrow" size={16} /></a>
               </footer>
             </details>
@@ -2566,18 +2544,22 @@ export default function StudyTracker({
             {acknowledgedPlanVersion !== null && acknowledgedPlanVersion < PLAN_VERSION && (
               <section className="plan-version-banner" aria-label="Planänderung">
                 <div>
-                  <strong>Der Plan wurde aktualisiert (Version {PLAN_VERSION}).</strong>
-                  {PLAN_VERSION_HISTORY.filter((entry) => entry.version > acknowledgedPlanVersion).map((entry) => (
-                    <div className="plan-version-entry" key={entry.version}>
-                      <p><em>{formatDate(entry.effectiveDate)}</em> — {entry.reason}</p>
-                      {entry.tasksRemoved.length > 0 && <p>Entfernt: {entry.tasksRemoved.join(", ")}</p>}
-                      {entry.tasksMoved.length > 0 && <p>Verschoben: {entry.tasksMoved.join(", ")}</p>}
-                      {entry.tasksAdded.length > 0 && <p>Neu: {entry.tasksAdded.join(", ")}</p>}
-                    </div>
-                  ))}
+                  <strong>Änderungsprotokoll · keine Aufgabenliste (Version {PLAN_VERSION})</strong>
+                  <p>Diese Box erklärt nur, was am Plan geändert wurde. Sie zählt nicht als Arbeit und verändert 0 / 438 nicht.</p>
+                  <details>
+                    <summary>Neueste Änderung anzeigen</summary>
+                    {PLAN_VERSION_HISTORY.slice(-1).map((entry) => (
+                      <div className="plan-version-entry" key={entry.version}>
+                        <p><em>{formatDate(entry.effectiveDate)}</em> — {entry.reason}</p>
+                        {entry.tasksRemoved.length > 0 && <p>Entfernt: {entry.tasksRemoved.join(", ")}</p>}
+                        {entry.tasksMoved.length > 0 && <p>Verschoben: {entry.tasksMoved.join(", ")}</p>}
+                        {entry.tasksAdded.length > 0 && <p>Neu: {entry.tasksAdded.join(", ")}</p>}
+                      </div>
+                    ))}
+                  </details>
                 </div>
-                <button className="button secondary compact" onClick={acknowledgePlanVersion} type="button">
-                  Verstanden
+                <button className="button secondary compact" onClick={acknowledgePlanVersion} type="button" aria-label="Änderungshinweis schließen; keine Aufgabe abschließen">
+                  Verstanden · Hinweis schließen
                 </button>
               </section>
             )}

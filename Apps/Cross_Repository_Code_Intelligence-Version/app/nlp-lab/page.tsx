@@ -1,6 +1,5 @@
 import {
   articleReadings,
-  courseTransferForSession,
   extractionSections,
   isNlpCatchUpSession,
   nlpCourseMeta,
@@ -78,10 +77,10 @@ export default function NlpLabPage() {
           <p className="nlp-lab-eyebrow">Advanced Deep Learning · Lese- und Extraktionsplan</p>
           <h1>NLP Literature Lab</h1>
           <p className="nlp-lab-lead">
-            Die Sitzungen 8 bis 10 bleiben als Live-Termine erhalten. Die
-            verpassten Sitzungen 1 bis 7 und alle Transferartefakte in der
-            geschützten Pause werden frühestens ab 19. Oktober optional
-            nachgeholt und erzeugen keinen Rückstand.
+            Die Sitzungen 8 bis 10 bleiben reine Live-Beobachtung ohne
+            Vorbereitung. Sitzungen 1 bis 7 sind archiviert und werden nur
+            nach dem Wochenartefakt, höchstens einmal pro Woche und bei einem
+            direkten Blocker optional geöffnet.
           </p>
         </div>
         <aside className="nlp-lab-time" aria-label="Kurszeit">
@@ -95,13 +94,12 @@ export default function NlpLabPage() {
       </header>
 
       <section className="nlp-lab-alert" aria-labelledby="course-scope-title">
-        <strong id="course-scope-title">Neustartregel ab 29. August</strong>
+        <strong id="course-scope-title">Loslassen statt automatisch nachholen</strong>
           <p>
-          Vor der geschützten Pause zählen nur die verbleibenden Live-Sitzungen
-          8 bis 10. Vom {formatDate(trackerRestartPlan.protectedBreakStart)} bis
+          Vor der geschützten Pause zählen nur Anwesenheit bei den Live-Sitzungen
+          8 bis 10 und danach maximal drei Notizzeilen. Vom {formatDate(trackerRestartPlan.protectedBreakStart)} bis
           {" "}{formatDate(trackerRestartPlan.protectedBreakEnd)} gibt es keine
-          Pflichtarbeit. Nachholen beginnt frühestens am
-          {" "}{formatDate(trackerRestartPlan.mainPlanStart)}.
+          Pflichtarbeit. Ein verpasster Live-Termin wird vor dem Neustart nicht nachgeholt.
         </p>
       </section>
 
@@ -125,7 +123,7 @@ export default function NlpLabPage() {
 
       <section className="nlp-lab-boundaries">
         <article>
-          <h2>Verbindlich</h2>
+          <h2>Bis zum Neustart verbindlich</h2>
           <ul>{nlpLabDefinition.core.map((item) => <li key={item}>{item}</li>)}</ul>
         </article>
         <article>
@@ -141,15 +139,11 @@ export default function NlpLabPage() {
       </section>
 
       <section className="nlp-lab-sessions" aria-labelledby="session-title">
-        <p className="nlp-lab-eyebrow">Live-Kurs → Thesis-Evidence</p>
-        <h2 id="session-title">Zehn Sitzungen mit klarer Lektüre</h2>
+        <p className="nlp-lab-eyebrow">Live beobachten · Material bleibt Referenz</p>
+        <h2 id="session-title">Zehn Sitzungen ohne automatische Nachholpflicht</h2>
         <div className="nlp-session-list">
           {nlpCourseSessions.map((session) => {
             const catchUpSession = isNlpCatchUpSession(session.number);
-            const transfer = courseTransferForSession(session.number);
-            const transferDeferred = Boolean(transfer) && (
-              catchUpSession || transfer!.artifactDue >= trackerRestartPlan.protectedBreakStart
-            );
             return (
             <article className={`nlp-session-card ${catchUpSession ? "catchup" : "live"}`} key={session.number}>
               <header>
@@ -174,82 +168,29 @@ export default function NlpLabPage() {
               </div>
               <section className="nlp-session-guidance" lang="fa" dir="rtl">
                 <div>
-                  <h4>سؤال‌هایی که از مدرس می‌پرسم</h4>
-                  <ol>{session.classQuestionsFa.map((question) => <li key={question}>{question}</li>)}</ol>
+                  <h4>{catchUpSession ? "قانون مراجعه به این جلسه" : "حالت شرکت در جلسه"}</h4>
+                  <p>{catchUpSession
+                    ? "فعلاً رها شود. فقط پس از خروجی اصلی هفته و اگر مستقیماً Artefact، Test یا Evidence را مسدود کرده است، باز شود."
+                    : "بدون پیش‌مطالعه فقط در جلسه حاضر می‌شوم. اگر جلسه را از دست دادم، پیش از شروع پلن آن را جبران نمی‌کنم."}</p>
                 </div>
                 <div>
-                  <h4>چرا این موضوع برای پروژه مهم است؟</h4>
-                  <p>{session.whyThisMattersFa}</p>
-                  <h4>بعد از کلاس چه کاری انجام می‌دهم؟</h4>
-                  <p>{session.plannedActionFa}</p>
+                  <h4>{catchUpSession ? "حد مجاز" : "پس از حضور"}</h4>
+                  <p>{catchUpSession
+                    ? "حداکثر یک جلسه جبرانی در هر هفته؛ اگر مانع مستقیم نیست، برای همیشه کنار گذاشته شود."
+                    : "حداکثر سه خط: چه فهمیدم؟ چه ارتباطی با پایان‌نامه دارد؟ چه سؤال بازی مانده است؟"}</p>
                 </div>
               </section>
-              {transfer ? transferDeferred ? (
-                  <section className="nlp-transfer-plan deferred">
-                    <header>
-                      <div>
-                        <p className="nlp-lab-eyebrow">Kurs → Thesis ohne Alt-Rückstand</p>
-                        <h4>Optional nach dem Neustart</h4>
-                      </div>
-                      <span>ab {formatDate(trackerRestartPlan.mainPlanStart)}</span>
-                    </header>
-                    <div>
-                      <p>Die früheren Transferfristen sind aufgehoben und zählen nicht gegen Fortschritt oder Lernkette.</p>
-                    </div>
-                  </section>
-                ) : (
-                  <section className={`nlp-transfer-plan ${transfer.relevance}`}>
-                    <header>
-                      <div>
-                        <p className="nlp-lab-eyebrow">Kurs → Thesis ohne Zusatz-Backlog</p>
-                        <h4>Sofortiger Transfer</h4>
-                      </div>
-                      <span>max. {transfer.maxMinutes} Min.</span>
-                    </header>
-                    <div>
-                      <p><b>≤ 24 Stunden:</b> Notiz bis <time dateTime={transfer.noteDue}>{formatDate(transfer.noteDue)}</time></p>
-                      <p><b>≤ 7 Tage:</b> <code>{transfer.artifact}</code> bis <time dateTime={transfer.artifactDue}>{formatDate(transfer.artifactDue)}</time></p>
-                      <p>{transfer.acceptance}</p>
-                    </div>
-                    <small>Ersetzt ein Tagesergebnis; erzeugt keine vierte Aufgabe.</small>
-                  </section>
-                ) : null}
-              {session.readingPlan ? (
-                <div className="nlp-priority-plan">
-                  <section className="nlp-required-outputs">
-                    <header>
-                      <div>
-                        <p className="nlp-lab-eyebrow">{transferDeferred ? "Optionale Nachholspur" : "Genau drei reale Ergebnisse"}</p>
-                        <h4>{transferDeferred ? "Nachholergebnisse ab dem Neustart" : "Verpflichtende Ergebnisse"}</h4>
-                      </div>
-                      <span>{session.readingPlan.deliverables.length} {transferDeferred ? "Nachhol-Ergebnisse" : "Pflicht-Ergebnisse"}</span>
-                    </header>
-                    <div>
-                      {session.readingPlan.deliverables.map((deliverable, index) => (
-                        <article key={deliverable.id}>
-                          <span>{index + 1} · {deliverable.mode}</span>
-                          <h5>{deliverable.title}</h5>
-                          <p>{deliverable.acceptance}</p>
-                          <small>
-                            Quellen: {deliverable.readingIds.map((readingId) => {
-                              const reading = readingsById.get(readingId);
-                              return reading ? `C${String(reading.courseOrder).padStart(2, "0")}/O${String(reading.order).padStart(2, "0")}` : readingId;
-                            }).join(" + ")}
-                          </small>
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                  <div className="nlp-reading-priority-grid">
-                    <ReadingGroup title="Verpflichtend" tier="required" readingIds={session.readingPlan.required} />
-                    <ReadingGroup title="Notizen wiederverwenden · nicht erneut lesen" tier="reuse" readingIds={session.readingPlan.reuse} />
-                    <ReadingGroup title="Optional / Related Work" tier="optional" readingIds={session.readingPlan.optional} />
-                  </div>
-                </div>
-              ) : (
-                <ReadingGroup title="Zugeordnete Artikel" tier="standard" readingIds={session.readingIds} />
-              )}
-              <footer><strong>Nach der Sitzung festhalten</strong><p>{extractionSections.join(" · ")}</p></footer>
+              <ReadingGroup
+                title={catchUpSession ? "Archiviertes Referenzmaterial · keine Pflicht" : "Referenzmaterial · nicht vorab lesen"}
+                tier="standard"
+                readingIds={session.readingIds}
+              />
+              <footer>
+                <strong>{catchUpSession ? "Keine aktuelle Aufgabe" : "Nur nach tatsächlicher Teilnahme"}</strong>
+                <p>{catchUpSession
+                  ? `Frühestens ab ${formatDate(trackerRestartPlan.mainPlanStart)} und nur nach Relevanzprüfung.`
+                  : "Maximal drei Zeilen: verstanden · Thesis-Bezug · offene Frage."}</p>
+              </footer>
             </article>
             );
           })}

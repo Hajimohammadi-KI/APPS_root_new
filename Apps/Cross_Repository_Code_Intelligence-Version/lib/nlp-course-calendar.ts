@@ -1,23 +1,13 @@
-import type { NlpCourseSession } from "../app/plan-data";
+import { trackerRestartPlan, type NlpCourseSession } from "../app/plan-data";
 
 export function buildCourseReadingPlanDescription(
   session: NlpCourseSession,
   formatReading: (readingId: string) => string,
 ) {
-  if (!session.readingPlan) {
-    return `Artikel: ${session.readingIds.map(formatReading).join("; ")}`;
-  }
-
-  const lines = [
-    `Pflichtquellen: ${session.readingPlan.required.map(formatReading).join("; ")}`,
-    session.readingPlan.reuse.length > 0
-      ? `Notizen wiederverwenden (nicht erneut lesen): ${session.readingPlan.reuse.map(formatReading).join("; ")}`
-      : "",
-    `Optional / Related Work: ${session.readingPlan.optional.map(formatReading).join("; ")}`,
-    `Pflichtergebnisse: ${session.readingPlan.deliverables
-      .map((deliverable) => `${deliverable.title} — ${deliverable.acceptance}`)
-      .join("; ")}`,
-  ];
-
-  return lines.filter(Boolean).join("\n");
+  return [
+    "Teilnahmemodus: Live beobachten; keine Vorablektüre und kein Pflichtartefakt.",
+    `Nach Teilnahme: maximal ${trackerRestartPlan.liveSessionPolicy.noteLineLimit} Zeilen — verstanden; Thesis-Bezug; offene Frage.`,
+    `Wenn verpasst: nicht vor ${trackerRestartPlan.mainPlanStart} nachholen.`,
+    `Referenzmaterial erst nach dem Neustart und nur bei direktem Wochenblocker: ${session.readingIds.map(formatReading).join("; ")}`,
+  ].join("\n");
 }

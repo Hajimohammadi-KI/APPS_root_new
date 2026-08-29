@@ -1,6 +1,6 @@
 # Cross Repository Code Intelligence – Version2
 
-**CURRENT · Version2** — light-lavender, responsive interface. This copy has a separate browser-state key and its default plan begins on **Friday, 7 August 2026**.
+**CURRENT · Version2 0.5.9** — light-lavender, responsive interface. The tracker truthfully starts at **0 / 438** and keeps the 25-week plan on `not_started` until the learner chooses an actual start date on or after **19 October 2026**. A later start shifts the whole plan without compression.
 
 # Vercel-Web-App
 

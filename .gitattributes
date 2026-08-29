@@ -38,3 +38,7 @@ Apps/**/automaticity-progress-story.png -filter -diff -merge -text
 Apps/**/ava-language-coach.png -filter -diff -merge -text
 Apps/**/dashboard-wide.png -filter -diff -merge -text
 Apps/**/navigation-narrow.png -filter -diff -merge -text
+
+# WSL launch scripts are executed directly from the Windows-mounted release.
+# A CRLF checkout makes `set -o pipefail` fail before installation can start.
+Apps/Cross_Repository_Code_Intelligence-Version/**/*.sh text eol=lf

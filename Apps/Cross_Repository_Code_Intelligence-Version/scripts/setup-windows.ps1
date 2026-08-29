@@ -158,6 +158,22 @@ function Copy-ApplicationFiles {
   }
 }
 
+function Normalize-ShellScriptLineEndings {
+  if (-not (Test-Path -LiteralPath $InstallRoot)) {
+    return
+  }
+
+  $utf8WithoutBom = [System.Text.UTF8Encoding]::new($false)
+  Get-ChildItem -LiteralPath $InstallRoot -Recurse -Force -File -Filter "*.sh" -ErrorAction SilentlyContinue |
+    ForEach-Object {
+      $content = [System.IO.File]::ReadAllText($_.FullName)
+      $normalized = $content.Replace("`r`n", "`n").Replace("`r", "`n")
+      if ($normalized -ne $content) {
+        [System.IO.File]::WriteAllText($_.FullName, $normalized, $utf8WithoutBom)
+      }
+    }
+}
+
 function Remove-DownloadedFileMark {
   if (-not (Test-Path -LiteralPath $InstallRoot)) {
     return
@@ -455,6 +471,7 @@ function Invoke-InstallOperation(
   }
   Copy-ApplicationFiles
   Restore-SavedData
+  Normalize-ShellScriptLineEndings
   Remove-DownloadedFileMark
   Install-Dependencies $prerequisites
   Create-Shortcuts
@@ -641,7 +658,7 @@ function Invoke-Menu {
   $brandKicker = New-UiLabel "FORSCHEN · VERSTEHEN · BAUEN" 34 116 224 22 8.5 ([System.Drawing.FontStyle]::Bold) ([System.Drawing.Color]::FromArgb(216, 200, 233))
   $brandTitle = New-UiLabel "Cross Repository`nCode Intelligence" 34 148 224 72 19 ([System.Drawing.FontStyle]::Bold) $white
   $brandCopy = New-UiLabel "Ihr lokales Lernstudio für Forschungsplanung, PDF-Arbeit und Fokuszeit." 34 232 218 72 10 ([System.Drawing.FontStyle]::Regular) ([System.Drawing.Color]::FromArgb(237, 228, 245))
-  $brandFooter = New-UiLabel "LOKALE INSTALLATION`nVersion2 0.5.8 · Daten bleiben auf diesem PC" 34 510 224 48 8.5 ([System.Drawing.FontStyle]::Regular) ([System.Drawing.Color]::FromArgb(216, 200, 233))
+  $brandFooter = New-UiLabel "LOKALE INSTALLATION`nVersion2 0.5.9 · Daten bleiben auf diesem PC" 34 510 224 48 8.5 ([System.Drawing.FontStyle]::Regular) ([System.Drawing.Color]::FromArgb(216, 200, 233))
   $brandPanel.Controls.AddRange(@($iconBox, $brandKicker, $brandTitle, $brandCopy, $brandFooter))
 
   $content = New-Object System.Windows.Forms.Panel

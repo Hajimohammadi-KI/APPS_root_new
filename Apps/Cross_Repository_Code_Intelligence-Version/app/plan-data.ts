@@ -172,6 +172,27 @@ export const trackerRestartPlan = {
   gentleRestartEnd: "2026-10-18",
   mainPlanStart: "2026-10-19",
   dailyStart: "15:00",
+  liveSessionPolicy: {
+    mode: "observer_only",
+    preparationMinutes: 0,
+    noteLineLimit: 3,
+    missedSessionRule: "do_not_catch_up_before_restart",
+  },
+  catchUpPolicy: {
+    countsAsBacklog: false,
+    earliestDate: "2026-10-19",
+    maxSessionsPerWeek: 1,
+    requiresWeeklyCoreOutput: true,
+    relevanceQuestion:
+      "Blockiert diese Sitzung Artefakt, Test oder Evidence der aktuellen Woche?",
+  },
+  recoveryPolicy: {
+    gentleDailyMinutes: 12,
+    mainDailyMaxMinutes: 70,
+    shiftWholePlanIfNotReady: true,
+    compressWeeks: false,
+    clinicalAdviceOverridesPlan: true,
+  },
 } as const;
 
 export function isNlpCatchUpSession(sessionNumber: number) {
@@ -685,14 +706,15 @@ export const nlpLabDefinition = {
   problem:
     "Read the course-aligned thesis literature and extract reusable evidence about retrieval, code graphs, provenance, prompting, and answerability.",
   projectFit:
-    "The course is a guided literature-extraction window for RQ1 and RQ2. Coding outputs are optional until 7 September and do not create backlog, reduce progress, or break the streak.",
+    "Before the protected break, sessions 8–10 are observer-only live appointments with no preparation. Sessions 1–7 and every former reading or transfer deadline are optional reference material after the main plan starts and never create backlog, reduce progress, or break the streak.",
   core: [
-    "Read the assigned paper sections according to DEEP, TARGET, REVIEW, or RELATED mode",
-    "Extract Problem, Method, Data/Evaluation, Findings, and Limitations",
-    "Connect each paper explicitly to RQ1/RQ2, Evidence Record, Evidence Path, Flat/Graph Retrieval, and Answerability",
+    "Attend live sessions 8–10 as an observer without preparation when health and energy allow",
+    "After an attended live session, write at most three lines: understood point, thesis relevance, open question",
     "Keep article numbers 06–23 stable and preserve the original PDF files",
   ],
   deferred: [
+    "Sessions 1–7 unless one directly blocks the current week's artifact, test, or evidence",
+    "All assigned reading and course-transfer deliverables before the main plan starts",
     "All dated technical implementation tasks from 19 August through 7 September",
     "Training RNN, LSTM, GRU, BERT, or GPT models",
     "LoRA or QLoRA fine-tuning and production RAG implementation",
@@ -1711,6 +1733,26 @@ export const PLAN_VERSION_HISTORY: readonly PlanVersionEntry[] = [
       "Nur die verbleibenden Live-Sitzungen 8 bis 10 vor der Pause",
       "Sanfter Wiedereinstieg vom 14. bis 18. Oktober ausschließlich im Rettungsmodus",
       "Standardrhythmus ab 19. Oktober: 70 Minuten ab 15:00 Uhr",
+    ],
+  },
+  {
+    version: 6,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Alte Kurspläne sind jetzt ausdrücklich archiviert: Die Live-Sitzungen 8 bis 10 sind reine Beobachtung ohne Vorbereitung, und W1 bis W6 bleiben zukünftige Projektwochen statt Rückstand.",
+    tasksRemoved: [
+      "Vorablektüre und Pflichtartefakte für die Live-Sitzungen 8 bis 10",
+      "Automatisches Nachholen einer verpassten Live-Sitzung vor dem Projektneustart",
+      "Pflichtstatus für Sitzungen 1 bis 7 und deren frühere Transferfristen",
+    ],
+    tasksMoved: [
+      "Sitzungen 1 bis 7 in ein archiviertes Referenzfach mit Relevanzprüfung ab dem tatsächlichen Projektstart",
+      "Alle 25 Wochen gemeinsam auf ein späteres Startdatum, falls der Neustart medizinisch noch nicht möglich ist",
+    ],
+    tasksAdded: [
+      "Maximal drei Notizzeilen nach einer tatsächlich besuchten Live-Sitzung",
+      "Höchstens eine optionale Nachholsitzung pro Woche und erst nach dem verpflichtenden Wochenartefakt",
+      "Sichtbarer Hinweis: W1 bis W6 sind Zukunft, das Änderungsprotokoll ist keine Aufgabenliste und medizinische Vorgaben haben Vorrang",
     ],
   },
 ];

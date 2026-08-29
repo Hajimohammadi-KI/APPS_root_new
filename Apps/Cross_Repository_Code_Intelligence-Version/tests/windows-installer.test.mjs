@@ -14,10 +14,10 @@ const packageJson = JSON.parse(await readFile(new URL("../package.json", import.
 const packageLock = JSON.parse(await readFile(new URL("../package-lock.json", import.meta.url), "utf8"));
 
 test("release version is synchronized across package and Windows setup", () => {
-  assert.equal(packageJson.version, "0.5.8-version2");
+  assert.equal(packageJson.version, "0.5.9-version2");
   assert.equal(packageLock.version, packageJson.version);
   assert.equal(packageLock.packages[""].version, packageJson.version);
-  assert.match(setup, /Version2 0\.5\.8/);
+  assert.match(setup, /Version2 0\.5\.9/);
 });
 
 test("Windows setup exposes install, update, repair, and uninstall", () => {
@@ -91,7 +91,7 @@ test("Windows setup retries dependency installation and preserves diagnostics", 
 test("Windows setup removes the downloaded-file warning from installed app files", () => {
   assert.match(setup, /function Remove-DownloadedFileMark/);
   assert.match(setup, /Unblock-File -LiteralPath \$_\.FullName/);
-  assert.match(setup, /Restore-SavedData\s+Remove-DownloadedFileMark\s+Install-Dependencies/);
+  assert.match(setup, /Restore-SavedData\s+Normalize-ShellScriptLineEndings\s+Remove-DownloadedFileMark\s+Install-Dependencies/);
 });
 
 test("Windows uninstaller releases local processes and removes from a temporary working directory", () => {
@@ -119,6 +119,14 @@ test("Windows setup preserves local data during update and repair", () => {
   assert.match(setup, /\.env\.local/);
   assert.match(setup, /Save-UserData/);
   assert.match(setup, /Restore-SavedData/);
+});
+
+test("Windows setup guarantees LF-only WSL shell payloads", () => {
+  assert.doesNotMatch(prepareWslScript, /\r/);
+  assert.doesNotMatch(runWebScript, /\r/);
+  assert.match(setup, /function Normalize-ShellScriptLineEndings/);
+  assert.match(setup, /\.Replace\("`r`n", "`n"\)\.Replace\("`r", "`n"\)/);
+  assert.match(setup, /Restore-SavedData\s+Normalize-ShellScriptLineEndings\s+Remove-DownloadedFileMark/s);
 });
 
 test("Windows setup excludes audit-only screenshots from the installed payload", () => {

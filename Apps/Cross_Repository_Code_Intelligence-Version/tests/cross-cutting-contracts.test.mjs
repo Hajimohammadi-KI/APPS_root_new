@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const tracker = await readFile(new URL("../app/study-tracker.tsx", import.meta.url), "utf8");
+const nlpLab = await readFile(new URL("../app/nlp-lab/page.tsx", import.meta.url), "utf8");
 const pdfPage = await readFile(new URL("../app/pdf-reader/page.tsx", import.meta.url), "utf8");
 const pdfDocument = await readFile(new URL("../app/pdf-reader/components/PdfDocument.tsx", import.meta.url), "utf8");
 const researchLibrary = await readFile(new URL("../app/pdf-reader/components/ResearchLibrary.tsx", import.meta.url), "utf8");
@@ -61,6 +62,21 @@ test("an unstarted or paused plan cannot record task or focus progress", () => {
   assert.match(tracker, /if \(action === "start" && settings\.planStatus !== "running"\)/);
   assert.match(tracker, /const planIsRunning = settings\.planStatus === "running"/);
   assert.match(tracker, /disabled=\{!planIsRunning\}/);
+});
+
+test("restart recovery abandons old backlog and gates every optional catch-up", () => {
+  assert.match(tracker, /0 \/ 438 ist korrekt/);
+  assert.match(tracker, /Live-Sitzungen 8–10 nur beobachten/);
+  assert.match(tracker, /Keine Vorbereitung/);
+  assert.match(tracker, /höchstens drei Zeilen/);
+  assert.match(tracker, /erst nach dem Wochenartefakt und höchstens einmal pro Woche/);
+  assert.match(tracker, /Änderungsprotokoll · keine Aufgabenliste/);
+  assert.match(tracker, /Verstanden · Hinweis schließen/);
+  assert.match(tracker, /requestedStartDate < trackerRestartPlan\.mainPlanStart/);
+  assert.match(tracker, /nichts wird verdichtet oder doppelt geplant/);
+  assert.match(tracker, /ärztliche Vorgaben haben immer Vorrang/);
+  assert.match(nlpLab, /ohne automatische Nachholpflicht/);
+  assert.match(nlpLab, /حداکثر سه خط/);
 });
 
 test("PDF selection and annotation persistence are wired", () => {

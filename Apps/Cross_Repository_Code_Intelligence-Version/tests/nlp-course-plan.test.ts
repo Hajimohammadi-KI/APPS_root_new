@@ -110,20 +110,23 @@ describe("Advanced Deep Learning reading plan", () => {
     expect(session10.readingPlan?.deliverables.at(-1)?.acceptance).toContain("NOT_ANSWERABLE");
   });
 
-  test("writes priority, reuse, optional work, and deliverables into calendar descriptions", () => {
+  test("writes observer-only live sessions without preparation or mandatory deliverables", () => {
     const session9 = nlpCourseSessions.find((session) => session.number === 9)!;
     const session10 = nlpCourseSessions.find((session) => session.number === 10)!;
     const formatReading = (readingId: string) => `REF:${readingId}`;
 
     const session9Description = buildCourseReadingPlanDescription(session9, formatReading);
-    expect(session9Description).toContain("Pflichtquellen: REF:reading-17");
-    expect(session9Description.includes("Notizen wiederverwenden")).toBeFalse();
-    expect(session9Description).toContain("Optional / Related Work: REF:reading-08");
-    expect(session9Description).toContain("Pflichtergebnisse:");
+    expect(session9Description).toContain("Live beobachten; keine Vorablektüre");
+    expect(session9Description).toContain("maximal 3 Zeilen");
+    expect(session9Description).toContain("nicht vor 2026-10-19 nachholen");
+    expect(session9Description).toContain("REF:reading-17");
+    expect(session9Description.includes("Pflichtquellen")).toBeFalse();
+    expect(session9Description.includes("Pflichtergebnisse")).toBeFalse();
 
     const session10Description = buildCourseReadingPlanDescription(session10, formatReading);
-    expect(session10Description).toContain("Notizen wiederverwenden (nicht erneut lesen): REF:reading-06");
-    expect(session10Description).toContain("RAG-Vertrag: Grounding und NOT_ANSWERABLE");
+    expect(session10Description).toContain("keine Vorablektüre und kein Pflichtartefakt");
+    expect(session10Description).toContain("Referenzmaterial erst nach dem Neustart");
+    expect(session10Description).toContain("REF:reading-06");
   });
 
   test("maps every class topic to real plan days with prepared teacher questions", () => {
@@ -201,9 +204,24 @@ describe("Advanced Deep Learning reading plan", () => {
     expect(trackerRestartPlan.protectedBreakStart).toBe("2026-09-10");
     expect(trackerRestartPlan.protectedBreakEnd).toBe("2026-10-13");
     expect(trackerRestartPlan.gentleRestartStart).toBe("2026-10-14");
+    expect(trackerRestartPlan.liveSessionPolicy).toEqual({
+      mode: "observer_only",
+      preparationMinutes: 0,
+      noteLineLimit: 3,
+      missedSessionRule: "do_not_catch_up_before_restart",
+    });
+    expect(trackerRestartPlan.catchUpPolicy.countsAsBacklog).toBeFalse();
+    expect(trackerRestartPlan.catchUpPolicy.earliestDate).toBe(trackerRestartPlan.mainPlanStart);
+    expect(trackerRestartPlan.catchUpPolicy.maxSessionsPerWeek).toBe(1);
+    expect(trackerRestartPlan.catchUpPolicy.requiresWeeklyCoreOutput).toBeTrue();
+    expect(trackerRestartPlan.recoveryPolicy.gentleDailyMinutes).toBe(12);
+    expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(70);
+    expect(trackerRestartPlan.recoveryPolicy.shiftWholePlanIfNotReady).toBeTrue();
+    expect(trackerRestartPlan.recoveryPolicy.compressWeeks).toBeFalse();
+    expect(trackerRestartPlan.recoveryPolicy.clinicalAdviceOverridesPlan).toBeTrue();
   });
 
-  test("creates a bounded transfer within 24 hours and seven days for every session", () => {
+  test("retains bounded historical transfer definitions as non-scheduled reference data", () => {
     expect(nlpCourseTransferPlans).toHaveLength(10);
     expect(new Set(nlpCourseTransferPlans.map((plan) => plan.sessionNumber)).size).toBe(10);
     for (const transfer of nlpCourseTransferPlans) {
@@ -220,10 +238,12 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
-  test("records Revision 5 and a calendar-aware restart boundary", () => {
-    expect(PLAN_VERSION).toBe(5);
-    expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-29");
-    expect(appPackage.version).toBe("0.5.8-version2");
+  test("records Revision 6 and the no-catch-up recovery boundary", () => {
+    expect(PLAN_VERSION).toBe(6);
+    expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-30");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Vorablektüre");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Höchstens eine optionale Nachholsitzung pro Woche");
+    expect(appPackage.version).toBe("0.5.9-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

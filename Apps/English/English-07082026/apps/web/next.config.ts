@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 import path from "node:path";
 
+// Vercel packages Next.js output itself; standalone remains necessary only for the Windows installer.
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["127.0.0.1"],
-  output: "standalone",
+  ...(process.env.VERCEL ? {} : { output: "standalone" }),
   outputFileTracingRoot: path.resolve(process.cwd(), "../.."),
   experimental: {
     useTypeScriptCli: true,

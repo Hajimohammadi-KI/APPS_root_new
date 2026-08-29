@@ -23,6 +23,9 @@
 @media(max-width:1180px){:root{--sidebar:210px}.shell{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:820px){:root{--sidebar:0px}html,body{max-width:100%;overflow-x:hidden}.side{width:min(292px,86vw)}.content{margin-left:0}.topbar{left:0}.shell{width:100%;max-width:100%;grid-template-columns:minmax(0,1fr)}.main,.aside,.hero,.activity,.panel{min-width:0;max-width:100%}}
 @media(max-width:560px){.shell{padding:12px}.hero{width:100%;padding:16px}.activity{grid-template-columns:64px minmax(0,1fr)}.act-head{flex-wrap:wrap}.primary,.open,.adjust{max-width:100%;white-space:normal}.times{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Sichtbare Navigationsüberschriften sind bedienbare Akkordeons: Das verringert die Scanlast,
+   und aria-expanded macht den Zustand für Tastatur- und Hilfstechnik-Nutzende eindeutig. */
+.nav-parent:not([data-route]){cursor:pointer}.nav-parent .chev{transition:transform 160ms ease}.nav-section.is-collapsed .nav-item{display:none}.nav-section.is-collapsed .nav-parent .chev{transform:rotate(180deg)}
 </style>
 </head>
 <body>
@@ -65,6 +68,8 @@
 </script>
 <script>
 document.querySelectorAll('[data-route]').forEach(button=>button.addEventListener('click',()=>{location.href=button.dataset.route}));
+// Jede sichtbare Navigationsüberschrift reagiert: nur ihre Linkgruppe wird gefaltet und aria-expanded hält den Zustand zugänglich.
+document.querySelectorAll('.nav-parent:not([data-route])').forEach(button=>{const section=button.closest('.nav-section');if(!section)return;button.setAttribute('aria-expanded',String(!section.classList.contains('is-collapsed')));button.addEventListener('click',()=>{const collapsed=section.classList.toggle('is-collapsed');button.setAttribute('aria-expanded',String(!collapsed))})});
 const dailySessionKey='deutsch-automaticity:daily-session:v1';
 const dailyDurationKey='deutsch-automaticity:daily-duration:v1';
 const learnerStateKey='GrammarAutomaticityV11_de';

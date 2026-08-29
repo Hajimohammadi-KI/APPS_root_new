@@ -28,6 +28,9 @@
        to move its CTA below the progress details before it can leave the card. */
     .activity{container-type:inline-size}.act-foot{min-width:0}
     @container (max-width:390px){.act-foot{grid-template-columns:minmax(0,1fr) auto}.act-foot .open{grid-column:1/-1;width:100%;white-space:normal}}
+    /* Sidebar headings are actionable accordions: hiding a group reduces scan load,
+       while aria-expanded keeps the control truthful for keyboard and assistive users. */
+    .nav-parent:not([data-route]){cursor:pointer}.nav-parent .chev{transition:transform 160ms ease}.nav-section.is-collapsed .nav-item{display:none}.nav-section.is-collapsed .nav-parent .chev{transform:rotate(180deg)}
 </style>
 </head>
 <body>
@@ -89,6 +92,8 @@
   updateLevelSupport();levelSelect.addEventListener('change',updateLevelSupport);document.querySelectorAll('#language-choices .choice').forEach(button=>button.addEventListener('click',updateLevelSupport));
   const side=document.getElementById('side');document.getElementById('menu').addEventListener('click',()=>side.classList.toggle('open'));document.addEventListener('click',e=>{if(innerWidth<=820&&!side.contains(e.target)&&!document.getElementById('menu').contains(e.target))side.classList.remove('open')});
   document.querySelectorAll('[data-route]').forEach(button=>button.addEventListener('click',()=>{location.href=button.dataset.route}));
+  // A visible navigation heading must respond: toggle only its own link group and expose the state to assistive technology.
+  document.querySelectorAll('.nav-parent:not([data-route])').forEach(button=>{const section=button.closest('.nav-section');if(!section)return;button.setAttribute('aria-expanded',String(!section.classList.contains('is-collapsed')));button.addEventListener('click',()=>{const collapsed=section.classList.toggle('is-collapsed');button.setAttribute('aria-expanded',String(!collapsed))})});
   const dailySessionKey='english-automaticity:daily-session:v1';
   const readDailySession=()=>{try{return JSON.parse(localStorage.getItem(dailySessionKey)||'{}')}catch{return {}}};
   const shadowFlagEnabled=()=>new URLSearchParams(location.search).get('adherence-shadow')==='1';

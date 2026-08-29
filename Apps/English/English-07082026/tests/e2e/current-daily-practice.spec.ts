@@ -40,3 +40,16 @@ test("phase-three cards keep their status and CTA inside a narrow desktop layout
 
   expect(escapedControls).toEqual([]);
 });
+
+test("daily navigation headings collapse and reopen only their own group", async ({ page }) => {
+  await page.goto("/daily");
+  const heading = page.getByRole("button", { name: /Grammar and English study/ });
+  const linkedItem = page.getByRole("button", { name: "Grammar Lab" });
+
+  await expect(heading).toHaveAttribute("aria-expanded", "true");
+  await heading.click();
+  await expect(heading).toHaveAttribute("aria-expanded", "false");
+  await expect(linkedItem).toBeHidden();
+  await heading.click();
+  await expect(linkedItem).toBeVisible();
+});

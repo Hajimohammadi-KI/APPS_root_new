@@ -46,3 +46,16 @@ test("Phase drei hält Status und Öffnen-Aktion im schmalen Desktop-Kartenrahme
 
   expect(escapedControls).toEqual([]);
 });
+
+test("Navigationsüberschriften falten nur ihre eigene Linkgruppe", async ({ page }) => {
+  await page.goto("/heute");
+  const heading = page.getByRole("button", { name: /Grammatik und Deutsch lernen/ });
+  const linkedItem = page.getByRole("button", { name: "Grammatik-Labor" });
+
+  await expect(heading).toHaveAttribute("aria-expanded", "true");
+  await heading.click();
+  await expect(heading).toHaveAttribute("aria-expanded", "false");
+  await expect(linkedItem).toBeHidden();
+  await heading.click();
+  await expect(linkedItem).toBeVisible();
+});

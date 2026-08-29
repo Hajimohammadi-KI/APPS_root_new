@@ -5,6 +5,12 @@
       "id": "english",
       "name": "English Automaticity",
       "projectDir": "Apps/English/English-07082026",
+      "deployment": {
+        "provider": "vercel",
+        "projectName": "english-grammar-automaticity-pwa",
+        "rootDirectory": "Apps/English/English-07082026",
+        "configFile": "Apps/English/English-07082026/vercel.json"
+      },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [
         { "url": "http://127.0.0.1:3202/", "kind": "html", "includes": ["dir=\"ltr\""] },
@@ -19,6 +25,12 @@
       "id": "german",
       "name": "Deutsch Automaticity",
       "projectDir": "Apps/Deutsch-V10.08.2026",
+      "deployment": {
+        "provider": "vercel",
+        "projectName": "deutschflow-grammar",
+        "rootDirectory": "Apps/Deutsch-V10.08.2026",
+        "configFile": "Apps/Deutsch-V10.08.2026/vercel.json"
+      },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [
         { "url": "http://127.0.0.1:3210/", "kind": "html", "includes": ["dir=\"ltr\""] },
@@ -33,6 +45,12 @@
       "id": "tracker",
       "name": "Cross Repository Tracker",
       "projectDir": "Apps/Cross_Repository_Code_Intelligence-Version",
+      "deployment": {
+        "provider": "vercel",
+        "projectName": "study-tracker-plan",
+        "rootDirectory": "Apps/Cross_Repository_Code_Intelligence-Version",
+        "configFile": "Apps/Cross_Repository_Code_Intelligence-Version/vercel.json"
+      },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [
         { "url": "http://127.0.0.1:4312/", "kind": "html", "includes": ["dir=\"ltr\""] },
@@ -47,6 +65,7 @@
       "id": "settings",
       "name": "Settings",
       "projectDir": "Apps/Apps-For-Integeration/Einstellungen-APP",
+      "deployment": { "provider": "local", "reason": "Starter-managed local application" },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [
         { "url": "http://127.0.0.1:4323/settings", "kind": "html", "includes": ["dir=\"ltr\""] }
@@ -58,6 +77,12 @@
       "id": "pdf",
       "name": "Research PDF Studio",
       "projectDir": "Apps/Apps-For-Integeration/Reader-PDF-App",
+      "deployment": {
+        "provider": "vercel",
+        "projectName": "research-pdf-studio",
+        "rootDirectory": "Apps/Apps-For-Integeration/Reader-PDF-App",
+        "configFile": "Apps/Apps-For-Integeration/Reader-PDF-App/vercel.json"
+      },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [
         { "url": "http://127.0.0.1:4332/", "kind": "html", "includes": ["dir=\"ltr\""] },

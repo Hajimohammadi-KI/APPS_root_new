@@ -6,9 +6,11 @@ APP_KEY="$(printf '%s' "$WIN_ROOT" | sha256sum | cut -c1-12)"
 WSL_APP_DIR="$HOME/apps/cross-repository-code-intelligence-$APP_KEY"
 mkdir -p "$WSL_APP_DIR"
 
+# Local dependency caches are rebuilt in WSL; copying them delays startup by gigabytes without changing the app.
 rsync -a --delete \
   --exclude node_modules --exclude .git --exclude .next --exclude .wrangler \
-  --exclude .npm-cache --exclude '.wsl-logs' --exclude 'runtime-*.log' --exclude .runtime \
+  --exclude .npm-cache --exclude '.bun-install-cache*' --exclude .sites-runtime \
+  --exclude '.wsl-logs' --exclude 'runtime-*.log' --exclude .runtime \
   "$WIN_ROOT"/ "$WSL_APP_DIR"/
 
 export PATH="$HOME/.bun/bin:$PATH"

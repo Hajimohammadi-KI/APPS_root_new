@@ -154,10 +154,7 @@ function formatDueTime(timestamp: number) {
 export function IntegratedSkillsScreen({
   navigate,
 }: {
-  navigate: (
-    screen: string,
-    params?: Record<string, string | null>,
-  ) => void;
+  navigate: (screen: string, params?: Record<string, string | null>) => void;
 }) {
   const { state, hydrated, mutate } = useAppStore();
   const progressState = state.integratedSkills;
@@ -182,12 +179,18 @@ export function IntegratedSkillsScreen({
   const [visibleSkills, setVisibleSkills] = React.useState<IntegratedSkill[]>(
     () => [...INTEGRATED_SKILLS],
   );
-  const [visibleUnitIds, setVisibleUnitIds] = React.useState<string[]>(
-    () => level.units.map((candidate) => candidate.id),
-  );
+  const [visibleUnitIds, setVisibleUnitIds] = React.useState<string[]>(() => [
+    unit.id,
+  ]);
+  const [pendingUnitIds, setPendingUnitIds] = React.useState<string[]>(() => [
+    unit.id,
+  ]);
   const [unitQuery, setUnitQuery] = React.useState("");
   const [dictating, setDictating] = React.useState(false);
   const recognitionRef = React.useRef<SpeechRecognitionLike | null>(null);
+  const unitPickerRef = React.useRef<HTMLDetailsElement | null>(null);
+  const currentUnitIdRef = React.useRef(unit.id);
+  currentUnitIdRef.current = unit.id;
 
   React.useEffect(() => {
     if (!hydrated) return;
@@ -206,7 +209,8 @@ export function IntegratedSkillsScreen({
   React.useEffect(() => {
     // A level change gets a fresh, compact menu instead of retaining filters
     // for units that do not exist at the newly selected CEFR level.
-    setVisibleUnitIds(level.units.map((candidate) => candidate.id));
+    setVisibleUnitIds([currentUnitIdRef.current]);
+    setPendingUnitIds([currentUnitIdRef.current]);
     setUnitQuery("");
   }, [level.cefr, level.units]);
 
@@ -288,15 +292,36 @@ export function IntegratedSkillsScreen({
     });
   }
 
-  function toggleVisibleUnit(unitId: string) {
-    setVisibleUnitIds((currentUnitIds) => {
+  function togglePendingUnit(unitId: string) {
+    setPendingUnitIds((currentUnitIds) => {
       if (currentUnitIds.includes(unitId)) {
-        return currentUnitIds.length === 1
-          ? currentUnitIds
-          : currentUnitIds.filter((candidate) => candidate !== unitId);
+        return currentUnitIds.filter((candidate) => candidate !== unitId);
       }
       return [...currentUnitIds, unitId];
     });
+  }
+
+  function applyUnitSelection() {
+    const orderedSelection = level.units
+      .filter((candidate) => pendingUnitIds.includes(candidate.id))
+      .map((candidate) => candidate.id);
+    if (!orderedSelection.length) {
+      setMessage("Select at least one unit before applying the filter.");
+      return;
+    }
+
+    // Applying is explicit so exploring checkboxes never changes the learner's
+    // active lesson or evidence path until they confirm the new unit menu.
+    setVisibleUnitIds(orderedSelection);
+    if (!orderedSelection.includes(unit.id)) {
+      chooseUnit(
+        requiredFirst(orderedSelection, `${level.cefr} selected units`),
+      );
+    }
+    setMessage(
+      `${orderedSelection.length} ${level.cefr} ${orderedSelection.length === 1 ? "unit" : "units"} shown in the lesson menu.`,
+    );
+    unitPickerRef.current?.removeAttribute("open");
   }
 
   function moveToStep(nextStep: number) {
@@ -370,9 +395,13 @@ export function IntegratedSkillsScreen({
     utterance.lang = "en-US";
     utterance.rate = options.rate ?? state.settings.ttsRate;
     utterance.onstart = () =>
-      setMessage(`${options.label ?? "Audio"} is playing. Listen without reading first.`);
+      setMessage(
+        `${options.label ?? "Audio"} is playing. Listen without reading first.`,
+      );
     utterance.onend = () =>
-      setMessage(`${options.label ?? "Audio"} finished. Say the main idea from memory.`);
+      setMessage(
+        `${options.label ?? "Audio"} finished. Say the main idea from memory.`,
+      );
     utterance.onerror = () =>
       setMessage("Playback stopped. Your lesson and progress are still safe.");
     window.speechSynthesis.speak(utterance);
@@ -464,7 +493,8 @@ export function IntegratedSkillsScreen({
               Lesson navigator
             </span>
             <span className="mt-1 block text-sm text-violet-950/75">
-              {level.cefr} · Unit {unit.number} · {skillMeta[skill].label} · {visibleSkills.length}/4 skills shown
+              {level.cefr} · Unit {unit.number} · {skillMeta[skill].label} ·{" "}
+              {visibleSkills.length}/4 skills shown
             </span>
           </span>
           <span aria-hidden className="text-lg font-black text-violet-800">
@@ -475,14 +505,21 @@ export function IntegratedSkillsScreen({
           {/* Multi-select is intentionally only a display filter. The active
               evidence path remains one skill at a time, so evidence cannot be
               accidentally mixed across listening, speaking, reading, and writing. */}
-          <section aria-labelledby="skill-filter-label" className="rounded-2xl border border-violet-200 bg-white p-4">
+          <section
+            aria-labelledby="skill-filter-label"
+            className="rounded-2xl border border-violet-200 bg-white p-4"
+          >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 className="text-base font-black text-violet-950" id="skill-filter-label">
+                <h2
+                  className="text-base font-black text-violet-950"
+                  id="skill-filter-label"
+                >
                   Show skills in this navigator
                 </h2>
                 <p className="mt-1 text-sm leading-6 text-slate-700">
-                  Select one or more skills to keep the menu compact. Choose one card below to open its evidence path.
+                  Select one or more skills to keep the menu compact. Choose one
+                  card below to open its evidence path.
                 </p>
               </div>
               <Badge variant="secondary">{visibleSkills.length} selected</Badge>
@@ -515,187 +552,193 @@ export function IntegratedSkillsScreen({
               })}
             </div>
           </section>
-      <Card className="border-violet-300 bg-violet-50/80">
-        <CardContent className="grid gap-4 pt-6 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <Badge className="bg-violet-800 text-white">
-              Today · one calm mission
-            </Badge>
-            <h2 className="mt-3 text-2xl font-black text-violet-950">
-              Make English usable without overload
-            </h2>
-            <p className="mt-2 max-w-3xl text-base leading-7 text-violet-950/80">
-              Work on one visible action. Listen to every instruction, dictate
-              instead of typing, save at any point, and return without losing
-              your place.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              aria-pressed={missionMode === "standard"}
-              onClick={() => setMissionMode("standard")}
-              variant={missionMode === "standard" ? "default" : "outline"}
-            >
-              <Clock3 aria-hidden className="size-4" /> 12-minute mission
-            </Button>
-            <Button
-              aria-pressed={missionMode === "rescue"}
-              onClick={() => setMissionMode("rescue")}
-              variant={missionMode === "rescue" ? "default" : "outline"}
-            >
-              <ShieldCheck aria-hidden className="size-4" /> Rescue: one step
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>1. Choose your level</CardTitle>
-          <CardDescription>
-            Start at a comfortable level. You can change it without deleting
-            progress.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-          {integratedSkillsLevels.map((candidate) => (
-            <Button
-              aria-pressed={candidate.cefr === level.cefr}
-              className={
-                candidate.cefr === level.cefr
-                  ? levelTone[candidate.cefr]
-                  : "min-h-12 bg-white text-slate-900"
-              }
-              key={candidate.cefr}
-              onClick={() => chooseLevel(candidate.cefr)}
-              variant="outline"
-            >
-              {candidate.cefr}
-            </Button>
-          ))}
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(280px,.36fr)]">
-        <Card>
-          <CardHeader>
-            <div className="flex flex-wrap items-start justify-between gap-3">
+          <Card className="border-violet-300 bg-violet-50/80">
+            <CardContent className="grid gap-4 pt-6 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
-                <Badge variant="secondary">
-                  {level.cefr} · {level.title}
+                <Badge className="bg-violet-800 text-white">
+                  Today · one calm mission
                 </Badge>
-                <CardTitle className="mt-2">Level foundation</CardTitle>
-                <CardDescription className="max-w-3xl text-base leading-7">
-                  {level.descriptor}
-                </CardDescription>
+                <h2 className="mt-3 text-2xl font-black text-violet-950">
+                  Make English usable without overload
+                </h2>
+                <p className="mt-2 max-w-3xl text-base leading-7 text-violet-950/80">
+                  Work on one visible action. Listen to every instruction,
+                  dictate instead of typing, save at any point, and return
+                  without losing your place.
+                </p>
               </div>
-              <Badge>{levelProgress}% level evidence</Badge>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <ul className="grid gap-2 text-base leading-7 sm:grid-cols-2">
-              {level.baseLessons.map((lesson) => (
-                <li
-                  className="flex gap-2 rounded-xl bg-slate-50 p-3"
-                  key={lesson}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  aria-pressed={missionMode === "standard"}
+                  onClick={() => setMissionMode("standard")}
+                  variant={missionMode === "standard" ? "default" : "outline"}
                 >
-                  <Brain
-                    aria-hidden
-                    className="mt-1 size-4 shrink-0 text-violet-800"
-                  />
-                  {lesson}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card className="border-violet-200">
-          <CardHeader>
-            <CardTitle>Level quality gate</CardTitle>
-            <CardDescription>
-              Completion requires performance and delayed recall—not opening
-              lessons.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Progress
-              aria-label={`${levelProgress}% level progress`}
-              value={levelProgress}
-            />
-            <p className="text-sm font-bold">
-              {completedInLevel} / {levelStepIds.length} evidence stages
-            </p>
-            <ul className="space-y-2 text-sm leading-6">
-              {level.exitCriteria.map((criterion) => (
-                <li className="flex gap-2" key={criterion}>
-                  <Check
-                    aria-hidden
-                    className="mt-1 size-4 shrink-0 text-violet-800"
-                  />
-                  {criterion}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>2. Choose one unit and one skill</CardTitle>
-          <CardDescription>
-            The four skills share one real-life outcome, but each has its own
-            evidence path.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <label
-            className="block space-y-2 text-base font-bold"
-            htmlFor="integrated-unit"
-          >
-            Unit
-            <Select
-              className="min-h-12 text-base"
-              id="integrated-unit"
-              onChange={(event) => chooseUnit(event.target.value)}
-              value={unit.id}
-            >
-              {level.units.map((candidate) => (
-                <option key={candidate.id} value={candidate.id}>
-                  {candidate.number}. {candidate.title}
-                </option>
-              ))}
-            </Select>
-          </label>
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {visibleSkills.map((candidate) => {
-              const meta = skillMeta[candidate];
-              const Icon = meta.icon;
-              return (
-                <button
-                  aria-pressed={candidate === skill}
-                  className={`min-h-28 rounded-2xl border-2 p-4 text-left transition-[border-color,background-color,transform] active:scale-[.98] ${
-                    candidate === skill
-                      ? meta.className
-                      : "border-slate-200 bg-white text-slate-900"
-                  }`}
-                  key={candidate}
-                  onClick={() => chooseSkill(candidate)}
-                  type="button"
+                  <Clock3 aria-hidden className="size-4" /> 12-minute mission
+                </Button>
+                <Button
+                  aria-pressed={missionMode === "rescue"}
+                  onClick={() => setMissionMode("rescue")}
+                  variant={missionMode === "rescue" ? "default" : "outline"}
                 >
-                  <Icon aria-hidden className="size-5" />
-                  <strong className="mt-3 block text-base">{meta.label}</strong>
-                  <span className="mt-1 block text-sm leading-6 opacity-80">
-                    {meta.description}
-                  </span>
-                </button>
-              );
-            })}
+                  <ShieldCheck aria-hidden className="size-4" /> Rescue: one
+                  step
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>1. Choose your level</CardTitle>
+              <CardDescription>
+                Start at a comfortable level. You can change it without deleting
+                progress.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="grid grid-cols-3 gap-2 sm:grid-cols-6">
+              {integratedSkillsLevels.map((candidate) => (
+                <Button
+                  aria-pressed={candidate.cefr === level.cefr}
+                  className={
+                    candidate.cefr === level.cefr
+                      ? levelTone[candidate.cefr]
+                      : "min-h-12 bg-white text-slate-900"
+                  }
+                  key={candidate.cefr}
+                  onClick={() => chooseLevel(candidate.cefr)}
+                  variant="outline"
+                >
+                  {candidate.cefr}
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(280px,.36fr)]">
+            <Card>
+              <CardHeader>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <Badge variant="secondary">
+                      {level.cefr} · {level.title}
+                    </Badge>
+                    <CardTitle className="mt-2">Level foundation</CardTitle>
+                    <CardDescription className="max-w-3xl text-base leading-7">
+                      {level.descriptor}
+                    </CardDescription>
+                  </div>
+                  <Badge>{levelProgress}% level evidence</Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="grid gap-2 text-base leading-7 sm:grid-cols-2">
+                  {level.baseLessons.map((lesson) => (
+                    <li
+                      className="flex gap-2 rounded-xl bg-slate-50 p-3"
+                      key={lesson}
+                    >
+                      <Brain
+                        aria-hidden
+                        className="mt-1 size-4 shrink-0 text-violet-800"
+                      />
+                      {lesson}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-violet-200">
+              <CardHeader>
+                <CardTitle>Level quality gate</CardTitle>
+                <CardDescription>
+                  Completion requires performance and delayed recall—not opening
+                  lessons.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Progress
+                  aria-label={`${levelProgress}% level progress`}
+                  value={levelProgress}
+                />
+                <p className="text-sm font-bold">
+                  {completedInLevel} / {levelStepIds.length} evidence stages
+                </p>
+                <ul className="space-y-2 text-sm leading-6">
+                  {level.exitCriteria.map((criterion) => (
+                    <li className="flex gap-2" key={criterion}>
+                      <Check
+                        aria-hidden
+                        className="mt-1 size-4 shrink-0 text-violet-800"
+                      />
+                      {criterion}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
 
+          <Card>
+            <CardHeader>
+              <CardTitle>2. Choose one unit and one skill</CardTitle>
+              <CardDescription>
+                The four skills share one real-life outcome, but each has its
+                own evidence path.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <label
+                className="block space-y-2 text-base font-bold"
+                htmlFor="integrated-unit"
+              >
+                Unit
+                <Select
+                  className="min-h-12 text-base"
+                  id="integrated-unit"
+                  onChange={(event) => chooseUnit(event.target.value)}
+                  value={unit.id}
+                >
+                  {level.units
+                    .filter((candidate) =>
+                      visibleUnitIds.includes(candidate.id),
+                    )
+                    .map((candidate) => (
+                      <option key={candidate.id} value={candidate.id}>
+                        {candidate.number}. {candidate.title}
+                      </option>
+                    ))}
+                </Select>
+              </label>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {visibleSkills.map((candidate) => {
+                  const meta = skillMeta[candidate];
+                  const Icon = meta.icon;
+                  return (
+                    <button
+                      aria-pressed={candidate === skill}
+                      className={`min-h-28 rounded-2xl border-2 p-4 text-left transition-[border-color,background-color,transform] active:scale-[.98] ${
+                        candidate === skill
+                          ? meta.className
+                          : "border-slate-200 bg-white text-slate-900"
+                      }`}
+                      key={candidate}
+                      onClick={() => chooseSkill(candidate)}
+                      type="button"
+                    >
+                      <Icon aria-hidden className="size-5" />
+                      <strong className="mt-3 block text-base">
+                        {meta.label}
+                      </strong>
+                      <span className="mt-1 block text-sm leading-6 opacity-80">
+                        {meta.description}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </details>
 
@@ -732,7 +775,9 @@ export function IntegratedSkillsScreen({
               <span>
                 Lesson steps · {activeStep + 1}/7: {step.title}
               </span>
-              <span aria-hidden className="text-lg text-violet-800">▾</span>
+              <span aria-hidden className="text-lg text-violet-800">
+                ▾
+              </span>
             </summary>
             <div className="grid gap-2 border-t border-violet-100 p-3 sm:grid-cols-2 xl:grid-cols-3">
               {steps.map((candidate, index) => (
@@ -906,7 +951,8 @@ export function IntegratedSkillsScreen({
               <div className="mt-4 flex flex-wrap gap-2">
                 {skill === "speaking" ? (
                   <Button onClick={openConversationStudio} variant="secondary">
-                    <Mic2 aria-hidden /> Practise this lesson in Conversation Studio
+                    <Mic2 aria-hidden /> Practise this lesson in Conversation
+                    Studio
                   </Button>
                 ) : null}
                 <Button
@@ -967,29 +1013,37 @@ export function IntegratedSkillsScreen({
               Optional local audio, video, and book files
             </span>
           </span>
-          <span aria-hidden className="text-lg font-black text-sky-900">▾</span>
+          <span aria-hidden className="text-lg font-black text-sky-900">
+            ▾
+          </span>
         </summary>
         <div className="border-t border-sky-200 p-4 sm:p-5">
           <QSkillsResources cefr={level.cefr} />
         </div>
       </details>
 
-      <details className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <details
+        className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+        ref={unitPickerRef}
+      >
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 marker:content-none">
           <span>
             <span className="block text-base font-black text-slate-950">
               Unit multi-select
             </span>
             <span className="mt-1 block text-sm text-slate-600">
-              {visibleUnitIds.length} of {level.units.length} {level.cefr} units shown · current: Unit {unit.number}
+              {visibleUnitIds.length} of {level.units.length} {level.cefr} units
+              selected · current: Unit {unit.number}
             </span>
           </span>
-          <span aria-hidden className="text-lg font-black text-slate-700">▾</span>
+          <span aria-hidden className="text-lg font-black text-slate-700">
+            ▾
+          </span>
         </summary>
         <div className="space-y-3 border-t border-slate-200 p-4 sm:p-5">
-          {/* This is a display filter, not a second progress state: learners
-              can compare several units, but opening one still keeps evidence
-              tied to exactly one unit and skill. */}
+          {/* Pending checkboxes make this a real multi-select: the compact unit
+              menu changes only after Apply, while evidence remains tied to one
+              active unit and skill. */}
           <label className="block text-sm font-bold text-slate-800">
             Search units
             <input
@@ -1000,27 +1054,76 @@ export function IntegratedSkillsScreen({
               value={unitQuery}
             />
           </label>
-          <div aria-label={`${level.cefr} unit multi-select`} className="grid max-h-72 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
+          <div
+            aria-label={`${level.cefr} unit multi-select`}
+            className="grid max-h-72 gap-2 overflow-y-auto pr-1 sm:grid-cols-2"
+          >
             {filteredUnits.map((candidate) => {
-              const checked = visibleUnitIds.includes(candidate.id);
+              const checked = pendingUnitIds.includes(candidate.id);
               return (
-                <div className={`flex min-w-0 items-center gap-2 rounded-xl border p-3 ${checked ? "border-violet-400 bg-violet-50" : "border-slate-200 bg-white"}`} key={candidate.id}>
+                <div
+                  className={`flex min-w-0 items-center gap-2 rounded-xl border p-3 ${checked ? "border-violet-400 bg-violet-50" : "border-slate-200 bg-white"}`}
+                  key={candidate.id}
+                >
                   <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-sm font-bold">
                     <input
                       aria-label={`Show Unit ${candidate.number}: ${candidate.title}`}
                       checked={checked}
-                      onChange={() => toggleVisibleUnit(candidate.id)}
+                      onChange={() => togglePendingUnit(candidate.id)}
                       type="checkbox"
                     />
-                    <span className="min-w-0 truncate">Unit {candidate.number} · {candidate.title}</span>
+                    <span className="min-w-0 truncate">
+                      Unit {candidate.number} · {candidate.title}
+                    </span>
                   </label>
-                  <Button onClick={() => chooseUnit(candidate.id)} size="sm" variant={candidate.id === unit.id ? "default" : "outline"}>
+                  <Button
+                    onClick={() => chooseUnit(candidate.id)}
+                    size="sm"
+                    variant={candidate.id === unit.id ? "default" : "outline"}
+                  >
                     {candidate.id === unit.id ? "Current" : "Open"}
                   </Button>
                 </div>
               );
             })}
-            {!filteredUnits.length ? <p className="p-3 text-sm text-slate-600">No unit matches this search.</p> : null}
+            {!filteredUnits.length ? (
+              <p className="p-3 text-sm text-slate-600">
+                No unit matches this search.
+              </p>
+            ) : null}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              disabled={!pendingUnitIds.length}
+              onClick={applyUnitSelection}
+              type="button"
+            >
+              Apply {pendingUnitIds.length} selected
+            </Button>
+            <Button
+              onClick={() =>
+                setPendingUnitIds(level.units.map((candidate) => candidate.id))
+              }
+              type="button"
+              variant="outline"
+            >
+              Select all units
+            </Button>
+            <Button
+              onClick={() => setPendingUnitIds([unit.id])}
+              type="button"
+              variant="outline"
+            >
+              Only current unit
+            </Button>
+            {!pendingUnitIds.length ? (
+              <span
+                aria-live="polite"
+                className="text-sm font-bold text-red-700"
+              >
+                Select at least one unit.
+              </span>
+            ) : null}
           </div>
         </div>
       </details>

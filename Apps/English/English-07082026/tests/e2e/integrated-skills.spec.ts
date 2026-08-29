@@ -55,6 +55,23 @@ test("keeps the daily mission readable on a narrow mobile screen", async ({
   expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 1);
 });
 
+test("applies the searchable unit multi-select before changing the compact menu", async ({
+  page,
+}) => {
+  await page.getByText("Unit multi-select", { exact: true }).click();
+  await expect(page.getByText(/1 of \d+ A1 units selected/)).toBeVisible();
+
+  await page.getByLabel(/^Show Unit 2:/).check();
+  await expect(page.getByText(/1 of \d+ A1 units selected/)).toBeVisible();
+  await page.getByRole("button", { name: "Apply 2 selected" }).click();
+
+  await expect(page.getByText(/2 of \d+ A1 units selected/)).toBeVisible();
+  await expect(page.locator("#integrated-unit option")).toHaveCount(2);
+  await expect(
+    page.getByText(/2 A1 units shown in the lesson menu/),
+  ).toBeVisible();
+});
+
 test("plays original listening and opens the exact speaking lesson in the studio", async ({
   page,
 }) => {
@@ -82,12 +99,13 @@ test("plays original listening and opens the exact speaking lesson in the studio
   await page.goto("/?screen=integrated-skills");
   await page.getByText("Lesson navigator", { exact: true }).click();
 
-  await page
-    .getByRole("button", { name: "Play original listening" })
-    .click();
+  await page.getByRole("button", { name: "Play original listening" }).click();
   await expect(page.getByText(/Original listening is playing/)).toBeVisible();
 
-  await page.getByRole("button", { name: /Speaking/ }).first().click();
+  await page
+    .getByRole("button", { name: /Speaking/ })
+    .first()
+    .click();
   await page
     .getByRole("button", {
       name: "Practise this lesson in Conversation Studio",

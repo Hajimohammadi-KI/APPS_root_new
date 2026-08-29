@@ -239,7 +239,22 @@ The dashboard includes:
 - visible partial/access notices;
 - automatic fixture-run exclusion.
 
-The standard Data Analytics portable reader currently has a verified narrow-viewport chrome overflow defect in its shared runtime. `artifact.json` is valid and source-backed; final portable HTML remains blocked until the compatibility packaging step passes the same browser verifier. Do not mark HTML delivery green before that receipt exists.
+Package the self-contained HTML and run the same official browser verifier:
+
+```powershell
+node --test tests\package_dashboard.test.mjs
+node tools\package_dashboard.mjs `
+  --input dashboard\artifact.json `
+  --output dashboard\cefr-model-dashboard.html `
+  --plugin-root "C:\Users\Elahe\.codex\plugins\cache\openai-curated-remote\data-analytics\0.2.8-13ceeea1f599"
+```
+
+The wrapper calls the official portable builder, chart extractor, and verifier.
+It adds one bounded CSS compatibility rule for an 8px shared-reader overflow on
+Windows Chromium; it does not rewrite the canonical payload. The checked-in
+artifact passed source-dialog keyboard interaction and responsive checks at
+1440px and 390px. Real benchmark metrics still remain `N/A` until an approved,
+non-fixture corpus is trained.
 
 ## 13. English and German rollout
 
@@ -265,4 +280,3 @@ The standard Data Analytics portable reader currently has a verified narrow-view
 - MERLIN: <https://www.merlin-platform.eu/>
 - CEFR-J: <https://github.com/openlanguageprofiles/olp-en-cefrj>
 - DAFlex: <https://cental.uclouvain.be/cefrlex/daflex/>
-

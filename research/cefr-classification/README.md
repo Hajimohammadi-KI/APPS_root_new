@@ -54,4 +54,22 @@ Transformer dependencies are deliberately separate:
 - `src/cefr_pipeline/`: preprocessing, splitting, training, evaluation, run, and dashboard code.
 - `runs/**/run.json`: one traceable non-fixture experiment record. Model weights and predictions remain local and ignored by Git.
 - `dashboard/artifact.json`: canonical source-backed snapshot. It shows `N/A` until measured runs exist.
+- `dashboard/cefr-model-dashboard.html`: self-contained, responsive dashboard built from the exact canonical payload.
 
+## Package and verify the dashboard
+
+The packaging wrapper reuses the free Data Analytics portable builder and its
+official browser verifier. Its small CSS compatibility layer only contains the
+shared reader inside narrow Windows viewports; it does not alter evidence or
+dashboard interactions.
+
+```powershell
+node --test tests\package_dashboard.test.mjs
+node tools\package_dashboard.mjs `
+  --input dashboard\artifact.json `
+  --output dashboard\cefr-model-dashboard.html `
+  --plugin-root "C:\Users\Elahe\.codex\plugins\cache\openai-curated-remote\data-analytics\0.2.8-13ceeea1f599"
+```
+
+Do not publish a candidate unless the receipt says `ok: true` and reports both
+desktop (`1440`) and mobile (`390`) viewports.

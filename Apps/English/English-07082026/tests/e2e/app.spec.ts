@@ -342,9 +342,15 @@ test("provides accordion navigation and cross-platform installation", async ({
     scope: "/",
     start_url: "/",
   });
-  expect(manifest.icons).toHaveLength(4);
-  // Both an "any" and a "maskable" icon are required for Android/adaptive
-  // icon shapes to render correctly, not just one generic icon.
+  // One bundled SVG is intentionally declared twice: the browser still gets
+  // distinct "any" and "maskable" roles without depending on missing PNGs.
+  expect(manifest.icons).toHaveLength(2);
+  expect(
+    manifest.icons.every(
+      (icon: { src: string; type: string }) =>
+        icon.src === "/icons/automaticity.svg" && icon.type === "image/svg+xml",
+    ),
+  ).toBeTruthy();
   expect(
     manifest.icons.map((icon: { purpose: string }) => icon.purpose),
   ).toEqual(expect.arrayContaining(["any", "maskable"]));
@@ -356,9 +362,7 @@ test("provides accordion navigation and cross-platform installation", async ({
   const serviceWorkerResponse = await request.get("/sw.js");
   expect(serviceWorkerResponse.ok()).toBeTruthy();
   const serviceWorker = await serviceWorkerResponse.text();
-  expect(serviceWorker).toContain(
-    "english-automaticity-v28-canonical-grammar-1",
-  );
+  expect(serviceWorker).toContain("english-automaticity-v29-local-icon-1");
   expect(serviceWorker).toContain('"/daily"');
   expect(serviceWorker).toContain("SKIP_WAITING");
 });

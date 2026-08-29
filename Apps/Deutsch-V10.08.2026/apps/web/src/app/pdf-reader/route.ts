@@ -1,7 +1,10 @@
+// Port 4332 is the shared PDF Studio readiness contract; the retired 4322 port breaks local handoffs.
+const DEFAULT_PDF_READER_URL = "http://127.0.0.1:4332/";
+
 export function GET(request: Request) {
   const incoming = new URL(request.url);
   const target = new URL(
-    process.env.NEXT_PUBLIC_PDF_READER_URL ?? "http://127.0.0.1:4322/",
+    process.env.NEXT_PUBLIC_PDF_READER_URL ?? DEFAULT_PDF_READER_URL,
   );
   target.searchParams.set("lang", "de");
   target.searchParams.set("source", "german-notebook");

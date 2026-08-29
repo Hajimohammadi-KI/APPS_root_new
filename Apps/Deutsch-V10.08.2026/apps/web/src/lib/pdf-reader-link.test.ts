@@ -15,6 +15,17 @@ afterEach(() => {
 });
 
 describe("gemeinsame PDF-Reader-Links", () => {
+  test("nutzt lokal den gemeinsamen PDF-Studio-Port", () => {
+    delete process.env.NEXT_PUBLIC_PDF_READER_URL;
+
+    const response = openPdfReader(
+      new Request("https://deutsch.example/pdf-reader"),
+    );
+    const location = new URL(response.headers.get("location") ?? "");
+
+    expect(location.origin).toBe("http://127.0.0.1:4332");
+  });
+
   test("öffnet genau die ausgewählte Drive-Datei mit Lesefokus", () => {
     const href = pdfReaderHrefForMaterial({
       sourceUrl:

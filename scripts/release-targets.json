@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "targets": [
+    {
+      "id": "english",
+      "name": "English Automaticity",
+      "projectDir": "Apps/English/English-07082026",
+      "build": { "command": "bun", "args": ["run", "build"] },
+      "localChecks": [
+        { "url": "http://127.0.0.1:3202/", "kind": "html", "includes": ["dir=\"ltr\""] },
+        { "url": "http://127.0.0.1:4201/api/health", "kind": "json", "expected": { "service": "grammar-automaticity-api", "status": "ok" } }
+      ],
+      "publicAccess": "public",
+      "publicChecks": [
+        { "url": "https://english-grammar-automaticity-pwa.vercel.app/", "kind": "html", "includes": ["English Automaticity"] }
+      ]
+    },
+    {
+      "id": "german",
+      "name": "Deutsch Automaticity",
+      "projectDir": "Apps/Deutsch-V10.08.2026",
+      "build": { "command": "bun", "args": ["run", "build"] },
+      "localChecks": [
+        { "url": "http://127.0.0.1:3210/", "kind": "html", "includes": ["dir=\"ltr\""] },
+        { "url": "http://127.0.0.1:4210/api/v1/health", "kind": "json", "expected": { "service": "grammar-api", "status": "ok" } }
+      ],
+      "publicAccess": "public",
+      "publicChecks": [
+        { "url": "https://deutschflow-grammar.vercel.app/", "kind": "html", "includes": ["DeutschFlow"] }
+      ]
+    },
+    {
+      "id": "tracker",
+      "name": "Cross Repository Tracker",
+      "projectDir": "Apps/Cross_Repository_Code_Intelligence-Version",
+      "build": { "command": "bun", "args": ["run", "build"] },
+      "localChecks": [
+        { "url": "http://127.0.0.1:4312/", "kind": "html", "includes": ["dir=\"ltr\""] },
+        { "url": "http://127.0.0.1:4313/v1/health", "kind": "json", "expected": { "ok": true, "service": "cross-repository-api" } }
+      ],
+      "publicAccess": "public",
+      "publicChecks": [
+        { "url": "https://cross-repository-code-intelligence.vercel.app/", "kind": "html", "includes": ["Cross-Repository"] }
+      ]
+    },
+    {
+      "id": "settings",
+      "name": "Settings",
+      "projectDir": "Apps/Apps-For-Integeration/Einstellungen-APP",
+      "build": { "command": "bun", "args": ["run", "build"] },
+      "localChecks": [
+        { "url": "http://127.0.0.1:4323/settings", "kind": "html", "includes": ["dir=\"ltr\""] }
+      ],
+      "publicAccess": "local-only",
+      "publicChecks": []
+    },
+    {
+      "id": "pdf",
+      "name": "Research PDF Studio",
+      "projectDir": "Apps/Apps-For-Integeration/Reader-PDF-App",
+      "build": { "command": "bun", "args": ["run", "build"] },
+      "localChecks": [
+        { "url": "http://127.0.0.1:4332/", "kind": "html", "includes": ["dir=\"ltr\""] },
+        { "url": "http://127.0.0.1:4332/api/health", "kind": "json", "expected": { "service": "research-pdf-studio", "ready": true, "contractVersion": 1 } }
+      ],
+      "publicAccess": "public",
+      "publicChecks": [
+        { "url": "https://research-pdf-studio.vercel.app/", "kind": "html", "includes": ["Research PDF Studio"] }
+      ]
+    }
+  ]
+}

@@ -127,6 +127,31 @@ test("grammar catalog stays usable on a narrow mobile screen", async ({
   expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
 });
 
+test("integrated skills applies a searchable multi-select without a long catalogue", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/fertigkeiten");
+
+  await page.getByText("Lernpfad auswählen", { exact: true }).click();
+  await expect(
+    page.getByRole("checkbox", { name: "Niveau A1 anzeigen" }),
+  ).toBeChecked();
+  await page.getByRole("checkbox", { name: "Niveau B1 anzeigen" }).check();
+  await page.getByRole("checkbox", { name: "Niveau A1 anzeigen" }).uncheck();
+  await page.getByRole("checkbox", { name: "Schreiben anzeigen" }).uncheck();
+  await page.getByRole("button", { name: "Auswahl anwenden" }).click();
+
+  await expect(page.locator('[data-level="A1"]')).toHaveCount(0);
+  await expect(page.locator('[data-level="B1"]')).toHaveCount(1);
+  await expect(page.getByText(/Angezeigt: B1/)).toBeVisible();
+  const dimensions = await page.locator("body").evaluate((body) => ({
+    clientWidth: body.clientWidth,
+    scrollWidth: body.scrollWidth,
+  }));
+  expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth);
+});
+
 test("studio supports topic selection, sessions, and minimum-word gate", async ({
   page,
 }) => {

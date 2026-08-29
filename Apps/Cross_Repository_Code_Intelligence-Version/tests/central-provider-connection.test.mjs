@@ -5,6 +5,7 @@ import test from "node:test";
 const reader = await readFile(new URL("../app/pdf-reader/page.tsx", import.meta.url), "utf8");
 const aiRoute = await readFile(new URL("../app/api/ai/route.ts", import.meta.url), "utf8");
 const translateRoute = await readFile(new URL("../app/api/translate/route.ts", import.meta.url), "utf8");
+const providerSecrets = await readFile(new URL("../lib/provider-secrets.ts", import.meta.url), "utf8");
 
 test("PDF Visual uses central AI and translation settings", () => {
   assert.match(reader, /fetch\("\/api\/status"/);
@@ -20,4 +21,9 @@ test("AI routes do not accept provider secrets from browser request bodies", () 
   assert.match(translateRoute, /getProviderSecretForRequest/);
   assert.match(translateRoute, /api-free\.deepl\.com/);
   assert.match(translateRoute, /DeepL-Auth-Key/);
+});
+
+test("preserved credentials with unavailable machine keys fail closed", () => {
+  assert.match(providerSecrets, /try\s*\{\s*return await decrypt/s);
+  assert.match(providerSecrets, /catch\s*\{[\s\S]*return null/);
 });

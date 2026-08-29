@@ -75,6 +75,7 @@ export function RecallCheck() {
                 )}
               </div>
               <button
+                type="button"
                 onClick={() => setActiveId(entry.id)}
                 className="rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700"
               >
@@ -97,10 +98,11 @@ export function RecallCheck() {
           {!showOriginal ? (
             <>
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-600">
+                <label htmlFor="recall-fa" className="mb-1 block text-xs font-medium text-slate-600">
                   فارسی
                 </label>
                 <textarea
+                  id="recall-fa"
                   value={recallFA}
                   onChange={(e) => setRecallFA(e.target.value)}
                   dir="rtl"
@@ -111,10 +113,11 @@ export function RecallCheck() {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-600">
+                <label htmlFor="recall-de" className="mb-1 block text-xs font-medium text-slate-600">
                   Deutsch
                 </label>
                 <textarea
+                  id="recall-de"
                   value={recallDE}
                   onChange={(e) => setRecallDE(e.target.value)}
                   rows={3}
@@ -129,18 +132,21 @@ export function RecallCheck() {
                 </p>
                 <div className="flex gap-2">
                   <button
+                    type="button"
                     onClick={() => handleSubmit('weak')}
                     className="flex-1 rounded-lg border border-red-200 bg-red-50 py-2 text-xs font-medium text-red-700 hover:bg-red-100"
                   >
                     Schwach
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleSubmit('medium')}
                     className="flex-1 rounded-lg border border-amber-200 bg-amber-50 py-2 text-xs font-medium text-amber-700 hover:bg-amber-100"
                   >
                     Mittel
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleSubmit('good')}
                     className="flex-1 rounded-lg border border-emerald-200 bg-emerald-50 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-100"
                   >
@@ -180,6 +186,7 @@ export function RecallCheck() {
               )}
 
               <button
+                type="button"
                 onClick={resetAndClose}
                 className="w-full rounded-lg bg-purple-600 py-2 text-sm font-medium text-white hover:bg-purple-700"
               >

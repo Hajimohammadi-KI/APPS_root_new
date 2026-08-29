@@ -274,9 +274,6 @@ OpenAI und DeepL bereits aus derselben sicheren zentralen Einstellung. Eine
 optionale Neon-Verbindung wird über `DATABASE_URL` konfiguriert und vom NestJS-
 Health-Endpunkt wirklich getestet.
 
-Die technische Bestandsaufnahme und die nächsten Schritte stehen in
-[`docs/ROADMAP.md`](docs/ROADMAP.md).
-
 Der Quellcode ist vollständig in dieser ZIP enthalten. Ordner wie
 `node_modules`, `.wrangler`, Build-Ausgaben, lokale Daten und geheime
 `.env.local`-Dateien werden absichtlich nicht mitgeliefert.

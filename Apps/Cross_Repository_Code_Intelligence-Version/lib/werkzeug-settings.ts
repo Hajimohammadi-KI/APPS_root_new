@@ -203,7 +203,7 @@ export const DEFAULT_WERKZEUG_SETTINGS: WerkzeugSettings = {
     planPausedAt: "",
     dailyWorkMode: "light",
     totalPlanWeeks: 25,
-    dailyCapacityMinutes: 240,
+    dailyCapacityMinutes: 70,
     weeklyGoalMinutes: 1200,
     workdayStart: "09:00",
     restDays: [0, 6],
@@ -229,7 +229,7 @@ export const DEFAULT_WERKZEUG_SETTINGS: WerkzeugSettings = {
     nestedFolders: true,
     defaultProjectFolder: "Projekte",
     sources: [
-      { id: "source-github-apps-root-new", name: "APPS_root_new", kind: "github", location: "https://github.com/Hajimohammadi-KI/APPS_root_new", enabled: true },
+      { id: "source-github-apps-root", name: "APPS_root", kind: "github", location: "https://github.com/Hajimohammadi-KI/APPS_root", enabled: true },
       { id: "source-drive-research-pdfs", name: "Cross Repository · Forschungs-PDFs", kind: "google_drive", location: "https://drive.google.com/drive/folders/1rJmYt-fJrv06HjRntIGJtczYB7yy1GAW", enabled: true },
       { id: "source-local-project", name: "Lokale Installation", kind: "local", location: "%LOCALAPPDATA%\\CrossRepositoryCodeIntelligence", enabled: true },
     ],

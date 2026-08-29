@@ -27,8 +27,26 @@ export function isLocalModeRequest(request: Request) {
     && isLoopbackHostname(new URL(request.url).hostname);
 }
 
+/**
+ * Whether this deployment trusts oai-authenticated-user-* headers for
+ * non-local requests. These headers carry no signature -- they're only safe
+ * to trust when a platform gateway in front of this app (the ChatGPT Apps
+ * SDK / Sites host) verifies the caller's session and sets them itself,
+ * stripping any caller-supplied copy first. The shipped local install
+ * (scripts/generate-local-env.mjs) never needs this flag: it sets
+ * LOCAL_MODE=1, which is checked first below and never consults these
+ * headers at all. Default is "don't trust", so a Worker or Vercel
+ * deployment reachable directly -- with no such gateway in front of it --
+ * fails safe with 401s instead of letting any caller impersonate an
+ * arbitrary user by setting these headers themselves.
+ */
+function trustsAuthHeaders(): boolean {
+  return process.env.TRUST_OAI_AUTH_HEADERS === "1";
+}
+
 export function requestOwner(request: Request): string | null {
   if (isLocalModeRequest(request)) return LOCAL_USER_KEY;
+  if (!trustsAuthHeaders()) return null;
 
   // Keep the hosted Sites authentication contract and precedence unchanged.
   return cleanHeader(request.headers.get(AUTH_ID_HEADER))
@@ -42,6 +60,7 @@ export function requestOwner(request: Request): string | null {
  */
 export async function requestUserKey(request: Request): Promise<string | null> {
   if (isLocalModeRequest(request)) return LOCAL_USER_KEY;
+  if (!trustsAuthHeaders()) return null;
 
   const email = cleanHeader(request.headers.get(AUTH_EMAIL_HEADER))?.toLowerCase();
   const identity = email || cleanHeader(request.headers.get(AUTH_ID_HEADER));

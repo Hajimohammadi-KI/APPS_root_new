@@ -27,8 +27,14 @@ export async function POST(request: Request) {
       return Response.json({ message: "Der ausgewählte Text oder die Frage ist zu lang. Bitte einen kleineren Abschnitt verwenden." }, { status: 413 });
     }
 
+    // getProviderSecretForRequest() already falls back to the operator's
+    // OPENAI_API_KEY when the caller has no personal key saved -- but only
+    // once it has resolved a real owner (lib/provider-secrets.ts). Do not
+    // add a second `|| process.env.OPENAI_API_KEY` here: that would bypass
+    // the ownership check for any request with no resolved owner at all,
+    // letting an anonymous caller drain the operator's shared key.
     const stored = await getProviderSecretForRequest<{ apiKey: string; model?: string }>(request, "openai");
-    const apiKey = stored?.apiKey || process.env.OPENAI_API_KEY;
+    const apiKey = stored?.apiKey;
     if (!apiKey) {
       return Response.json(
         { message: "OpenAI ist noch nicht eingerichtet. Verbinde OpenAI einmal in den zentralen Einstellungen." },

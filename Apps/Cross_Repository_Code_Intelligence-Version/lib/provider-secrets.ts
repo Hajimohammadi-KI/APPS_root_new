@@ -2,7 +2,7 @@ import { requestOwner } from "./server-user";
 import { DEFAULT_OPENAI_MODEL } from "./model-config";
 
 export type ProviderName = "google" | "google_tokens" | "openai" | "deepl";
-export type ConnectionState = "not_configured" | "untested" | "connected" | "expired" | "quota_exhausted" | "error";
+export type ConnectionState = "not_configured" | "untested" | "connected" | "expired" | "quota_exhausted" | "invalid_key" | "unreachable" | "error";
 
 type Database = {
   prepare: (sql: string) => {
@@ -130,7 +130,15 @@ export async function getProviderRecord(owner: string, provider: ProviderName) {
 export async function getProviderSecret<T>(owner: string, provider: ProviderName): Promise<T | null> {
   const record = await getProviderRecord(owner, provider);
   if (!record) return null;
-  return decrypt<T>(owner, provider, record.row);
+  try {
+    return await decrypt<T>(owner, provider, record.row);
+  } catch {
+    // Installer migrations preserve the encrypted database, while an older
+    // machine-local key may no longer be available. Treat that credential as
+    // unavailable so status and ordinary study flows keep working; the user
+    // can reconnect the provider to create a fresh encrypted record.
+    return null;
+  }
 }
 
 export async function getProviderSecretForRequest<T>(request: Request, provider: ProviderName): Promise<T | null> {

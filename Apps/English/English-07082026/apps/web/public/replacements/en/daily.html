@@ -29,6 +29,9 @@
        to move its CTA below the progress details before it can leave the card. */
     .activity{container-type:inline-size}.act-foot{min-width:0}
     @container (max-width:390px){.act-foot{grid-template-columns:minmax(0,1fr) auto}.act-foot .open{grid-column:1/-1;width:100%;white-space:normal}}
+    /* Long-label guard: translated titles, states, and the primary action may
+       wrap, but must remain readable and touch-friendly inside their card. */
+    .act-head b{flex:1 1 160px;overflow-wrap:anywhere}.tag{max-width:100%;white-space:normal;overflow-wrap:anywhere;text-align:center}.act-foot>*{min-width:0}.open{height:auto;min-height:44px;max-width:100%;padding-block:8px;line-height:1.25;overflow-wrap:anywhere;white-space:normal}
     /* Sidebar headings are actionable accordions: hiding a group reduces scan load,
        while aria-expanded keeps the control truthful for keyboard and assistive users. */
     .nav-parent:not([data-route]){cursor:pointer}.nav-parent .chev{transition:transform 160ms ease}.nav-section.is-collapsed .nav-item{display:none}.nav-section.is-collapsed .nav-parent .chev{transform:rotate(180deg)}

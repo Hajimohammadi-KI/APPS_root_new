@@ -18,6 +18,39 @@ async function openNavigationLink(page: Page, label: string, group: string) {
   await navigation.getByRole("link", { name: label, exact: true }).click();
 }
 
+async function expectDailyCardsToContainLongLabels(page: Page) {
+  // Stress the production card structure with realistic translated copy; this
+  // catches clipped states and actions that ordinary short fixtures miss.
+  await page.locator(".activity").evaluateAll((cards) => {
+    cards.forEach((card) => {
+      const title = card.querySelector(".act-head b");
+      const status = card.querySelector(".tag");
+      const action = card.querySelector(".open");
+      if (title) title.textContent = "Review, correct and save your complete learning evidence";
+      if (status) status.textContent = "Not started — feedback required";
+      if (action) action.textContent = "Open complete practice activity";
+    });
+  });
+  const overflow = await page.locator(".activity").evaluateAll((cards) =>
+    cards.flatMap((card, index) => {
+      const cardBox = card.getBoundingClientRect();
+      return Array.from(card.querySelectorAll(".act-head b, .tag, .minutes, .open")).flatMap((element) => {
+        const box = element.getBoundingClientRect();
+        const node = element as HTMLElement;
+        return box.left < cardBox.left - 1 || box.right > cardBox.right + 1 || node.scrollWidth > node.clientWidth + 1 || node.scrollHeight > node.clientHeight + 1
+          ? [`card ${index + 1}: ${element.className || element.tagName}`]
+          : [];
+      });
+    }),
+  );
+  expect(overflow).toEqual([]);
+  const pageWidth = await page.locator("body").evaluate((body) => ({
+    client: body.clientWidth,
+    scroll: body.scrollWidth,
+  }));
+  expect(pageWidth.scroll).toBeLessThanOrEqual(pageWidth.client);
+}
+
 test.beforeEach(async ({ page }) => {
   // Start every test from a clean slate — but only once per test, not once
   // per navigation within a test: the sessionStorage flag stops later
@@ -114,6 +147,15 @@ test("shows one explained next action and continues the learner's plan", async (
   await expect(
     page.getByRole("heading", { name: "Today's 15-minute learning mission" }),
   ).toBeVisible();
+});
+
+test("daily cards contain long labels at all roadmap widths", async ({ page }) => {
+  for (const width of [320, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/daily");
+    await expect(page.locator(".activity")).toHaveCount(7);
+    await expectDailyCardsToContainLongLabels(page);
+  }
 });
 
 // Opens every in-app destination from its canonical route. The PDF reader is

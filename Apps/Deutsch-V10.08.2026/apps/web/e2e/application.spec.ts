@@ -1,5 +1,38 @@
 import { expect, test } from "@playwright/test";
 
+async function expectDailyCardsToContainLongLabels(page: import("@playwright/test").Page) {
+  // Realistic long German labels verify that responsive wrapping protects the
+  // title, status, time, and action rather than merely hiding overflow.
+  await page.locator(".activity").evaluateAll((cards) => {
+    cards.forEach((card) => {
+      const title = card.querySelector(".act-head b");
+      const status = card.querySelector(".tag");
+      const action = card.querySelector(".open");
+      if (title) title.textContent = "Überprüfen, korrigieren und vollständigen Lernnachweis speichern";
+      if (status) status.textContent = "Noch nicht begonnen — Rückmeldung erforderlich";
+      if (action) action.textContent = "Vollständige Übung öffnen";
+    });
+  });
+  const overflow = await page.locator(".activity").evaluateAll((cards) =>
+    cards.flatMap((card, index) => {
+      const cardBox = card.getBoundingClientRect();
+      return Array.from(card.querySelectorAll(".act-head b, .tag, .Minuten, .open")).flatMap((element) => {
+        const box = element.getBoundingClientRect();
+        const node = element as HTMLElement;
+        return box.left < cardBox.left - 1 || box.right > cardBox.right + 1 || node.scrollWidth > node.clientWidth + 1 || node.scrollHeight > node.clientHeight + 1
+          ? [`Karte ${index + 1}: ${element.className || element.tagName}`]
+          : [];
+      });
+    }),
+  );
+  expect(overflow).toEqual([]);
+  const pageWidth = await page.locator("body").evaluate((body) => ({
+    client: body.clientWidth,
+    scroll: body.scrollWidth,
+  }));
+  expect(pageWidth.scroll).toBeLessThanOrEqual(pageWidth.client);
+}
+
 const routes = [
   "/",
   "/heute",
@@ -429,4 +462,13 @@ test("daily path scales and persists the workload", async ({ page }) => {
   await expect(page).toHaveURL(
     /\/automatik\?from=daily&activity=5&session=45&minutes=6&units=3/,
   );
+});
+
+test("daily cards contain long labels at all roadmap widths", async ({ page }) => {
+  for (const width of [320, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("/heute");
+    await expect(page.locator(".activity")).toHaveCount(7);
+    await expectDailyCardsToContainLongLabels(page);
+  }
 });

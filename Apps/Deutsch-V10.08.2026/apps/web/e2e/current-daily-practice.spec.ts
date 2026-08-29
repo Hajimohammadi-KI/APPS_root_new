@@ -59,3 +59,9 @@ test("Navigationsüberschriften falten nur ihre eigene Linkgruppe", async ({ pag
   await heading.click();
   await expect(linkedItem).toBeVisible();
 });
+
+test("Integrierte Fertigkeiten verwendet den kanonischen App-Pfad", async ({ page }) => {
+  await page.goto("/heute");
+  await page.getByRole("button", { name: "Integrierte Fertigkeiten" }).click();
+  await expect(page).toHaveURL(/\/fertigkeiten$/);
+});

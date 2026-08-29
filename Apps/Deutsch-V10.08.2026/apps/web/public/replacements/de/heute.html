@@ -67,6 +67,8 @@
   const side=document.getElementById('side');document.getElementById('menu').addEventListener('click',()=>side.classList.toggle('open'));document.addEventListener('click',e=>{if(innerWidth<=820&&!side.contains(e.target)&&!document.getElementById('menu').contains(e.target))side.classList.remove('open')});
 </script>
 <script>
+// Das statische Tagesmenü verwendet den kanonischen App-Pfad; der ältere Alias hat keine Seite mehr.
+const integratedSkillsLink=document.querySelector('[data-route="/integrierte-fertigkeiten"]');if(integratedSkillsLink)integratedSkillsLink.dataset.route='/fertigkeiten';
 document.querySelectorAll('[data-route]').forEach(button=>button.addEventListener('click',()=>{location.href=button.dataset.route}));
 // Jede sichtbare Navigationsüberschrift reagiert: nur ihre Linkgruppe wird gefaltet und aria-expanded hält den Zustand zugänglich.
 document.querySelectorAll('.nav-parent:not([data-route])').forEach(button=>{const section=button.closest('.nav-section');if(!section)return;button.setAttribute('aria-expanded',String(!section.classList.contains('is-collapsed')));button.addEventListener('click',()=>{const collapsed=section.classList.toggle('is-collapsed');button.setAttribute('aria-expanded',String(!collapsed))})});

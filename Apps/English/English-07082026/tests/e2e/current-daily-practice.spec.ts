@@ -53,3 +53,9 @@ test("daily navigation headings collapse and reopen only their own group", async
   await heading.click();
   await expect(linkedItem).toBeVisible();
 });
+
+test("Integrated Skills uses the canonical app-shell route", async ({ page }) => {
+  await page.goto("/daily");
+  await page.getByRole("button", { name: "Integrated Skills" }).click();
+  await expect(page).toHaveURL(/\/?screen=integrated-skills$/);
+});

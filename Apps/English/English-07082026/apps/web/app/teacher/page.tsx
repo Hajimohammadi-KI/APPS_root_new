@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   ArrowLeft,
+  ClipboardCheck,
   Download,
   FileAudio,
   Pencil,
@@ -28,6 +29,8 @@ import {
   type TeacherContentStatus,
 } from "@/lib/teacher-content";
 import { originalEnglishStarterContent } from "@/lib/original-starter-content";
+import { buildTeacherReviewQueue } from "@/lib/teacher-review-queue";
+import { useAppStore } from "@/features/store/app-store";
 
 const empty = (): TeacherContentItem => ({
   id: crypto.randomUUID(),
@@ -47,11 +50,17 @@ const publicationLabels: Record<TeacherContentStatus, string> = {
 };
 
 export default function TeacherPage() {
+  const { state, hydrated } = useAppStore();
+  const [queueNow] = React.useState(() => Date.now());
   const [items, setItems] = React.useState<TeacherContentItem[]>([]);
   const [draft, setDraft] = React.useState<TeacherContentItem>(empty);
   const [audio, setAudio] = React.useState<Blob | null>(null);
   const [message, setMessage] = React.useState("");
   const importInputRef = React.useRef<HTMLInputElement>(null);
+  const reviewQueue = React.useMemo(
+    () => (hydrated ? buildTeacherReviewQueue(state, queueNow) : []),
+    [hydrated, queueNow, state],
+  );
 
   const refresh = React.useCallback(
     async () => setItems(await listTeacherContent()),
@@ -148,6 +157,50 @@ export default function TeacherPage() {
           </p>
         </div>
       </header>
+      <section className="teacher-review-queue" aria-labelledby="teacher-review-title">
+        <div className="teacher-review-heading">
+          <div>
+            <span className="teacher-kicker">REVIEW QUEUE</span>
+            <h2 id="teacher-review-title">Act on learner evidence</h2>
+            <p>
+              Automated confidence signals help order the queue. They are not
+              teacher-verified mastery.
+            </p>
+          </div>
+          <strong>{reviewQueue.length} to review</strong>
+        </div>
+        {reviewQueue.length ? (
+          <div className="teacher-review-items" role="list">
+            {reviewQueue.map((item) => (
+              <article key={item.id} role="listitem">
+                <header>
+                  <div>
+                    <span className={`teacher-review-priority teacher-review-priority-${item.priority}`}>
+                      {item.priority === "now" ? "Review now" : "Planned"}
+                    </span>
+                    <h3>{item.task}</h3>
+                  </div>
+                  <ClipboardCheck aria-hidden />
+                </header>
+                <dl>
+                  <div><dt>Learner</dt><dd>{item.learner}</dd></div>
+                  <div><dt>Evidence type</dt><dd>{item.evidenceType}</dd></div>
+                  <div><dt>Confidence</dt><dd>{item.confidence}</dd></div>
+                  <div><dt>Correction need</dt><dd>{item.correctionNeed}</dd></div>
+                  <div><dt>Recommended next step</dt><dd>{item.recommendedNextStep}</dd></div>
+                </dl>
+                <a className="teacher-review-action" href={item.href}>Open evidence and act</a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="teacher-review-empty" role="status">
+            {hydrated
+              ? "No active corrections or recall reviews need teacher attention."
+              : "Loading saved learner evidence…"}
+          </div>
+        )}
+      </section>
       <div className="teacher-layout">
         <section className="teacher-editor" aria-label="Content editor">
           <h2>

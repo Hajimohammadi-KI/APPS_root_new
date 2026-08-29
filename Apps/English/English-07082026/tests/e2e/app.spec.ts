@@ -182,6 +182,40 @@ test("opens every current product surface", async ({ page }) => {
   }
 });
 
+test("teacher review queue turns saved evidence into a next action", async ({ page }) => {
+  await page.evaluate(() => {
+    const state = JSON.parse(
+      localStorage.getItem("grammar-automaticity:v27") || "{}",
+    );
+    state.learner = { ...(state.learner || {}), displayName: "Elahe" };
+    state.errors = [{
+      id: "error-teacher-test",
+      grammarTitle: "Present perfect",
+      topic: "Life experience",
+      errorClass: "auxiliary",
+      originalText: "I have went.",
+      correctedText: "I have gone.",
+      explanation: "Use the past participle.",
+      occurrenceCount: 2,
+      repairStatus: "new",
+      nextRepairAt: 0,
+      lastSeenAt: new Date().toISOString(),
+    }];
+    state.reviews = [];
+    localStorage.setItem("grammar-automaticity:v27", JSON.stringify(state));
+  });
+  await page.goto("/teacher");
+
+  await expect(page.getByRole("heading", { name: "Act on learner evidence" })).toBeVisible();
+  await expect(page.getByText("1 to review", { exact: true })).toBeVisible();
+  const queueItem = page.getByRole("listitem");
+  await expect(queueItem.getByText("Elahe", { exact: true })).toBeVisible();
+  await expect(queueItem.getByText("Correction record", { exact: true })).toBeVisible();
+  await expect(queueItem.getByText(/automated signal/i)).toBeVisible();
+  await expect(queueItem.getByText("I have went. → I have gone.", { exact: true })).toBeVisible();
+  await expect(queueItem.getByRole("link", { name: "Open evidence and act" })).toHaveAttribute("href", "/?screen=errors");
+});
+
 // Guards the catalog's actual size (72 speaking topics, 112 authored grammar
 // units with 672 controlled exercises, 43 resources), exercises search +
 // deep-link + reload, and

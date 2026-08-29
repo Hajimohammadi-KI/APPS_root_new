@@ -3,6 +3,7 @@
 import * as React from "react";
 import {
   ArrowLeft,
+  ClipboardCheck,
   Download,
   FileAudio,
   Pencil,
@@ -28,6 +29,8 @@ import {
   type TeacherContentStatus,
 } from "@/lib/teacher-content";
 import { originalGermanStarterContent } from "@/lib/original-starter-content";
+import { buildTeacherReviewQueue } from "@/lib/teacher-review-queue";
+import { useLearnerState } from "@/features/learner-state/learner-state-provider";
 
 const empty = (): TeacherContentItem => ({
   id: crypto.randomUUID(),
@@ -47,11 +50,17 @@ const publicationLabels: Record<TeacherContentStatus, string> = {
 };
 
 export default function LehrkraftPage() {
+  const { state, hydrated } = useLearnerState();
+  const [queueNow] = React.useState(() => Date.now());
   const [items, setItems] = React.useState<TeacherContentItem[]>([]);
   const [draft, setDraft] = React.useState<TeacherContentItem>(empty);
   const [audio, setAudio] = React.useState<Blob | null>(null);
   const [message, setMessage] = React.useState("");
   const importInputRef = React.useRef<HTMLInputElement>(null);
+  const reviewQueue = React.useMemo(
+    () => (hydrated ? buildTeacherReviewQueue(state, queueNow) : []),
+    [hydrated, queueNow, state],
+  );
   const refresh = React.useCallback(
     async () => setItems(await listTeacherContent()),
     [],
@@ -147,6 +156,50 @@ export default function LehrkraftPage() {
           verwendet.
         </p>
       </header>
+      <section className="teacher-review-queue" aria-labelledby="teacher-review-title">
+        <div className="teacher-review-heading">
+          <div>
+            <span className="teacher-kicker">PRÜFWARTESCHLANGE</span>
+            <h2 id="teacher-review-title">Auf Lernnachweise reagieren</h2>
+            <p>
+              Automatische Vertrauenssignale ordnen die Liste. Sie sind keine
+              durch eine Lehrkraft bestätigte Beherrschung.
+            </p>
+          </div>
+          <strong>{reviewQueue.length} zu prüfen</strong>
+        </div>
+        {reviewQueue.length ? (
+          <div className="teacher-review-items" role="list">
+            {reviewQueue.map((item) => (
+              <article key={item.id} role="listitem">
+                <header>
+                  <div>
+                    <span className={`teacher-review-priority teacher-review-priority-${item.priority}`}>
+                      {item.priority === "now" ? "Jetzt prüfen" : "Geplant"}
+                    </span>
+                    <h3>{item.task}</h3>
+                  </div>
+                  <ClipboardCheck aria-hidden />
+                </header>
+                <dl>
+                  <div><dt>Lernende Person</dt><dd>{item.learner}</dd></div>
+                  <div><dt>Nachweisart</dt><dd>{item.evidenceType}</dd></div>
+                  <div><dt>Vertrauen</dt><dd>{item.confidence}</dd></div>
+                  <div><dt>Korrekturbedarf</dt><dd>{item.correctionNeed}</dd></div>
+                  <div><dt>Empfohlener nächster Schritt</dt><dd>{item.recommendedNextStep}</dd></div>
+                </dl>
+                <a className="teacher-review-action" href={item.href}>Nachweis öffnen und handeln</a>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="teacher-review-empty" role="status">
+            {hydrated
+              ? "Keine aktive Korrektur oder Wiederholung braucht Lehrkraft-Aufmerksamkeit."
+              : "Gespeicherte Lernnachweise werden geladen…"}
+          </div>
+        )}
+      </section>
       <div className="teacher-layout">
         <section className="teacher-editor">
           <h2>

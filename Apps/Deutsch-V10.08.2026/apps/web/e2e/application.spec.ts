@@ -464,6 +464,43 @@ test("daily path scales and persists the workload", async ({ page }) => {
   );
 });
 
+test("teacher review queue turns saved evidence into a next action", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "GrammarAutomaticityV11_de",
+      JSON.stringify({
+        learner: { displayName: "Elahe" },
+        errors: [{
+          id: "error-teacher-test",
+          date: new Date().toISOString(),
+          topic: "Perfekt",
+          original: "Ich habe gegangen.",
+          corrected: "Ich bin gegangen.",
+          errorClass: "auxiliary",
+          explanation: "Bewegungsverben verwenden sein.",
+          occurrenceCount: 2,
+          lastSeenAt: Date.now(),
+          repairStatus: "new",
+          nextRepairAt: 0,
+          successfulRepairs: 0,
+          critical: true,
+        }],
+        reviews: [],
+      }),
+    );
+  });
+  await page.goto("/lehrkraft");
+
+  await expect(page.getByRole("heading", { name: "Auf Lernnachweise reagieren" })).toBeVisible();
+  await expect(page.getByText("1 zu prüfen", { exact: true })).toBeVisible();
+  const queueItem = page.getByRole("listitem");
+  await expect(queueItem.getByText("Elahe", { exact: true })).toBeVisible();
+  await expect(queueItem.getByText("Korrektur-Nachweis", { exact: true })).toBeVisible();
+  await expect(queueItem.getByText(/automatisches Signal/i)).toBeVisible();
+  await expect(queueItem.getByText("Ich habe gegangen. → Ich bin gegangen.", { exact: true })).toBeVisible();
+  await expect(queueItem.getByRole("link", { name: "Nachweis öffnen und handeln" })).toHaveAttribute("href", "/fehler");
+});
+
 test("daily cards contain long labels at all roadmap widths", async ({ page }) => {
   for (const width of [320, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });

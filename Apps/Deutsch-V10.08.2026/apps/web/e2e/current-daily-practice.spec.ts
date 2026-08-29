@@ -20,3 +20,29 @@ test("Startseite und aktiver Tagesweg zeigen denselben ehrlichen Lernstand", asy
   await expect(page.getByText("0% geprüfte Beherrschung")).toBeVisible();
   await expect(page.getByText("Lokaler App-Dienst bereit")).toBeVisible();
 });
+
+test("Phase drei hält Status und Öffnen-Aktion im schmalen Desktop-Kartenrahmen", async ({
+  page,
+}) => {
+  // The sidebar narrows the usable desktop space before mobile media queries
+  // apply. Catch escaped German status labels and CTA controls in cards 5–7.
+  await page.setViewportSize({ width: 1366, height: 900 });
+  await page.goto("/heute");
+
+  const escapedControls = await page.locator(".cards.three .activity").evaluateAll(
+    (cards) =>
+      cards.flatMap((card) => {
+        const cardBox = card.getBoundingClientRect();
+        return [...card.querySelectorAll(".tag, .open")].flatMap((control) => {
+          const controlBox = control.getBoundingClientRect();
+          return controlBox.left < cardBox.left - 0.5 ||
+            controlBox.right > cardBox.right + 0.5 ||
+            controlBox.bottom > cardBox.bottom + 0.5
+            ? [control.textContent?.trim() ?? "unbenanntes Steuerelement"]
+            : [];
+        });
+      }),
+  );
+
+  expect(escapedControls).toEqual([]);
+});

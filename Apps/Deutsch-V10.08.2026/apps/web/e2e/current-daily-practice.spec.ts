@@ -73,6 +73,30 @@ test("Integrierte Fertigkeiten verwendet den kanonischen App-Pfad", async ({
   await expect(page).toHaveURL(/\/fertigkeiten$/);
 });
 
+test("Gesprächsstudio kehrt ohne Verlaufsschleife zum Tageskontext zurück", async ({
+  page,
+}) => {
+  await page.goto("/heute");
+  await page.evaluate(() =>
+    window.location.assign(
+      "/studio?from=daily&activity=2&return=%2Fheute&level=A1&topic=Vorstellung",
+    ),
+  );
+  await page.waitForURL(/\/studio\?/);
+  await expect(
+    page.getByText("Heutige Sprechübung · Aktivität 2"),
+  ).toBeVisible();
+
+  const historyLength = await page.evaluate(() => window.history.length);
+  await page.getByRole("button", { name: "Zum heutigen Training" }).click();
+
+  await expect(page).toHaveURL(/\/heute$/);
+  await expect(
+    page.getByRole("heading", { name: "Deine heutige 15-Minuten-Lernmission" }),
+  ).toBeVisible();
+  expect(await page.evaluate(() => window.history.length)).toBe(historyLength);
+});
+
 test("Interaktive Kästen zeigen Hover und Fokus bei korrekter Schreibrichtung", async ({
   page,
 }) => {

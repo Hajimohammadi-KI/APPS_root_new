@@ -126,4 +126,15 @@ test("plays original listening and opens the exact speaking lesson in the studio
       name: "Ava, the speaking coach",
     }),
   ).toBeVisible();
+
+  const historyLength = await page.evaluate(() => window.history.length);
+  await page.getByRole("button", { name: "Return to lesson" }).click();
+
+  await expect(page).toHaveURL(/\/?screen=integrated-skills$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Integrated Skills Path" }),
+  ).toBeVisible();
+  await expect(page.getByText("Step 1 of 7", { exact: true })).toBeVisible();
+  // Returning through history must not append another entry and create a loop.
+  expect(await page.evaluate(() => window.history.length)).toBe(historyLength);
 });

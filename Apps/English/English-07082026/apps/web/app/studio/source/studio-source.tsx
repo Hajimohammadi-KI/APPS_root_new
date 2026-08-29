@@ -128,6 +128,34 @@ function formatTime(seconds: number) {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
+function safeSameOriginPath(value: string | null, fallback: string) {
+  if (!value) return fallback;
+  try {
+    const candidate = new URL(value, window.location.origin);
+    if (candidate.origin !== window.location.origin) return fallback;
+    return `${candidate.pathname}${candidate.search}${candidate.hash}`;
+  } catch {
+    return fallback;
+  }
+}
+
+function returnToPriorContext(returnPath: string) {
+  const safePath = safeSameOriginPath(returnPath, "/");
+  const target = new URL(safePath, window.location.origin);
+  const referrer = document.referrer
+    ? new URL(document.referrer, window.location.origin)
+    : null;
+  const referrerMatches =
+    referrer?.origin === target.origin &&
+    referrer.pathname === target.pathname &&
+    (!target.search || referrer.search === target.search);
+
+  // Real browser history preserves the caller's scroll and lesson state and
+  // avoids creating a Return/Back loop. A direct-open tab uses the safe path.
+  if (referrerMatches && window.history.length > 1) window.history.back();
+  else window.location.assign(safePath);
+}
+
 function currentStudioLanguage(): StudioLanguage {
   return "en";
 }
@@ -252,7 +280,7 @@ export default function Home() {
     const requestedLevel = params.get("level");
     const requestedTopic = params.get("topic")?.toLowerCase();
     setDailyActivity(Number.isFinite(activity) ? activity : 2);
-    setDailyReturn(params.get("return") || "/daily");
+    setDailyReturn(safeSameOriginPath(params.get("return"), "/daily"));
     if (requestedLevel) setLevel(requestedLevel);
     const matching =
       conversationTopics.find(
@@ -805,7 +833,7 @@ export default function Home() {
               onClick={() =>
                 active > 0
                   ? setActive((current) => current - 1)
-                  : window.location.assign(dailyReturn)
+                  : returnToPriorContext(dailyReturn)
               }
             >
               ← Previous
@@ -813,7 +841,7 @@ export default function Home() {
             <strong>
               Today’s speaking practice · activity {dailyActivity}
             </strong>
-            <button onClick={() => window.location.assign(dailyReturn)}>
+            <button onClick={() => returnToPriorContext(dailyReturn)}>
               Return to Today’s Practice
             </button>
           </section>
@@ -824,9 +852,7 @@ export default function Home() {
             aria-label="Integrated Skills navigation"
           >
             <button
-              onClick={() =>
-                window.location.assign("/?screen=integrated-skills")
-              }
+              onClick={() => returnToPriorContext("/?screen=integrated-skills")}
             >
               ← Integrated Skills
             </button>
@@ -835,9 +861,7 @@ export default function Home() {
               {integratedContext.title}
             </strong>
             <button
-              onClick={() =>
-                window.location.assign("/?screen=integrated-skills")
-              }
+              onClick={() => returnToPriorContext("/?screen=integrated-skills")}
             >
               Return to lesson
             </button>
@@ -1552,7 +1576,7 @@ export default function Home() {
             </p>
             <button
               className="primary"
-              onClick={() => window.location.assign(dailyReturn)}
+              onClick={() => returnToPriorContext(dailyReturn)}
             >
               OK · Return to Today’s Practice
             </button>

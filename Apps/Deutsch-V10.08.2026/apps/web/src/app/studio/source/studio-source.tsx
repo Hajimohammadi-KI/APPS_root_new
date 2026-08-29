@@ -113,6 +113,34 @@ function formatTime(seconds: number) {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 }
 
+function safeSameOriginPath(value: string | null, fallback: string) {
+  if (!value) return fallback;
+  try {
+    const candidate = new URL(value, window.location.origin);
+    if (candidate.origin !== window.location.origin) return fallback;
+    return `${candidate.pathname}${candidate.search}${candidate.hash}`;
+  } catch {
+    return fallback;
+  }
+}
+
+function returnToPriorContext(returnPath: string) {
+  const safePath = safeSameOriginPath(returnPath, "/");
+  const target = new URL(safePath, window.location.origin);
+  const referrer = document.referrer
+    ? new URL(document.referrer, window.location.origin)
+    : null;
+  const referrerMatches =
+    referrer?.origin === target.origin &&
+    referrer.pathname === target.pathname &&
+    (!target.search || referrer.search === target.search);
+
+  // Use real history when possible so the learner returns to the exact daily
+  // context without creating a second entry; direct links keep a safe fallback.
+  if (referrerMatches && window.history.length > 1) window.history.back();
+  else window.location.assign(safePath);
+}
+
 export default function Home() {
   const { state } = useLearnerState();
   const [path] = useState<(typeof paths)[number]>(paths[0]);
@@ -168,7 +196,7 @@ export default function Home() {
     const requestedLevel = params.get("level");
     const requestedTopic = params.get("topic")?.toLowerCase();
     setDailyActivity(Number.isFinite(activity) ? activity : 2);
-    setDailyReturn(params.get("return") || "/heute");
+    setDailyReturn(safeSameOriginPath(params.get("return"), "/heute"));
     if (requestedLevel) setLevel(requestedLevel);
     const matching =
       conversationTopics.find(
@@ -711,13 +739,13 @@ export default function Home() {
               onClick={() =>
                 active > 0
                   ? setActive((current) => current - 1)
-                  : window.location.assign(dailyReturn)
+                  : returnToPriorContext(dailyReturn)
               }
             >
               ← Zurück
             </button>
             <strong>Heutige Sprechübung · Aktivität {dailyActivity}</strong>
-            <button onClick={() => window.location.assign(dailyReturn)}>
+            <button onClick={() => returnToPriorContext(dailyReturn)}>
               Zum heutigen Training
             </button>
           </section>
@@ -1434,7 +1462,7 @@ export default function Home() {
             </p>
             <button
               className="primary"
-              onClick={() => window.location.assign(dailyReturn)}
+              onClick={() => returnToPriorContext(dailyReturn)}
             >
               OK · Zum heutigen Training
             </button>

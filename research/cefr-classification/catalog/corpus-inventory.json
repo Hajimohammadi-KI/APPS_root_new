@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-08-30",
+  "policy": "Only approval_status=approved, licence_status=verified, and allowed_uses containing training may enter the pipeline.",
+  "corpora": [
+    {
+      "corpus_id": "universalcefr-index",
+      "name": "UniversalCEFR corpus index",
+      "languages": ["multiple"],
+      "approval_status": "review_required",
+      "licence_status": "mixed_by_subcorpus",
+      "allowed_uses": [],
+      "reason": "Useful discovery index, but every subcorpus has separate terms and must be approved independently.",
+      "source_url": "https://universalcefr.github.io/"
+    },
+    {
+      "corpus_id": "merlin-de",
+      "name": "MERLIN German learner corpus",
+      "languages": ["de"],
+      "approval_status": "review_required",
+      "licence_status": "verified",
+      "allowed_uses": ["research", "training"],
+      "licence_id": "CC-BY-SA-4.0",
+      "reason": "Strong German learner-writing candidate; explicit project approval and attribution/share-alike plan still required before download.",
+      "source_url": "https://www.merlin-platform.eu/"
+    },
+    {
+      "corpus_id": "kaggle-cefr-levelled-english-texts",
+      "name": "CEFR Levelled English Texts",
+      "languages": ["en"],
+      "approval_status": "blocked",
+      "licence_status": "provenance_unverified",
+      "allowed_uses": [],
+      "reason": "Uploader licence claim does not by itself resolve rights and label provenance for all underlying sources.",
+      "source_url": "https://www.kaggle.com/datasets/amontgomerie/cefr-levelled-english-texts"
+    },
+    {
+      "corpus_id": "kaggle-toefl-cefr-vocabulary",
+      "name": "TOEFL-CEFR vocabulary",
+      "languages": ["en"],
+      "approval_status": "blocked",
+      "licence_status": "unverified",
+      "allowed_uses": [],
+      "reason": "Vocabulary support data is not a learner-writing classification corpus; metadata and terms need verification.",
+      "source_url": "https://www.kaggle.com/datasets/panteamohamadkhani/toefl-cefr-vocabulary"
+    },
+    {
+      "corpus_id": "kaggle-celp",
+      "name": "Kaggle CELP competition reference",
+      "languages": ["unknown"],
+      "approval_status": "blocked",
+      "licence_status": "unverified",
+      "allowed_uses": [],
+      "reason": "The exact task, data files, labels, and licence have not been verified as a CEFR learner-text corpus.",
+      "source_url": "https://www.kaggle.com/c/celp"
+    },
+    {
+      "corpus_id": "cefr-j",
+      "name": "CEFR-J English Profile",
+      "languages": ["en"],
+      "approval_status": "review_required",
+      "licence_status": "mixed_component_terms",
+      "allowed_uses": [],
+      "reason": "Valuable controlled vocabulary/grammar reference for RAG and validation, not the primary learner-text classifier corpus.",
+      "source_url": "https://github.com/openlanguageprofiles/olp-en-cefrj"
+    },
+    {
+      "corpus_id": "daflex",
+      "name": "DAFlex German receptive lexicon",
+      "languages": ["de"],
+      "approval_status": "blocked",
+      "licence_status": "download_terms_unverified",
+      "allowed_uses": [],
+      "reason": "Useful German lexical feature source, but redistribution/download terms must be confirmed before ingestion.",
+      "source_url": "https://cental.uclouvain.be/cefrlex/daflex/"
+    },
+    {
+      "corpus_id": "synthetic-contract-fixture",
+      "name": "Repository-generated test fixture",
+      "languages": ["en", "de"],
+      "approval_status": "approved",
+      "licence_status": "verified",
+      "allowed_uses": ["testing", "training"],
+      "licence_id": "repository-generated",
+      "is_fixture": true,
+      "reason": "May test pipeline behavior only; its metrics are excluded from the research dashboard."
+    }
+  ]
+}
+

@@ -11,7 +11,7 @@ type Scope = {
 // Both dated applications live below D:\APPS_root\Apps.  Keeping this
 // relative to the script avoids silently auditing an obsolete checkout.
 const appsRoot = resolve(import.meta.dir, "..", "..");
-const englishRoot = join(appsRoot, "English", "English-07082026");
+const englishRoot = join(appsRoot, "English", "English-Automaticity");
 const germanRoot = resolve(import.meta.dir, "..");
 
 for (const [label, directory] of [

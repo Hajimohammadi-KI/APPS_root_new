@@ -186,11 +186,14 @@
     .rule-body { padding: 13px 14px 14px; border-top: 1px solid var(--line-strong); }
     .rule-intro { margin: 0 0 14px; color: #434d70; }
     .pattern-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-    .pattern-card { min-width: 0; min-height: 197px; padding: 12px 9px; border: 1px solid var(--line); border-radius: 11px; background: linear-gradient(145deg, #fff, #fdfcff); }
+    .pattern-card { min-width: 0; min-height: 197px; padding: 12px 9px; border: 1px solid var(--line); border-radius: 11px; background: linear-gradient(145deg, #fff, #fdfcff); transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+    @media (hover: hover) { .pattern-card:hover { border-color: #9f83c4; box-shadow: 0 7px 18px #49346524; transform: translateY(-1px); } }
     .pattern-title { display: flex; align-items: center; gap: 7px; min-height: 26px; color: #5130b1; font-weight: 800; white-space: nowrap; }
     .mini-icon { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: #7757d7; background: #eee9ff; font-size: 14px; }
     .formula { min-height: 46px; margin: 8px 0 12px; padding: 8px; border: 1px solid #e1dbef; border-radius: 7px; color: #382182; background: #faf8ff; font-size: 11px; font-weight: 750; }
     .pattern-card p { margin: 8px 0 0; font-size: 12px; }
+    .pattern-card ul { margin: 8px 0 0; padding-left: 18px; font-size: 12px; }
+    .pattern-card ul li + li { margin-top: 6px; }
 
     .accordion-list { display: grid; gap: 7px; }
     .accordion { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: #fff; }
@@ -199,6 +202,9 @@
     .accordion summary .chevron { margin-left: auto; transition: transform .15s ease; }
     .accordion[open] summary .chevron { transform: rotate(180deg); }
     .accordion-content { padding: 12px 52px; border-top: 1px solid var(--line); color: var(--ink-soft); }
+    .accordion-content p + p, .accordion-content p + ol, .accordion-content p + ul, .accordion-content ol + p, .accordion-content ul + p { margin-top: 10px; }
+    .accordion-content ol, .accordion-content ul { margin: 0; padding-left: 20px; }
+    .accordion-content li + li { margin-top: 6px; }
 
     /* Mobile overlays and small feedback */
     .drawer-scrim { display: none; position: fixed; inset: 0; z-index: 35; border: 0; background: rgba(17, 16, 45, .45); }
@@ -463,9 +469,9 @@
 
             <div class="accordion-list">
               <details class="accordion"><summary><span class="number">2</span><span>♧</span>Beispiele und Kontrast <span class="chevron">⌄</span></summary><div class="accordion-content" id="examplesContent">Vergleiche passende Beispiele und achte auf die Funktion der Form im Satz.</div></details>
-              <details class="accordion"><summary><span class="number">3</span><span>⇄</span>Lernweg <span class="chevron">⌄</span></summary><div class="accordion-content">Rufe die Regel ab, korrigiere ein Beispiel, sprich es laut und verwende es danach in einem persönlichen Satz.</div></details>
+              <details class="accordion"><summary><span class="number">3</span><span>⇄</span>Lernweg <span class="chevron">⌄</span></summary><div class="accordion-content" id="pathContent">Rufe die Regel ab, korrigiere ein Beispiel, sprich es laut und verwende es danach in einem persönlichen Satz.</div></details>
               <details class="accordion"><summary><span class="number">4</span><span>△</span>Typischer Fehler <span class="chevron">⌄</span></summary><div class="accordion-content" id="mistakeContent">Prüfe Form, Satzstellung und Bezug, bevor du deine Antwort speicherst.</div></details>
-              <details class="accordion"><summary><span class="number">5</span><span>▤</span>Ressourcen und Zusatzübungen <span class="chevron">⌄</span></summary><div class="accordion-content">Bilde fünf Aussagesätze und verwandle jeden Satz in eine Verneinung und eine Frage.</div></details>
+              <details class="accordion"><summary><span class="number">5</span><span>▤</span>Ressourcen und Zusatzübungen <span class="chevron">⌄</span></summary><div class="accordion-content" id="resourcesContent">Bilde fünf Aussagesätze und verwandle jeden Satz in eine Verneinung und eine Frage.</div></details>
               <details class="accordion"><summary><span class="number">6</span><span>✧</span>Optionale KI-Erklärung <span class="chevron">⌄</span></summary><div class="accordion-content">Bitte erst nach einem eigenen Abrufversuch um eine weitere Erklärung.</div></details>
             </div>
           </div>

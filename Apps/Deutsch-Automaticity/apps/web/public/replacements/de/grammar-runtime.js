@@ -83,24 +83,31 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
   const deriveGoal = (unit) =>
     `Ich kann ${unit.title} in verständlichen, eigenen Sätzen passend verwenden.`;
 
+  const renderCardBody = (items, fallback) => {
+    if (Array.isArray(items) && items.length) {
+      return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`;
+    }
+    return `<p>${escapeHtml(fallback || "")}</p>`;
+  };
+
   const renderRule = (unit) => {
     const explanation = unit.explanation || {};
     const cards = [
-      ["Bedeutung", explanation.overview || unit.rule],
-      ["Form bilden", (explanation.formation || []).join(" ")],
-      ["Verwendung", (explanation.usage || []).join(" ")],
-      ["Satzstellung", (explanation.wordOrder || []).join(" ")],
-      ["Transfer", explanation.memoryTip || unit.transferTest],
+      ["Bedeutung", renderCardBody(null, explanation.overview || unit.rule)],
+      ["Form bilden", renderCardBody(explanation.formation, unit.rule)],
+      ["Verwendung", renderCardBody(explanation.usage, unit.rule)],
+      ["Satzstellung", renderCardBody(explanation.wordOrder, unit.rule)],
+      ["Transfer", renderCardBody(null, explanation.memoryTip || unit.transferTest)],
     ];
     $("#ruleBody").innerHTML = `
       <p class="rule-intro">${escapeHtml(unit.rule)}</p>
       <div class="pattern-grid">
         ${cards
           .map(
-            ([title, text], index) => `
+            ([title, body], index) => `
               <article class="pattern-card">
                 <div class="pattern-title"><span class="mini-icon">${index + 1}</span>${escapeHtml(title)}</div>
-                <p>${escapeHtml(text || unit.rule)}</p>
+                ${body}
               </article>`,
           )
           .join("")}
@@ -142,6 +149,22 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     $("#mistakeContent").innerHTML = `
       <p>${escapeHtml(unit.commonError || "Prüfe Form, Bedeutung und Satzstellung.")}</p>
       <p><strong>Reparatur:</strong> ${escapeHtml(unit.repairTest || "Korrigiere den Fehler und erkläre die Änderung.")}</p>`;
+    $("#pathContent").innerHTML = `
+      <ol>
+        <li>Rufe die Regel ab: <strong>${escapeHtml(unit.rule)}</strong></li>
+        <li>Korrigiere diesen Fehler: „${escapeHtml(unit.commonError || unit.repairTest || "")}“</li>
+        <li>Sprich den korrigierten Satz laut.</li>
+        <li>Verwende ${escapeHtml(unit.title)} danach in einem eigenen, wahren Satz.</li>
+      </ol>`;
+    const extraModel = (unit.examples || [])[1] || (unit.examples || [])[0] || unit.rule;
+    $("#resourcesContent").innerHTML = `
+      <p><strong>Zusätzliche Übung nach diesem Modell:</strong></p>
+      <ol>
+        <li>Schreibe einen eigenen Satz im Muster: „${escapeHtml(extraModel)}“</li>
+        <li>Verwandle deinen Satz in eine Verneinung.</li>
+        <li>Verwandle deinen Satz in eine Frage.</li>
+      </ol>
+      <p>Oben im Abrufbereich stehen dir außerdem ${(unit.exercises || []).length || 1} geführte Aufgaben zu ${escapeHtml(unit.title)} zur Verfügung.</p>`;
     renderRule(unit);
     exerciseIndex = 0;
     renderExercise();

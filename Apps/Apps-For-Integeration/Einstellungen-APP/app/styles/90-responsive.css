@@ -84,11 +84,15 @@ body {
   }
   .werkzeug .weekdays { display: none; }
   .werkzeug .settings-category-bar {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    overscroll-behavior-inline: contain;
+    /* Filters wrap into keyboard-readable rows instead of requiring horizontal scrolling. */
+    overflow-x: visible;
+    flex-wrap: wrap;
   }
-  .werkzeug .settings-category-bar > * { flex: 0 0 auto; }
+  .werkzeug .settings-category-bar > * {
+    flex: 1 1 12rem;
+    min-width: 0;
+    white-space: normal;
+  }
   .werkzeug :where(.integration-card-actions, .provider-actions, .source-add-actions,
     .backup-actions, .permission-actions, .hero-actions) {
     align-items: stretch;

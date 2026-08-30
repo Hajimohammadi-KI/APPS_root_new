@@ -39,7 +39,8 @@ html {
 }
 
 body {
-  min-width: 320px;
+  /* Let the layout shrink to the scrollbar-adjusted CSS viewport at high zoom. */
+  min-width: 0;
   margin: 0;
   background:
     radial-gradient(

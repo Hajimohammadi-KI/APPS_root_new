@@ -61,3 +61,15 @@ test("PDF settings dialog supports Escape, focus containment, and focus restorat
   assert.match(pdf, /settingsReturnFocusRef\.current\?\.focus\(\)/, "PDF dialog must restore focus");
   assert.match(pdf, /ref=\{settingsDialogRef\}/, "PDF dialog must expose its focus scope");
 });
+
+test("narrow layouts do not require horizontal scrolling for essential controls", async () => {
+  const [englishFoundation, settingsResponsive] = await Promise.all([
+    source("Apps/English/English-07082026/apps/web/app/styles/00-foundation.css"),
+    source("Apps/Apps-For-Integeration/Einstellungen-APP/app/styles/90-responsive.css"),
+  ]);
+
+  // Fixed minimum page widths and one-line filter rails both fail reflow at 320 CSS pixels.
+  assert.match(englishFoundation, /body\s*\{[\s\S]*?min-width:\s*0;/, "English body must shrink below 320 physical pixels at zoom");
+  assert.match(settingsResponsive, /\.werkzeug \.settings-category-bar\s*\{[\s\S]*?flex-wrap:\s*wrap;/, "Settings filters must wrap");
+  assert.match(settingsResponsive, /\.settings-category-bar > \*\s*\{[\s\S]*?white-space:\s*normal;/, "Long filter labels must wrap");
+});

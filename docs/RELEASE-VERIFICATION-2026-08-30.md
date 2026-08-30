@@ -1,5 +1,18 @@
 # Language installer release verification — 30 August 2026
 
+## Web production deployment
+
+Vercel built the four public projects from runtime commit `d19c1f5e030e6e8a527dffdc11a2a3e1b544178a`. Authenticated deployment inspection reported `READY` and assigned each canonical production alias to that deployment:
+
+| Product | Vercel project | Canonical production alias | Result |
+| --- | --- | --- | --- |
+| English Automaticity | `english-grammar-automaticity-pwa` | `https://english-grammar-automaticity-pwa.vercel.app/` | READY; public contract passed |
+| Deutsch Automaticity | `deutschflow-grammar` | `https://deutschflow-grammar.vercel.app/` | READY; the nested `.next` output-path failure is fixed |
+| Cross Repository Tracker | `study-tracker-plan` | `https://study-tracker-plan-five.vercel.app/` | READY; responsive route and persistence browser suite passed |
+| Research PDF Studio | `research-pdf-studio` | `https://research-pdf-studio.vercel.app/` | READY; public contract passed |
+
+The final release-contract commit is `35d579785e075b78b9a8728989ac5bfd4f74aac3`. It changes documentation and verification code only, so Vercel correctly retains `d19c1f5` as the deployed runtime source. The local-only Settings product returned HTTP 200 and is reported as `N/A` for public deployment by design.
+
 ## Verified
 
 | Product | Version | Setup SHA-256 | Payload SHA-256 | Install | Update | Repair | Uninstall | Synthetic learner data |

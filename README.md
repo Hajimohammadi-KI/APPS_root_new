@@ -9,8 +9,8 @@ just the map to get there.
 
 | Path | What it is |
 | --- | --- |
-| `Apps/English/English-07082026` | English Automaticity (canonical) |
-| `Apps/Deutsch-V10.08.2026` | Deutsch Automaticity (canonical) |
+| `Apps/English/English-Automaticity` | English Automaticity (canonical) |
+| `Apps/Deutsch-Automaticity` | Deutsch Automaticity (canonical) |
 | `Apps/Cross_Repository_Code_Intelligence-Version` | Cross Repository Tracker (canonical) |
 | `Apps/Apps-For-Integeration/Einstellungen-APP` | Settings (canonical, local-only) |
 | `Apps/Apps-For-Integeration/Reader-PDF-App` | Research PDF Studio (canonical) |

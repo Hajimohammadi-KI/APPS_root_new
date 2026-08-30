@@ -4,12 +4,12 @@
     {
       "id": "english",
       "name": "English Automaticity",
-      "projectDir": "Apps/English/English-07082026",
+      "projectDir": "Apps/English/English-Automaticity",
       "deployment": {
         "provider": "vercel",
         "projectName": "english-grammar-automaticity-pwa",
-        "rootDirectory": "Apps/English/English-07082026",
-        "configFile": "Apps/English/English-07082026/vercel.json"
+        "rootDirectory": "Apps/English/English-Automaticity",
+        "configFile": "Apps/English/English-Automaticity/vercel.json"
       },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [
@@ -24,12 +24,12 @@
     {
       "id": "german",
       "name": "Deutsch Automaticity",
-      "projectDir": "Apps/Deutsch-V10.08.2026",
+      "projectDir": "Apps/Deutsch-Automaticity",
       "deployment": {
         "provider": "vercel",
         "projectName": "deutschflow-grammar",
-        "rootDirectory": "Apps/Deutsch-V10.08.2026",
-        "configFile": "Apps/Deutsch-V10.08.2026/vercel.json"
+        "rootDirectory": "Apps/Deutsch-Automaticity",
+        "configFile": "Apps/Deutsch-Automaticity/vercel.json"
       },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [

@@ -9,9 +9,9 @@ const appsRoot = resolve(repositoryRoot, "Apps");
 const targets = [
   resolve(
     repositoryRoot,
-    "Apps/English/English-07082026/packages/learning-core",
+    "Apps/English/English-Automaticity/packages/learning-core",
   ),
-  resolve(repositoryRoot, "Apps/Deutsch-V10.08.2026/packages/learning-core"),
+  resolve(repositoryRoot, "Apps/Deutsch-Automaticity/packages/learning-core"),
 ];
 const files = [
   "package.json",
@@ -65,11 +65,11 @@ for (const bundle of browserBundles) {
   const browserTargets = [
     resolve(
       repositoryRoot,
-      `Apps/English/English-07082026/apps/web/public/learning-core/${bundle}`,
+      `Apps/English/English-Automaticity/apps/web/public/learning-core/${bundle}`,
     ),
     resolve(
       repositoryRoot,
-      `Apps/Deutsch-V10.08.2026/apps/web/public/learning-core/${bundle}`,
+      `Apps/Deutsch-Automaticity/apps/web/public/learning-core/${bundle}`,
     ),
   ];
   for (const target of browserTargets) {

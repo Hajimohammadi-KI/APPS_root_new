@@ -57,8 +57,8 @@ test("the Settings app is deliberately local-only", () => {
 
 test("nested language workspaces publish Next output at their Vercel project roots", async () => {
   const nestedLanguageConfigs = [
-    "Apps/English/English-07082026/apps/web/next.config.mjs",
-    "Apps/Deutsch-V10.08.2026/apps/web/next.config.ts",
+    "Apps/English/English-Automaticity/apps/web/next.config.mjs",
+    "Apps/Deutsch-Automaticity/apps/web/next.config.ts",
   ];
 
   for (const configPath of nestedLanguageConfigs) {

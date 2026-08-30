@@ -6,18 +6,18 @@ import test from "node:test";
 const root = resolve(import.meta.dirname, "..");
 
 const contractFiles = [
-  "Apps/English/English-07082026/apps/web/app/styles/100-interaction-direction.css",
-  "Apps/Deutsch-V10.08.2026/apps/web/src/app/styles/100-interaction-direction.css",
+  "Apps/English/English-Automaticity/apps/web/app/styles/100-interaction-direction.css",
+  "Apps/Deutsch-Automaticity/apps/web/src/app/styles/100-interaction-direction.css",
   "Apps/Cross_Repository_Code_Intelligence-Version/app/styles/100-interaction-direction.css",
   "Apps/Apps-For-Integeration/Einstellungen-APP/app/styles/100-interaction-direction.css",
   "Apps/Apps-For-Integeration/Reader-PDF-App/app/styles/100-interaction-direction.css",
 ];
 
 const standaloneFiles = [
-  "Apps/English/English-07082026/apps/web/public/replacements/en/daily.html",
-  "Apps/English/English-07082026/apps/web/public/replacements/en/grammar.html",
-  "Apps/Deutsch-V10.08.2026/apps/web/public/replacements/de/heute.html",
-  "Apps/Deutsch-V10.08.2026/apps/web/public/replacements/de/grammatik.html",
+  "Apps/English/English-Automaticity/apps/web/public/replacements/en/daily.html",
+  "Apps/English/English-Automaticity/apps/web/public/replacements/en/grammar.html",
+  "Apps/Deutsch-Automaticity/apps/web/public/replacements/de/heute.html",
+  "Apps/Deutsch-Automaticity/apps/web/public/replacements/de/grammatik.html",
   "Apps/Starter-App/public/styles.css",
 ];
 

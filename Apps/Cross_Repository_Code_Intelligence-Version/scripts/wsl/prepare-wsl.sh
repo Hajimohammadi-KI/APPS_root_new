@@ -1,5 +1,5 @@
 #!/bin/bash
-# Prepares a WSL-native copy of this app's web build so `wrangler dev`
+# Keep this shell payload LF-only while preparing the WSL-native app copy so `wrangler dev`
 # (workerd) can run inside WSL instead of natively on Windows.
 #
 # Why: on this machine, `wrangler dev` crashes natively on Windows with a

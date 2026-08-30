@@ -204,6 +204,8 @@ export default function ProjectRoadmap({
                   const weekDone = weekCompletedOutputs(week, completed);
                   const weekPercent = percentComplete(weekDone, weekTotal);
                   const weekComplete = weekTotal > 0 && weekDone === weekTotal;
+                  const weeklyOutputDay = week.days.find((day) => day.id === week.weeklyOutput.dayId)!;
+                  const weeklyOutputDone = isDayDone(weeklyOutputDay, completed);
                   const open = openWeeks.has(week.number);
 
                   return (
@@ -218,7 +220,7 @@ export default function ProjectRoadmap({
                         <span className="roadmap-week-number">W{week.number}</span>
                         <span className="roadmap-week-titles">
                           <strong>{week.title}</strong>
-                          <small>{week.phase}</small>
+                          <small>{week.phase} · Wochenoutput {weeklyOutputDone ? "erledigt" : "offen"}</small>
                         </span>
                         <span className="roadmap-week-percent">{weekPercent}%</span>
                         <span className="roadmap-week-caret" aria-hidden="true">
@@ -229,6 +231,13 @@ export default function ProjectRoadmap({
                       {open ? (
                         <div className="roadmap-week-body" id={`roadmap-week-${week.number}`}>
                           <p className="roadmap-week-goal">{week.goal}</p>
+                          <aside className={`roadmap-weekly-output ${weeklyOutputDone ? "is-done" : ""}`}>
+                            <span>Mindestens 1 verbindlicher Wochenoutput</span>
+                            <strong>{week.weeklyOutput.deliverable}</strong>
+                            <button type="button" onClick={() => onOpenDay(weeklyOutputDay)}>
+                              Zugehörigen Tag öffnen
+                            </button>
+                          </aside>
                           <ul className="roadmap-day-list">
                             {week.days.map((day) => {
                               const done = isDayDone(day, completed);
@@ -237,7 +246,7 @@ export default function ProjectRoadmap({
                               return (
                                 <li
                                   key={day.id}
-                                  className={`roadmap-day ${done ? "is-done" : ""} ${started ? "is-started" : ""}`}
+                                  className={`roadmap-day ${done ? "is-done" : ""} ${started ? "is-started" : ""} ${day.id === week.weeklyOutput.dayId ? "is-weekly-output" : ""}`}
                                 >
                                   <input
                                     id={checkboxId}
@@ -248,6 +257,7 @@ export default function ProjectRoadmap({
                                   />
                                   <div className="roadmap-day-copy">
                                     <label htmlFor={checkboxId}>
+                                      {day.id === week.weeklyOutput.dayId ? <em>Verbindlicher Wochenoutput</em> : null}
                                       <strong>{day.title}</strong>
                                       <small>{day.deliverable}{day.workMode === "paper" ? " · Papiermodus" : ""}</small>
                                     </label>

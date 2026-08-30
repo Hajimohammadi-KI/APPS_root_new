@@ -40,4 +40,14 @@
 - Browser console errors after the interaction: none.
 - No actionable P0, P1, or P2 issue remains in the changed daily-note flow. The focused comparison was required because the source's core defect is readable only at component scale.
 
+## 0.6.3 — explicit reading scope and weekly output
+
+- Production QA route: `http://127.0.0.1:4413/?qa=reading-063#projekt-fahrplan`.
+- Weekly-output evidence: `outputs/design-qa/weekly-output-0.6.3.png` — W1 exposes one required deliverable, its open/completed state, and a working `Zugehörigen Tag öffnen` control.
+- Reading-scope evidence: `outputs/design-qa/reading-scope-full-0.6.3.png` — the daily source card distinguishes `Vollständig lesen` from `Nur diese Abschnitte lesen` and keeps the day's content focus visible.
+- Responsive evidence: `outputs/design-qa/reading-scope-responsive-560px-0.6.3.png` — the reading assignment is usable at a 560 × 900 CSS viewport without page-level horizontal overflow.
+- Course contract: exactly 2 of 18 NLP articles are assigned as complete reads; the remaining 16 have named section lists. Every one of the 25 plan weeks has at least one required weekly output tied to a real day.
+- Interaction verification: the W1 weekly-output control opened `Anforderungs-Review-Gate`; Exposé sections § 7, § 16, and § 20 and the full Hevner reading were visible in that day's source list.
+- Browser console errors after desktop and responsive checks: none.
+
 final result: passed

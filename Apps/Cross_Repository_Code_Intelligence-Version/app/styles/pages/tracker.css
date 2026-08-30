@@ -810,6 +810,34 @@ details[open] > summary .summary-marker {
   font-size: 11px;
 }
 
+.week-output-rule {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 12px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  border-inline-start: 5px solid #8267a6;
+  background: #f7f2fb;
+  padding: 10px 14px;
+}
+
+.week-output-rule.done {
+  border-inline-start-color: var(--teal-700);
+  background: var(--mint-100);
+}
+
+.week-output-rule > span {
+  grid-column: 1;
+  color: #5f3d7d;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+
+.week-output-rule > strong { grid-column: 1; font-size: 12px; }
+.week-output-rule > button { grid-column: 2; grid-row: 1 / span 2; }
+
 .day-stack {
   border-top: 1px solid var(--line);
   background: var(--cream);
@@ -1140,6 +1168,49 @@ details[open] > summary .summary-marker {
   line-height: 1.55;
 }
 .source-list .source-focus strong { color: #4b2f6d; }
+
+.source-list article > .source-reading-plan {
+  display: block;
+  margin-top: 7px;
+  border: 1px solid #d8cbea;
+  border-inline-start: 4px solid #8267a6;
+  border-radius: 10px;
+  background: #f7f3fb;
+  padding: 10px 12px;
+}
+
+.source-list article > .source-reading-plan.full {
+  border-color: #a9cfb8;
+  border-inline-start-color: #2f7654;
+  background: #f1faf5;
+}
+
+.source-reading-plan > strong {
+  display: block;
+  color: #4b2f6d;
+  font-size: 12px;
+}
+
+.source-reading-plan.full > strong { color: #245e43; }
+.source-reading-plan > span,
+.source-reading-plan > small {
+  display: block;
+  margin-top: 5px;
+  color: #465860;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.source-reading-plan > ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px 16px;
+  margin: 7px 0 0;
+  padding-left: 20px;
+  color: #465860;
+  font-size: 11px;
+}
+.source-reading-plan > small { border-top: 1px solid #dfd5e8; padding-top: 7px; }
+.source-reading-plan > small b { color: #35234e; }
 
 .source-actions {
   display: flex !important;

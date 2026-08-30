@@ -23,6 +23,7 @@ import {
   planWeeks,
   PLAN_VERSION,
   PLAN_VERSION_HISTORY,
+  sourceReadingPolicy,
   sources,
   trackerRestartPlan,
   type PlannedDay,
@@ -3718,6 +3719,9 @@ function WeekCard({
     (sum, day) => sum + requiredOutputTotal(day),
     0,
   );
+  const weeklyOutputDay = week.days.find((day) => day.id === week.weeklyOutput.dayId)!;
+  const weeklyOutputDone =
+    countRequiredCompletedOutputs(weeklyOutputDay, completed) === requiredOutputTotal(weeklyOutputDay);
 
   return (
     <details className="week-card">
@@ -3737,6 +3741,13 @@ function WeekCard({
           />
         </span>
       </summary>
+      <aside className={`week-output-rule ${weeklyOutputDone ? "done" : "open"}`}>
+        <span>Mindestens 1 verbindlicher Wochenoutput · {weeklyOutputDone ? "erledigt" : "offen"}</span>
+        <strong>{week.weeklyOutput.deliverable}</strong>
+        <button className="text-button" type="button" onClick={() => onReveal(weeklyOutputDay)}>
+          Zugehörigen Tag öffnen
+        </button>
+      </aside>
       <div className="day-stack">
         {week.days.map((day) => (
           <DayCard
@@ -3918,6 +3929,10 @@ function DayCard({
               const focus = source.id === "proposal"
                 ? `Exposé-Abschnitte: ${day.proposal.map((item) => `§ ${item}`).join(" · ")}`
                 : day.lookFor.join(" · ");
+              const dailyReadingSections = source.id === "proposal"
+                ? day.proposal.map((item) => `Exposé § ${item}`)
+                : day.lookFor;
+              const readingPolicy = sourceReadingPolicy(source.id, dailyReadingSections);
               const readerHref = pdfReaderHref(source, settings, {
                 focus,
                 context: `${day.title} · ${day.module}`,
@@ -3934,9 +3949,17 @@ function DayCard({
                   {source.driveName && (
                     <code dir="ltr"><Highlight text={source.driveName} query={active ? query : ""} /></code>
                   )}
-                  {source.id === "proposal" && (
-                    <p className="source-focus"><strong>Lesefokus:</strong> {focus}</p>
-                  )}
+                  <div className={`source-reading-plan ${readingPolicy.scope}`}>
+                    <strong>{readingPolicy.label}</strong>
+                    {readingPolicy.scope === "full" ? (
+                      <span>{readingPolicy.requiredSections[0]}</span>
+                    ) : (
+                      <ul>
+                        {readingPolicy.requiredSections.map((section) => <li key={section}>{section}</li>)}
+                      </ul>
+                    )}
+                    <small><b>Fokus für heute:</b> {focus}</small>
+                  </div>
                   {readerHref ? (
                     <div className="source-actions" aria-label={`Aktionen für ${sourceText(source, settings)}`}>
                       <a

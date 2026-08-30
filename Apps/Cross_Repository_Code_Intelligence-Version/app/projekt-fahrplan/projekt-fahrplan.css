@@ -304,6 +304,49 @@
   font-size: 12.5px;
 }
 
+.roadmap-weekly-output {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+  margin-bottom: 10px;
+  border: 1px solid #bca5d2;
+  border-inline-start: 5px solid var(--road-accent);
+  border-radius: 12px;
+  background: #f7f2fb;
+  padding: 11px 13px;
+}
+
+.roadmap-weekly-output.is-done {
+  border-color: var(--teal-500);
+  border-inline-start-color: var(--teal-700);
+  background: var(--mint-100);
+}
+
+.roadmap-weekly-output span {
+  grid-column: 1;
+  color: var(--road-accent);
+  font-size: 10.5px;
+  font-weight: 850;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+.roadmap-weekly-output strong { grid-column: 1; font-size: 13px; }
+.roadmap-weekly-output button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  border: 1px solid #bca5d2;
+  border-radius: 9px;
+  background: #fff;
+  padding: 8px 10px;
+  color: var(--road-accent);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+}
+
 .roadmap-day-list {
   display: grid;
   gap: 7px;
@@ -330,6 +373,16 @@
 .roadmap-day.is-done {
   border-color: var(--teal-500);
   background: var(--mint-100);
+}
+
+.roadmap-day.is-weekly-output { box-shadow: inset 4px 0 0 #8267a6; }
+.roadmap-day label em {
+  color: #5f3d7d;
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 850;
+  letter-spacing: .025em;
+  text-transform: uppercase;
 }
 
 .roadmap-day input[type="checkbox"] {
@@ -439,6 +492,9 @@
     flex-direction: column;
     gap: 5px;
   }
+
+  .roadmap-weekly-output { grid-template-columns: 1fr; }
+  .roadmap-weekly-output button { grid-column: 1; grid-row: auto; justify-self: start; }
 }
 
 @media (max-width: 480px) {

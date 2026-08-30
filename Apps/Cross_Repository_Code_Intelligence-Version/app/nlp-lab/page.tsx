@@ -1,5 +1,6 @@
 import {
   articleReadings,
+  articleReadingPolicy,
   extractionSections,
   isNlpCatchUpSession,
   nlpCourseMeta,
@@ -48,6 +49,7 @@ function ReadingGroup({
           const reading = readingsById.get(readingId);
           if (!reading) return null;
           const source = sources[reading.sourceId];
+          const policy = articleReadingPolicy(reading);
           return (
             <article key={reading.id}>
               <header>
@@ -60,6 +62,19 @@ function ReadingGroup({
               </header>
               <h4>{source?.label ?? reading.sourceId}</h4>
               <code>{reading.fileName}</code>
+              <section className={`article-reading-assignment ${policy.scope}`}>
+                <strong>{tier === "reuse" ? "Nicht erneut lesen" : policy.label}</strong>
+                {tier === "reuse" ? (
+                  <p>Vorhandene Notiz wiederverwenden; nur bei einer belegten Lücke in der aktuellen Wochenarbeit öffnen.</p>
+                ) : policy.scope === "full" ? (
+                  <p>{policy.requiredSections[0]}</p>
+                ) : (
+                  <ul>
+                    {policy.requiredSections.map((section) => <li key={section}>{section}</li>)}
+                  </ul>
+                )}
+                <small>Inhaltlicher Fokus: {reading.readingFocus.join(" · ")}</small>
+              </section>
               <p>{reading.projectConnection}</p>
             </article>
           );

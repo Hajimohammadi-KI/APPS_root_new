@@ -5,6 +5,7 @@ import appPackage from "../package.json";
 import {
   allDays,
   articleReadings,
+  articleReadingPolicy,
   defaultSettings,
   extractionSections,
   isNlpCatchUpSession,
@@ -183,6 +184,30 @@ describe("Advanced Deep Learning reading plan", () => {
     ]);
   });
 
+  test("tells the learner which articles are complete reads and which sections are required", () => {
+    const fullReads = articleReadings.filter((reading) => articleReadingPolicy(reading).scope === "full");
+    expect(fullReads.map((reading) => reading.sourceId)).toEqual(["logiclens", "abeduKgQa"]);
+
+    for (const reading of articleReadings) {
+      const policy = articleReadingPolicy(reading);
+      expect(policy.requiredSections.length).toBeGreaterThan(0);
+      if (reading.mode === "DEEP") {
+        expect(policy.label).toBe("Vollständig lesen");
+      } else {
+        expect(policy.label).toBe("Nur diese Abschnitte lesen");
+        expect(policy.requiredSections.length).toBeGreaterThanOrEqual(3);
+      }
+    }
+  });
+
+  test("assigns at least one explicit core output to every plan week", () => {
+    expect(planWeeks).toHaveLength(25);
+    for (const week of planWeeks) {
+      expect(week.weeklyOutput.deliverable.length).toBeGreaterThan(0);
+      expect(week.days.some((day) => day.id === week.weeklyOutput.dayId)).toBeTrue();
+    }
+  });
+
   test("starts on 30 August and protects full-rest and paper-only recovery windows", () => {
     expect(allDays[0]?.date).toBe(trackerRestartPlan.mainPlanStart);
     expect(allDays.at(-1)?.date).toBe("2027-03-06");
@@ -254,12 +279,12 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
-  test("records Revision 7 and the medically protected paper-mode boundary", () => {
-    expect(PLAN_VERSION).toBe(7);
+  test("records Revision 8 with explicit reading scope and weekly outputs", () => {
+    expect(PLAN_VERSION).toBe(8);
     expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-30");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Falscher Gesamtstart");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Papiermodus");
-    expect(appPackage.version).toBe("0.6.2-version2");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Kürzel");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Wochenoutput");
+    expect(appPackage.version).toBe("0.6.3-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

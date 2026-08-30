@@ -179,8 +179,12 @@
   .week-badge { padding-inline: 7px; }
   .completion-chip, .status-chip { padding-inline: 7px; }
   .summary-main small { max-width: 52vw; }
+  .week-output-rule { grid-template-columns: 1fr; }
+  .week-output-rule > button { grid-column: 1; grid-row: auto; justify-self: start; }
   .day-body { padding: 10px; }
   .source-list article > div { align-items: flex-start; flex-direction: column; }
+  .source-list article > .source-reading-plan { display: block; width: 100%; }
+  .source-reading-plan > ul { grid-template-columns: 1fr; }
   .source-list article > .source-actions {
     width: 100%;
     align-items: stretch;

@@ -55,6 +55,10 @@ export type PlanWeek = {
   phaseId: string;
   title: string;
   goal: string;
+  weeklyOutput: {
+    dayId: string;
+    deliverable: string;
+  };
   days: PlannedDay[];
 };
 
@@ -119,6 +123,35 @@ export const nlpCourseMeta = {
 
 export type ReadingMode = "DEEP" | "TARGET" | "REVIEW" | "RELATED";
 
+export type ArticleReadingPolicy = {
+  scope: "full" | "sections";
+  label: string;
+  requiredSections: readonly string[];
+};
+
+export const ARTICLE_READING_POLICIES: Record<ReadingMode, ArticleReadingPolicy> = {
+  DEEP: {
+    scope: "full",
+    label: "Vollständig lesen",
+    requiredSections: ["Gesamter Artikel – vom Abstract bis zur Conclusion einschließlich Evaluation und Limitations"],
+  },
+  TARGET: {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: ["Abstract", "Method / Approach", "Data / Evaluation", "Results", "Limitations / Threats"],
+  },
+  REVIEW: {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: ["Abstract", "Taxonomy / Overview", "Limitations / Open Problems", "Conclusion"],
+  },
+  RELATED: {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: ["Abstract", "Method / Approach", "Conclusion / Limitations"],
+  },
+};
+
 export type ArticleReading = {
   id: `reading-${number}`;
   courseOrder: number;
@@ -131,6 +164,10 @@ export type ArticleReading = {
   readingFocus: [string, string, string];
   projectConnection: string;
 };
+
+export function articleReadingPolicy(reading: Pick<ArticleReading, "mode">) {
+  return ARTICLE_READING_POLICIES[reading.mode];
+}
 
 export const extractionSections = [
   "Problem",
@@ -720,6 +757,22 @@ export const articleReadings: ArticleReading[] = [
     projectConnection: "RQ1/RQ2: connects multi-function CPG context to Graph Retrieval and explicit Evidence Paths across repository boundaries.",
   },
 ];
+
+export function sourceReadingPolicy(sourceId: string, dailyFocus: readonly string[]): ArticleReadingPolicy {
+  const courseReading = articleReadings.find((reading) => reading.sourceId === sourceId);
+  if (courseReading) return articleReadingPolicy(courseReading);
+
+  const source = sources[sourceId];
+  if (source?.driveName?.includes("_DEEP_")) {
+    return ARTICLE_READING_POLICIES.DEEP;
+  }
+
+  return {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: dailyFocus,
+  };
+}
 
 export const nlpLabDefinition = {
   name: "NLP Retrieval Lab",
@@ -1589,12 +1642,21 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
     } satisfies PlannedDay;
   });
 
+  const weeklyOutputDay = days[days.length - 1];
+  if (!weeklyOutputDay) {
+    throw new Error(`Week ${week.phaseId} must define at least one weekly output`);
+  }
+
   return {
     number: weekIndex + 1,
     phase: week.phase,
     phaseId: week.phaseId,
     title: week.title,
     goal: week.goal,
+    weeklyOutput: {
+      dayId: weeklyOutputDay.id,
+      deliverable: weeklyOutputDay.deliverable,
+    },
     days,
   };
 });
@@ -1812,6 +1874,24 @@ export const PLAN_VERSION_HISTORY: readonly PlanVersionEntry[] = [
       "Sieben vollständige Ruhetage nach jedem Eingriff",
       "Papiermodus ab Tag 8 bis zum Ende der ärztlich festgelegten 14-tägigen Bildschirm-Pause",
       "Kennzeichnung jedes betroffenen Plantags als Papiermodus mit späterer digitaler Prüfung",
+    ],
+  },
+  {
+    version: 8,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Jede Artikellektüre nennt jetzt ausdrücklich Volltext oder konkrete Pflichtabschnitte. Jede der 25 Wochen weist außerdem mindestens einen verbindlichen, anklickbaren Wochenoutput aus.",
+    tasksRemoved: [
+      "Unklare DEEP-, TARGET-, REVIEW- und RELATED-Kürzel ohne konkrete Leseanweisung",
+      "Wochen ohne sichtbar hervorgehobenen Mindestoutput",
+    ],
+    tasksMoved: [
+      "Bestehende Tagesergebnisse bleiben erhalten; das letzte prüfbare Tagesergebnis jeder Woche wird zusätzlich als verbindlicher Wochenoutput markiert",
+    ],
+    tasksAdded: [
+      "Vollständig-lesen-Kennzeichnung für DEEP-Artikel",
+      "Explizite Abschnittslisten und Lesefokus für TARGET-, REVIEW- und RELATED-Artikel",
+      "Mindestens ein verbindlicher Wochenoutput in jeder der 25 Wochen",
     ],
   },
 ];

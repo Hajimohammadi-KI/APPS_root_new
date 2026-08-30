@@ -77,6 +77,15 @@ test("daily closing note provides large responsive writing areas", () => {
   assert.doesNotMatch(css, /\.note-box > div\s*\{/);
 });
 
+test("article cards expose full-versus-section reading instructions", () => {
+  assert.match(tracker, /sourceReadingPolicy\(source\.id, dailyReadingSections\)/);
+  assert.match(tracker, /readingPolicy\.label/);
+  assert.match(tracker, /Fokus für heute/);
+  assert.match(nlpLab, /articleReadingPolicy\(reading\)/);
+  assert.match(nlpLab, /Inhaltlicher Fokus/);
+  assert.match(css, /\.source-reading-plan/);
+});
+
 test("restart recovery abandons old backlog and gates every optional catch-up", () => {
   const octoberMigrationPredicate = tracker.match(/function isOctoberRestartSettings[\s\S]*?\n\}/)?.[0] ?? "";
   assert.match(tracker, /0 \/ 438 ist korrekt/);

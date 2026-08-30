@@ -54,3 +54,12 @@ test("integrated roadmap uses the app design system responsively", () => {
   assert.match(roadmapCss, /@media \(max-width: 760px\)/);
   assert.match(roadmapCss, /@media \(max-width: 480px\)/);
 });
+
+test("roadmap highlights one mandatory output in every week", () => {
+  assert.match(roadmap, /week\.weeklyOutput\.dayId/);
+  assert.match(roadmap, /Mindestens 1 verbindlicher Wochenoutput/);
+  assert.match(roadmap, /Verbindlicher Wochenoutput/);
+  assert.match(roadmap, /Wochenoutput \{weeklyOutputDone \? "erledigt" : "offen"\}/);
+  assert.match(roadmapCss, /\.roadmap-weekly-output/);
+  assert.match(roadmapCss, /\.roadmap-day\.is-weekly-output/);
+});

@@ -22,9 +22,9 @@ describe("daily work modes", () => {
     expect(isTaskRequiredForMode("light", 2)).toBeTrue();
   });
 
-  test("uses the light mode for missing or invalid saved settings", () => {
-    expect(normalizeDailyWorkMode(undefined)).toBe("light");
-    expect(normalizeDailyWorkMode("invalid")).toBe("light");
+  test("uses the four-hour mode for missing or invalid saved settings", () => {
+    expect(normalizeDailyWorkMode(undefined)).toBe("full");
+    expect(normalizeDailyWorkMode("invalid")).toBe("full");
     expect(normalizeDailyWorkMode("rescue")).toBe("rescue");
   });
 
@@ -37,6 +37,6 @@ describe("daily work modes", () => {
   test("calculates a transparent whole-plan time budget", () => {
     expect(effectivePlanHours("rescue", 146)).toBe(29.2);
     expect(effectivePlanHours("light", 146)).toBe(170.3);
-    expect(effectivePlanHours("full", 146)).toBe(511);
+    expect(effectivePlanHours("full", 146)).toBe(584);
   });
 });

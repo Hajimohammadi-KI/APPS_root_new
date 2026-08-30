@@ -19,6 +19,8 @@ const cssFiles = [
   "../app/styles/90-responsive.css",
   "../app/styles/components/hover-help-and-course.css",
   "../app/styles/91-accessibility.css",
+  "../app/styles/100-interaction-direction.css",
+  "../app/projekt-fahrplan/projekt-fahrplan.css",
 ];
 const css = (
   await Promise.all(
@@ -26,6 +28,7 @@ const css = (
   )
 ).join("\n");
 const pdfCss = await readFile(new URL("../app/pdf-reader/pdf-reader.css", import.meta.url), "utf8");
+const nlpCss = await readFile(new URL("../app/nlp-lab/nlp-lab.css", import.meta.url), "utf8");
 const settingsCss = await readFile(new URL("../app/settings/settings-modern.css", import.meta.url), "utf8");
 const settingsBaseCss = await readFile(new URL("../app/settings/settings-base.css", import.meta.url), "utf8");
 const settingsModuleCss = await readFile(new URL("../app/settings/settings-module.css", import.meta.url), "utf8");
@@ -35,6 +38,7 @@ const exposeRoute = await readFile(new URL("../app/api/expose/route.ts", import.
 const manifest = await readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8");
 const shadcn = await readFile(new URL("../components.json", import.meta.url), "utf8");
 const actualSoftwareRoadmap = await readFile(new URL("../docs/ACTUAL-SOFTWARE-ROADMAP.md", import.meta.url), "utf8");
+const authoredUiCss = [css, pdfCss, nlpCss, settingsCss, settingsBaseCss, settingsModuleCss].join("\n");
 
 test("tracker has API and local persistence boundaries", () => {
   assert.match(tracker, /fetch\("\/api\/state"/);
@@ -56,15 +60,55 @@ test("plan lifecycle and daily work mode are synchronized with central settings"
   assert.match(tracker, /Planergebnisse/);
 });
 
-test("an unstarted or paused plan cannot record task or focus progress", () => {
+test("focus progress is gated by plan status and paper-only recovery mode", () => {
   assert.match(tracker, /const planCanRecordToday = settings\.planStatus === "running"/);
   assert.match(tracker, /disabled=\{!planCanRecordToday\}/);
   assert.match(tracker, /if \(action === "start" && settings\.planStatus !== "running"\)/);
   assert.match(tracker, /const planIsRunning = settings\.planStatus === "running"/);
-  assert.match(tracker, /disabled=\{!planIsRunning\}/);
+  assert.match(tracker, /const canStartDigitalFocus = planIsRunning && day\.workMode === "screen"/);
+  assert.match(tracker, /disabled=\{!canStartDigitalFocus\}/);
+});
+
+test("daily closing note provides large responsive writing areas", () => {
+  assert.match(tracker, /structured-note-heading/);
+  assert.match(tracker, /structured-note-field-wide structured-note-field-primary/);
+  assert.match(tracker, /<textarea rows=\{5\}/);
+  assert.match(tracker, /className="structured-note-actions"/);
+  assert.match(css, /\.structured-note-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.structured-note-field textarea\s*\{[\s\S]*?min-height:\s*132px/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*?\.structured-note-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
+  assert.match(css, /\.note-box > \.structured-note-actions\s*\{/);
+  assert.doesNotMatch(css, /\.note-box > div\s*\{/);
+});
+
+test("authored interface text never falls below 12px", () => {
+  const undersizedPx = [...authoredUiCss.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)]
+    .map((match) => Number(match[1]))
+    .filter((size) => size < 12);
+  const undersizedRem = [...authoredUiCss.matchAll(/font-size\s*:\s*(\d*\.\d+)rem/g)]
+    .map((match) => Number(match[1]) * 16)
+    .filter((size) => size < 12);
+  const undersizedShorthand = [...authoredUiCss.matchAll(/font\s*:\s*(?:\d+\s+)?(\d+(?:\.\d+)?)px\//g)]
+    .map((match) => Number(match[1]))
+    .filter((size) => size < 12);
+
+  assert.deepEqual(undersizedPx, []);
+  assert.deepEqual(undersizedRem, []);
+  assert.deepEqual(undersizedShorthand, []);
+  assert.match(css, /small\s*\{[\s\S]*?font-size:\s*max\(12px, 0\.8em\)/);
+});
+
+test("article cards expose full-versus-section reading instructions", () => {
+  assert.match(tracker, /sourceReadingPolicy\(source\.id, dailyReadingSections\)/);
+  assert.match(tracker, /readingPolicy\.label/);
+  assert.match(tracker, /Fokus für heute/);
+  assert.match(nlpLab, /articleReadingPolicy\(reading\)/);
+  assert.match(nlpLab, /Inhaltlicher Fokus/);
+  assert.match(css, /\.source-reading-plan/);
 });
 
 test("restart recovery abandons old backlog and gates every optional catch-up", () => {
+  const octoberMigrationPredicate = tracker.match(/function isOctoberRestartSettings[\s\S]*?\n\}/)?.[0] ?? "";
   assert.match(tracker, /0 \/ 438 ist korrekt/);
   assert.match(tracker, /Live-Sitzungen 8–10 nur beobachten/);
   assert.match(tracker, /Keine Vorbereitung/);
@@ -74,7 +118,17 @@ test("restart recovery abandons old backlog and gates every optional catch-up", 
   assert.match(tracker, /Verstanden · Hinweis schließen/);
   assert.match(tracker, /requestedStartDate < trackerRestartPlan\.mainPlanStart/);
   assert.match(tracker, /nichts wird verdichtet oder doppelt geplant/);
-  assert.match(tracker, /ärztliche Vorgaben haben immer Vorrang/);
+  assert.match(tracker, /individuelle Anweisung des Operateurs/);
+  assert.match(tracker, /hat Vorrang vor allgemeinen Internet-Empfehlungen/);
+  assert.match(tracker, /W1 läuft vom 30\. August bis 4\. September/);
+  assert.match(tracker, /Nur auf Papier arbeiten/);
+  assert.match(tracker, /14-Tage-Pause/);
+  assert.match(tracker, /isOctoberRestartSettings/);
+  assert.match(octoberMigrationPredicate, /partial\.planStartDate === "2026-10-19"/);
+  assert.match(octoberMigrationPredicate, /partial\.planEndDate === "2027-04-10"/);
+  assert.doesNotMatch(octoberMigrationPredicate, /planStatus/);
+  assert.match(tracker, /medical-recovery-replan-v7/);
+  assert.match(tracker, /stateNeedsMedicalReplan \|\| centralNeedsMedicalReplan/);
   assert.match(nlpLab, /ohne automatische Nachholpflicht/);
   assert.match(nlpLab, /حداکثر سه خط/);
 });

@@ -5,10 +5,13 @@ import appPackage from "../package.json";
 import {
   allDays,
   articleReadings,
+  articleReadingPolicy,
   defaultSettings,
   extractionSections,
   isNlpCatchUpSession,
   isNlpRemainingLiveSession,
+  learningResources,
+  learningResourcesForDay,
   nlpCourseMeta,
   nlpCourseSessions,
   nlpCourseTransferPlans,
@@ -183,19 +186,82 @@ describe("Advanced Deep Learning reading plan", () => {
     ]);
   });
 
-  test("starts after the protected break without creating old backlog", () => {
+  test("tells the learner which articles are complete reads and which sections are required", () => {
+    const fullReads = articleReadings.filter((reading) => articleReadingPolicy(reading).scope === "full");
+    expect(fullReads.map((reading) => reading.sourceId)).toEqual(["logiclens", "abeduKgQa"]);
+
+    for (const reading of articleReadings) {
+      const policy = articleReadingPolicy(reading);
+      expect(policy.requiredSections.length).toBeGreaterThan(0);
+      if (reading.mode === "DEEP") {
+        expect(policy.label).toBe("Vollständig lesen");
+      } else {
+        expect(policy.label).toBe("Nur diese Abschnitte lesen");
+        expect(policy.requiredSections.length).toBeGreaterThanOrEqual(3);
+      }
+    }
+  });
+
+  test("assigns at least one explicit core output to every plan week", () => {
+    expect(planWeeks).toHaveLength(25);
+    for (const week of planWeeks) {
+      expect(week.weeklyOutput.deliverable.length).toBeGreaterThan(0);
+      expect(week.days.some((day) => day.id === week.weeklyOutput.dayId)).toBeTrue();
+    }
+  });
+
+  test("adds actionable prerequisite learning links to all 146 plan days", () => {
+    expect(allDays).toHaveLength(146);
+    for (const day of allDays) {
+      const resources = learningResourcesForDay(day);
+      expect(resources.length).toBeGreaterThanOrEqual(1);
+      expect(resources.length).toBeLessThanOrEqual(2);
+      expect(new Set(resources.map((resource) => resource.id)).size).toBe(resources.length);
+      for (const resource of resources) {
+        expect(learningResources[resource.id]).toBe(resource);
+        expect(resource.href.startsWith("https://")).toBeTrue();
+        expect(resource.provider.length).toBeGreaterThan(2);
+        expect(resource.read.length).toBeGreaterThan(20);
+        expect(resource.apply.length).toBeGreaterThan(20);
+        expect(resource.minutes).toBeGreaterThanOrEqual(5);
+        expect(resource.minutes).toBeLessThanOrEqual(25);
+      }
+    }
+
+    const personaDay = allDays.find((day) => day.title === "Stakeholder und Personas");
+    expect(personaDay).toBeDefined();
+    expect(personaDay?.learningResourceIds).toEqual(["personas", "userNeeds"]);
+    expect(learningResources.personas.href).toBe("https://www.nngroup.com/articles/personas-study-guide/");
+    expect(learningResources.userNeeds.href).toBe("https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs");
+    expect(Object.values(learningResources).every((resource) => resource.provider !== "Scribbr")).toBeTrue();
+  });
+
+  test("starts on 30 August and protects full-rest and paper-only recovery windows", () => {
     expect(allDays[0]?.date).toBe(trackerRestartPlan.mainPlanStart);
-    expect(allDays.at(-1)?.date).toBe("2027-04-10");
+    expect(allDays.at(-1)?.date).toBe("2027-03-06");
     expect(allDays.every((day) => day.date >= trackerRestartPlan.mainPlanStart)).toBeTrue();
     expect(allDays.every((day) => !day.optionalDuringCourse)).toBeTrue();
     expect(planWeeks.slice(0, 7).map((week) => week.days[0]?.date)).toEqual([
-      "2026-10-19", "2026-10-26", "2026-11-02", "2026-11-09",
-      "2026-11-16", "2026-11-23", "2026-11-30",
+      "2026-08-30", "2026-09-17", "2026-09-25", "2026-10-09",
+      "2026-10-16", "2026-10-23", "2026-10-26",
     ]);
-    expect(defaultSettings.planStatus).toBe("not_started");
-    expect(defaultSettings.dailyWorkMode).toBe("light");
+    expect(defaultSettings.planStatus).toBe("running");
+    expect(defaultSettings.dailyWorkMode).toBe("full");
     expect(defaultSettings.dailyStart).toBe("15:00");
-    expect(defaultSettings.planEndDate).toBe("2027-04-10");
+    expect(defaultSettings.planEndDate).toBe("2027-03-06");
+
+    const firstRestDays = allDays.filter((day) => day.date >= "2026-09-10" && day.date <= "2026-09-16");
+    const secondRestDays = allDays.filter((day) => day.date >= "2026-09-29" && day.date <= "2026-10-05");
+    expect(firstRestDays).toHaveLength(0);
+    expect(secondRestDays).toHaveLength(0);
+
+    const paperDays = allDays.filter((day) => day.workMode === "paper");
+    expect(paperDays.map((day) => day.date)).toEqual([
+      "2026-09-17", "2026-09-18", "2026-09-19", "2026-09-21", "2026-09-22", "2026-09-23",
+      "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-12", "2026-10-13",
+    ]);
+    expect(paperDays.every((day) => day.tasks[1]?.items.map((item) => item.label).join(" ").includes("auf Papier"))).toBeTrue();
+    expect(paperDays.every((day) => day.tasks[2]?.items.map((item) => item.label).join(" ").includes("Bildschirmfreigabe"))).toBeTrue();
   });
 
   test("separates missed sessions from the three remaining live sessions", () => {
@@ -211,11 +277,14 @@ describe("Advanced Deep Learning reading plan", () => {
       missedSessionRule: "do_not_catch_up_before_restart",
     });
     expect(trackerRestartPlan.catchUpPolicy.countsAsBacklog).toBeFalse();
-    expect(trackerRestartPlan.catchUpPolicy.earliestDate).toBe(trackerRestartPlan.mainPlanStart);
+    expect(trackerRestartPlan.catchUpPolicy.earliestDate).toBe("2026-10-19");
     expect(trackerRestartPlan.catchUpPolicy.maxSessionsPerWeek).toBe(1);
     expect(trackerRestartPlan.catchUpPolicy.requiresWeeklyCoreOutput).toBeTrue();
+    expect(trackerRestartPlan.recoveryPolicy.minimumFullRestDays).toBe(7);
+    expect(trackerRestartPlan.recoveryPolicy.screenFreeDays).toBe(14);
+    expect(trackerRestartPlan.recoveryPolicy.paperOnlyFromDay).toBe(8);
     expect(trackerRestartPlan.recoveryPolicy.gentleDailyMinutes).toBe(12);
-    expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(70);
+    expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(240);
     expect(trackerRestartPlan.recoveryPolicy.shiftWholePlanIfNotReady).toBeTrue();
     expect(trackerRestartPlan.recoveryPolicy.compressWeeks).toBeFalse();
     expect(trackerRestartPlan.recoveryPolicy.clinicalAdviceOverridesPlan).toBeTrue();
@@ -238,12 +307,13 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
-  test("records Revision 6 and the no-catch-up recovery boundary", () => {
-    expect(PLAN_VERSION).toBe(6);
+  test("records Revision 10 with prerequisite learning inside the four-hour budget", () => {
+    expect(PLAN_VERSION).toBe(10);
     expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-30");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Vorablektüre");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Höchstens eine optionale Nachholsitzung pro Woche");
-    expect(appPackage.version).toBe("0.5.9-version2");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved).toEqual([]);
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksMoved.join(" ")).toContain("Finden und verstehen");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Vier-Stunden-Modus");
+    expect(appPackage.version).toBe("0.6.5-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

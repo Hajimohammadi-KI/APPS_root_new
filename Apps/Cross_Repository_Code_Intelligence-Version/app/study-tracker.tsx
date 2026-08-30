@@ -14,6 +14,7 @@ import {
   defaultSettings,
   isNlpCatchUpSession,
   isNlpRemainingLiveSession,
+  learningResourcesForDay,
   migrateLegacyId,
   courseTransferForSession,
   nlpCourseMeta,
@@ -23,6 +24,7 @@ import {
   planWeeks,
   PLAN_VERSION,
   PLAN_VERSION_HISTORY,
+  sourceReadingPolicy,
   sources,
   trackerRestartPlan,
   type PlannedDay,
@@ -63,8 +65,10 @@ import {
   isDirectPdfUrl,
 } from "../lib/pdf-reader-link";
 import { buildCourseReadingPlanDescription } from "../lib/nlp-course-calendar";
+import ProjectRoadmap from "./projekt-fahrplan/roadmap-client";
 
 type StatusFilter = "all" | "open" | "started" | "optional" | "done";
+type PlanMode = "details" | "roadmap";
 
 type PlanRevision = {
   id: string;
@@ -527,6 +531,13 @@ async function extractOfficeText(blob: Blob, name: string) {
   return sections.join("\n").trim() || "In dieser Datei wurde kein lesbarer Text gefunden.";
 }
 
+function isOctoberRestartSettings(value: unknown) {
+  if (!value || typeof value !== "object") return false;
+  const partial = value as Partial<TrackerSettings>;
+  return partial.planStartDate === "2026-10-19" &&
+    partial.planEndDate === "2027-04-10";
+}
+
 function safeSettings(value: unknown): TrackerSettings {
   if (!value || typeof value !== "object") return baseSettings;
   const partial = value as Partial<TrackerSettings>;
@@ -545,6 +556,23 @@ function safeSettings(value: unknown): TrackerSettings {
         )
         .slice(0, 50)
     : [];
+  const migrateOctoberRestart = isOctoberRestartSettings(partial);
+  const migratedRevisionHistory = migrateOctoberRestart &&
+    !planRevisionHistory.some((entry) => entry.id === "medical-recovery-replan-v7")
+    ? [
+        {
+          id: "medical-recovery-replan-v7",
+          createdAt: "2026-08-30T00:00:00.000Z",
+          action: "started" as const,
+          reason: "Planstart auf den 30. August korrigiert; medizinische Ruhe- und Papierphasen geschützt.",
+          previousStartDate: "2026-10-19",
+          previousEndDate: "2027-04-10",
+          nextStartDate: defaultSettings.planStartDate,
+          nextEndDate: defaultSettings.planEndDate,
+        },
+        ...planRevisionHistory,
+      ].slice(0, 50)
+    : planRevisionHistory;
   const normalizeLegacyAppUrl = (url: unknown, app: "reader" | "settings") => {
     const text = typeof url === "string" ? url.trim() : "";
     if (!text) return app === "reader" ? "/pdf-reader" : "/settings";
@@ -558,13 +586,17 @@ function safeSettings(value: unknown): TrackerSettings {
   return {
     ...baseSettings,
     ...partial,
-    planStatus: partial.planStatus === "paused" || partial.planStatus === "running"
+    planStartDate: migrateOctoberRestart ? defaultSettings.planStartDate : partial.planStartDate ?? baseSettings.planStartDate,
+    planEndDate: migrateOctoberRestart ? defaultSettings.planEndDate : partial.planEndDate ?? baseSettings.planEndDate,
+    planStatus: migrateOctoberRestart
+      ? "running"
+      : partial.planStatus === "paused" || partial.planStatus === "running"
       ? partial.planStatus
       : "not_started",
     planPausedAt: /^\d{4}-\d{2}-\d{2}$/.test(partial.planPausedAt ?? "")
       ? partial.planPausedAt!
       : "",
-    planRevisionHistory,
+    planRevisionHistory: migratedRevisionHistory,
     dailyWorkMode: normalizeDailyWorkMode(partial.dailyWorkMode),
     pdfReaderUrl: normalizeLegacyAppUrl(partial.pdfReaderUrl, "reader"),
     settingsAppUrl: normalizeLegacyAppUrl(partial.settingsAppUrl, "settings"),
@@ -816,6 +848,7 @@ export default function StudyTracker({
   const [activeDayId, setActiveDayId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<"plan" | "settings">("plan");
   const [showFullPlan, setShowFullPlan] = useState(false);
+  const [planMode, setPlanMode] = useState<PlanMode>("details");
   const [showProgressOverview, setShowProgressOverview] = useState(false);
   const [showJourneyOverview, setShowJourneyOverview] = useState(false);
   const [acknowledgedPlanVersion, setAcknowledgedPlanVersion] = useState<number | null>(null);
@@ -922,9 +955,10 @@ export default function StudyTracker({
 
   useEffect(() => {
     const syncHashView = () => {
-      if (window.location.hash === "#plan") {
+      if (window.location.hash === "#plan" || window.location.hash === "#projekt-fahrplan") {
         setActiveView("plan");
         setShowFullPlan(true);
+        setPlanMode(window.location.hash === "#projekt-fahrplan" ? "roadmap" : "details");
         window.requestAnimationFrame(() => {
           document.getElementById("plan")?.scrollIntoView({ block: "start" });
         });
@@ -1011,6 +1045,8 @@ export default function StudyTracker({
             ]),
           ),
         );
+        const stateNeedsMedicalReplan = isOctoberRestartSettings(state.settings);
+        const centralNeedsMedicalReplan = isOctoberRestartSettings(planning);
         let nextSettings = safeSettings(state.settings);
         if (planning) {
           nextSettings = safeSettings({
@@ -1031,6 +1067,12 @@ export default function StudyTracker({
         setSettingsDraft(nextSettings);
         setRequestedStartDate(nextSettings.planStartDate);
         setSyncState("saved");
+        if (stateNeedsMedicalReplan || centralNeedsMedicalReplan) {
+          await Promise.all([
+            postState({ action: "settings", settings: nextSettings }),
+            saveCentralPlanning(nextSettings),
+          ]);
+        }
 
         if (!DEVICE_ONLY_STORAGE && attachmentList.length) {
           const grouped: Record<string, AttachmentMeta[]> = {};
@@ -1233,6 +1275,12 @@ export default function StudyTracker({
           day.deliverable,
           ...day.lookFor,
           ...day.proposal,
+          ...learningResourcesForDay(day).flatMap((resource) => [
+            resource.title,
+            resource.provider,
+            resource.read,
+            resource.apply,
+          ]),
           ...day.sourceIds.flatMap((id) => {
             const source = sources[id];
             return source
@@ -1488,6 +1536,33 @@ export default function StudyTracker({
       taskId: itemId,
       completed: checked,
     });
+  }
+
+  async function toggleRoadmapDay(day: PlannedDay, checked: boolean) {
+    const previous = new Set(completed);
+    const next = new Set(completed);
+    for (const task of day.tasks) {
+      for (const item of task.items) {
+        if (checked) next.add(item.id);
+        else next.delete(item.id);
+      }
+    }
+    setCompleted(next);
+    const ok = await postState({
+      action: "import",
+      completedIds: [...next],
+      notes,
+      settings,
+    });
+    if (!ok) setCompleted(previous);
+    setToast(
+      ok
+        ? checked
+          ? `„${day.title}“ im gemeinsamen Projekt-Lernplan abgeschlossen.`
+          : `„${day.title}“ im gemeinsamen Projekt-Lernplan wieder geöffnet.`
+        : "Die Änderung konnte noch nicht dauerhaft gespeichert werden.",
+    );
+    return ok;
   }
 
   async function toggleTaskGroup(
@@ -1884,6 +1959,8 @@ export default function StudyTracker({
   function revealDay(day: PlannedDay, searchQuery = query, preservePhaseFilter = false) {
     setActiveView("plan");
     setShowFullPlan(true);
+    setPlanMode("details");
+    window.history.replaceState(null, "", "#plan");
     if (!preservePhaseFilter && phaseFilter !== "all" && phaseFilter !== day.phaseId) {
       setPhaseFilter(day.phaseId);
     }
@@ -1910,12 +1987,14 @@ export default function StudyTracker({
     }, 140);
   }
 
-  function openFullPlan(focusSearch = false) {
+  function openFullPlan(focusSearch = false, mode: PlanMode = "details") {
     setActiveView("plan");
     setShowFullPlan(true);
+    setPlanMode(mode);
+    window.history.replaceState(null, "", mode === "roadmap" ? "#projekt-fahrplan" : "#plan");
     window.setTimeout(() => {
       document.getElementById("plan")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (focusSearch) document.getElementById("plan-search")?.focus();
+      if (focusSearch && mode === "details") document.getElementById("plan-search")?.focus();
     }, 80);
   }
 
@@ -2020,7 +2099,7 @@ export default function StudyTracker({
           `DTSTART;TZID=Europe/Berlin:${start}`,
           `DTEND;TZID=Europe/Berlin:${end}`,
           `SUMMARY:${escapeIcs(`${settings.planName || settings.projectName} — ${day.title}`)}`,
-          `DESCRIPTION:${escapeIcs(`Tagesergebnis: ${day.deliverable}\nModul: ${day.module}\nArbeitsmodus: ${activeDailyWorkMode.label}\nMaximal ${workModeRequiredTaskIndexes(settings.dailyWorkMode).length} verpflichtende Ergebnisse; übrige Details sind Qualitätsleitfaden.`)}`,
+          `DESCRIPTION:${escapeIcs(`Tagesergebnis: ${day.deliverable}\nModul: ${day.module}\nMedium: ${day.workMode === "paper" ? "Papier, ohne Bildschirm" : "Bildschirmarbeit erlaubt"}\nArbeitsmodus: ${activeDailyWorkMode.label}\nMaximal ${workModeRequiredTaskIndexes(settings.dailyWorkMode).length} verpflichtende Ergebnisse; übrige Details sind Qualitätsleitfaden.`)}`,
           "END:VEVENT",
         ].join("\r\n");
       })
@@ -2163,9 +2242,6 @@ export default function StudyTracker({
             <a href="/nlp-lab" {...internalLinkProps("/nlp-lab")}>
               <Icon name="pulse" /> NLP Retrieval Lab
             </a>
-            <a href="/projekt-fahrplan" {...internalLinkProps("/projekt-fahrplan")}>
-              <Icon name="flag" /> Projekt-Fahrplan
-            </a>
             <button
               type="button"
               className={focusActive?.status ?? ""}
@@ -2239,7 +2315,7 @@ export default function StudyTracker({
                     <span>{settings.planStatus === "running" ? "Neues Startdatum" : "Startdatum"}</span>
                     <input dir="ltr" type="date" min={trackerRestartPlan.mainPlanStart} value={requestedStartDate} onChange={(event) => setRequestedStartDate(event.target.value)} />
                     <small className="localized-date-preview">{formatDate(requestedStartDate, true)}</small>
-                    <small>Frühestens 19. Oktober · später ist erlaubt.</small>
+                    <small>Basisstart 30. August · medizinische Pausen bleiben geschützt.</small>
                   </label>
                   <button className="button primary" type="button" onClick={() => void startPlan()}>
                     {settings.planStatus === "running" ? "Mit neuem Datum erneut starten" : "Lernplan starten"}
@@ -2255,37 +2331,57 @@ export default function StudyTracker({
 
             <section className="restart-plan-card" aria-labelledby="restart-plan-title">
               <header>
-                <span className="eyebrow quiet">Kalenderbasierter Neustart</span>
-                <h2 id="restart-plan-title">Alte Pläne loslassen · W1–W6 beginnen später</h2>
-                <p><strong>0 / 438 ist korrekt:</strong> Der Plan ist noch nicht gestartet. Frühere Termine und Sitzungen 1–7 sind kein Rückstand.</p>
+                <span className="eyebrow quiet">Medizinisch geschützter Plan</span>
+                <h2 id="restart-plan-title">Planstart 30. August · zwei Bildschirm-Pausen geschützt</h2>
+                <p><strong>0 / 438 ist korrekt:</strong> Der Plan beginnt am 30. August. Frühere Sitzungen 1–7 bleiben archiviert und sind kein Rückstand.</p>
               </header>
               <ol>
+                <li>
+                  <time dateTime="2026-08-30">30. August–4. September</time>
+                  <strong>W1 beginnt heute</strong>
+                  <span>Scope und Anforderungen im Vier-Stunden-Modus. Kein Nachholen der alten Sitzungen.</span>
+                </li>
                 <li>
                   <time dateTime="2026-09-02">2.–7. September</time>
                   <strong>Live-Sitzungen 8–10 nur beobachten</strong>
                   <span>Keine Vorbereitung. Danach höchstens drei Zeilen: verstanden, Thesis-Bezug, offene Frage. Verpasst heißt: vorerst nicht nachholen.</span>
                 </li>
                 <li>
-                  <time dateTime={trackerRestartPlan.protectedBreakStart}>{formatDate(trackerRestartPlan.protectedBreakStart)}–{formatDate(trackerRestartPlan.protectedBreakEnd)}</time>
-                  <strong>Geschützte Pause</strong>
-                  <span>Keine Pflichtaufgaben und kein Streak-Verlust.</span>
+                  <time dateTime="2026-09-10">10.–16. September</time>
+                  <strong>Erste vollständige Ruhephase</strong>
+                  <span>Sieben Tage ohne Studium, Computer, Tablet, Tracker-Pflicht oder Streak.</span>
+                </li>
+                <li>
+                  <time dateTime="2026-09-17">17.–24. September</time>
+                  <strong>Nur Papiermodus</strong>
+                  <span>W2-Entwürfe auf Ausdruck oder Papier. Kein Computer oder Tablet; digitale Prüfung wird später nachgeholt.</span>
+                </li>
+                <li>
+                  <time dateTime="2026-09-29">29. September–5. Oktober</time>
+                  <strong>Zweite vollständige Ruhephase</strong>
+                  <span>Wieder sieben Tage ohne Studium, Bildschirm, Pflichtaufgabe oder Streak.</span>
+                </li>
+                <li>
+                  <time dateTime="2026-10-06">6.–13. Oktober</time>
+                  <strong>Nur Papiermodus</strong>
+                  <span>Geeignete Design- und Testentwürfe auf Papier; kein Bildschirm bis einschließlich 13. Oktober.</span>
                 </li>
                 <li>
                   <time dateTime={trackerRestartPlan.gentleRestartStart}>{formatDate(trackerRestartPlan.gentleRestartStart)}–{formatDate(trackerRestartPlan.gentleRestartEnd)}</time>
-                  <strong>Sanfter Wiedereinstieg</strong>
-                  <span>Optional 12 Minuten: nur W1 öffnen und das Ziel ansehen. Der Plan bleibt dabei auf „noch nicht gestartet“.</span>
+                  <strong>Sanfter Bildschirm-Wiedereinstieg</strong>
+                  <span>Nur wenn ärztlich erlaubt: zunächst 12 Minuten, dann langsam steigern. Kein Verdichten versäumter Tage.</span>
                 </li>
                 <li>
-                  <time dateTime={trackerRestartPlan.mainPlanStart}>Ab {formatDate(trackerRestartPlan.mainPlanStart)}</time>
-                  <strong>25 Wochen im Leichtmodus</strong>
-                  <span>Maximal 70 Minuten ab 15:00 Uhr. Wenn du noch nicht bereit bist, verschiebt ein späteres Startdatum den ganzen Plan ohne Verdichtung.</span>
+                  <time dateTime="2026-10-19">Ab 19. Oktober</time>
+                  <strong>Regulärer Vier-Stunden-Modus</strong>
+                  <span>Nur wenn medizinisch freigegeben und gut verträglich: maximal vier Stunden inklusive Vorwissen und Pausen ab 15:00 Uhr; die technischen Bildschirmwochen beginnen am 26. Oktober.</span>
                 </li>
               </ol>
               <aside className="restart-catchup-rule" aria-label="Regel für alte Kurssitzungen">
                 <strong>Sitzungen 1–7 bleiben archiviert</strong>
                 <p>Erst nach dem verpflichtenden Wochenartefakt und höchstens eine Sitzung pro Woche. Nur öffnen, wenn sie Artefakt, Test oder Evidence der aktuellen Woche direkt blockiert; sonst endgültig überspringen.</p>
               </aside>
-              <p className="restart-health-priority">Gesundheitliche und ärztliche Vorgaben haben immer Vorrang vor Uhrzeit, Startdatum und Streak.</p>
+              <p className="restart-health-priority">Die individuelle Anweisung des Operateurs — 14 Tage ohne Computer und Tablet — hat Vorrang vor allgemeinen Internet-Empfehlungen, Uhrzeit, Startdatum und Streak.</p>
             </section>
 
             {todayCourseSession ? (
@@ -2357,7 +2453,7 @@ export default function StudyTracker({
                           <strong>{catchUpSession ? "Archiviert · nur bei direktem Wochenblocker" : "Keine Vorarbeit · maximal drei Zeilen danach"}</strong>
                           {catchUpSession ? (
                             <>
-                              <p>Frühestens ab {formatDate(trackerRestartPlan.mainPlanStart)}, erst nach dem Wochenartefakt und höchstens einmal pro Woche.</p>
+                              <p>Frühestens ab {formatDate(trackerRestartPlan.catchUpPolicy.earliestDate)}, erst nach dem Wochenartefakt und höchstens einmal pro Woche.</p>
                               <small>Frage zuerst: Blockiert diese Sitzung Artefakt, Test oder Evidence dieser Woche? Wenn nein, überspringen.</small>
                             </>
                           ) : (
@@ -2526,7 +2622,7 @@ export default function StudyTracker({
             <details className="critical-path-card dashboard-disclosure" open>
               <summary>
                 <h2><Icon name="flag" size={20} /> Kritischer Pfad · erste 6 Wochen</h2>
-                <span>Zukünftige Wochen ab deinem tatsächlichen Start · kein Rückstand</span>
+                <span>W1 startet am 30. August · Ruhe- und Papierphasen erzeugen keinen Rückstand</span>
               </summary>
               <ol className="critical-path-list">
                 <li><b>W1</b><span>Scope + eine prüfbare End-to-End-Frage</span></li>
@@ -2537,8 +2633,8 @@ export default function StudyTracker({
                 <li className="is-gate"><b>W6</b><span>Mini-Demo + Readiness Gate; kein Design ohne Laufbeleg</span></li>
               </ol>
               <footer>
-                <span>W1 beginnt erst mit deinem gewählten Startdatum. Eine Woche zählt dann nur mit Artefakt, Test und rückverfolgbarem Beleg.</span>
-                <a className="button secondary" href="/projekt-fahrplan" {...internalLinkProps("/projekt-fahrplan")}>Projekt-Fahrplan öffnen <Icon name="arrow" size={16} /></a>
+                <span>W1 läuft vom 30. August bis 4. September. Papierentwürfe werden erst nach der Bildschirmfreigabe digital geprüft und abgehakt.</span>
+                <button className="button secondary" type="button" onClick={() => openFullPlan(false, "roadmap")}>Projekt-Fahrplan im Lernplan öffnen <Icon name="arrow" size={16} /></button>
               </footer>
             </details>
 
@@ -2657,8 +2753,8 @@ export default function StudyTracker({
                 <span>25 Wochen · 5 Phasen</span>
               </summary>
               <div className="journey-actions">
-                <button className="button secondary compact" type="button" aria-expanded={showFullPlan} aria-controls="plan" onClick={() => openFullPlan()}>
-                  Gesamten 25-Wochen-Plan ansehen <Icon name="calendar" size={17} />
+                <button className="button secondary compact" type="button" aria-expanded={showFullPlan} aria-controls="plan" onClick={() => openFullPlan(false, "roadmap")}>
+                  Projekt-Lernplan öffnen <Icon name="flag" size={17} />
                 </button>
               </div>
               <div className="journey-track">
@@ -2693,14 +2789,56 @@ export default function StudyTracker({
             <div className="section-heading plan-heading">
               <div>
                 <span className="eyebrow quiet">Phase → Woche → Tag → Aufgabe</span>
-                <h2 id="plan-title">Gesamter Lernplan</h2>
-                <p>Alle Karten sind standardmäßig geschlossen. Öffne nur den Abschnitt, den du heute brauchst.</p>
+                <h2 id="plan-title">Projekt-Lernplan</h2>
+                <p>Fahrplan und Tagesdetails sind jetzt ein gemeinsamer Lernplan mit demselben Fortschritt.</p>
               </div>
               <div className="plan-count">
                 <strong>{displayNumber(planMeta.totalWeeks)}</strong>
                 <span>Wochen</span>
               </div>
             </div>
+
+            <div className="plan-view-tabs" role="tablist" aria-label="Ansicht des Projekt-Lernplans">
+              <button
+                id="plan-details-tab"
+                type="button"
+                role="tab"
+                aria-selected={planMode === "details"}
+                aria-controls="plan-details-panel"
+                onClick={() => {
+                  setPlanMode("details");
+                  window.history.replaceState(null, "", "#plan");
+                }}
+              >
+                Detailplan
+              </button>
+              <button
+                id="plan-roadmap-tab"
+                type="button"
+                role="tab"
+                aria-selected={planMode === "roadmap"}
+                aria-controls="plan-roadmap-panel"
+                onClick={() => {
+                  setPlanMode("roadmap");
+                  window.history.replaceState(null, "", "#projekt-fahrplan");
+                }}
+              >
+                Projekt-Fahrplan
+              </button>
+            </div>
+
+            {planMode === "roadmap" ? (
+              <div id="plan-roadmap-panel" role="tabpanel" aria-labelledby="plan-roadmap-tab">
+                <ProjectRoadmap
+                  completed={completed}
+                  loading={loading}
+                  planStatus={settings.planStatus}
+                  onOpenDay={(day) => revealDay(day, "")}
+                  onToggleDay={toggleRoadmapDay}
+                />
+              </div>
+            ) : (
+              <div id="plan-details-panel" role="tabpanel" aria-labelledby="plan-details-tab">
 
             <article className="expose-plan-card" id="expose" aria-labelledby="expose-plan-title">
               <div className="expose-plan-icon" aria-hidden="true"><Icon name="book" size={24} /></div>
@@ -2959,6 +3097,8 @@ export default function StudyTracker({
                 </div>
               )}
             </div>
+              </div>
+            )}
           </section>}
 
             </>
@@ -3586,6 +3726,9 @@ function WeekCard({
     (sum, day) => sum + requiredOutputTotal(day),
     0,
   );
+  const weeklyOutputDay = week.days.find((day) => day.id === week.weeklyOutput.dayId)!;
+  const weeklyOutputDone =
+    countRequiredCompletedOutputs(weeklyOutputDay, completed) === requiredOutputTotal(weeklyOutputDay);
 
   return (
     <details className="week-card">
@@ -3605,6 +3748,13 @@ function WeekCard({
           />
         </span>
       </summary>
+      <aside className={`week-output-rule ${weeklyOutputDone ? "done" : "open"}`}>
+        <span>Mindestens 1 verbindlicher Wochenoutput · {weeklyOutputDone ? "erledigt" : "offen"}</span>
+        <strong>{week.weeklyOutput.deliverable}</strong>
+        <button className="text-button" type="button" onClick={() => onReveal(weeklyOutputDay)}>
+          Zugehörigen Tag öffnen
+        </button>
+      </aside>
       <div className="day-stack">
         {week.days.map((day) => (
           <DayCard
@@ -3683,7 +3833,9 @@ function DayCard({
   const focusTaskIndex = currentTaskIndex < 0 ? requiredTaskIndexes.at(-1) ?? day.tasks.length - 1 : currentTaskIndex;
   const focusMinutes = workModeTaskMinutes(settings.dailyWorkMode, focusTaskIndex);
   const planIsRunning = settings.planStatus === "running";
+  const canStartDigitalFocus = planIsRunning && day.workMode === "screen";
   const relatedCourseSessions = nlpSessionsRelatedToPlanDay(day.title);
+  const dailyLearningResources = learningResourcesForDay(day);
   const courseRelated = relatedCourseSessions.length > 0;
   const relatedCourseSessionNumbers = relatedCourseSessions.map((session) => session.number);
 
@@ -3700,7 +3852,7 @@ function DayCard({
 
   return (
     <details
-      className={`day-card ${state} ${courseRelated ? "course-related" : ""} ${active ? "search-hit" : ""}`}
+      className={`day-card ${state} ${day.workMode === "paper" ? "paper-mode" : ""} ${courseRelated ? "course-related" : ""} ${active ? "search-hit" : ""}`}
       id={`day-${day.id}`}
       tabIndex={-1}
     >
@@ -3711,6 +3863,7 @@ function DayCard({
           <strong><Highlight text={day.title} query={active ? query : ""} /></strong>
           <small>{day.module} · Ergebnis: {day.deliverable}</small>
         </span>
+        {day.workMode === "paper" ? <span className="paper-mode-chip">Papiermodus · ohne Bildschirm</span> : null}
         {courseRelated ? (
           <span
             className="course-related-chip"
@@ -3725,18 +3878,23 @@ function DayCard({
         <button
           className="day-focus-button"
           type="button"
-          disabled={!planIsRunning}
+          disabled={!canStartDigitalFocus}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
-            if (!planIsRunning) return;
+            if (!canStartDigitalFocus) return;
             onStartFocus(day);
           }}
         >
-          <Icon name="play" size={17} /> {planIsRunning ? `Fokus starten · ${displayNumber(focusMinutes)} Min.` : "Vorschau"}
+          <Icon name="play" size={17} /> {day.workMode === "paper" ? "Papiermodus" : planIsRunning ? `Fokus starten · ${displayNumber(focusMinutes)} Min.` : "Vorschau"}
         </button>
       </summary>
       <div className="day-body">
+        {day.workMode === "paper" ? (
+          <div className="paper-mode-note" role="note">
+            Nur auf Papier arbeiten. Tablet und Computer bleiben bis zum Ende der ärztlich festgelegten 14-Tage-Pause geschlossen; digitale Übertragung, Test und Häkchen folgen erst nach der Freigabe.
+          </div>
+        ) : null}
         <div className="day-intro-grid">
           <article className="reason-card">
             <span>Warum heute?</span>
@@ -3767,6 +3925,35 @@ function DayCard({
           </section>
         </div>
 
+        <section className="prerequisite-learning" aria-labelledby={`learning-${day.id}`}>
+          <div className="prerequisite-learning-heading">
+            <div>
+              <span className="eyebrow">Vorwissen für diesen Tag</span>
+              <h4 id={`learning-${day.id}`}><Icon name="book" size={18} /> Zuerst kurz lernen, dann die Aufgabe machen</h4>
+            </div>
+            <strong>{displayNumber(dailyLearningResources.reduce((sum, resource) => sum + resource.minutes, 0))} Min. · im ersten 70-Min.-Block</strong>
+          </div>
+          <p className="prerequisite-learning-intro">
+            Du musst das Thema nicht schon kennen. Öffne die Lernseite, lies nur den genannten Abschnitt und wende ihn danach direkt auf das heutige Ergebnis an. Diese Zeit ist bereits in „Finden und verstehen“ enthalten und kommt nicht zusätzlich zu den vier Stunden dazu.
+          </p>
+          <div className="prerequisite-learning-list">
+            {dailyLearningResources.map((resource, resourceIndex) => (
+              <article key={resource.id}>
+                <div className="prerequisite-learning-order" aria-hidden="true">{displayNumber(resourceIndex + 1)}</div>
+                <div className="prerequisite-learning-content">
+                  <span>{resource.provider} · ca. {displayNumber(resource.minutes)} Min.</span>
+                  <h5>{resource.title}</h5>
+                  <p><strong>Genau lesen:</strong> {resource.read}</p>
+                  <p><strong>Danach anwenden:</strong> {resource.apply}</p>
+                  <a href={resource.href} target="_blank" rel="noopener noreferrer">
+                    Lernseite öffnen <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
         <section className="sources-block">
           <h4><Icon name="book" size={18} /> Genaue Quelle für heute</h4>
           <div className="source-list">
@@ -3779,6 +3966,10 @@ function DayCard({
               const focus = source.id === "proposal"
                 ? `Exposé-Abschnitte: ${day.proposal.map((item) => `§ ${item}`).join(" · ")}`
                 : day.lookFor.join(" · ");
+              const dailyReadingSections = source.id === "proposal"
+                ? day.proposal.map((item) => `Exposé § ${item}`)
+                : day.lookFor;
+              const readingPolicy = sourceReadingPolicy(source.id, dailyReadingSections);
               const readerHref = pdfReaderHref(source, settings, {
                 focus,
                 context: `${day.title} · ${day.module}`,
@@ -3795,9 +3986,17 @@ function DayCard({
                   {source.driveName && (
                     <code dir="ltr"><Highlight text={source.driveName} query={active ? query : ""} /></code>
                   )}
-                  {source.id === "proposal" && (
-                    <p className="source-focus"><strong>Lesefokus:</strong> {focus}</p>
-                  )}
+                  <div className={`source-reading-plan ${readingPolicy.scope}`}>
+                    <strong>{readingPolicy.label}</strong>
+                    {readingPolicy.scope === "full" ? (
+                      <span>{readingPolicy.requiredSections[0]}</span>
+                    ) : (
+                      <ul>
+                        {readingPolicy.requiredSections.map((section) => <li key={section}>{section}</li>)}
+                      </ul>
+                    )}
+                    <small><b>Fokus für heute:</b> {focus}</small>
+                  </div>
                   {readerHref ? (
                     <div className="source-actions" aria-label={`Aktionen für ${sourceText(source, settings)}`}>
                       <a
@@ -3939,31 +4138,34 @@ function DayCard({
               : "210 Minuten Arbeit + zwei Pausen à 15 Minuten = 4 Stunden."}
         </p>
 
-        <section className="note-box structured-note-box">
-          <label>
-            <Icon name="note" size={18} /> Tagesabschlussnotiz
-          </label>
+        <section className="note-box structured-note-box" aria-labelledby={`daily-note-${day.id}`}>
+          <div className="structured-note-heading">
+            <h4 id={`daily-note-${day.id}`}>
+              <Icon name="note" size={18} /> Tagesabschlussnotiz
+            </h4>
+            <p>Halte die wichtigsten Erkenntnisse des Tages kurz fest. Alle Felder bieten ausreichend Platz und können zusätzlich nach unten vergrößert werden.</p>
+          </div>
           {(() => {
             const noteFields = parseDailyNote(note);
             const updateField = <K extends keyof DailyNoteFields>(key: K, value: DailyNoteFields[K]) => {
               onNoteChange(serializeDailyNote({ ...noteFields, [key]: value }));
             };
             return <div className="structured-note-grid">
-              <label className="structured-note-field">
+              <label className="structured-note-field structured-note-field-wide structured-note-field-primary">
                 <span>Konzept</span>
-                <textarea id={`note-${day.id}`} value={noteFields.concept} onChange={(event) => updateField("concept", event.target.value)} placeholder="Was habe ich heute inhaltlich gelernt?" />
+                <textarea rows={5} id={`note-${day.id}`} value={noteFields.concept} onChange={(event) => updateField("concept", event.target.value)} placeholder="Was habe ich heute inhaltlich gelernt?" />
               </label>
               <label className="structured-note-field">
                 <span>Problem</span>
-                <textarea value={noteFields.problem} onChange={(event) => updateField("problem", event.target.value)} placeholder="Welches Problem/welche Frage stand im Zentrum?" />
+                <textarea rows={5} value={noteFields.problem} onChange={(event) => updateField("problem", event.target.value)} placeholder="Welches Problem oder welche Frage stand im Zentrum?" />
               </label>
               <label className="structured-note-field">
                 <span>Methode</span>
-                <textarea value={noteFields.method} onChange={(event) => updateField("method", event.target.value)} placeholder="Womit habe ich es untersucht/gelöst?" />
+                <textarea rows={5} value={noteFields.method} onChange={(event) => updateField("method", event.target.value)} placeholder="Womit habe ich es untersucht oder gelöst?" />
               </label>
               <label className="structured-note-field">
                 <span>Bezug zur Thesis</span>
-                <textarea value={noteFields.projectLink} onChange={(event) => updateField("projectLink", event.target.value)} placeholder="RQ, Architektur, Code, Daten oder Evaluation?" />
+                <textarea rows={5} value={noteFields.projectLink} onChange={(event) => updateField("projectLink", event.target.value)} placeholder="Bezug zu Forschungsfrage, Architektur, Code, Daten oder Evaluation" />
               </label>
               <label className="structured-note-field">
                 <span>Recall-Ergebnis</span>
@@ -3976,17 +4178,17 @@ function DayCard({
               </label>
               <label className="structured-note-field">
                 <span>Fehler</span>
-                <textarea value={noteFields.errors} onChange={(event) => updateField("errors", event.target.value)} placeholder="Was ist schiefgelaufen oder unklar geblieben?" />
+                <textarea rows={5} value={noteFields.errors} onChange={(event) => updateField("errors", event.target.value)} placeholder="Was ist schiefgelaufen oder unklar geblieben?" />
               </label>
               <label className="structured-note-field structured-note-field-wide">
                 <span>Genaue Aktion für morgen</span>
-                <textarea value={noteFields.tomorrowAction} onChange={(event) => updateField("tomorrowAction", event.target.value)} placeholder="Womit mache ich morgen konkret weiter?" />
+                <textarea rows={5} value={noteFields.tomorrowAction} onChange={(event) => updateField("tomorrowAction", event.target.value)} placeholder="Womit mache ich morgen konkret weiter?" />
               </label>
             </div>;
           })()}
-          <div>
+          <div className="structured-note-actions">
             <span>{displayNumber(dailyNoteSearchText(note).length)} Zeichen</span>
-            <button className="button secondary compact" type="button" onClick={() => onSaveNote(day.id)}>
+            <button className="button secondary" type="button" onClick={() => onSaveNote(day.id)}>
               Notiz speichern
             </button>
           </div>

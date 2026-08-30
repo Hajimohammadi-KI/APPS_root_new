@@ -2,6 +2,12 @@
   .live-course-banner { align-items: stretch; flex-direction: column; }
   .live-course-banner .button { width: 100%; }
 }
+
+/* Browsers shrink an unstyled <small> element to roughly 80% by default. */
+small {
+  font-size: max(12px, 0.8em);
+}
+
 .global-reading-ruler {
   position: fixed;
   inset-inline: 0;

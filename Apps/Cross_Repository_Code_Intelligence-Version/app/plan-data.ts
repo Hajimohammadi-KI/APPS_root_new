@@ -35,10 +35,12 @@ export type DaySpec = {
 export type PlannedDay = DaySpec & {
   id: string;
   date: string;
+  workMode: "screen" | "paper";
   week: number;
   phase: string;
   phaseId: string;
   weekTitle: string;
+  learningResourceIds: string[];
   taskMinutes: [number, number, number];
   tasks: Array<{
     id: string;
@@ -54,6 +56,10 @@ export type PlanWeek = {
   phaseId: string;
   title: string;
   goal: string;
+  weeklyOutput: {
+    dayId: string;
+    deliverable: string;
+  };
   days: PlannedDay[];
 };
 
@@ -118,6 +124,45 @@ export const nlpCourseMeta = {
 
 export type ReadingMode = "DEEP" | "TARGET" | "REVIEW" | "RELATED";
 
+export type ArticleReadingPolicy = {
+  scope: "full" | "sections";
+  label: string;
+  requiredSections: readonly string[];
+};
+
+export type LearningResourceDefinition = {
+  id: string;
+  title: string;
+  provider: string;
+  href: string;
+  read: string;
+  apply: string;
+  minutes: number;
+};
+
+export const ARTICLE_READING_POLICIES: Record<ReadingMode, ArticleReadingPolicy> = {
+  DEEP: {
+    scope: "full",
+    label: "Vollständig lesen",
+    requiredSections: ["Gesamter Artikel – vom Abstract bis zur Conclusion einschließlich Evaluation und Limitations"],
+  },
+  TARGET: {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: ["Abstract", "Method / Approach", "Data / Evaluation", "Results", "Limitations / Threats"],
+  },
+  REVIEW: {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: ["Abstract", "Taxonomy / Overview", "Limitations / Open Problems", "Conclusion"],
+  },
+  RELATED: {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: ["Abstract", "Method / Approach", "Conclusion / Limitations"],
+  },
+};
+
 export type ArticleReading = {
   id: `reading-${number}`;
   courseOrder: number;
@@ -131,6 +176,369 @@ export type ArticleReading = {
   projectConnection: string;
 };
 
+export function articleReadingPolicy(reading: Pick<ArticleReading, "mode">) {
+  return ARTICLE_READING_POLICIES[reading.mode];
+}
+
+export const learningResources: Record<string, LearningResourceDefinition> = {
+  researchProcess: {
+    id: "researchProcess",
+    title: "Conducting Research",
+    provider: "Purdue Online Writing Lab",
+    href: "https://owl.purdue.edu/owl/research_and_citation/conducting_research/index.html",
+    read: "Starting the Research Process und Choosing a Topic; nutze nur die Schritte von Problem zu fokussierbarer Frage.",
+    apply: "Formuliere Problem, Ziel und geplanten Beleg getrennt, bevor du das Tagesartefakt beginnst.",
+    minutes: 15,
+  },
+  researchQuestion: {
+    id: "researchQuestion",
+    title: "How to Write a Research Question",
+    provider: "George Mason University Writing Center",
+    href: "https://writingcenter.gmu.edu/writing-resources/research-based-writing",
+    read: "What is a research question?, Why is it essential? und Steps to developing a research question.",
+    apply: "Prüfe RQ1/RQ2 auf Fokus, Messbarkeit, Machbarkeit und Bezug zu einem einzigen Problem.",
+    minutes: 12,
+  },
+  personas: {
+    id: "personas",
+    title: "Personas: Study Guide",
+    provider: "Nielsen Norman Group",
+    href: "https://www.nngroup.com/articles/personas-study-guide/",
+    read: "What Is a Persona? sowie die ersten Hinweise unter How to Create Personas.",
+    apply: "Beschreibe Developer, Architect und QA anhand von Ziel, Entscheidung, Kontext und Informationsbedarf statt nur anhand ihrer Jobtitel.",
+    minutes: 15,
+  },
+  userNeeds: {
+    id: "userNeeds",
+    title: "Learning about users and their needs",
+    provider: "GOV.UK Service Manual",
+    href: "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+    read: "Understanding user needs, Writing user needs und Linking user needs to user stories.",
+    apply: "Schreibe jeden Bedarf als Ziel und Nutzen; behandle unbelegte Annahmen ausdrücklich als Annahmen.",
+    minutes: 15,
+  },
+  userStories: {
+    id: "userStories",
+    title: "User stories with examples and a template",
+    provider: "Atlassian Agile Coach",
+    href: "https://www.atlassian.com/agile/project-management/user-stories",
+    read: "What is in a user story?, die 3 C's und User story template.",
+    apply: "Überführe Persona, Ziel und Nutzen in As a / I want / so that und ergänze testbare Bestätigung.",
+    minutes: 12,
+  },
+  acceptanceCriteria: {
+    id: "acceptanceCriteria",
+    title: "Acceptance criteria: definition, examples and tips",
+    provider: "Atlassian",
+    href: "https://www.atlassian.com/work-management/project-management/acceptance-criteria",
+    read: "Acceptance criteria vs. user story und die Beispiele für klare, messbare Bedingungen.",
+    apply: "Formuliere Erfolg als beobachtbare Bedingung; vermeide Formulierungen wie ‚funktioniert gut‘.",
+    minutes: 12,
+  },
+  definitionDone: {
+    id: "definitionDone",
+    title: "What is the Definition of Done?",
+    provider: "Atlassian",
+    href: "https://www.atlassian.com/agile/project-management/definition-of-done",
+    read: "Build a completion checklist und Assign acceptance criteria to user stories.",
+    apply: "Beende die Arbeit erst mit Artefakt, Test oder Sanity Check und rückverfolgbarem Beleg.",
+    minutes: 10,
+  },
+  qualityScenarios: {
+    id: "qualityScenarios",
+    title: "How to specify quality requirements",
+    provider: "arc42 Quality Model",
+    href: "https://quality.arc42.org/articles/specify-quality-requirements",
+    read: "Quality Attribute Scenarios: stimulus, artifact, environment, response und metric.",
+    apply: "Mache Reproduzierbarkeit, Erklärbarkeit oder Sicherheit mit einer messbaren Reaktion prüfbar.",
+    minutes: 15,
+  },
+  c4Model: {
+    id: "c4Model",
+    title: "C4 model diagrams",
+    provider: "C4 Model",
+    href: "https://c4model.com/diagrams",
+    read: "System Context, Container und Component diagram; Code diagram nur bei echtem Mehrwert.",
+    apply: "Wähle genau die Zoomstufe des Tages und beschrifte Personen, Systeme, Container und Beziehungen.",
+    minutes: 15,
+  },
+  architectureDecision: {
+    id: "architectureDecision",
+    title: "Maintain an architecture decision record",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/azure/well-architected/architect-role/architecture-decision-record",
+    read: "Implement an ADR und Suggested characteristics of an individual record.",
+    apply: "Dokumentiere Kontext, Optionen, Entscheidung, Trade-offs, Status und Confidence.",
+    minutes: 15,
+  },
+  roslynModel: {
+    id: "roslynModel",
+    title: ".NET Compiler Platform SDK concepts and object model",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/compiler-api-model",
+    read: "Compiler pipeline functional areas und API layers, besonders Syntax und Workspaces.",
+    apply: "Ordne die Tagesaufgabe der richtigen Roslyn-Schicht zu, bevor du APIs auswählst.",
+    minutes: 18,
+  },
+  roslynSemantics: {
+    id: "roslynSemantics",
+    title: "Work with the Roslyn semantic model",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/work-with-semantics",
+    read: "Compilation, Symbols und Semantic model.",
+    apply: "Nutze Symbolidentität statt Textnamen, wenn Aufrufe, Typen oder projektübergreifende Referenzen gemeint sind.",
+    minutes: 18,
+  },
+  efCoreOverview: {
+    id: "efCoreOverview",
+    title: "Overview of Entity Framework Core",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/ef/core/",
+    read: "The model, Querying und Saving data.",
+    apply: "Unterscheide DbContext, DbSet, Entity, Query und persistierende Operation, bevor du Evidenzregeln formulierst.",
+    minutes: 15,
+  },
+  efCoreQuerying: {
+    id: "efCoreQuerying",
+    title: "Querying Data with EF Core",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/ef/core/querying/",
+    read: "Loading, filtering und den Hinweis zur Übersetzung von LINQ in providerspezifische Queries.",
+    apply: "Markiere Query-Kandidat, Materialisierung und tatsächlichen READ-Beleg getrennt.",
+    minutes: 15,
+  },
+  efCoreSaving: {
+    id: "efCoreSaving",
+    title: "Saving Data with EF Core",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/ef/core/saving/",
+    read: "Change tracking and SaveChanges sowie ExecuteUpdate and ExecuteDelete.",
+    apply: "Trenne Mutation im Speicher von der Operation, die wirklich in die Datenbank persistiert.",
+    minutes: 18,
+  },
+  jsonSchema: {
+    id: "jsonSchema",
+    title: "Creating your first JSON Schema",
+    provider: "JSON Schema",
+    href: "https://json-schema.org/learn/getting-started-step-by-step",
+    read: "Create a schema definition, Define properties und Validate JSON data.",
+    apply: "Definiere Pflichtfelder, Typen und ungültige Beispiele für den Vertrag des Tages.",
+    minutes: 18,
+  },
+  jsonLines: {
+    id: "jsonLines",
+    title: "JSON Lines format",
+    provider: "JSONLines.org",
+    href: "https://jsonlines.org/",
+    read: "Die drei Regeln: UTF-8, genau ein gültiger JSON-Wert pro Zeile und Zeilenabschluss.",
+    apply: "Serialisiere deterministisch und teste jede Zeile unabhängig als gültiges JSON.",
+    minutes: 8,
+  },
+  graphConcepts: {
+    id: "graphConcepts",
+    title: "What is a graph database?",
+    provider: "Neo4j Documentation",
+    href: "https://neo4j.com/docs/getting-started/graph-database/",
+    read: "Nodes, relationships, properties, data model, indexes und constraints.",
+    apply: "Entscheide, was Entität, Beziehung oder Property ist, und begründe es mit einer Projektfrage.",
+    minutes: 15,
+  },
+  cypher: {
+    id: "cypher",
+    title: "Get started with Cypher",
+    provider: "Neo4j Documentation",
+    href: "https://neo4j.com/docs/getting-started/cypher/intro-tutorial/",
+    read: "Create the Movie Graph und die ersten MATCH-, CREATE- und MERGE-Beispiele.",
+    apply: "Übertrage das Muster auf Evidence-Nodes und gerichtete Beziehungen; teste Idempotenz mit MERGE.",
+    minutes: 20,
+  },
+  graphAcademy: {
+    id: "graphAcademy",
+    title: "Cypher Fundamentals",
+    provider: "Neo4j GraphAcademy",
+    href: "https://graphacademy.neo4j.com/courses/cypher-fundamentals",
+    read: "Für den heutigen Tag nur die passenden 5-Minuten-Lektionen zu Nodes, Relationships, Traversal oder MERGE.",
+    apply: "Führe mindestens ein kleines Beispiel aus, bevor du die Thesis-Query schreibst.",
+    minutes: 15,
+  },
+  unitTesting: {
+    id: "unitTesting",
+    title: "Best practices for writing unit tests",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+    read: "Characteristics of a good unit test, naming und Arrange-Act-Assert.",
+    apply: "Baue einen kleinen deterministischen Test mit verständlichem Namen und nur einem klaren Verhalten.",
+    minutes: 15,
+  },
+  annotationGuide: {
+    id: "annotationGuide",
+    title: "Configure a labeling interface",
+    provider: "Label Studio Documentation",
+    href: "https://labelstud.io/guide/setup",
+    read: "Set up the labeling interface und Example labeling config.",
+    apply: "Definiere Einheit, Labels, Positiv/Negativ-Beispiele und erlaubte Entscheidungen vor der Annotation.",
+    minutes: 15,
+  },
+  irEvaluation: {
+    id: "irEvaluation",
+    title: "Evaluation in information retrieval",
+    provider: "Stanford IR Book",
+    href: "https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-in-information-retrieval-1.html",
+    read: "Test collection, relevance judgments, precision/recall und ranked retrieval evaluation.",
+    apply: "Fixiere Corpus, Fragen und Relevanzurteile, bevor du Systeme oder Metriken vergleichst.",
+    minutes: 20,
+  },
+  metricBasics: {
+    id: "metricBasics",
+    title: "Accuracy, precision and recall",
+    provider: "Google Machine Learning Crash Course",
+    href: "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+    read: "True/false positives, precision, recall und F1; bearbeite die kurzen Verständnisfragen.",
+    apply: "Schreibe TP, FP und FN für die konkrete Extraktionsrelation aus, bevor du F1 berechnest.",
+    minutes: 18,
+  },
+  huggingFaceCourse: {
+    id: "huggingFaceCourse",
+    title: "Hugging Face LLM Course introduction",
+    provider: "Hugging Face",
+    href: "https://huggingface.co/docs/course/chapter1/1",
+    read: "Nur Introduction und die Übersicht zu Transformers, Datasets und Tokenizers.",
+    apply: "Nutze die Begriffe, um den optionalen Modellversuch zu verstehen; erweitere damit nicht automatisch den Thesis-Scope.",
+    minutes: 15,
+  },
+  ragBasics: {
+    id: "ragBasics",
+    title: "Retrieval augmented generation and indexes",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/azure/foundry/concepts/retrieval-augmented-generation",
+    read: "What is RAG?, Retrieve–Augment–Generate und Limitations and troubleshooting.",
+    apply: "Trenne Retrieval, Grounding, Generation, Citation und Verhalten bei unzureichender Evidenz.",
+    minutes: 18,
+  },
+  ragSecurity: {
+    id: "ragSecurity",
+    title: "LLM01: Prompt Injection",
+    provider: "OWASP GenAI Security Project",
+    href: "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+    read: "Description, attack scenarios und prevention/mitigation; beachte, dass RAG Prompt Injection nicht beseitigt.",
+    apply: "Behandle Dokumentinhalt als nicht vertrauenswürdige Daten und teste einen Refusal- oder Guardrail-Fall.",
+    minutes: 15,
+  },
+  reproducibleBuilds: {
+    id: "reproducibleBuilds",
+    title: "When is a build reproducible?",
+    provider: "Reproducible Builds",
+    href: "https://reproducible-builds.org/docs/definition/",
+    read: "Definition, build environment, instructions, artifacts und bit-by-bit verification.",
+    apply: "Fixiere Source-Revision, Toolchain, Konfiguration und prüfe das Ergebnis mit einem Hash.",
+    minutes: 10,
+  },
+  githubCi: {
+    id: "githubCi",
+    title: "Continuous integration with GitHub Actions",
+    provider: "GitHub Docs",
+    href: "https://docs.github.com/en/actions/get-started/continuous-integration",
+    read: "About continuous integration und About CI using GitHub Actions.",
+    apply: "Definiere den automatischen Build/Test-Schritt und das Artefakt, das bei Fehlern geprüft werden muss.",
+    minutes: 12,
+  },
+  thesisMethod: {
+    id: "thesisMethod",
+    title: "The Methodology",
+    provider: "USC Libraries Research Guide",
+    href: "https://libguides.usc.edu/writingguide/methodology",
+    read: "Definition, Importance of a Good Methodology Section und Structure and Writing Style.",
+    apply: "Beschreibe Auswahl, Werkzeug, Ablauf, Messung und Begründung so, dass der Versuch wiederholbar ist.",
+    minutes: 15,
+  },
+  thesisResults: {
+    id: "thesisResults",
+    title: "The Results",
+    provider: "USC Libraries Research Guide",
+    href: "https://libguides.usc.edu/writingguide/results",
+    read: "Definition, Importance of a Good Results Section und Structure and Writing Style.",
+    apply: "Berichte Zahlen und Beobachtungen ohne neue Interpretation; verweise auf RQ und Tabelle.",
+    minutes: 15,
+  },
+  thesisDiscussion: {
+    id: "thesisDiscussion",
+    title: "The Discussion",
+    provider: "USC Libraries Research Guide",
+    href: "https://libguides.usc.edu/writingguide/discussion",
+    read: "Definition, Importance of a Good Discussion und Organization and Structure.",
+    apply: "Interpretiere die Resultate gegenüber RQ, Related Work und Validitätsgrenzen, ohne neue Daten einzuführen.",
+    minutes: 15,
+  },
+};
+
+export function learningResourceIdsForDay(
+  day: Pick<DaySpec, "title" | "module" | "kind">,
+  phaseId: string,
+): string[] {
+  const text = `${day.title} ${day.module} ${phaseId}`.toLocaleLowerCase();
+  const has = (...terms: string[]) => terms.some((term) => text.includes(term.toLocaleLowerCase()));
+
+  if (has("stakeholder", "persona", "rollenbasierte", "rollenformat", "developer output", "architect output", "qa/compliance output")) {
+    return ["personas", "userNeeds"];
+  }
+  if (has("problemstellung", "projektwert")) return ["researchProcess", "userNeeds"];
+  if (has("forschungsfrage", "research contract")) return ["researchQuestion", "researchProcess"];
+  if (has("funktionale anforderungen")) return ["userStories", "acceptanceCriteria"];
+  if (has("nichtfunktionale", "quality attribute", "qualitäts")) return ["qualityScenarios"];
+  if (has("anforderungs-review", "akzeptanzkriterien", "definition of done", "readiness gate", "review gate")) {
+    return ["acceptanceCriteria", "definitionDone"];
+  }
+  if (phaseId === "design-architecture") {
+    return has("adr", "entscheidung") ? ["architectureDecision"] : ["c4Model", "architectureDecision"];
+  }
+  if (phaseId === "roslyn-syntax") return ["roslynModel", "unitTesting"];
+  if (phaseId === "roslyn-semantic") return ["roslynSemantics", "unitTesting"];
+  if (phaseId === "ef-read") return ["efCoreOverview", "efCoreQuerying"];
+  if (phaseId === "ef-write") return ["efCoreSaving", "efCoreOverview"];
+  if (has("node types", "relationship types", "graph model", "property graph")) {
+    return ["graphConcepts", "cypher"];
+  }
+  if (phaseId === "neo4j-graph" || has("graph query", "retrieval.graph")) return ["graphConcepts", "cypher"];
+  if (has("cypher", "node import", "relationship import", "graph build")) return ["cypher", "graphAcademy"];
+  if (phaseId === "evidence-model" || phaseId === "design-evidence-model" || has("schema", "contract", "evidencerecord", "sourcelocation")) {
+    return has("jsonl", "serial") ? ["jsonLines", "jsonSchema"] : ["jsonSchema", "jsonLines"];
+  }
+  if (phaseId === "goldstandard" || has("annotation", "gold", "sampling", "adjudikation")) {
+    return ["annotationGuide", "irEvaluation"];
+  }
+  if (phaseId === "rq1-evaluation" || has("precision", "recall", "f1", "metriken")) {
+    return ["metricBasics", "irEvaluation"];
+  }
+  if (phaseId === "rq2-evaluation" || phaseId === "retrieval-query" || has("retriever", "tf-idf", "cosine", "ranking")) {
+    return ["irEvaluation", "metricBasics"];
+  }
+  if (phaseId === "nlp-sequences" || has("embedding", "rnn", "lstm", "gru", "bert", "graphcodebert")) {
+    return ["huggingFaceCourse", "irEvaluation"];
+  }
+  if (phaseId === "nlp-transformers" || phaseId === "answerability-roles" || has("rag", "guardrail", "verifier", "refusal")) {
+    return ["ragBasics", "ragSecurity"];
+  }
+  if (phaseId === "validity" || has("validität", "validity", "bias", "ethik")) return ["thesisMethod", "researchProcess"];
+  if (has("methodenkapitel")) return ["thesisMethod", "reproducibleBuilds"];
+  if (has("ergebniskapitel")) return ["thesisResults", "metricBasics"];
+  if (has("diskussion", "thesis-quervergleich")) return ["thesisDiscussion", "researchQuestion"];
+  if (has("reproduktion", "replikation", "release", "build", "versionierung", "archiv", "übergabe", "freeze", "corpus")) {
+    return ["reproducibleBuilds", "githubCi"];
+  }
+  if (phaseId === "writing-delivery" || has("thesis", "präsentation", "demo")) return ["thesisResults", "thesisDiscussion"];
+  if (phaseId === "design-evaluation") return ["irEvaluation", "unitTesting"];
+  if (phaseId === "design-delivery-plan" || phaseId === "design-freeze" || phaseId.startsWith("buffer-")) {
+    return ["definitionDone", "githubCi"];
+  }
+  if (phaseId === "scope-corpus") return ["researchProcess", "reproducibleBuilds"];
+  if (phaseId === "nlp-foundations") return ["irEvaluation", "unitTesting"];
+  return ["definitionDone"];
+}
+
+export function learningResourcesForDay(day: Pick<PlannedDay, "learningResourceIds">) {
+  return day.learningResourceIds.map((id) => learningResources[id]).filter(Boolean);
+}
+
 export const extractionSections = [
   "Problem",
   "Method",
@@ -142,12 +550,12 @@ export const extractionSections = [
 
 export const defaultSettings = {
   projectName: "Cross_Repository_Code_Intelligence",
-  planName: "Cross Repository Code Intelligence – 25-Wochen-Neustart",
-  planStartDate: "2026-10-19",
-  planEndDate: "2027-04-10",
-  planStatus: "not_started" as "not_started" | "running" | "paused",
+  planName: "Cross Repository Code Intelligence – medizinisch geschützter 25-Wochen-Plan",
+  planStartDate: "2026-08-30",
+  planEndDate: "2027-03-06",
+  planStatus: "running" as "not_started" | "running" | "paused",
   planPausedAt: "",
-  dailyWorkMode: "light" as "rescue" | "light" | "full",
+  dailyWorkMode: "full" as "rescue" | "light" | "full",
   dailyStart: "15:00",
   driveFolderUrl:
     "https://drive.google.com/drive/folders/1rJmYt-fJrv06HjRntIGJtczYB7yy1GAW",
@@ -163,14 +571,28 @@ export const defaultSettings = {
 // the public repository needs the availability boundaries, not private event
 // titles or medical details from the owner's calendar.
 export const trackerRestartPlan = {
-  calendarReviewedAt: "2026-08-29",
+  calendarReviewedAt: "2026-08-30",
   remainingLiveSessionNumbers: [8, 9, 10] as const,
   catchUpSessionNumbers: [1, 2, 3, 4, 5, 6, 7] as const,
   protectedBreakStart: "2026-09-10",
   protectedBreakEnd: "2026-10-13",
   gentleRestartStart: "2026-10-14",
   gentleRestartEnd: "2026-10-18",
-  mainPlanStart: "2026-10-19",
+  mainPlanStart: "2026-08-30",
+  screenBreaks: [
+    {
+      procedureDate: "2026-09-10",
+      fullRestEnd: "2026-09-16",
+      paperOnlyStart: "2026-09-17",
+      screenRestrictionEnd: "2026-09-24",
+    },
+    {
+      procedureDate: "2026-09-29",
+      fullRestEnd: "2026-10-05",
+      paperOnlyStart: "2026-10-06",
+      screenRestrictionEnd: "2026-10-13",
+    },
+  ] as const,
   dailyStart: "15:00",
   liveSessionPolicy: {
     mode: "observer_only",
@@ -187,13 +609,22 @@ export const trackerRestartPlan = {
       "Blockiert diese Sitzung Artefakt, Test oder Evidence der aktuellen Woche?",
   },
   recoveryPolicy: {
+    minimumFullRestDays: 7,
+    screenFreeDays: 14,
+    paperOnlyFromDay: 8,
     gentleDailyMinutes: 12,
-    mainDailyMaxMinutes: 70,
+    mainDailyMaxMinutes: 240,
     shiftWholePlanIfNotReady: true,
     compressWeeks: false,
     clinicalAdviceOverridesPlan: true,
   },
 } as const;
+
+export function plannedWorkMode(date: string): PlannedDay["workMode"] {
+  return trackerRestartPlan.screenBreaks.some(
+    (window) => date >= window.paperOnlyStart && date <= window.screenRestrictionEnd,
+  ) ? "paper" : "screen";
+}
 
 export function isNlpCatchUpSession(sessionNumber: number) {
   return trackerRestartPlan.catchUpSessionNumbers.includes(sessionNumber as never);
@@ -697,16 +1128,32 @@ export const articleReadings: ArticleReading[] = [
   },
 ];
 
+export function sourceReadingPolicy(sourceId: string, dailyFocus: readonly string[]): ArticleReadingPolicy {
+  const courseReading = articleReadings.find((reading) => reading.sourceId === sourceId);
+  if (courseReading) return articleReadingPolicy(courseReading);
+
+  const source = sources[sourceId];
+  if (source?.driveName?.includes("_DEEP_")) {
+    return ARTICLE_READING_POLICIES.DEEP;
+  }
+
+  return {
+    scope: "sections",
+    label: "Nur diese Abschnitte lesen",
+    requiredSections: dailyFocus,
+  };
+}
+
 export const nlpLabDefinition = {
   name: "NLP Retrieval Lab",
   route: "/nlp-lab",
   courseStart: "2026-08-17",
   courseEnd: "2026-09-07",
-  catchUpStart: trackerRestartPlan.mainPlanStart,
+  catchUpStart: trackerRestartPlan.catchUpPolicy.earliestDate,
   problem:
     "Read the course-aligned thesis literature and extract reusable evidence about retrieval, code graphs, provenance, prompting, and answerability.",
   projectFit:
-    "Before the protected break, sessions 8–10 are observer-only live appointments with no preparation. Sessions 1–7 and every former reading or transfer deadline are optional reference material after the main plan starts and never create backlog, reduce progress, or break the streak.",
+    "Before the protected break, sessions 8–10 are observer-only live appointments with no preparation. Sessions 1–7 and every former reading or transfer deadline are optional reference material from 19 October, after the weekly core output, and never create backlog, reduce progress, or break the streak.",
   core: [
     "Attend live sessions 8–10 as an observer without preparation when health and energy allow",
     "After an attended live session, write at most three lines: understood point, thesis relevance, open question",
@@ -1343,8 +1790,8 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phase: "Design 1: Problem und Anforderungen",
     phaseId: "design-requirements",
     title: "Problem, Stakeholder und vertretbarer Scope",
-    goal: "Vor dem Coding werden Problem, Nutzende, Anforderungen und Projektgrenzen präzise und testbar. Der Neustart beginnt nach der geschützten Pause mit einem echten Leichtmodus ohne Alt-Rückstand.",
-    startDate: "2026-10-19",
+    goal: "Der Plan beginnt am 30. August. Problem, Nutzende, Anforderungen und Projektgrenzen werden präzise und testbar, bevor die medizinisch geschützten Pausen beginnen.",
+    dates: ["2026-08-30", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04"],
     days: [
       d("Problemstellung und Projektwert", ["proposal", "hevner"], "Ohne präzises Problem zerfallen Architektur und Implementierung in unverbundene Funktionen.", ["Formuliere das Kernproblem der Cross-Repository-Analyse in einem Satz", "Kläre den Unterschied zwischen Evidenz und Textähnlichkeit", "Beschreibe den Artefaktwert für drei Rollen getrennt"], ["1", "6", "7"], "Design / Problem Framing", "problem-statement-v1.md"),
       d("Stakeholder und Personas", ["proposal", "sweqa"], "Developer, Architect und QA benötigen unterschiedliche Fragen und Evidenzstufen.", ["Extrahiere das Ziel jeder Persona", "Bestimme die Entscheidung, die jede Rolle mit der Antwort trifft", "Dokumentiere Informationen, die einer Rolle nicht gezeigt werden dürfen"], ["1.6", "25", "26"], "Design / Stakeholders", "stakeholders-and-personas.md"),
@@ -1359,7 +1806,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-architecture",
     title: "C4, Datenfluss und Modulgrenzen",
     goal: "Systemstruktur von Context bis Component sowie Modulverträge werden vor der Implementierung fixiert.",
-    startDate: "2026-10-26",
+    dates: ["2026-09-17", "2026-09-18", "2026-09-19", "2026-09-21", "2026-09-22", "2026-09-23"],
     days: [
       d("System Context Diagram", ["c4", "proposal"], "Das Diagramm zeigt die Beziehungen zu Nutzenden, GitHub/lokalen Repositories, Neo4j und LLM.", ["Bestimme externe Personen und Softwaresysteme", "Definiere Vertrauen und Eigentum jeder Boundary", "Entferne Technologiedetails aus dem Context"], ["1.6", "3", "9"], "Architecture / C4", "c4-context.dsl"),
       d("Container Diagram", ["c4", "arc42"], "Container trennen Ausführung, Speicherung und Benutzeroberfläche.", ["Grenze CLI/API, Extractor, Graph Store und UI ab", "Beschreibe Protokoll und übertragene Daten jeder Beziehung", "Definiere jeden Container als stateful oder stateless"], ["3", "10", "38.2"], "Architecture / C4", "c4-containers.dsl"),
@@ -1374,7 +1821,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-evidence-model",
     title: "Gemeinsame Sprache, Program Graph und Provenance",
     goal: "Entitäten, Beziehungen, Evidenz und Unsicherheitsstatus werden schriftlich und in JSON-Beispielen fixiert.",
-    startDate: "2026-11-02",
+    dates: ["2026-09-25", "2026-09-26", "2026-09-28", "2026-10-06", "2026-10-07", "2026-10-08"],
     days: [
       d("Domänenglossar", ["proposal", "allamanis"], "Gemeinsame Begriffe verhindern Bedeutungsunterschiede zwischen Text, Code und Graph.", ["Definiere Fact, Evidence, Claim und Path getrennt", "Präzisiere Repository, Project, File, Type und Method", "Operationalisiere READ, WRITE und Persistence"], ["2", "3.2", "3.3"], "Domain Model", "domain-glossary.md"),
       d("Node Types des Program Graph", ["allamanis", "yamaguchi"], "Nodes sollen Projektfragen dienen und nicht den gesamten AST kopieren.", ["Liste Nodes von Repository bis Table", "Bestimme notwendige Identität und Properties jedes Nodes", "Entferne Nodes ohne Nutzen für die Forschungsfragen"], ["3.3", "10.3"], "Graph Model", "node-catalog-v1.yaml"),
@@ -1389,7 +1836,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-evaluation",
     title: "Goldstandard, RQ1/RQ2 und Teststrategie",
     goal: "Vor dem Bau des Artefakts wird die Messung von Erfolg und Scheitern vollständig definiert.",
-    startDate: "2026-11-09",
+    dates: ["2026-10-09", "2026-10-10", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15"],
     days: [
       d("Akzeptanzkriterien des Gesamtsystems", ["proposal", "hevner"], "Die Definition of Done muss von Evidenz und Forschungsfragen abhängen, nicht vom guten Eindruck einer Demo.", ["Extrahiere die Erfolgskriterien des Artefakts", "Trenne verpflichtende und sekundäre Metriken", "Markiere Schwellenwerte, die Betreuungsgenehmigung benötigen"], ["16", "17", "20"], "Evaluation / Acceptance", "system-acceptance-criteria.md"),
       d("Annotationsprotokoll entwerfen", ["proposal", "sweqa"], "Der Goldstandard ist nur mit stabiler Annotationseinheit und Anleitung valide.", ["Definiere die Einheiten Method, Table und Relation", "Definiere Positive, Negative und Hard Negative", "Beschreibe Disagreement- und Zweitprüfungsprozess"], ["12", "13.3", "29.4"], "Evaluation / Gold", "annotation-guideline-v1.md"),
@@ -1404,7 +1851,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-delivery-plan",
     title: "Corpus, Repository-Struktur und technisches Backlog",
     goal: "Das Design wird in einen versionierten, planbaren und eindeutigen Umsetzungsplan überführt.",
-    startDate: "2026-11-16",
+    startDate: "2026-10-16",
     days: [
       d("Corpus Manifest und Freeze Plan", ["danphe", "proposal"], "Eine feste Eingabe ist Voraussetzung für reproduzierbare Ergebnisse.", ["Dokumentiere den festen Danphe-Commit", "Bestimme Solutions und Projects im Scope", "Dokumentiere Lizenz, Build und Ausschlüsse"], ["9.2 bis 9.3", "11.3"], "Delivery / Corpus", "corpus-manifest-v1.yaml"),
       d("Repository- und Ordnerstruktur", ["arc42", "proposal"], "Die Dateistruktur muss Architekturgrenzen und Testzyklus widerspiegeln.", ["Entwirf src, tests, corpus, gold und reports", "Ordne jedem Ordner ein verantwortliches Modul zu", "Trenne generierte Ausgabe vom Quellcode"], ["10", "11", "17"], "Delivery / Repository", "repository-layout.md"),
@@ -1419,7 +1866,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-freeze",
     title: "Traceability, Baseline und technische Bereitschaft",
     goal: "Das Design wird versioniert; danach sind nur kontrollierte Änderungen erlaubt.",
-    startDate: "2026-11-23",
+    startDate: "2026-10-23",
     days: [
       d("Vollständige Traceability Matrix", ["proposal", "hevner"], "Keine Anforderung, kein Modul, kein Test und keine Forschungsfrage darf unverbunden bleiben.", ["Verbinde Requirement→Component", "Verbinde Component→Test/Metric", "Verbinde Metric→RQ/Thesis Section"], ["7", "16", "21"], "Design / Traceability", "traceability-matrix.csv"),
       d("Design Freeze und Readiness Gate", ["proposal", "adr", "arc42"], "Der Designabschluss muss alle Eingaben für den unabhängigen technischen Start am 30. November bereitstellen.", ["Schließe alle Design-Checklisten", "Versioniere ADRs und erlaubte offene Punkte", "Bereite den ersten technischen Plantag und seine Eingaben vor"], ["16", "20", "37"], "Design / Baseline", "design-baseline-2026-11-24.zip"),
@@ -1480,7 +1927,7 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
     const weekStart = week.startDate
       ? new Date(`${week.startDate}T12:00:00Z`)
       : addUtcDays(
-          new Date("2026-11-30T12:00:00Z"),
+          new Date("2026-10-26T12:00:00Z"),
           (week.technicalIndex ?? 0) * 7,
         );
     dates = [];
@@ -1500,18 +1947,31 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
     const date = isoDate(scheduledDate);
     const taskMinutes: [number, number, number] = spec.kind === "course" ? [105, 70, 35] : [70, 90, 50];
     const proposalText = spec.proposal.map((item) => `§ ${item}`).join(", ");
+    const workMode = plannedWorkMode(date);
     const taskItems = [
       spec.lookFor,
-      [
-        `Verbinde diese drei Punkte mit ${proposalText}`,
-        `Führe ein reales Beispiel oder Fixture in ${spec.module} aus`,
-        "Dokumentiere eine SourceLocation oder einen rückverfolgbaren Beleg für das Ergebnis",
-      ] as [string, string, string],
-      [
-        `Erstelle das Tagesergebnis: ${spec.deliverable}`,
-        "Führe mindestens einen Test, Sanity Check oder eine unabhängige Prüfung durch",
-        "Speichere den kurzen Tagesbericht und setze den Status auf „Erledigt“",
-      ] as [string, string, string],
+      workMode === "paper"
+        ? [
+            `Verbinde diese drei Punkte auf Papier mit ${proposalText}`,
+            `Skizziere ein reales Beispiel oder Fixture für ${spec.module} ohne Bildschirm`,
+            "Markiere, welcher rückverfolgbare Beleg nach der Bildschirmfreigabe geprüft werden muss",
+          ] as [string, string, string]
+        : [
+            `Verbinde diese drei Punkte mit ${proposalText}`,
+            `Führe ein reales Beispiel oder Fixture in ${spec.module} aus`,
+            "Dokumentiere eine SourceLocation oder einen rückverfolgbaren Beleg für das Ergebnis",
+          ] as [string, string, string],
+      workMode === "paper"
+        ? [
+            `Entwirf das Tagesergebnis auf Papier: ${spec.deliverable}`,
+            "Notiere Testidee, Akzeptanzkriterium und offene Bildschirmprüfung getrennt",
+            "Übertrage und hake das Ergebnis erst nach der ärztlich erlaubten Bildschirmfreigabe ab",
+          ] as [string, string, string]
+        : [
+            `Erstelle das Tagesergebnis: ${spec.deliverable}`,
+            "Führe mindestens einen Test, Sanity Check oder eine unabhängige Prüfung durch",
+            "Speichere den kurzen Tagesbericht und setze den Status auf „Erledigt“",
+          ] as [string, string, string],
     ];
     const taskTitles = ["1. Finden und verstehen", "2. Mit dem Projekt verbinden", "3. Ergebnis erstellen"];
     // Stable, date-independent id: earlier this session the plan's start
@@ -1531,13 +1991,15 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
       // required-progress% (see docs/NLP-RETRIEVAL-LAB.md).
       optionalDuringCourse:
         spec.optionalDuringCourse ??
-        (spec.kind !== "course" && date >= "2026-08-19" && date <= "2026-09-07"),
+        (!week.phaseId.startsWith("design-") && spec.kind !== "course" && date >= "2026-08-19" && date <= "2026-09-07"),
       id: stableId,
       date,
+      workMode,
       week: weekIndex + 1,
       phase: week.phase,
       phaseId: week.phaseId,
       weekTitle: week.title,
+      learningResourceIds: learningResourceIdsForDay(spec, week.phaseId),
       taskMinutes,
       tasks: taskTitles.map((title, taskIndex) => ({
         id: `${stableId}-task-${taskIndex + 1}`,
@@ -1551,12 +2013,21 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
     } satisfies PlannedDay;
   });
 
+  const weeklyOutputDay = days[days.length - 1];
+  if (!weeklyOutputDay) {
+    throw new Error(`Week ${week.phaseId} must define at least one weekly output`);
+  }
+
   return {
     number: weekIndex + 1,
     phase: week.phase,
     phaseId: week.phaseId,
     title: week.title,
     goal: week.goal,
+    weeklyOutput: {
+      dayId: weeklyOutputDay.id,
+      deliverable: weeklyOutputDay.deliverable,
+    },
     days,
   };
 });
@@ -1755,6 +2226,73 @@ export const PLAN_VERSION_HISTORY: readonly PlanVersionEntry[] = [
       "Sichtbarer Hinweis: W1 bis W6 sind Zukunft, das Änderungsprotokoll ist keine Aufgabenliste und medizinische Vorgaben haben Vorrang",
     ],
   },
+  {
+    version: 7,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Der Projektplan beginnt jetzt am 30. August. Zwei medizinisch angeordnete Bildschirm-Pausen bleiben vollständig geschützt; ab der jeweils zweiten Erholungswoche sind nur geeignete Software-Engineering-Entwürfe auf Papier vorgesehen.",
+    tasksRemoved: [
+      "Falscher Gesamtstart am 19. Oktober",
+      "Bildschirmarbeit in den beiden 14-tägigen Schutzzeiträumen",
+      "Pflichtaufgaben in den ersten sieben Tagen nach jedem Eingriff",
+    ],
+    tasksMoved: [
+      "W1 auf den 30. August bis 4. September",
+      "W2 bis W4 in medizinisch zulässige Papier- und Zwischenphasen ohne Verdichtung",
+      "Technischer Bildschirmstart auf den 26. Oktober und Planende auf den 6. März 2027",
+    ],
+    tasksAdded: [
+      "Sieben vollständige Ruhetage nach jedem Eingriff",
+      "Papiermodus ab Tag 8 bis zum Ende der ärztlich festgelegten 14-tägigen Bildschirm-Pause",
+      "Kennzeichnung jedes betroffenen Plantags als Papiermodus mit späterer digitaler Prüfung",
+    ],
+  },
+  {
+    version: 8,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Jede Artikellektüre nennt jetzt ausdrücklich Volltext oder konkrete Pflichtabschnitte. Jede der 25 Wochen weist außerdem mindestens einen verbindlichen, anklickbaren Wochenoutput aus.",
+    tasksRemoved: [
+      "Unklare DEEP-, TARGET-, REVIEW- und RELATED-Kürzel ohne konkrete Leseanweisung",
+      "Wochen ohne sichtbar hervorgehobenen Mindestoutput",
+    ],
+    tasksMoved: [
+      "Bestehende Tagesergebnisse bleiben erhalten; das letzte prüfbare Tagesergebnis jeder Woche wird zusätzlich als verbindlicher Wochenoutput markiert",
+    ],
+    tasksAdded: [
+      "Vollständig-lesen-Kennzeichnung für DEEP-Artikel",
+      "Explizite Abschnittslisten und Lesefokus für TARGET-, REVIEW- und RELATED-Artikel",
+      "Mindestens ein verbindlicher Wochenoutput in jeder der 25 Wochen",
+    ],
+  },
+  {
+    version: 9,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Jeder Plantag beginnt jetzt mit einer kurzen, auf genau diese Aufgabe zugeschnittenen Vorwissensphase aus verlässlichen Lernseiten, damit auch neue Begriffe wie Personas ohne vorausgesetztes Wissen bearbeitet werden können.",
+    tasksRemoved: [],
+    tasksMoved: [],
+    tasksAdded: [
+      "Ein bis zwei autoritative Lernseiten für jeden der 146 Plantage",
+      "Konkreter Abschnitt, geschätzte Vorbereitungszeit und direkte Verknüpfung pro Lernseite",
+      "Unmittelbare Anwendungsanweisung vom Gelesenen zum Tagesartefakt",
+    ],
+  },
+  {
+    version: 10,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Die bestätigte Tageskapazität beträgt an medizinisch freigegebenen regulären Tagen vier Stunden. Die Vorwissenslektüre wird deshalb in den ersten 70-Minuten-Block integriert und erzeugt keine zusätzliche Arbeitszeit.",
+    tasksRemoved: [],
+    tasksMoved: [
+      "Vorwissenslektüre in den Block Finden und verstehen statt außerhalb des Tagesbudgets",
+    ],
+    tasksAdded: [
+      "Vier-Stunden-Modus als Standard: 210 Minuten Aufgaben und zwei Pausen zu je 15 Minuten",
+      "Sichtbare Kennzeichnung, dass die Lernseiten bereits im ersten Arbeitsblock enthalten sind",
+      "Medizinische Ruhe- und Papierphasen behalten Vorrang vor der regulären Tageskapazität",
+    ],
+  },
 ];
 
 export const PLAN_VERSION =
@@ -1762,13 +2300,13 @@ export const PLAN_VERSION =
 
 export const planMeta = {
   start: trackerRestartPlan.mainPlanStart,
-  designEnd: "2026-11-24",
+  designEnd: "2026-10-24",
   restStart: trackerRestartPlan.protectedBreakStart,
   restEnd: trackerRestartPlan.protectedBreakEnd,
   gentleRestartStart: trackerRestartPlan.gentleRestartStart,
   gentleRestartEnd: trackerRestartPlan.gentleRestartEnd,
-  technicalStart: "2026-11-30",
-  end: allDays[allDays.length - 1]?.date ?? "2027-04-10",
+  technicalStart: "2026-10-26",
+  end: allDays[allDays.length - 1]?.date ?? "2027-03-06",
   designDays: planWeeks
     .filter((week) => week.phaseId.startsWith("design-"))
     .reduce((sum, week) => sum + week.days.length, 0),

@@ -1,82 +1,74 @@
-# Design QA — selective course/project highlighting
+# Design QA — usable daily closing note
 
-**Source visual truth path**
+## Source visual truth
 
-`C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-b7f6133e-de12-4db2-8034-25980e093176.png`
+- Source: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-2871b8fb-57a5-456e-a16f-54d1b99cc27a.png`.
+- Source pixels: 884 × 231 at 1× density.
+- Source state: desktop daily-plan detail with `Tagesabschlussnotiz`; seven controls were compressed into one row, textareas were roughly 68 px high, placeholder text wrapped into narrow vertical fragments, and writing was not practical.
 
-**Implementation screenshot paths**
+## Rendered implementation evidence
 
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\desktop-related-red.png`
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\desktop-unrelated-normal.png`
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\mobile-related-red-card-390-fixed.png`
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\production-related-red.png`
-- Combined comparison: `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\design-comparison.png`
+- Desktop screenshot: `outputs/design-qa/daily-note-expanded-0.6.2.png` — 1265 × 712 pixels; browser CSS viewport 1280 × 720 at 1× density.
+- Lower-field screenshot: `outputs/design-qa/daily-note-expanded-fields-0.6.2.png` — 1265 × 712 pixels; same desktop viewport and state.
+- Responsive screenshot: `outputs/design-qa/daily-note-responsive-700px-0.6.2.png` — 685 × 881 pixels; browser CSS viewport 700 × 900 at 1× density.
+- Literal comparison: `outputs/design-qa/comparison-daily-note-source-left-implementation-right-0.6.2-final.png` — source on the left and post-fix implementation on the right.
+- Local production route: `http://127.0.0.1:4412/?qa=note-062#plan`.
 
-**Viewport and normalization**
+## Findings and comparison history
 
-- Source: 3316 × 1316 px; CSS viewport and pixel density are unknown because this is a supplied screenshot.
-- Desktop implementation: requested 1440 × 900 CSS px; captured browser content is 1380 × 891 px at device density 1.
-- Mobile implementation: requested 390 × 844 CSS px; captured browser content is 375 × 812 px at device density 1.
-- The source and implementation intentionally show different scroll states. The comparison therefore evaluates the preserved Study Tracker visual language and the requested selective red state, not pixel-for-pixel page composition.
+### Iteration 1 — P1 fixed
 
-**State**
+- Location: `.note-box > div` and `.structured-note-grid` in `app/styles/pages/tracker.css`.
+- Evidence: the source capture shows every note control forced into a single narrow flex row even though the component declares a two-column grid.
+- Impact: the writing task is effectively blocked by tiny controls and severe placeholder wrapping.
+- Fix: limited the generic direct-child flex rule to `.structured-note-actions`, restored the real grid, made `Konzept` and `Genaue Aktion für morgen` full-width, set other desktop fields to two columns, and switched to one column below 760 px.
+- Post-fix evidence: the main field measures 797.8 × 150 px at the desktop viewport; paired fields measure about 389.9 px each with an 18 px gap. At the 700 px viewport, the grid reports one 495 px column and the main field remains 150 px high.
 
-- Route `/`, section `Gesamter Lernplan`.
-- Course filter `Sitzung 1` selected.
-- `NLP-Lab Integration 1` and `Woche 14` expanded.
-- Two explicitly mapped project days visible with red state.
-- Separate all-phases capture verifies `Design 1` has six normal/non-red days.
+## Required fidelity surfaces
 
-**Full-view comparison evidence**
+- Fonts and typography: retained the existing application font and hierarchy; labels are now 13 px/800 and writing text is 14 px with a 1.6 line height. No clipping or vertical letter stacking remains inside the note editor.
+- Spacing and layout rhythm: the card uses 20 px desktop padding, an 18 px grid gap, and 132–150 px minimum writing heights. The save row is separated from the writing grid and stacks on narrow screens.
+- Colors and tokens: existing paper, border, muted-text, focus-ring, and purple button tokens are unchanged; contrast remains consistent with the surrounding tracker.
+- Image quality and assets: no raster or decorative asset is part of this form. The existing note icon is preserved; no placeholder, CSS drawing, or replacement asset was introduced.
+- Copy and content: added one concise explanation of the form's purpose and improved awkward slash-heavy placeholders without changing the stored note schema.
 
-- Existing purple course structure, cards, navigation, typography hierarchy and spacing remain visually consistent with the source screenshot.
-- Red is added only to the two mapped project-day cards and their `Kursrelevant · Sitzung 1` chips.
-- Unrelated Design 1 days retain their existing neutral or optional state colors.
+## Functional and accessibility verification
 
-**Focused-region comparison evidence**
+- Typed realistic text into `Konzept`, `Problem`, and `Genaue Aktion für morgen`.
+- Selected `Gut` for `Recall-Ergebnis`, saved the note, reloaded the production route, reopened the day, and confirmed all entered values persisted exactly.
+- Native labels, textareas, select, resize handles, focus styling, character count, and save button remain keyboard-accessible.
+- Browser console errors after the interaction: none.
+- No actionable P0, P1, or P2 issue remains in the changed daily-note flow. The focused comparison was required because the source's core defect is readable only at component scale.
 
-- Desktop focused region: both mapped cards are fully visible, bordered red, and retain readable date, title, status and focus action.
-- Mobile focused region: the red border and chip fit inside the 375 px content viewport with no horizontal overflow (`scrollWidth = clientWidth = 375`).
-- No additional focused crop was needed because the affected cards and labels are legible in the saved desktop and mobile captures.
+## 0.6.3 — explicit reading scope and weekly output
 
-**Required fidelity surfaces**
+- Production QA route: `http://127.0.0.1:4413/?qa=reading-063#projekt-fahrplan`.
+- Weekly-output evidence: `outputs/design-qa/weekly-output-0.6.3.png` — W1 exposes one required deliverable, its open/completed state, and a working `Zugehörigen Tag öffnen` control.
+- Reading-scope evidence: `outputs/design-qa/reading-scope-full-0.6.3.png` — the daily source card distinguishes `Vollständig lesen` from `Nur diese Abschnitte lesen` and keeps the day's content focus visible.
+- Responsive evidence: `outputs/design-qa/reading-scope-responsive-560px-0.6.3.png` — the reading assignment is usable at a 560 × 900 CSS viewport without page-level horizontal overflow.
+- Course contract: exactly 2 of 18 NLP articles are assigned as complete reads; the remaining 16 have named section lists. Every one of the 25 plan weeks has at least one required weekly output tied to a real day.
+- Interaction verification: the W1 weekly-output control opened `Anforderungs-Review-Gate`; Exposé sections § 7, § 16, and § 20 and the full Hevner reading were visible in that day's source list.
+- Browser console errors after desktop and responsive checks: none.
 
-- Fonts and typography: existing family, weights and hierarchy are preserved; the new chip uses the established compact label scale and remains readable.
-- Spacing and layout rhythm: desktop card rhythm is unchanged; mobile chip now occupies its own wrapped row and does not collide with the date/status row.
-- Colors and visual tokens: semantic red tokens (`--red`, `--red-soft`) clearly distinguish project-related course days without replacing existing optional/status colors.
-- Image quality and asset fidelity: no image, logo, icon or other visual asset was changed or substituted.
-- Copy and content: the chip identifies the exact related session number; no label is rendered for an unrelated day.
+## 0.6.4 — prerequisite learning links and four-hour budget
 
-**Findings**
+- Installed production QA route: `http://127.0.0.1:4312/?qa=preqa-learning-064#plan`.
+- Desktop evidence: `outputs/design-qa/prerequisite-personas-desktop-0.6.4.png` — the `Stakeholder und Personas` day shows two authoritative learning cards side by side, the exact sections to read, the immediate application step, preparation time, and direct links.
+- Responsive evidence: `outputs/design-qa/prerequisite-personas-responsive-560px-0.6.4.png` — the same cards stack into one readable column at a 560 × 900 CSS viewport; both links remain visible and page-level horizontal overflow is zero.
+- Coverage contract: all 146 plan days resolve to one or two learning resources; all 32 unique HTTPS resources returned a successful HTTP response during release QA.
+- Persona contract: NN/g `Personas: Study Guide` and the GOV.UK user-needs guide appear on the same day as `stakeholders-and-personas.md`, with `Genau lesen` and `Danach anwenden` instructions.
+- Time contract: the visible preparation estimate is explicitly part of `Finden und verstehen`; regular medically cleared days use 210 task minutes plus two 15-minute breaks, not an additional learning block beyond four hours.
+- Installed runtime checks: web `/`, web `/api/state`, and API `/v1/health` returned HTTP 200; package version was `0.6.4-version2`.
+- Browser console warnings and errors after desktop and responsive checks: none.
 
-- No actionable P0, P1 or P2 finding remains.
-- [P3] The supplied source is an ultra-wide overview while the implementation evidence is a focused plan state, so exact crop fidelity is not applicable to this scoped change.
+## 0.6.5 — 12 px minimum readable text
 
-**Comparison history**
-
-1. Initial mobile pass found a P2 issue: the non-wrapping course chip was clipped at the right edge.
-2. Fixed in `app/styles/90-responsive.css` by placing the chip on the wrapped summary row, constraining its width, and allowing line wrapping.
-3. Post-fix evidence: `mobile-related-red-card-390-fixed.png`; chip right edge is 236.30 px inside a 375 px viewport, and page horizontal overflow is zero.
-
-**Primary interactions tested**
-
-- Opened `Lernplan`.
-- Selected a course session filter.
-- Expanded its mapped phase and week.
-- Opened a mapped day at mobile width.
-- Reset to all phases and verified an unrelated phase has zero red cards and zero course chips.
-
-**Console errors checked**
-
-- No browser warning or error entries were present after the tested interactions.
-- The final production capture also contained no browser warning or error entries.
-
-**Implementation checklist**
-
-- [x] Red state derives only from explicit `relatedDayTitles` mappings.
-- [x] Unrelated class/project days remain unmarked.
-- [x] Desktop card labels are readable.
-- [x] Mobile card labels wrap without overflow.
-- [x] Source and implementation were reviewed together in one combined image.
+- Installed production QA route: `http://127.0.0.1:4312/?qa=live-learning-064#plan`.
+- Source audit: all authored `font-size` declarations below 12 px were raised across the tracker, roadmap, dashboard, NLP Lab, settings, and PDF Reader controls. The PDF.js text layer remains untouched so article geometry is not distorted.
+- Browser-default guard: unstyled HTML `small` elements use `max(12px, 0.8em)`, preventing the user-agent stylesheet from silently shrinking them below the requested minimum.
+- Narrow viewport audit: 17,942 visible text-bearing elements at 319 × 1,184 CSS pixels; computed minimum 12 px, zero offenders, and zero page-level horizontal overflow.
+- Desktop viewport audit: 17,983 visible text-bearing elements at 1,440 × 900 CSS pixels; computed minimum 12 px, zero offenders, and zero page-level horizontal overflow.
+- Browser console warnings and errors: none.
+- Installed runtime checks: web `/`, web `/api/state`, web `/api/settings`, and API `/v1/health` succeeded; package version was `0.6.5-version2` and pre/post user-data hashes were identical.
 
 final result: passed

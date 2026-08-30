@@ -835,6 +835,15 @@ details[open] > summary .summary-marker {
   background: #fdfbff;
 }
 
+.day-card.paper-mode {
+  border-color: #d9b765;
+  background: #fffdf4;
+}
+
+.day-card.paper-mode > summary {
+  background: #fffaf0;
+}
+
 .day-card.search-hit {
   animation: targetGlow 2.6s ease;
   box-shadow: 0 0 0 3px rgba(245,185,74,.36), 0 14px 40px rgba(21,50,48,.10);
@@ -855,6 +864,17 @@ details[open] > summary .summary-marker {
   border-radius: 999px;
   background: #9f4033;
   color: #fff;
+  padding: 5px 9px;
+  font-size: 10px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.paper-mode-chip {
+  border: 1px solid #cfab52;
+  border-radius: 999px;
+  background: #fff4cf;
+  color: #684e10;
   padding: 5px 9px;
   font-size: 10px;
   font-weight: 850;
@@ -928,6 +948,18 @@ details[open] > summary .summary-marker {
   gap: 14px;
   border-top: 1px solid var(--line);
   padding: 15px;
+}
+
+.paper-mode-note {
+  margin-bottom: 12px;
+  border: 1px solid #dec57e;
+  border-left: 4px solid #b98a20;
+  border-radius: 10px;
+  background: #fff8df;
+  color: #4f3b0c;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.55;
 }
 
 .day-intro-grid,

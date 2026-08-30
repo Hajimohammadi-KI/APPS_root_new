@@ -1,63 +1,39 @@
-# Design QA — Projekt-Fahrplan integrated into Projekt-Lernplan
+# Design QA — medically protected clickable project plan
 
 ## Source visual truth
 
-- Desktop detail-plan reference: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-211b24d0-40fd-4fd8-a478-9b712ff7a17d.png` (3184 × 1242 px).
-- Standalone roadmap reference: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-586ff30e-c7cb-44b6-a998-e01bd039e0fb.png` (955 × 1267 px).
-
-The requested change is an integration, so the standalone roadmap's separate page chrome is not copied. Its hierarchy, progress ring, stage/week structure, day rows and purple visual language are carried into the existing application shell.
+- User reference for the incorrect schedule: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-4deb4200-01b5-4d6d-b5cb-980c2c1b123f.png` (1273 × 1283 px).
+- The reference showed W1 beginning on 19 October 2026.
+- The established application shell, hierarchy, typography, purple palette, integrated roadmap, and clickable progress interaction were preserved.
 
 ## Implementation evidence
 
-- Tablet integrated roadmap: `outputs/design-qa/project-learn-plan-tablet.png` (940 × 1253 px browser content).
-- Desktop integrated roadmap: `outputs/design-qa/project-learn-plan-roadmap-desktop.png` (1447 × 1236 px browser content).
-- Desktop shared detail view: `outputs/design-qa/project-learn-plan-details-desktop.png` (1447 × 1236 px browser content).
-- Literal full comparison: `outputs/design-qa/comparison-tablet-source-left-implementation-right.png`.
-- Literal desktop comparison: `outputs/design-qa/comparison-desktop-source-left-implementation-right.png`.
-- Focused roadmap comparison: `outputs/design-qa/comparison-focused-roadmap-source-left-implementation-right.png`.
+- Updated paper-mode day: `outputs/design-qa/medical-paper-mode-0.6.1.jpg`.
+- Literal source/implementation comparison: `outputs/design-qa/comparison-medical-schedule-source-left-implementation-right-0.6.1.png` (source left, implementation right).
+- Browser verification ran on the isolated production build at `http://127.0.0.1:4412/#projekt-fahrplan`.
 
-## State and normalization
+## Functional interaction proof
 
-- Route: `/#projekt-fahrplan`; legacy `/projekt-fahrplan` redirects to that integrated view.
-- State: `not_started`, 0%, 0 / 438, 146 days, 25 weeks, W1 expanded.
-- The supplied roadmap is a standalone 955 px page. The implementation evidence uses the existing app shell at a requested 955 × 1273 viewport; the captured content area is 940 × 1253 px.
-- The desktop browser surface caps the requested 3184 px viewport at a 1447 px content width. Desktop comparison therefore evaluates structure and continuity rather than pixel-for-pixel width.
+- Confirmed the plan is active from 30 August 2026 through 6 March 2027 and still contains 25 weeks, 146 days, and 438 outputs.
+- Confirmed W1 runs 30 August–4 September.
+- Confirmed no plan days exist during the two full-rest windows: 10–16 September and 29 September–5 October.
+- Confirmed paper-only days appear during 17–24 September and 6–13 October; each is labelled `Papiermodus · ohne Bildschirm`, explains the 14-day screen restriction, and disables digital focus.
+- Confirmed W2 roadmap deliverables are labelled `Papiermodus`.
+- Clicked the W1 `Problemstellung und Projektwert` roadmap checkbox: shared progress changed from `0 / 438` to `3 / 438`, W1 to 17%, Design to 3%, and overall to 1%.
+- Reloaded the route and confirmed the checkbox and `3 / 438` persisted.
 
-## Full-view comparison
+## Visual and accessibility comparison
 
-- The integrated view preserves the reference's progress ring, five-stage hierarchy, stage progress bars, W1–W25 grouping, expandable weeks and scannable deliverable rows.
-- Existing application navigation, typography, spacing, card radii and purple tokens remain intact, matching the supplied detail-plan screen instead of introducing a second shell.
-- `Projekt-Lernplan` now contains two adjacent, accessible views: `Detailplan` and `Projekt-Fahrplan`.
-- The tablet capture shows no clipped labels or horizontal page overflow; the long day titles and `Tagesdetails öffnen` actions remain readable.
+- The source's 19 October W1 date has been replaced by the correct 30 August start.
+- The paper-only card uses the existing design system with a restrained amber status chip and note; no new visual language or fake asset was introduced.
+- Paper-mode Focus buttons are semantic disabled buttons. Roadmap controls remain labelled native checkboxes, week disclosures retain `aria-expanded`, and the plan/status hierarchy remains keyboard-readable.
+- Side-by-side inspection found no clipped date, overlapping status, broken card border, or unreadable changed text. The changed content remains usable at the browser's desktop viewport.
 
-## Focused-region comparison
+## Findings
 
-- The focused source/implementation comparison aligns the roadmap hero, 0%/146-day ring, Design stage, W1 description and first deliverable rows.
-- Differences in outer frame and title scale are intentional consequences of embedding the roadmap beneath the existing `Projekt-Lernplan` heading.
-- Disabled checkboxes correctly communicate preview-only state before the real plan starts; this preserves the user's no-backlog rule.
-
-## Functional interactions verified
-
-- Selected `Projekt-Fahrplan` through the tab interface.
-- Expanded W2 and confirmed `aria-expanded="true"`.
-- Opened `Problemstellung und Projektwert` from the roadmap and confirmed the view switches to `Detailplan`, the URL becomes `#plan`, and the matching day heading is present.
-- Opened `/projekt-fahrplan` directly and confirmed redirect to `/#projekt-fahrplan` with the roadmap visible.
-- Confirmed the integrated roadmap exposes the same 15 visible W1/W2 checkboxes in the tested expanded state and keeps them disabled while the plan is `not_started`.
-- Confirmed a clean browser tab produced no warning or error log entries through the tested flow.
-
-## Fidelity surfaces
-
-- Typography: existing app family, weights and hierarchy preserved.
-- Layout: standalone roadmap hierarchy retained inside the current shell; no duplicate sidebar link remains.
-- Color and borders: existing purple/mint design tokens reused; no competing palette introduced.
-- Assets: no source image, logo or icon was substituted or redrawn.
-- Copy: explicitly states that roadmap and daily details share one plan and one progress state.
-- Accessibility: tablist/tabpanel relationships, expanded-state controls and disabled progress controls are exposed semantically.
-
-## Findings and comparison history
-
-1. Initial capture showed the app's optional reading ruler; it was disabled and the clean evidence was recaptured.
-2. A first test run in the LFS-skipped fresh clone found the app icon pointer instead of its binary. The exact locally verified LFS object (SHA-256 `79C914E6FF90BDE3CF45AD47B3EAC813586F3CD8A1CFD82638A0C23C4B6FA292`, 131958 bytes) was restored; the repository remained clean and the full suite passed.
-3. No actionable P0, P1 or P2 visual or interaction finding remains.
+1. The prior schedule incorrectly deferred all work until 19 October.
+2. The corrected schedule protects both seven-day full-rest windows and restricts the second recovery week to paper-only engineering work.
+3. Clickable progress remains shared and persistent without weakening the medical screen restriction.
+4. No actionable P0, P1, or P2 visual, behavioral, or accessibility finding remains in the changed flow.
 
 final result: passed

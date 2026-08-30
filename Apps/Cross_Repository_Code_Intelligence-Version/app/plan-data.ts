@@ -35,6 +35,7 @@ export type DaySpec = {
 export type PlannedDay = DaySpec & {
   id: string;
   date: string;
+  workMode: "screen" | "paper";
   week: number;
   phase: string;
   phaseId: string;
@@ -142,10 +143,10 @@ export const extractionSections = [
 
 export const defaultSettings = {
   projectName: "Cross_Repository_Code_Intelligence",
-  planName: "Cross Repository Code Intelligence – 25-Wochen-Neustart",
-  planStartDate: "2026-10-19",
-  planEndDate: "2027-04-10",
-  planStatus: "not_started" as "not_started" | "running" | "paused",
+  planName: "Cross Repository Code Intelligence – medizinisch geschützter 25-Wochen-Plan",
+  planStartDate: "2026-08-30",
+  planEndDate: "2027-03-06",
+  planStatus: "running" as "not_started" | "running" | "paused",
   planPausedAt: "",
   dailyWorkMode: "light" as "rescue" | "light" | "full",
   dailyStart: "15:00",
@@ -163,14 +164,28 @@ export const defaultSettings = {
 // the public repository needs the availability boundaries, not private event
 // titles or medical details from the owner's calendar.
 export const trackerRestartPlan = {
-  calendarReviewedAt: "2026-08-29",
+  calendarReviewedAt: "2026-08-30",
   remainingLiveSessionNumbers: [8, 9, 10] as const,
   catchUpSessionNumbers: [1, 2, 3, 4, 5, 6, 7] as const,
   protectedBreakStart: "2026-09-10",
   protectedBreakEnd: "2026-10-13",
   gentleRestartStart: "2026-10-14",
   gentleRestartEnd: "2026-10-18",
-  mainPlanStart: "2026-10-19",
+  mainPlanStart: "2026-08-30",
+  screenBreaks: [
+    {
+      procedureDate: "2026-09-10",
+      fullRestEnd: "2026-09-16",
+      paperOnlyStart: "2026-09-17",
+      screenRestrictionEnd: "2026-09-24",
+    },
+    {
+      procedureDate: "2026-09-29",
+      fullRestEnd: "2026-10-05",
+      paperOnlyStart: "2026-10-06",
+      screenRestrictionEnd: "2026-10-13",
+    },
+  ] as const,
   dailyStart: "15:00",
   liveSessionPolicy: {
     mode: "observer_only",
@@ -187,6 +202,9 @@ export const trackerRestartPlan = {
       "Blockiert diese Sitzung Artefakt, Test oder Evidence der aktuellen Woche?",
   },
   recoveryPolicy: {
+    minimumFullRestDays: 7,
+    screenFreeDays: 14,
+    paperOnlyFromDay: 8,
     gentleDailyMinutes: 12,
     mainDailyMaxMinutes: 70,
     shiftWholePlanIfNotReady: true,
@@ -194,6 +212,12 @@ export const trackerRestartPlan = {
     clinicalAdviceOverridesPlan: true,
   },
 } as const;
+
+export function plannedWorkMode(date: string): PlannedDay["workMode"] {
+  return trackerRestartPlan.screenBreaks.some(
+    (window) => date >= window.paperOnlyStart && date <= window.screenRestrictionEnd,
+  ) ? "paper" : "screen";
+}
 
 export function isNlpCatchUpSession(sessionNumber: number) {
   return trackerRestartPlan.catchUpSessionNumbers.includes(sessionNumber as never);
@@ -702,11 +726,11 @@ export const nlpLabDefinition = {
   route: "/nlp-lab",
   courseStart: "2026-08-17",
   courseEnd: "2026-09-07",
-  catchUpStart: trackerRestartPlan.mainPlanStart,
+  catchUpStart: trackerRestartPlan.catchUpPolicy.earliestDate,
   problem:
     "Read the course-aligned thesis literature and extract reusable evidence about retrieval, code graphs, provenance, prompting, and answerability.",
   projectFit:
-    "Before the protected break, sessions 8–10 are observer-only live appointments with no preparation. Sessions 1–7 and every former reading or transfer deadline are optional reference material after the main plan starts and never create backlog, reduce progress, or break the streak.",
+    "Before the protected break, sessions 8–10 are observer-only live appointments with no preparation. Sessions 1–7 and every former reading or transfer deadline are optional reference material from 19 October, after the weekly core output, and never create backlog, reduce progress, or break the streak.",
   core: [
     "Attend live sessions 8–10 as an observer without preparation when health and energy allow",
     "After an attended live session, write at most three lines: understood point, thesis relevance, open question",
@@ -1343,8 +1367,8 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phase: "Design 1: Problem und Anforderungen",
     phaseId: "design-requirements",
     title: "Problem, Stakeholder und vertretbarer Scope",
-    goal: "Vor dem Coding werden Problem, Nutzende, Anforderungen und Projektgrenzen präzise und testbar. Der Neustart beginnt nach der geschützten Pause mit einem echten Leichtmodus ohne Alt-Rückstand.",
-    startDate: "2026-10-19",
+    goal: "Der Plan beginnt am 30. August. Problem, Nutzende, Anforderungen und Projektgrenzen werden präzise und testbar, bevor die medizinisch geschützten Pausen beginnen.",
+    dates: ["2026-08-30", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04"],
     days: [
       d("Problemstellung und Projektwert", ["proposal", "hevner"], "Ohne präzises Problem zerfallen Architektur und Implementierung in unverbundene Funktionen.", ["Formuliere das Kernproblem der Cross-Repository-Analyse in einem Satz", "Kläre den Unterschied zwischen Evidenz und Textähnlichkeit", "Beschreibe den Artefaktwert für drei Rollen getrennt"], ["1", "6", "7"], "Design / Problem Framing", "problem-statement-v1.md"),
       d("Stakeholder und Personas", ["proposal", "sweqa"], "Developer, Architect und QA benötigen unterschiedliche Fragen und Evidenzstufen.", ["Extrahiere das Ziel jeder Persona", "Bestimme die Entscheidung, die jede Rolle mit der Antwort trifft", "Dokumentiere Informationen, die einer Rolle nicht gezeigt werden dürfen"], ["1.6", "25", "26"], "Design / Stakeholders", "stakeholders-and-personas.md"),
@@ -1359,7 +1383,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-architecture",
     title: "C4, Datenfluss und Modulgrenzen",
     goal: "Systemstruktur von Context bis Component sowie Modulverträge werden vor der Implementierung fixiert.",
-    startDate: "2026-10-26",
+    dates: ["2026-09-17", "2026-09-18", "2026-09-19", "2026-09-21", "2026-09-22", "2026-09-23"],
     days: [
       d("System Context Diagram", ["c4", "proposal"], "Das Diagramm zeigt die Beziehungen zu Nutzenden, GitHub/lokalen Repositories, Neo4j und LLM.", ["Bestimme externe Personen und Softwaresysteme", "Definiere Vertrauen und Eigentum jeder Boundary", "Entferne Technologiedetails aus dem Context"], ["1.6", "3", "9"], "Architecture / C4", "c4-context.dsl"),
       d("Container Diagram", ["c4", "arc42"], "Container trennen Ausführung, Speicherung und Benutzeroberfläche.", ["Grenze CLI/API, Extractor, Graph Store und UI ab", "Beschreibe Protokoll und übertragene Daten jeder Beziehung", "Definiere jeden Container als stateful oder stateless"], ["3", "10", "38.2"], "Architecture / C4", "c4-containers.dsl"),
@@ -1374,7 +1398,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-evidence-model",
     title: "Gemeinsame Sprache, Program Graph und Provenance",
     goal: "Entitäten, Beziehungen, Evidenz und Unsicherheitsstatus werden schriftlich und in JSON-Beispielen fixiert.",
-    startDate: "2026-11-02",
+    dates: ["2026-09-25", "2026-09-26", "2026-09-28", "2026-10-06", "2026-10-07", "2026-10-08"],
     days: [
       d("Domänenglossar", ["proposal", "allamanis"], "Gemeinsame Begriffe verhindern Bedeutungsunterschiede zwischen Text, Code und Graph.", ["Definiere Fact, Evidence, Claim und Path getrennt", "Präzisiere Repository, Project, File, Type und Method", "Operationalisiere READ, WRITE und Persistence"], ["2", "3.2", "3.3"], "Domain Model", "domain-glossary.md"),
       d("Node Types des Program Graph", ["allamanis", "yamaguchi"], "Nodes sollen Projektfragen dienen und nicht den gesamten AST kopieren.", ["Liste Nodes von Repository bis Table", "Bestimme notwendige Identität und Properties jedes Nodes", "Entferne Nodes ohne Nutzen für die Forschungsfragen"], ["3.3", "10.3"], "Graph Model", "node-catalog-v1.yaml"),
@@ -1389,7 +1413,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-evaluation",
     title: "Goldstandard, RQ1/RQ2 und Teststrategie",
     goal: "Vor dem Bau des Artefakts wird die Messung von Erfolg und Scheitern vollständig definiert.",
-    startDate: "2026-11-09",
+    dates: ["2026-10-09", "2026-10-10", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15"],
     days: [
       d("Akzeptanzkriterien des Gesamtsystems", ["proposal", "hevner"], "Die Definition of Done muss von Evidenz und Forschungsfragen abhängen, nicht vom guten Eindruck einer Demo.", ["Extrahiere die Erfolgskriterien des Artefakts", "Trenne verpflichtende und sekundäre Metriken", "Markiere Schwellenwerte, die Betreuungsgenehmigung benötigen"], ["16", "17", "20"], "Evaluation / Acceptance", "system-acceptance-criteria.md"),
       d("Annotationsprotokoll entwerfen", ["proposal", "sweqa"], "Der Goldstandard ist nur mit stabiler Annotationseinheit und Anleitung valide.", ["Definiere die Einheiten Method, Table und Relation", "Definiere Positive, Negative und Hard Negative", "Beschreibe Disagreement- und Zweitprüfungsprozess"], ["12", "13.3", "29.4"], "Evaluation / Gold", "annotation-guideline-v1.md"),
@@ -1404,7 +1428,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-delivery-plan",
     title: "Corpus, Repository-Struktur und technisches Backlog",
     goal: "Das Design wird in einen versionierten, planbaren und eindeutigen Umsetzungsplan überführt.",
-    startDate: "2026-11-16",
+    startDate: "2026-10-16",
     days: [
       d("Corpus Manifest und Freeze Plan", ["danphe", "proposal"], "Eine feste Eingabe ist Voraussetzung für reproduzierbare Ergebnisse.", ["Dokumentiere den festen Danphe-Commit", "Bestimme Solutions und Projects im Scope", "Dokumentiere Lizenz, Build und Ausschlüsse"], ["9.2 bis 9.3", "11.3"], "Delivery / Corpus", "corpus-manifest-v1.yaml"),
       d("Repository- und Ordnerstruktur", ["arc42", "proposal"], "Die Dateistruktur muss Architekturgrenzen und Testzyklus widerspiegeln.", ["Entwirf src, tests, corpus, gold und reports", "Ordne jedem Ordner ein verantwortliches Modul zu", "Trenne generierte Ausgabe vom Quellcode"], ["10", "11", "17"], "Delivery / Repository", "repository-layout.md"),
@@ -1419,7 +1443,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phaseId: "design-freeze",
     title: "Traceability, Baseline und technische Bereitschaft",
     goal: "Das Design wird versioniert; danach sind nur kontrollierte Änderungen erlaubt.",
-    startDate: "2026-11-23",
+    startDate: "2026-10-23",
     days: [
       d("Vollständige Traceability Matrix", ["proposal", "hevner"], "Keine Anforderung, kein Modul, kein Test und keine Forschungsfrage darf unverbunden bleiben.", ["Verbinde Requirement→Component", "Verbinde Component→Test/Metric", "Verbinde Metric→RQ/Thesis Section"], ["7", "16", "21"], "Design / Traceability", "traceability-matrix.csv"),
       d("Design Freeze und Readiness Gate", ["proposal", "adr", "arc42"], "Der Designabschluss muss alle Eingaben für den unabhängigen technischen Start am 30. November bereitstellen.", ["Schließe alle Design-Checklisten", "Versioniere ADRs und erlaubte offene Punkte", "Bereite den ersten technischen Plantag und seine Eingaben vor"], ["16", "20", "37"], "Design / Baseline", "design-baseline-2026-11-24.zip"),
@@ -1480,7 +1504,7 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
     const weekStart = week.startDate
       ? new Date(`${week.startDate}T12:00:00Z`)
       : addUtcDays(
-          new Date("2026-11-30T12:00:00Z"),
+          new Date("2026-10-26T12:00:00Z"),
           (week.technicalIndex ?? 0) * 7,
         );
     dates = [];
@@ -1500,18 +1524,31 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
     const date = isoDate(scheduledDate);
     const taskMinutes: [number, number, number] = spec.kind === "course" ? [105, 70, 35] : [70, 90, 50];
     const proposalText = spec.proposal.map((item) => `§ ${item}`).join(", ");
+    const workMode = plannedWorkMode(date);
     const taskItems = [
       spec.lookFor,
-      [
-        `Verbinde diese drei Punkte mit ${proposalText}`,
-        `Führe ein reales Beispiel oder Fixture in ${spec.module} aus`,
-        "Dokumentiere eine SourceLocation oder einen rückverfolgbaren Beleg für das Ergebnis",
-      ] as [string, string, string],
-      [
-        `Erstelle das Tagesergebnis: ${spec.deliverable}`,
-        "Führe mindestens einen Test, Sanity Check oder eine unabhängige Prüfung durch",
-        "Speichere den kurzen Tagesbericht und setze den Status auf „Erledigt“",
-      ] as [string, string, string],
+      workMode === "paper"
+        ? [
+            `Verbinde diese drei Punkte auf Papier mit ${proposalText}`,
+            `Skizziere ein reales Beispiel oder Fixture für ${spec.module} ohne Bildschirm`,
+            "Markiere, welcher rückverfolgbare Beleg nach der Bildschirmfreigabe geprüft werden muss",
+          ] as [string, string, string]
+        : [
+            `Verbinde diese drei Punkte mit ${proposalText}`,
+            `Führe ein reales Beispiel oder Fixture in ${spec.module} aus`,
+            "Dokumentiere eine SourceLocation oder einen rückverfolgbaren Beleg für das Ergebnis",
+          ] as [string, string, string],
+      workMode === "paper"
+        ? [
+            `Entwirf das Tagesergebnis auf Papier: ${spec.deliverable}`,
+            "Notiere Testidee, Akzeptanzkriterium und offene Bildschirmprüfung getrennt",
+            "Übertrage und hake das Ergebnis erst nach der ärztlich erlaubten Bildschirmfreigabe ab",
+          ] as [string, string, string]
+        : [
+            `Erstelle das Tagesergebnis: ${spec.deliverable}`,
+            "Führe mindestens einen Test, Sanity Check oder eine unabhängige Prüfung durch",
+            "Speichere den kurzen Tagesbericht und setze den Status auf „Erledigt“",
+          ] as [string, string, string],
     ];
     const taskTitles = ["1. Finden und verstehen", "2. Mit dem Projekt verbinden", "3. Ergebnis erstellen"];
     // Stable, date-independent id: earlier this session the plan's start
@@ -1531,9 +1568,10 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
       // required-progress% (see docs/NLP-RETRIEVAL-LAB.md).
       optionalDuringCourse:
         spec.optionalDuringCourse ??
-        (spec.kind !== "course" && date >= "2026-08-19" && date <= "2026-09-07"),
+        (!week.phaseId.startsWith("design-") && spec.kind !== "course" && date >= "2026-08-19" && date <= "2026-09-07"),
       id: stableId,
       date,
+      workMode,
       week: weekIndex + 1,
       phase: week.phase,
       phaseId: week.phaseId,
@@ -1755,6 +1793,27 @@ export const PLAN_VERSION_HISTORY: readonly PlanVersionEntry[] = [
       "Sichtbarer Hinweis: W1 bis W6 sind Zukunft, das Änderungsprotokoll ist keine Aufgabenliste und medizinische Vorgaben haben Vorrang",
     ],
   },
+  {
+    version: 7,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Der Projektplan beginnt jetzt am 30. August. Zwei medizinisch angeordnete Bildschirm-Pausen bleiben vollständig geschützt; ab der jeweils zweiten Erholungswoche sind nur geeignete Software-Engineering-Entwürfe auf Papier vorgesehen.",
+    tasksRemoved: [
+      "Falscher Gesamtstart am 19. Oktober",
+      "Bildschirmarbeit in den beiden 14-tägigen Schutzzeiträumen",
+      "Pflichtaufgaben in den ersten sieben Tagen nach jedem Eingriff",
+    ],
+    tasksMoved: [
+      "W1 auf den 30. August bis 4. September",
+      "W2 bis W4 in medizinisch zulässige Papier- und Zwischenphasen ohne Verdichtung",
+      "Technischer Bildschirmstart auf den 26. Oktober und Planende auf den 6. März 2027",
+    ],
+    tasksAdded: [
+      "Sieben vollständige Ruhetage nach jedem Eingriff",
+      "Papiermodus ab Tag 8 bis zum Ende der ärztlich festgelegten 14-tägigen Bildschirm-Pause",
+      "Kennzeichnung jedes betroffenen Plantags als Papiermodus mit späterer digitaler Prüfung",
+    ],
+  },
 ];
 
 export const PLAN_VERSION =
@@ -1762,13 +1821,13 @@ export const PLAN_VERSION =
 
 export const planMeta = {
   start: trackerRestartPlan.mainPlanStart,
-  designEnd: "2026-11-24",
+  designEnd: "2026-10-24",
   restStart: trackerRestartPlan.protectedBreakStart,
   restEnd: trackerRestartPlan.protectedBreakEnd,
   gentleRestartStart: trackerRestartPlan.gentleRestartStart,
   gentleRestartEnd: trackerRestartPlan.gentleRestartEnd,
-  technicalStart: "2026-11-30",
-  end: allDays[allDays.length - 1]?.date ?? "2027-04-10",
+  technicalStart: "2026-10-26",
+  end: allDays[allDays.length - 1]?.date ?? "2027-03-06",
   designDays: planWeeks
     .filter((week) => week.phaseId.startsWith("design-"))
     .reduce((sum, week) => sum + week.days.length, 0),

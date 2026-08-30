@@ -102,7 +102,6 @@ export default function ProjectRoadmap({
     0,
   );
   const overallPercent = percentComplete(totalCompleted, totalOutputs);
-  const canRecordProgress = planStatus === "running";
 
   function toggleWeek(weekNumber: number) {
     setOpenWeeks((current) => {
@@ -114,7 +113,7 @@ export default function ProjectRoadmap({
   }
 
   async function toggleDay(day: PlannedDay) {
-    if (pendingDayId || !canRecordProgress) return;
+    if (pendingDayId) return;
     setPendingDayId(day.id);
     try {
       await onToggleDay(day, !isDayDone(day, completed));
@@ -150,17 +149,17 @@ export default function ProjectRoadmap({
             {planStatus === "running"
               ? "Lernplan aktiv"
               : planStatus === "paused"
-                ? "Pausiert · nur Vorschau"
-                : "Noch nicht gestartet · nur Vorschau"}
+                ? "Pausiert · Fortschritt manuell erfassbar"
+                : "Noch nicht gestartet · Fortschritt manuell erfassbar"}
           </p>
         </aside>
       </header>
 
       {loading ? <p className="roadmap-loading">Fortschritt wird geladen…</p> : null}
-      {!canRecordProgress ? (
+      {planStatus !== "running" ? (
         <p className="roadmap-guidance" role="note">
-          Die Roadmap bleibt vollständig sichtbar. Häkchen werden erst nach dem
-          echten Start des Lernplans gespeichert; vorher entsteht kein Rückstand.
+          Du kannst Häkchen jederzeit setzen oder entfernen. Der Fortschritt wird
+          im Projekt-Lernplan gespeichert; Startdatum und Kalender bleiben unverändert.
         </p>
       ) : null}
 
@@ -244,13 +243,13 @@ export default function ProjectRoadmap({
                                     id={checkboxId}
                                     type="checkbox"
                                     checked={done}
-                                    disabled={!canRecordProgress || pendingDayId === day.id}
+                                    disabled={pendingDayId === day.id}
                                     onChange={() => void toggleDay(day)}
                                   />
                                   <div className="roadmap-day-copy">
                                     <label htmlFor={checkboxId}>
                                       <strong>{day.title}</strong>
-                                      <small>{day.deliverable}</small>
+                                      <small>{day.deliverable}{day.workMode === "paper" ? " · Papiermodus" : ""}</small>
                                     </label>
                                     <button type="button" onClick={() => onOpenDay(day)}>
                                       Tagesdetails öffnen

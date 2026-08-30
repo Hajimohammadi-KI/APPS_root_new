@@ -56,15 +56,17 @@ test("plan lifecycle and daily work mode are synchronized with central settings"
   assert.match(tracker, /Planergebnisse/);
 });
 
-test("an unstarted or paused plan cannot record task or focus progress", () => {
+test("focus progress is gated by plan status and paper-only recovery mode", () => {
   assert.match(tracker, /const planCanRecordToday = settings\.planStatus === "running"/);
   assert.match(tracker, /disabled=\{!planCanRecordToday\}/);
   assert.match(tracker, /if \(action === "start" && settings\.planStatus !== "running"\)/);
   assert.match(tracker, /const planIsRunning = settings\.planStatus === "running"/);
-  assert.match(tracker, /disabled=\{!planIsRunning\}/);
+  assert.match(tracker, /const canStartDigitalFocus = planIsRunning && day\.workMode === "screen"/);
+  assert.match(tracker, /disabled=\{!canStartDigitalFocus\}/);
 });
 
 test("restart recovery abandons old backlog and gates every optional catch-up", () => {
+  const octoberMigrationPredicate = tracker.match(/function isOctoberRestartSettings[\s\S]*?\n\}/)?.[0] ?? "";
   assert.match(tracker, /0 \/ 438 ist korrekt/);
   assert.match(tracker, /Live-Sitzungen 8–10 nur beobachten/);
   assert.match(tracker, /Keine Vorbereitung/);
@@ -74,7 +76,17 @@ test("restart recovery abandons old backlog and gates every optional catch-up", 
   assert.match(tracker, /Verstanden · Hinweis schließen/);
   assert.match(tracker, /requestedStartDate < trackerRestartPlan\.mainPlanStart/);
   assert.match(tracker, /nichts wird verdichtet oder doppelt geplant/);
-  assert.match(tracker, /ärztliche Vorgaben haben immer Vorrang/);
+  assert.match(tracker, /individuelle Anweisung des Operateurs/);
+  assert.match(tracker, /hat Vorrang vor allgemeinen Internet-Empfehlungen/);
+  assert.match(tracker, /W1 läuft vom 30\. August bis 4\. September/);
+  assert.match(tracker, /Nur auf Papier arbeiten/);
+  assert.match(tracker, /14-Tage-Pause/);
+  assert.match(tracker, /isOctoberRestartSettings/);
+  assert.match(octoberMigrationPredicate, /partial\.planStartDate === "2026-10-19"/);
+  assert.match(octoberMigrationPredicate, /partial\.planEndDate === "2027-04-10"/);
+  assert.doesNotMatch(octoberMigrationPredicate, /planStatus/);
+  assert.match(tracker, /medical-recovery-replan-v7/);
+  assert.match(tracker, /stateNeedsMedicalReplan \|\| centralNeedsMedicalReplan/);
   assert.match(nlpLab, /ohne automatische Nachholpflicht/);
   assert.match(nlpLab, /حداکثر سه خط/);
 });

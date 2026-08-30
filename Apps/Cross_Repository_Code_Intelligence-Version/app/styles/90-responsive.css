@@ -89,7 +89,8 @@
   .day-card > summary { flex-wrap: wrap; }
   .day-card > summary time { min-width: 0; }
   .day-card > summary .summary-main { order: 5; width: 100%; flex-basis: 100%; padding-left: 40px; }
-  .day-card > summary .course-related-chip {
+  .day-card > summary .course-related-chip,
+  .day-card > summary .paper-mode-chip {
     order: 5;
     max-width: calc(100% - 40px);
     margin-left: 40px;

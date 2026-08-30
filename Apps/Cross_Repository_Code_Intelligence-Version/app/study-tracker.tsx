@@ -529,6 +529,13 @@ async function extractOfficeText(blob: Blob, name: string) {
   return sections.join("\n").trim() || "In dieser Datei wurde kein lesbarer Text gefunden.";
 }
 
+function isOctoberRestartSettings(value: unknown) {
+  if (!value || typeof value !== "object") return false;
+  const partial = value as Partial<TrackerSettings>;
+  return partial.planStartDate === "2026-10-19" &&
+    partial.planEndDate === "2027-04-10";
+}
+
 function safeSettings(value: unknown): TrackerSettings {
   if (!value || typeof value !== "object") return baseSettings;
   const partial = value as Partial<TrackerSettings>;
@@ -547,6 +554,23 @@ function safeSettings(value: unknown): TrackerSettings {
         )
         .slice(0, 50)
     : [];
+  const migrateOctoberRestart = isOctoberRestartSettings(partial);
+  const migratedRevisionHistory = migrateOctoberRestart &&
+    !planRevisionHistory.some((entry) => entry.id === "medical-recovery-replan-v7")
+    ? [
+        {
+          id: "medical-recovery-replan-v7",
+          createdAt: "2026-08-30T00:00:00.000Z",
+          action: "started" as const,
+          reason: "Planstart auf den 30. August korrigiert; medizinische Ruhe- und Papierphasen geschützt.",
+          previousStartDate: "2026-10-19",
+          previousEndDate: "2027-04-10",
+          nextStartDate: defaultSettings.planStartDate,
+          nextEndDate: defaultSettings.planEndDate,
+        },
+        ...planRevisionHistory,
+      ].slice(0, 50)
+    : planRevisionHistory;
   const normalizeLegacyAppUrl = (url: unknown, app: "reader" | "settings") => {
     const text = typeof url === "string" ? url.trim() : "";
     if (!text) return app === "reader" ? "/pdf-reader" : "/settings";
@@ -560,13 +584,17 @@ function safeSettings(value: unknown): TrackerSettings {
   return {
     ...baseSettings,
     ...partial,
-    planStatus: partial.planStatus === "paused" || partial.planStatus === "running"
+    planStartDate: migrateOctoberRestart ? defaultSettings.planStartDate : partial.planStartDate ?? baseSettings.planStartDate,
+    planEndDate: migrateOctoberRestart ? defaultSettings.planEndDate : partial.planEndDate ?? baseSettings.planEndDate,
+    planStatus: migrateOctoberRestart
+      ? "running"
+      : partial.planStatus === "paused" || partial.planStatus === "running"
       ? partial.planStatus
       : "not_started",
     planPausedAt: /^\d{4}-\d{2}-\d{2}$/.test(partial.planPausedAt ?? "")
       ? partial.planPausedAt!
       : "",
-    planRevisionHistory,
+    planRevisionHistory: migratedRevisionHistory,
     dailyWorkMode: normalizeDailyWorkMode(partial.dailyWorkMode),
     pdfReaderUrl: normalizeLegacyAppUrl(partial.pdfReaderUrl, "reader"),
     settingsAppUrl: normalizeLegacyAppUrl(partial.settingsAppUrl, "settings"),
@@ -1015,6 +1043,8 @@ export default function StudyTracker({
             ]),
           ),
         );
+        const stateNeedsMedicalReplan = isOctoberRestartSettings(state.settings);
+        const centralNeedsMedicalReplan = isOctoberRestartSettings(planning);
         let nextSettings = safeSettings(state.settings);
         if (planning) {
           nextSettings = safeSettings({
@@ -1035,6 +1065,12 @@ export default function StudyTracker({
         setSettingsDraft(nextSettings);
         setRequestedStartDate(nextSettings.planStartDate);
         setSyncState("saved");
+        if (stateNeedsMedicalReplan || centralNeedsMedicalReplan) {
+          await Promise.all([
+            postState({ action: "settings", settings: nextSettings }),
+            saveCentralPlanning(nextSettings),
+          ]);
+        }
 
         if (!DEVICE_ONLY_STORAGE && attachmentList.length) {
           const grouped: Record<string, AttachmentMeta[]> = {};
@@ -1495,10 +1531,6 @@ export default function StudyTracker({
   }
 
   async function toggleRoadmapDay(day: PlannedDay, checked: boolean) {
-    if (settings.planStatus !== "running") {
-      setToast("Der Projekt-Fahrplan ist bis zum echten Start nur eine Vorschau. Es wurde nichts abgehakt.");
-      return false;
-    }
     const previous = new Set(completed);
     const next = new Set(completed);
     for (const task of day.tasks) {
@@ -2059,7 +2091,7 @@ export default function StudyTracker({
           `DTSTART;TZID=Europe/Berlin:${start}`,
           `DTEND;TZID=Europe/Berlin:${end}`,
           `SUMMARY:${escapeIcs(`${settings.planName || settings.projectName} — ${day.title}`)}`,
-          `DESCRIPTION:${escapeIcs(`Tagesergebnis: ${day.deliverable}\nModul: ${day.module}\nArbeitsmodus: ${activeDailyWorkMode.label}\nMaximal ${workModeRequiredTaskIndexes(settings.dailyWorkMode).length} verpflichtende Ergebnisse; übrige Details sind Qualitätsleitfaden.`)}`,
+          `DESCRIPTION:${escapeIcs(`Tagesergebnis: ${day.deliverable}\nModul: ${day.module}\nMedium: ${day.workMode === "paper" ? "Papier, ohne Bildschirm" : "Bildschirmarbeit erlaubt"}\nArbeitsmodus: ${activeDailyWorkMode.label}\nMaximal ${workModeRequiredTaskIndexes(settings.dailyWorkMode).length} verpflichtende Ergebnisse; übrige Details sind Qualitätsleitfaden.`)}`,
           "END:VEVENT",
         ].join("\r\n");
       })
@@ -2275,7 +2307,7 @@ export default function StudyTracker({
                     <span>{settings.planStatus === "running" ? "Neues Startdatum" : "Startdatum"}</span>
                     <input dir="ltr" type="date" min={trackerRestartPlan.mainPlanStart} value={requestedStartDate} onChange={(event) => setRequestedStartDate(event.target.value)} />
                     <small className="localized-date-preview">{formatDate(requestedStartDate, true)}</small>
-                    <small>Frühestens 19. Oktober · später ist erlaubt.</small>
+                    <small>Basisstart 30. August · medizinische Pausen bleiben geschützt.</small>
                   </label>
                   <button className="button primary" type="button" onClick={() => void startPlan()}>
                     {settings.planStatus === "running" ? "Mit neuem Datum erneut starten" : "Lernplan starten"}
@@ -2291,37 +2323,57 @@ export default function StudyTracker({
 
             <section className="restart-plan-card" aria-labelledby="restart-plan-title">
               <header>
-                <span className="eyebrow quiet">Kalenderbasierter Neustart</span>
-                <h2 id="restart-plan-title">Alte Pläne loslassen · W1–W6 beginnen später</h2>
-                <p><strong>0 / 438 ist korrekt:</strong> Der Plan ist noch nicht gestartet. Frühere Termine und Sitzungen 1–7 sind kein Rückstand.</p>
+                <span className="eyebrow quiet">Medizinisch geschützter Plan</span>
+                <h2 id="restart-plan-title">Planstart 30. August · zwei Bildschirm-Pausen geschützt</h2>
+                <p><strong>0 / 438 ist korrekt:</strong> Der Plan beginnt am 30. August. Frühere Sitzungen 1–7 bleiben archiviert und sind kein Rückstand.</p>
               </header>
               <ol>
+                <li>
+                  <time dateTime="2026-08-30">30. August–4. September</time>
+                  <strong>W1 beginnt heute</strong>
+                  <span>Scope und Anforderungen im Leichtmodus. Kein Nachholen der alten Sitzungen.</span>
+                </li>
                 <li>
                   <time dateTime="2026-09-02">2.–7. September</time>
                   <strong>Live-Sitzungen 8–10 nur beobachten</strong>
                   <span>Keine Vorbereitung. Danach höchstens drei Zeilen: verstanden, Thesis-Bezug, offene Frage. Verpasst heißt: vorerst nicht nachholen.</span>
                 </li>
                 <li>
-                  <time dateTime={trackerRestartPlan.protectedBreakStart}>{formatDate(trackerRestartPlan.protectedBreakStart)}–{formatDate(trackerRestartPlan.protectedBreakEnd)}</time>
-                  <strong>Geschützte Pause</strong>
-                  <span>Keine Pflichtaufgaben und kein Streak-Verlust.</span>
+                  <time dateTime="2026-09-10">10.–16. September</time>
+                  <strong>Erste vollständige Ruhephase</strong>
+                  <span>Sieben Tage ohne Studium, Computer, Tablet, Tracker-Pflicht oder Streak.</span>
+                </li>
+                <li>
+                  <time dateTime="2026-09-17">17.–24. September</time>
+                  <strong>Nur Papiermodus</strong>
+                  <span>W2-Entwürfe auf Ausdruck oder Papier. Kein Computer oder Tablet; digitale Prüfung wird später nachgeholt.</span>
+                </li>
+                <li>
+                  <time dateTime="2026-09-29">29. September–5. Oktober</time>
+                  <strong>Zweite vollständige Ruhephase</strong>
+                  <span>Wieder sieben Tage ohne Studium, Bildschirm, Pflichtaufgabe oder Streak.</span>
+                </li>
+                <li>
+                  <time dateTime="2026-10-06">6.–13. Oktober</time>
+                  <strong>Nur Papiermodus</strong>
+                  <span>Geeignete Design- und Testentwürfe auf Papier; kein Bildschirm bis einschließlich 13. Oktober.</span>
                 </li>
                 <li>
                   <time dateTime={trackerRestartPlan.gentleRestartStart}>{formatDate(trackerRestartPlan.gentleRestartStart)}–{formatDate(trackerRestartPlan.gentleRestartEnd)}</time>
-                  <strong>Sanfter Wiedereinstieg</strong>
-                  <span>Optional 12 Minuten: nur W1 öffnen und das Ziel ansehen. Der Plan bleibt dabei auf „noch nicht gestartet“.</span>
+                  <strong>Sanfter Bildschirm-Wiedereinstieg</strong>
+                  <span>Nur wenn ärztlich erlaubt: zunächst 12 Minuten, dann langsam steigern. Kein Verdichten versäumter Tage.</span>
                 </li>
                 <li>
-                  <time dateTime={trackerRestartPlan.mainPlanStart}>Ab {formatDate(trackerRestartPlan.mainPlanStart)}</time>
-                  <strong>25 Wochen im Leichtmodus</strong>
-                  <span>Maximal 70 Minuten ab 15:00 Uhr. Wenn du noch nicht bereit bist, verschiebt ein späteres Startdatum den ganzen Plan ohne Verdichtung.</span>
+                  <time dateTime="2026-10-19">Ab 19. Oktober</time>
+                  <strong>Leichtmodus bis zum technischen Start</strong>
+                  <span>Maximal 70 Minuten ab 15:00 Uhr; die technischen Bildschirmwochen beginnen am 26. Oktober.</span>
                 </li>
               </ol>
               <aside className="restart-catchup-rule" aria-label="Regel für alte Kurssitzungen">
                 <strong>Sitzungen 1–7 bleiben archiviert</strong>
                 <p>Erst nach dem verpflichtenden Wochenartefakt und höchstens eine Sitzung pro Woche. Nur öffnen, wenn sie Artefakt, Test oder Evidence der aktuellen Woche direkt blockiert; sonst endgültig überspringen.</p>
               </aside>
-              <p className="restart-health-priority">Gesundheitliche und ärztliche Vorgaben haben immer Vorrang vor Uhrzeit, Startdatum und Streak.</p>
+              <p className="restart-health-priority">Die individuelle Anweisung des Operateurs — 14 Tage ohne Computer und Tablet — hat Vorrang vor allgemeinen Internet-Empfehlungen, Uhrzeit, Startdatum und Streak.</p>
             </section>
 
             {todayCourseSession ? (
@@ -2393,7 +2445,7 @@ export default function StudyTracker({
                           <strong>{catchUpSession ? "Archiviert · nur bei direktem Wochenblocker" : "Keine Vorarbeit · maximal drei Zeilen danach"}</strong>
                           {catchUpSession ? (
                             <>
-                              <p>Frühestens ab {formatDate(trackerRestartPlan.mainPlanStart)}, erst nach dem Wochenartefakt und höchstens einmal pro Woche.</p>
+                              <p>Frühestens ab {formatDate(trackerRestartPlan.catchUpPolicy.earliestDate)}, erst nach dem Wochenartefakt und höchstens einmal pro Woche.</p>
                               <small>Frage zuerst: Blockiert diese Sitzung Artefakt, Test oder Evidence dieser Woche? Wenn nein, überspringen.</small>
                             </>
                           ) : (
@@ -2562,7 +2614,7 @@ export default function StudyTracker({
             <details className="critical-path-card dashboard-disclosure" open>
               <summary>
                 <h2><Icon name="flag" size={20} /> Kritischer Pfad · erste 6 Wochen</h2>
-                <span>Zukünftige Wochen ab deinem tatsächlichen Start · kein Rückstand</span>
+                <span>W1 startet am 30. August · Ruhe- und Papierphasen erzeugen keinen Rückstand</span>
               </summary>
               <ol className="critical-path-list">
                 <li><b>W1</b><span>Scope + eine prüfbare End-to-End-Frage</span></li>
@@ -2573,7 +2625,7 @@ export default function StudyTracker({
                 <li className="is-gate"><b>W6</b><span>Mini-Demo + Readiness Gate; kein Design ohne Laufbeleg</span></li>
               </ol>
               <footer>
-                <span>W1 beginnt erst mit deinem gewählten Startdatum. Eine Woche zählt dann nur mit Artefakt, Test und rückverfolgbarem Beleg.</span>
+                <span>W1 läuft vom 30. August bis 4. September. Papierentwürfe werden erst nach der Bildschirmfreigabe digital geprüft und abgehakt.</span>
                 <button className="button secondary" type="button" onClick={() => openFullPlan(false, "roadmap")}>Projekt-Fahrplan im Lernplan öffnen <Icon name="arrow" size={16} /></button>
               </footer>
             </details>
@@ -3763,6 +3815,7 @@ function DayCard({
   const focusTaskIndex = currentTaskIndex < 0 ? requiredTaskIndexes.at(-1) ?? day.tasks.length - 1 : currentTaskIndex;
   const focusMinutes = workModeTaskMinutes(settings.dailyWorkMode, focusTaskIndex);
   const planIsRunning = settings.planStatus === "running";
+  const canStartDigitalFocus = planIsRunning && day.workMode === "screen";
   const relatedCourseSessions = nlpSessionsRelatedToPlanDay(day.title);
   const courseRelated = relatedCourseSessions.length > 0;
   const relatedCourseSessionNumbers = relatedCourseSessions.map((session) => session.number);
@@ -3780,7 +3833,7 @@ function DayCard({
 
   return (
     <details
-      className={`day-card ${state} ${courseRelated ? "course-related" : ""} ${active ? "search-hit" : ""}`}
+      className={`day-card ${state} ${day.workMode === "paper" ? "paper-mode" : ""} ${courseRelated ? "course-related" : ""} ${active ? "search-hit" : ""}`}
       id={`day-${day.id}`}
       tabIndex={-1}
     >
@@ -3791,6 +3844,7 @@ function DayCard({
           <strong><Highlight text={day.title} query={active ? query : ""} /></strong>
           <small>{day.module} · Ergebnis: {day.deliverable}</small>
         </span>
+        {day.workMode === "paper" ? <span className="paper-mode-chip">Papiermodus · ohne Bildschirm</span> : null}
         {courseRelated ? (
           <span
             className="course-related-chip"
@@ -3805,18 +3859,23 @@ function DayCard({
         <button
           className="day-focus-button"
           type="button"
-          disabled={!planIsRunning}
+          disabled={!canStartDigitalFocus}
           onClick={(event) => {
             event.preventDefault();
             event.stopPropagation();
-            if (!planIsRunning) return;
+            if (!canStartDigitalFocus) return;
             onStartFocus(day);
           }}
         >
-          <Icon name="play" size={17} /> {planIsRunning ? `Fokus starten · ${displayNumber(focusMinutes)} Min.` : "Vorschau"}
+          <Icon name="play" size={17} /> {day.workMode === "paper" ? "Papiermodus" : planIsRunning ? `Fokus starten · ${displayNumber(focusMinutes)} Min.` : "Vorschau"}
         </button>
       </summary>
       <div className="day-body">
+        {day.workMode === "paper" ? (
+          <div className="paper-mode-note" role="note">
+            Nur auf Papier arbeiten. Tablet und Computer bleiben bis zum Ende der ärztlich festgelegten 14-Tage-Pause geschlossen; digitale Übertragung, Test und Häkchen folgen erst nach der Freigabe.
+          </div>
+        ) : null}
         <div className="day-intro-grid">
           <article className="reason-card">
             <span>Warum heute?</span>

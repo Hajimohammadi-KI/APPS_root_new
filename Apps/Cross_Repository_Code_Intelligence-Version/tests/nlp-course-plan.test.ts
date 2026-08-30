@@ -183,19 +183,32 @@ describe("Advanced Deep Learning reading plan", () => {
     ]);
   });
 
-  test("starts after the protected break without creating old backlog", () => {
+  test("starts on 30 August and protects full-rest and paper-only recovery windows", () => {
     expect(allDays[0]?.date).toBe(trackerRestartPlan.mainPlanStart);
-    expect(allDays.at(-1)?.date).toBe("2027-04-10");
+    expect(allDays.at(-1)?.date).toBe("2027-03-06");
     expect(allDays.every((day) => day.date >= trackerRestartPlan.mainPlanStart)).toBeTrue();
     expect(allDays.every((day) => !day.optionalDuringCourse)).toBeTrue();
     expect(planWeeks.slice(0, 7).map((week) => week.days[0]?.date)).toEqual([
-      "2026-10-19", "2026-10-26", "2026-11-02", "2026-11-09",
-      "2026-11-16", "2026-11-23", "2026-11-30",
+      "2026-08-30", "2026-09-17", "2026-09-25", "2026-10-09",
+      "2026-10-16", "2026-10-23", "2026-10-26",
     ]);
-    expect(defaultSettings.planStatus).toBe("not_started");
+    expect(defaultSettings.planStatus).toBe("running");
     expect(defaultSettings.dailyWorkMode).toBe("light");
     expect(defaultSettings.dailyStart).toBe("15:00");
-    expect(defaultSettings.planEndDate).toBe("2027-04-10");
+    expect(defaultSettings.planEndDate).toBe("2027-03-06");
+
+    const firstRestDays = allDays.filter((day) => day.date >= "2026-09-10" && day.date <= "2026-09-16");
+    const secondRestDays = allDays.filter((day) => day.date >= "2026-09-29" && day.date <= "2026-10-05");
+    expect(firstRestDays).toHaveLength(0);
+    expect(secondRestDays).toHaveLength(0);
+
+    const paperDays = allDays.filter((day) => day.workMode === "paper");
+    expect(paperDays.map((day) => day.date)).toEqual([
+      "2026-09-17", "2026-09-18", "2026-09-19", "2026-09-21", "2026-09-22", "2026-09-23",
+      "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-12", "2026-10-13",
+    ]);
+    expect(paperDays.every((day) => day.tasks[1]?.items.map((item) => item.label).join(" ").includes("auf Papier"))).toBeTrue();
+    expect(paperDays.every((day) => day.tasks[2]?.items.map((item) => item.label).join(" ").includes("Bildschirmfreigabe"))).toBeTrue();
   });
 
   test("separates missed sessions from the three remaining live sessions", () => {
@@ -211,9 +224,12 @@ describe("Advanced Deep Learning reading plan", () => {
       missedSessionRule: "do_not_catch_up_before_restart",
     });
     expect(trackerRestartPlan.catchUpPolicy.countsAsBacklog).toBeFalse();
-    expect(trackerRestartPlan.catchUpPolicy.earliestDate).toBe(trackerRestartPlan.mainPlanStart);
+    expect(trackerRestartPlan.catchUpPolicy.earliestDate).toBe("2026-10-19");
     expect(trackerRestartPlan.catchUpPolicy.maxSessionsPerWeek).toBe(1);
     expect(trackerRestartPlan.catchUpPolicy.requiresWeeklyCoreOutput).toBeTrue();
+    expect(trackerRestartPlan.recoveryPolicy.minimumFullRestDays).toBe(7);
+    expect(trackerRestartPlan.recoveryPolicy.screenFreeDays).toBe(14);
+    expect(trackerRestartPlan.recoveryPolicy.paperOnlyFromDay).toBe(8);
     expect(trackerRestartPlan.recoveryPolicy.gentleDailyMinutes).toBe(12);
     expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(70);
     expect(trackerRestartPlan.recoveryPolicy.shiftWholePlanIfNotReady).toBeTrue();
@@ -238,12 +254,12 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
-  test("records Revision 6 and the no-catch-up recovery boundary", () => {
-    expect(PLAN_VERSION).toBe(6);
+  test("records Revision 7 and the medically protected paper-mode boundary", () => {
+    expect(PLAN_VERSION).toBe(7);
     expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-30");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Vorablektüre");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Höchstens eine optionale Nachholsitzung pro Woche");
-    expect(appPackage.version).toBe("0.6.0-version2");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Falscher Gesamtstart");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Papiermodus");
+    expect(appPackage.version).toBe("0.6.1-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

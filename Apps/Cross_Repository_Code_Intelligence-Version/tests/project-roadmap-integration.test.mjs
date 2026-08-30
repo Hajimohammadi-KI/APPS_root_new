@@ -27,13 +27,16 @@ test("Projekt-Fahrplan is a view inside the shared Projekt-Lernplan", () => {
   assert.doesNotMatch(tracker, /href="\/projekt-fahrplan"/);
 });
 
-test("roadmap and detail view share one guarded progress state", () => {
+test("roadmap and detail view share clickable progress before the scheduled start", () => {
   assert.match(roadmap, /completed: ReadonlySet<string>/);
   assert.match(roadmap, /onToggleDay: \(day: PlannedDay, completed: boolean\) => Promise<boolean>/);
   assert.doesNotMatch(roadmap, /loadCompletedIds|toggleTaskCompletion|localStorage/);
-  assert.match(roadmap, /const canRecordProgress = planStatus === "running"/);
-  assert.match(roadmap, /disabled=\{!canRecordProgress \|\| pendingDayId === day\.id\}/);
-  assert.match(tracker, /if \(settings\.planStatus !== "running"\)[\s\S]*?Es wurde nichts abgehakt/);
+  assert.doesNotMatch(roadmap, /canRecordProgress/);
+  assert.match(roadmap, /disabled=\{pendingDayId === day\.id\}/);
+  assert.match(roadmap, /Du kannst Häkchen jederzeit setzen oder entfernen/);
+  assert.match(roadmap, /Startdatum und Kalender bleiben unverändert/);
+  assert.match(tracker, /async function toggleRoadmapDay[\s\S]*?const previous = new Set\(completed\)/);
+  assert.doesNotMatch(tracker, /Projekt-Fahrplan ist bis zum echten Start nur eine Vorschau/);
   assert.match(tracker, /action: "import"[\s\S]*?completedIds: \[\.\.\.next\][\s\S]*?notes,[\s\S]*?settings/);
 });
 

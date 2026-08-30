@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "privacy": {
+    "collection": "opt-in",
+    "defaultStorage": "local-first",
+    "retentionDays": 90,
+    "prohibitedFields": [
+      "name",
+      "email",
+      "ip_address",
+      "raw_text",
+      "transcript",
+      "audio",
+      "document_content",
+      "api_key",
+      "device_fingerprint"
+    ]
+  },
+  "commonFields": [
+    "schema_version",
+    "event_id",
+    "occurred_at",
+    "app_id",
+    "anonymous_session_id",
+    "task_id",
+    "task_type",
+    "route_id"
+  ],
+  "events": {
+    "learning_task_started": {
+      "purpose": "Count deliberate starts of a learner task.",
+      "additionalFields": []
+    },
+    "learning_task_finished": {
+      "purpose": "Measure successful completion against deliberate starts.",
+      "additionalFields": ["completion_state"]
+    },
+    "repair_completed": {
+      "purpose": "Measure completion of a correction or repair task without storing the answer.",
+      "additionalFields": ["repair_type"]
+    },
+    "returned_after_error": {
+      "purpose": "Measure whether a learner successfully returns after a recoverable error.",
+      "additionalFields": ["error_category", "recovery_action"]
+    },
+    "teacher_review_completed": {
+      "purpose": "Measure review turnaround without storing learner evidence.",
+      "additionalFields": ["review_ready_at", "review_outcome"]
+    }
+  },
+  "metrics": {
+    "task_starts": "Count learning_task_started events.",
+    "task_finish_rate": "Distinct finished task_id values divided by distinct started task_id values.",
+    "repair_completion_rate": "Distinct repair_completed task_id values divided by started repair task_id values.",
+    "return_after_error_rate": "returned_after_error events with recovery_action=completed divided by all returned_after_error events.",
+    "teacher_review_turnaround": "Median teacher_review_completed.occurred_at minus review_ready_at, reported with P75 and sample size."
+  }
+}

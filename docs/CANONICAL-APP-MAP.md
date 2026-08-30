@@ -44,3 +44,7 @@ Before this inventory, `du` over these directories reported roughly 1.9 GB, whic
 Choose **teacher workflow validation and repair-loop completion** for the next evidence sprint. The technical queue and assignment flow now exist, but the roadmap still has no real teacher observation. That is a larger decision risk than adding another feature. Speech quality remains second because provider availability and real audio analysis are not yet consistently verified; PDF annotation and multi-device sync follow after the teacher sessions identify whether they block the core review task.
 
 This is a product decision for the next evidence sprint, not proof that the teacher flow already succeeds with humans.
+
+## Governance doc rule of thumb
+
+Write a new governance doc only after the process it describes has been run by hand at least once. This repo had docs describing an aspirational process before that process was ever executed; several claims here (ownership, the archive plan, the release gate) were only made accurate by actually running them on 2026-08-30, not by writing them more carefully the first time.

@@ -19,6 +19,8 @@ const cssFiles = [
   "../app/styles/90-responsive.css",
   "../app/styles/components/hover-help-and-course.css",
   "../app/styles/91-accessibility.css",
+  "../app/styles/100-interaction-direction.css",
+  "../app/projekt-fahrplan/projekt-fahrplan.css",
 ];
 const css = (
   await Promise.all(
@@ -26,6 +28,7 @@ const css = (
   )
 ).join("\n");
 const pdfCss = await readFile(new URL("../app/pdf-reader/pdf-reader.css", import.meta.url), "utf8");
+const nlpCss = await readFile(new URL("../app/nlp-lab/nlp-lab.css", import.meta.url), "utf8");
 const settingsCss = await readFile(new URL("../app/settings/settings-modern.css", import.meta.url), "utf8");
 const settingsBaseCss = await readFile(new URL("../app/settings/settings-base.css", import.meta.url), "utf8");
 const settingsModuleCss = await readFile(new URL("../app/settings/settings-module.css", import.meta.url), "utf8");
@@ -35,6 +38,7 @@ const exposeRoute = await readFile(new URL("../app/api/expose/route.ts", import.
 const manifest = await readFile(new URL("../public/manifest.webmanifest", import.meta.url), "utf8");
 const shadcn = await readFile(new URL("../components.json", import.meta.url), "utf8");
 const actualSoftwareRoadmap = await readFile(new URL("../docs/ACTUAL-SOFTWARE-ROADMAP.md", import.meta.url), "utf8");
+const authoredUiCss = [css, pdfCss, nlpCss, settingsCss, settingsBaseCss, settingsModuleCss].join("\n");
 
 test("tracker has API and local persistence boundaries", () => {
   assert.match(tracker, /fetch\("\/api\/state"/);
@@ -75,6 +79,23 @@ test("daily closing note provides large responsive writing areas", () => {
   assert.match(css, /@media \(max-width: 760px\)[\s\S]*?\.structured-note-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
   assert.match(css, /\.note-box > \.structured-note-actions\s*\{/);
   assert.doesNotMatch(css, /\.note-box > div\s*\{/);
+});
+
+test("authored interface text never falls below 12px", () => {
+  const undersizedPx = [...authoredUiCss.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)]
+    .map((match) => Number(match[1]))
+    .filter((size) => size < 12);
+  const undersizedRem = [...authoredUiCss.matchAll(/font-size\s*:\s*(\d*\.\d+)rem/g)]
+    .map((match) => Number(match[1]) * 16)
+    .filter((size) => size < 12);
+  const undersizedShorthand = [...authoredUiCss.matchAll(/font\s*:\s*(?:\d+\s+)?(\d+(?:\.\d+)?)px\//g)]
+    .map((match) => Number(match[1]))
+    .filter((size) => size < 12);
+
+  assert.deepEqual(undersizedPx, []);
+  assert.deepEqual(undersizedRem, []);
+  assert.deepEqual(undersizedShorthand, []);
+  assert.match(css, /small\s*\{[\s\S]*?font-size:\s*max\(12px, 0\.8em\)/);
 });
 
 test("article cards expose full-versus-section reading instructions", () => {

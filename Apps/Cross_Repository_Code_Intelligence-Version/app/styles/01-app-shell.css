@@ -378,7 +378,7 @@
 
 .profile-card small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .profile-card strong {
@@ -435,7 +435,7 @@
 .sidebar-rail p {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .sidebar-rail strong {
@@ -444,7 +444,7 @@
 
 .sidebar-rail span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .sidebar-foot {

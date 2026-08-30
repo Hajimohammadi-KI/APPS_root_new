@@ -61,4 +61,14 @@
 - Installed runtime checks: web `/`, web `/api/state`, and API `/v1/health` returned HTTP 200; package version was `0.6.4-version2`.
 - Browser console warnings and errors after desktop and responsive checks: none.
 
+## 0.6.5 — 12 px minimum readable text
+
+- Installed production QA route: `http://127.0.0.1:4312/?qa=live-learning-064#plan`.
+- Source audit: all authored `font-size` declarations below 12 px were raised across the tracker, roadmap, dashboard, NLP Lab, settings, and PDF Reader controls. The PDF.js text layer remains untouched so article geometry is not distorted.
+- Browser-default guard: unstyled HTML `small` elements use `max(12px, 0.8em)`, preventing the user-agent stylesheet from silently shrinking them below the requested minimum.
+- Narrow viewport audit: 17,942 visible text-bearing elements at 319 × 1,184 CSS pixels; computed minimum 12 px, zero offenders, and zero page-level horizontal overflow.
+- Desktop viewport audit: 17,983 visible text-bearing elements at 1,440 × 900 CSS pixels; computed minimum 12 px, zero offenders, and zero page-level horizontal overflow.
+- Browser console warnings and errors: none.
+- Installed runtime checks: web `/`, web `/api/state`, web `/api/settings`, and API `/v1/health` succeeded; package version was `0.6.5-version2` and pre/post user-data hashes were identical.
+
 final result: passed

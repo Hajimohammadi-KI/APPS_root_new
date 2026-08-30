@@ -73,9 +73,9 @@
   border-radius: 13px;
   background: rgb(255 255 255 / 82%);
 }
-.restart-plan-card time { color: #6b3193; font-size: 11px; font-weight: 850; }
+.restart-plan-card time { color: #6b3193; font-size: 12px; font-weight: 850; }
 .restart-plan-card strong { font-size: 14px; }
-.restart-plan-card li span { color: #625769; font-size: 11px; line-height: 1.5; }
+.restart-plan-card li span { color: #625769; font-size: 12px; line-height: 1.5; }
 .restart-catchup-rule {
   padding: 14px 16px;
   border: 1px solid #b9d9cd;
@@ -135,7 +135,7 @@
   background: #482064;
   color: #fff;
   padding: 7px 11px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 850;
   white-space: nowrap;
 }
@@ -172,7 +172,7 @@
   justify-content: space-between;
   gap: 10px;
   color: #5b2b82;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 850;
   text-transform: uppercase;
 }
@@ -204,7 +204,7 @@
   background: #ede1f6;
   color: #482064;
   padding: 4px 8px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 750;
 }
 
@@ -219,11 +219,11 @@
 .course-transfer-brief.experiment { border-inline-start-color: #a66b12; background: #fffaf0; }
 .course-transfer-brief.scope { border-inline-start-color: #74707a; background: #f6f5f6; }
 .course-transfer-brief.deferred { border-inline-start-color: #2b6e59; background: #f1faf6; }
-.course-transfer-brief > strong { display: block; color: #482064; font-size: 10px; }
-.course-transfer-brief p { margin: 5px 0 0; color: #4c4059; font-size: 10px; line-height: 1.45; }
+.course-transfer-brief > strong { display: block; color: #482064; font-size: 12px; }
+.course-transfer-brief p { margin: 5px 0 0; color: #4c4059; font-size: 12px; line-height: 1.45; }
 .course-transfer-brief p span { display: inline-block; min-width: 58px; color: #6b3193; font-weight: 850; }
-.course-transfer-brief code { overflow-wrap: anywhere; color: #402056; font-size: 9px; }
-.course-transfer-brief small { display: block; margin-top: 6px; color: #625769; font-size: 9px; line-height: 1.5; }
+.course-transfer-brief code { overflow-wrap: anywhere; color: #402056; font-size: 12px; }
+.course-transfer-brief small { display: block; margin-top: 6px; color: #625769; font-size: 12px; line-height: 1.5; }
 
 @media (max-width: 980px) {
   .restart-plan-card ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -243,7 +243,7 @@
 .course-session-readings > summary {
   cursor: pointer;
   color: #5b2b82;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -253,7 +253,7 @@
   border-radius: 9px;
   background: #f1faf6;
   color: #355c50;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.45;
 }
@@ -268,7 +268,7 @@
 .course-session-readings li {
   overflow-wrap: anywhere;
   color: #4c4059;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -289,7 +289,7 @@
 .course-reading-priority section > strong {
   display: block;
   color: #3d2058;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .course-required-deliverables {
@@ -339,7 +339,7 @@
 
 .course-session-guidance p {
   margin: 8px 0 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
 }
 

@@ -36,7 +36,7 @@
   background: rgba(248,244,252,.88);
   color: var(--teal-800);
   padding: 4px 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: .01em;
 }
@@ -80,7 +80,7 @@
   background: rgba(255,255,255,.72);
   padding: 10px 12px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .schedule-strip strong {
@@ -190,7 +190,7 @@
 }
 
 .circular-progress.compact strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .week-progress-group {
@@ -254,7 +254,7 @@
 
 .metric-card p { font-size: 12px; }
 .metric-card strong { font-size: 21px; line-height: 1.4; }
-.metric-card small { font-size: 11px; }
+.metric-card small { font-size: 12px; }
 .next-card strong { overflow: hidden; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
 
 .chart-card,
@@ -294,7 +294,7 @@
   align-items: center;
   gap: 7px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .legend i {
@@ -349,7 +349,7 @@
 
 .week-column small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .plan-section,
@@ -374,7 +374,7 @@
 
 .plan-count span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .filter-panel {
@@ -530,7 +530,7 @@
 
 .course-topic-guide__eyebrow {
   color: #8b4b16;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -540,7 +540,7 @@
   background: #482064;
   color: white;
   padding: 7px 11px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 850;
 }
 
@@ -594,7 +594,7 @@
 .course-topic-guide__transfer h4,
 .course-topic-guide__transfer p { margin: 0; }
 .course-topic-guide__transfer p,
-.course-topic-guide__transfer small { font-size: 11px; line-height: 1.65; }
+.course-topic-guide__transfer small { font-size: 12px; line-height: 1.65; }
 .course-topic-guide__transfer code { overflow-wrap: anywhere; }
 .course-topic-guide__transfer small { grid-column: 1 / -1; color: var(--muted); }
 
@@ -631,7 +631,7 @@
 .course-topic-guide__days button span,
 .course-topic-guide__days button small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .course-topic-guide__days button strong {
@@ -746,7 +746,7 @@ details[open] > summary .summary-marker {
 .summary-main small {
   overflow: hidden;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -798,7 +798,7 @@ details[open] > summary .summary-marker {
   background: var(--violet-soft);
   color: var(--violet);
   padding: 5px 9px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -807,7 +807,7 @@ details[open] > summary .summary-marker {
   background: var(--paper);
   color: var(--muted);
   padding: 4px 9px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .week-output-rule {
@@ -829,7 +829,7 @@ details[open] > summary .summary-marker {
 .week-output-rule > span {
   grid-column: 1;
   color: #5f3d7d;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
   letter-spacing: .03em;
   text-transform: uppercase;
@@ -893,7 +893,7 @@ details[open] > summary .summary-marker {
   background: #9f4033;
   color: #fff;
   padding: 5px 9px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
   white-space: nowrap;
 }
@@ -904,7 +904,7 @@ details[open] > summary .summary-marker {
   background: #fff4cf;
   color: #684e10;
   padding: 5px 9px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
   white-space: nowrap;
 }
@@ -917,12 +917,12 @@ details[open] > summary .summary-marker {
 .day-card > summary time {
   min-width: 135px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .status-chip {
   padding: 5px 9px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .task-card.optional-today {
@@ -937,7 +937,7 @@ details[open] > summary .summary-marker {
   background: #f1ebf8;
   color: #493465;
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -1051,7 +1051,7 @@ details[open] > summary .summary-marker {
 .reason-card > span,
 .output-card > span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -1094,7 +1094,7 @@ details[open] > summary .summary-marker {
   background: var(--violet-soft);
   color: #5149b3;
   padding: 3px 8px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .module-line {
@@ -1133,7 +1133,7 @@ details[open] > summary .summary-marker {
   background: #e8dcf4;
   color: #4b2f6d;
   padding: 6px 10px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .prerequisite-learning-intro {
@@ -1180,7 +1180,7 @@ details[open] > summary .summary-marker {
 
 .prerequisite-learning-content > span {
   color: #765c8c;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1194,7 +1194,7 @@ details[open] > summary .summary-marker {
 .prerequisite-learning-content p {
   margin: 5px 0;
   color: #485b63;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -1274,7 +1274,7 @@ details[open] > summary .summary-marker {
   color: #52646b;
   padding: 5px 7px;
   font-family: var(--font-geist-mono), Consolas, monospace;
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 .source-list .source-focus {
@@ -1284,7 +1284,7 @@ details[open] > summary .summary-marker {
   background: #f5f0fb;
   color: #35234e;
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.55;
 }
 .source-list .source-focus strong { color: #4b2f6d; }
@@ -1317,7 +1317,7 @@ details[open] > summary .summary-marker {
   display: block;
   margin-top: 5px;
   color: #465860;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.55;
 }
 .source-reading-plan > ul {
@@ -1327,7 +1327,7 @@ details[open] > summary .summary-marker {
   margin: 7px 0 0;
   padding-left: 20px;
   color: #465860;
-  font-size: 11px;
+  font-size: 12px;
 }
 .source-reading-plan > small { border-top: 1px solid #dfd5e8; padding-top: 7px; }
 .source-reading-plan > small b { color: #35234e; }
@@ -1412,7 +1412,7 @@ details[open] > summary .summary-marker {
 
 .priority {
   color: #aa791b;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: .04em;
 }
 
@@ -1476,7 +1476,7 @@ details[open] > summary .summary-marker {
   background: var(--paper);
   color: var(--muted);
   padding: 4px 8px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -1696,7 +1696,7 @@ details[open] > summary .summary-marker {
 .attachment-heading p {
   margin: 2px 0 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .attachment-heading > span {
@@ -1705,7 +1705,7 @@ details[open] > summary .summary-marker {
   background: var(--mint-100);
   color: var(--teal-800);
   padding: 5px 9px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1756,7 +1756,7 @@ details[open] > summary .summary-marker {
 
 .attachment-dropzone small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.5;
 }
 
@@ -1829,7 +1829,7 @@ details[open] > summary .summary-marker {
 
 .attachment-meta small {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .attachment-view {
@@ -1837,7 +1837,7 @@ details[open] > summary .summary-marker {
   align-items: center;
   gap: 4px;
   color: var(--teal-800);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
 }
 
@@ -1920,7 +1920,7 @@ details[open] > summary .summary-marker {
 .settings-plan-overview p {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .settings-plan-overview strong {
@@ -1969,7 +1969,7 @@ details[open] > summary .summary-marker {
 .plan-control-actions { display: flex; align-items: end; justify-content: flex-end; gap: .65rem; flex-wrap: wrap; }
 .plan-control-actions label { display: grid; gap: .35rem; font-size: .78rem; font-weight: 750; }
 .plan-control-actions input { min-height: 2.75rem; padding: .6rem .75rem; border: 1px solid var(--line); border-radius: .75rem; background: #fff; }
-.localized-date-preview { color: var(--muted); font-size: .7rem; font-weight: 650; }
+.localized-date-preview { color: var(--muted); font-size: 12px; font-weight: 650; }
 @media (max-width: 1080px) {
   .plan-control-panel { grid-template-columns: 1fr; }
   .plan-control-actions { justify-content: flex-start; }
@@ -2018,7 +2018,7 @@ details[open] > summary .summary-marker {
 
 .connection-state {
   padding: 2px 7px;
-  font-size: 9px;
+  font-size: 12px;
 }
 
 .connection-state.ready { background: var(--green-soft); color: var(--green); }
@@ -2037,7 +2037,7 @@ details[open] > summary .summary-marker {
   border-left: 2px solid var(--amber);
   color: #50646b;
   padding-left: 9px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .integration-card > a {
@@ -2188,7 +2188,7 @@ details[open] > summary .summary-marker {
 .focus-current > span,
 .focus-start-panel label > span {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -2267,7 +2267,7 @@ details[open] > summary .summary-marker {
 .file-preview-modal header p {
   margin: 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .file-preview-modal > footer {
@@ -2415,7 +2415,7 @@ details[open] > summary .summary-marker {
 .form-grid label > span,
 .source-settings label > span {
   color: #425960;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -2437,7 +2437,7 @@ details[open] > summary .summary-marker {
   background: var(--mint-50);
   color: var(--muted);
   padding: 8px 10px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .plan-date-suggestion {
@@ -2509,7 +2509,7 @@ details[open] > summary .summary-marker {
   overflow: hidden;
   padding: 0 4px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

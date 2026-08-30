@@ -69,3 +69,17 @@ test("nested language workspaces publish Next output at their Vercel project roo
     assert.match(source, /distDir:\s*["']\.\.\/\.\.\/\.next["']/);
   }
 });
+
+test("public smoke checks use the canonical production aliases", () => {
+  const canonicalAliases = new Map([
+    ["english", "https://english-grammar-automaticity-pwa.vercel.app/"],
+    ["german", "https://deutschflow-grammar.vercel.app/"],
+    ["tracker", "https://study-tracker-plan-five.vercel.app/"],
+    ["pdf", "https://research-pdf-studio.vercel.app/"],
+  ]);
+
+  for (const target of manifest.targets.filter((candidate) => candidate.publicAccess === "public")) {
+    const publicUrls = target.publicChecks.map((check) => check.url);
+    assert.ok(publicUrls.includes(canonicalAliases.get(target.id)), `${target.id} canonical alias drifted`);
+  }
+});

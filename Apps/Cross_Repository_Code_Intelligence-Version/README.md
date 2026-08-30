@@ -7,7 +7,7 @@
 Die veröffentlichte Version ist unter folgender Adresse erreichbar:
 
 ```text
-https://cross-repository-code-intelligence.vercel.app
+https://study-tracker-plan-five.vercel.app
 ```
 
 Vercel installiert und baut die Next.js-App mit Bun. Die drei Hauptbereiche

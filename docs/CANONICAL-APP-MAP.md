@@ -8,7 +8,7 @@ Status: published from `scripts/release-targets.json` on 30 August 2026.
 | --- | --- | --- | --- | --- |
 | English learning | English Automaticity | `Apps/English/English-07082026` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
 | German learning | Deutsch Automaticity | `Apps/Deutsch-V10.08.2026` | local 3210; Vercel project `deutschflow-grammar` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
-| Study planning | Cross Repository Tracker | `Apps/Cross_Repository_Code_Intelligence-Version` | local 4312; Vercel project `study-tracker-plan` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
+| Study planning | Cross Repository Tracker | `Apps/Cross_Repository_Code_Intelligence-Version` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
 | Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
 | Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
 

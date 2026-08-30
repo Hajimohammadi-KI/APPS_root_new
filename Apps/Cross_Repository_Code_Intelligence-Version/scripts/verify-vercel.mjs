@@ -3,7 +3,8 @@ import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
 
-const baseUrl = (process.argv[2] ?? "https://cross-repository-code-intelligence.vercel.app").replace(/\/$/, "");
+// Keep the default smoke-test target on the active study-tracker-plan production alias.
+const baseUrl = (process.argv[2] ?? "https://study-tracker-plan-five.vercel.app").replace(/\/$/, "");
 const chromePath = process.env.CHROME_PATH ?? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const verifyPersistence = process.env.VERIFY_PERSISTENCE !== "0";
 const allowLocalApiFailures = process.env.ALLOW_LOCAL_API_FAILURES === "1";
@@ -131,8 +132,15 @@ try {
   if (verifyPersistence) {
     const persistenceContext = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const persistencePage = await persistenceContext.newPage();
+    // Persistence must be exercised in an active plan, not against the intentionally read-only pre-start preview.
+    await persistencePage.clock.setFixedTime(new Date("2026-10-19T10:00:00+02:00"));
     await persistencePage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded", timeout: 45_000 });
     await persistencePage.waitForTimeout(1_000);
+    await persistencePage.getByRole("button", { name: "Lernplan starten", exact: true }).click();
+    await persistencePage.waitForFunction(() => {
+      const checkbox = document.querySelector(".today-task-list input[type=checkbox]");
+      return checkbox instanceof HTMLInputElement && !checkbox.disabled;
+    });
     const firstTask = persistencePage.locator(".today-task-list input[type=checkbox]").first();
     const taskBefore = await firstTask.isChecked();
     await firstTask.setChecked(!taskBefore);

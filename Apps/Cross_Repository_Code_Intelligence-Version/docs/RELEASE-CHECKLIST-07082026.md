@@ -51,7 +51,7 @@ language-learning applications remain independent and are not connected.
   focus sessions, backup/import boundaries, and timer state have regression
   coverage.
 - [x] Production deployed at
-  `https://cross-repository-code-intelligence.vercel.app`.
+  `https://study-tracker-plan-five.vercel.app`.
 - [x] Production persistence passed for progress, focus session, and
   accessibility settings in an isolated browser context.
 - [x] Final Vercel deployment `dpl_5RWUB6pd5EhoNQutmpehxZeuUqbb` is `READY`;

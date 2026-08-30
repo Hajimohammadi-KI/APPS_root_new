@@ -32,7 +32,7 @@ older versions.
   and mobile routes, PDF readability and persistence of progress, focus and
   settings all pass.
 - The public deployment at
-  `https://cross-repository-code-intelligence.vercel.app` responds correctly and
+  `https://study-tracker-plan-five.vercel.app` responds correctly and
   passes layout/readability checks, but its progress-persistence check currently
   fails. It is therefore an older deployment and must be redeployed before it is
   labelled equivalent to this current local release.

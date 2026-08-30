@@ -5,7 +5,7 @@
     "surface": "dashboard",
     "title": "CEFR Model Lab",
     "description": "Capabilities, resource planning, and measured learner-text classification results.",
-    "generatedAt": "2026-08-29T23:41:20+00:00",
+    "generatedAt": "2026-08-30T11:13:57+00:00",
     "filters": [
       {
         "id": "model-family",
@@ -32,7 +32,7 @@
           "query": "json.load(open('research/cefr-classification/catalog/model-catalog.json', encoding='utf-8'))",
           "sql": "SELECT * FROM model_catalog ORDER BY catalog_id;",
           "description": "Read model capabilities, official-source links, and explicitly labelled hardware estimates.",
-          "executed_at": "2026-08-29T23:41:20+00:00",
+          "executed_at": "2026-08-30T11:13:57+00:00",
           "tables_used": [
             "research/cefr-classification/catalog/model-catalog.json"
           ],
@@ -54,7 +54,7 @@
           "query": "glob('research/cefr-classification/runs/**/run.json'); keep status == 'measured'; latest created_at per model.catalog_id",
           "sql": "SELECT * FROM measured_runs WHERE status = 'measured' QUALIFY ROW_NUMBER() OVER (PARTITION BY model_catalog_id ORDER BY created_at DESC) = 1;",
           "description": "Load only measured run artifacts and exclude all synthetic fixture results.",
-          "executed_at": "2026-08-29T23:41:20+00:00",
+          "executed_at": "2026-08-30T11:13:57+00:00",
           "tables_used": [
             "research/cefr-classification/runs/**/run.json"
           ],
@@ -80,7 +80,7 @@
           "query": "json.load(open('research/cefr-classification/catalog/corpus-inventory.json', encoding='utf-8'))",
           "sql": "SELECT * FROM corpus_inventory ORDER BY corpus_id;",
           "description": "Read corpus provenance, licence review, allowed uses, and project approval state.",
-          "executed_at": "2026-08-29T23:41:20+00:00",
+          "executed_at": "2026-08-30T11:13:57+00:00",
           "tables_used": [
             "research/cefr-classification/catalog/corpus-inventory.json"
           ],
@@ -527,35 +527,16 @@
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-29T23:41:20+00:00",
-    "status": "partial",
-    "accessIssues": [
-      {
-        "id": "no-approved-real-corpus",
-        "scope": "CEFR performance",
-        "sourceId": "corpus-inventory-source",
-        "dataset": "model-comparison",
-        "message": "No real corpus is approved for training yet; model accuracy and F1 remain N/A.",
-        "actionLabel": "Review corpus inventory",
-        "actionHref": "https://github.com/Hajimohammadi-KI/APPS_root_new/blob/main/research/cefr-classification/catalog/corpus-inventory.json"
-      },
-      {
-        "id": "no-measured-runs",
-        "scope": "CEFR performance",
-        "sourceId": "run-artifacts-source",
-        "dataset": "model-comparison",
-        "message": "No non-fixture experiment run exists; the dashboard does not invent benchmark values.",
-        "actionLabel": "Open experiment guide",
-        "actionHref": "https://github.com/Hajimohammadi-KI/APPS_root_new/tree/main/research/cefr-classification"
-      }
-    ],
+    "generatedAt": "2026-08-30T11:13:57+00:00",
+    "status": "ready",
+    "accessIssues": [],
     "datasets": {
       "summary": [
         {
           "planned_models": 6,
-          "measured_models": 0,
-          "approved_real_corpora": 0,
-          "unresolved_corpora": 7
+          "measured_models": 2,
+          "approved_real_corpora": 2,
+          "unresolved_corpora": 6
         }
       ],
       "parameter-comparison": [
@@ -636,23 +617,23 @@
           "licence": "Apache-2.0",
           "hardware_estimate": "12-16 GB GPU for max_length 384, batch 8, mixed precision; reduce batch if needed",
           "role": "Primary English candidate",
-          "result_status": "N/A — no approved-corpus run",
-          "dataset": "N/A",
-          "accuracy": null,
-          "weighted_f1": null,
-          "macro_f1": null,
-          "qwk": null,
-          "adjacent_accuracy": null,
-          "calibration_error": null,
-          "f1_a1": null,
-          "f1_a2": null,
-          "f1_b1": null,
-          "f1_b2": null,
-          "f1_c1": null,
-          "f1_c2": null,
-          "training_minutes": null,
-          "measured_hardware": "N/A",
-          "run_id": "N/A"
+          "result_status": "Measured",
+          "dataset": "ace-cefr",
+          "accuracy": 0.4857142857142857,
+          "weighted_f1": 0.4790575579645215,
+          "macro_f1": 0.48749181330311075,
+          "qwk": 0.855765785135813,
+          "adjacent_accuracy": 0.9371428571428572,
+          "calibration_error": 0.1757446746035004,
+          "f1_a1": 0.6037735849056604,
+          "f1_a2": 0.4931506849315069,
+          "f1_b1": 0.4242424242424243,
+          "f1_b2": 0.4210526315789474,
+          "f1_c1": 0.36734693877551017,
+          "f1_c2": 0.6153846153846153,
+          "training_minutes": 2.2801262402834253,
+          "measured_hardware": "NVIDIA GeForce RTX 5060 Ti",
+          "run_id": "english-modernbert-seed42"
         },
         {
           "catalog_id": "roberta-base",
@@ -694,23 +675,23 @@
           "licence": "MIT",
           "hardware_estimate": "8-12 GB GPU for max_length 384, batch 8, mixed precision",
           "role": "Primary German candidate",
-          "result_status": "N/A — no approved-corpus run",
-          "dataset": "N/A",
-          "accuracy": null,
-          "weighted_f1": null,
-          "macro_f1": null,
-          "qwk": null,
-          "adjacent_accuracy": null,
-          "calibration_error": null,
-          "f1_a1": null,
-          "f1_a2": null,
-          "f1_b1": null,
-          "f1_b2": null,
-          "f1_c1": null,
-          "f1_c2": null,
-          "training_minutes": null,
-          "measured_hardware": "N/A",
-          "run_id": "N/A"
+          "result_status": "Measured",
+          "dataset": "merlin-de",
+          "accuracy": 0.7945205479452054,
+          "weighted_f1": 0.7917750215098461,
+          "macro_f1": 0.44287618599545203,
+          "qwk": 0.5969325153374233,
+          "adjacent_accuracy": 0.9863013698630136,
+          "calibration_error": 0.14591523278863555,
+          "f1_a1": 0.6666666666666666,
+          "f1_a2": 0.6666666666666666,
+          "f1_b1": 0.8623853211009175,
+          "f1_b2": 0.4615384615384615,
+          "f1_c1": 0.0,
+          "f1_c2": 0.0,
+          "training_minutes": 1.9901161547832695,
+          "measured_hardware": "NVIDIA GeForce RTX 5060 Ti",
+          "run_id": "german-gbert-seed42"
         },
         {
           "catalog_id": "xlm-roberta-base",
@@ -788,11 +769,11 @@
           "corpus_id": "merlin-de",
           "name": "MERLIN German learner corpus",
           "languages_display": "de",
-          "approval_status": "review_required",
+          "approval_status": "approved",
           "licence_status": "verified",
           "licence_id": "CC-BY-SA-4.0",
           "allowed_uses_display": "research, training",
-          "reason": "Strong German learner-writing candidate; explicit project approval and attribution/share-alike plan still required before download.",
+          "reason": "Freely downloadable without registration from the CLARIN Eurac repository; licence verified as CC-BY-SA-4.0. Approved 2026-08-30 for the German transformer run. Attribution/share-alike obligation: any redistribution of derived text or model outputs trained on this corpus must credit the MERLIN project (https://www.merlin-platform.eu/) and remain under a compatible share-alike licence.",
           "source_url": "https://www.merlin-platform.eu/",
           "is_fixture": false
         },
@@ -804,8 +785,20 @@
           "licence_status": "provenance_unverified",
           "licence_id": "N/A",
           "allowed_uses_display": "none",
-          "reason": "Uploader licence claim does not by itself resolve rights and label provenance for all underlying sources.",
+          "reason": "Confirmed 2026-08-30: the creator's own writeup states texts are pulled from The British Council, ESLFast, and the cnn-dailymail dataset. The Kaggle uploader does not hold rights to those underlying sources, so the dataset licence tag does not clear redistribution or training use. Remains blocked; use ace-cefr as the licensed substitute for English.",
           "source_url": "https://www.kaggle.com/datasets/amontgomerie/cefr-levelled-english-texts",
+          "is_fixture": false
+        },
+        {
+          "corpus_id": "ace-cefr",
+          "name": "Ace-CEFR conversational text difficulty dataset",
+          "languages_display": "en",
+          "approval_status": "approved",
+          "licence_status": "verified",
+          "licence_id": "CC0-1.0",
+          "allowed_uses_display": "research, training",
+          "reason": "Purpose-built human-expert-labelled CEFR difficulty dataset (890 conversational passages, 445 train / 445 test) authored by Kogan, Schumacher, Nguyen, Suzuki, Smith, Bellows, and Bernstein at Google Research, released CC0-1.0 as an arXiv ancillary file (arXiv:2506.14046). Approved 2026-08-30 as the licensed substitute for the blocked Kaggle English corpus. Retrieved via the GliteTech/research-ace-cefr mirror, which packages the same CC0 file under its own Apache-2.0 code licence (data licence governs, not the wrapper repo's code licence).",
+          "source_url": "https://arxiv.org/abs/2506.14046",
           "is_fixture": false
         },
         {
@@ -882,7 +875,7 @@
         "query": "json.load(open('research/cefr-classification/catalog/model-catalog.json', encoding='utf-8'))",
         "sql": "SELECT * FROM model_catalog ORDER BY catalog_id;",
         "description": "Read model capabilities, official-source links, and explicitly labelled hardware estimates.",
-        "executed_at": "2026-08-29T23:41:20+00:00",
+        "executed_at": "2026-08-30T11:13:57+00:00",
         "tables_used": [
           "research/cefr-classification/catalog/model-catalog.json"
         ],
@@ -904,7 +897,7 @@
         "query": "glob('research/cefr-classification/runs/**/run.json'); keep status == 'measured'; latest created_at per model.catalog_id",
         "sql": "SELECT * FROM measured_runs WHERE status = 'measured' QUALIFY ROW_NUMBER() OVER (PARTITION BY model_catalog_id ORDER BY created_at DESC) = 1;",
         "description": "Load only measured run artifacts and exclude all synthetic fixture results.",
-        "executed_at": "2026-08-29T23:41:20+00:00",
+        "executed_at": "2026-08-30T11:13:57+00:00",
         "tables_used": [
           "research/cefr-classification/runs/**/run.json"
         ],
@@ -930,7 +923,7 @@
         "query": "json.load(open('research/cefr-classification/catalog/corpus-inventory.json', encoding='utf-8'))",
         "sql": "SELECT * FROM corpus_inventory ORDER BY corpus_id;",
         "description": "Read corpus provenance, licence review, allowed uses, and project approval state.",
-        "executed_at": "2026-08-29T23:41:20+00:00",
+        "executed_at": "2026-08-30T11:13:57+00:00",
         "tables_used": [
           "research/cefr-classification/catalog/corpus-inventory.json"
         ],

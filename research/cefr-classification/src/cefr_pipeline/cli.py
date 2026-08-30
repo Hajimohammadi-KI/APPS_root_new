@@ -40,6 +40,16 @@ def build_parser() -> argparse.ArgumentParser:
     prepare.add_argument("--train-ratio", type=float, default=0.80)
     prepare.add_argument("--dev-ratio", type=float, default=0.10)
     prepare.add_argument("--test-ratio", type=float, default=0.10)
+    prepare.add_argument(
+        "--group-fields",
+        default="learner_id,prompt_id,source_group_id",
+        help=(
+            "Comma-separated record fields that must not cross split boundaries, "
+            "in addition to exact-duplicate text. Default keeps every leakage "
+            "control; drop a field (e.g. prompt_id) only when reusing it across "
+            "many unrelated learners is not a real leakage risk for this corpus."
+        ),
+    )
 
     feature = subparsers.add_parser("train-feature", help="Train the required interpretable baseline")
     feature.add_argument("--splits", required=True, type=_existing_path)
@@ -69,11 +79,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.command == "prepare":
         records = read_approved_csv(args.input, args.inventory)
+        group_fields = tuple(field.strip() for field in args.group_fields.split(",") if field.strip())
         config = SplitConfig(
             train_ratio=args.train_ratio,
             dev_ratio=args.dev_ratio,
             test_ratio=args.test_ratio,
             seed=args.seed,
+            group_fields=group_fields,
         )
         partitions, manifest = split_records(records, config)
         output = args.output.resolve()

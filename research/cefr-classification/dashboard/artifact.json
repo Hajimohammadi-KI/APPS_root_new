@@ -5,7 +5,7 @@
     "surface": "dashboard",
     "title": "CEFR Model Lab",
     "description": "Capabilities, resource planning, and measured learner-text classification results.",
-    "generatedAt": "2026-08-30T11:13:57+00:00",
+    "generatedAt": "2026-08-30T11:27:07+00:00",
     "filters": [
       {
         "id": "model-family",
@@ -32,7 +32,7 @@
           "query": "json.load(open('research/cefr-classification/catalog/model-catalog.json', encoding='utf-8'))",
           "sql": "SELECT * FROM model_catalog ORDER BY catalog_id;",
           "description": "Read model capabilities, official-source links, and explicitly labelled hardware estimates.",
-          "executed_at": "2026-08-30T11:13:57+00:00",
+          "executed_at": "2026-08-30T11:27:07+00:00",
           "tables_used": [
             "research/cefr-classification/catalog/model-catalog.json"
           ],
@@ -54,7 +54,7 @@
           "query": "glob('research/cefr-classification/runs/**/run.json'); keep status == 'measured'; latest created_at per model.catalog_id",
           "sql": "SELECT * FROM measured_runs WHERE status = 'measured' QUALIFY ROW_NUMBER() OVER (PARTITION BY model_catalog_id ORDER BY created_at DESC) = 1;",
           "description": "Load only measured run artifacts and exclude all synthetic fixture results.",
-          "executed_at": "2026-08-30T11:13:57+00:00",
+          "executed_at": "2026-08-30T11:27:07+00:00",
           "tables_used": [
             "research/cefr-classification/runs/**/run.json"
           ],
@@ -80,7 +80,7 @@
           "query": "json.load(open('research/cefr-classification/catalog/corpus-inventory.json', encoding='utf-8'))",
           "sql": "SELECT * FROM corpus_inventory ORDER BY corpus_id;",
           "description": "Read corpus provenance, licence review, allowed uses, and project approval state.",
-          "executed_at": "2026-08-30T11:13:57+00:00",
+          "executed_at": "2026-08-30T11:27:07+00:00",
           "tables_used": [
             "research/cefr-classification/catalog/corpus-inventory.json"
           ],
@@ -527,7 +527,7 @@
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-30T11:13:57+00:00",
+    "generatedAt": "2026-08-30T11:27:07+00:00",
     "status": "ready",
     "accessIssues": [],
     "datasets": {
@@ -677,19 +677,19 @@
           "role": "Primary German candidate",
           "result_status": "Measured",
           "dataset": "merlin-de",
-          "accuracy": 0.7945205479452054,
-          "weighted_f1": 0.7917750215098461,
-          "macro_f1": 0.44287618599545203,
-          "qwk": 0.5969325153374233,
-          "adjacent_accuracy": 0.9863013698630136,
-          "calibration_error": 0.14591523278863555,
-          "f1_a1": 0.6666666666666666,
-          "f1_a2": 0.6666666666666666,
-          "f1_b1": 0.8623853211009175,
-          "f1_b2": 0.4615384615384615,
-          "f1_c1": 0.0,
+          "accuracy": 0.6625766871165644,
+          "weighted_f1": 0.6536869433491754,
+          "macro_f1": 0.4664666436756349,
+          "qwk": 0.8250069412309116,
+          "adjacent_accuracy": 0.9938650306748467,
+          "calibration_error": 0.07088872506523512,
+          "f1_a1": 0.6153846153846153,
+          "f1_a2": 0.794392523364486,
+          "f1_b1": 0.5680473372781065,
+          "f1_b2": 0.6919431279620853,
+          "f1_c1": 0.12903225806451615,
           "f1_c2": 0.0,
-          "training_minutes": 1.9901161547832695,
+          "training_minutes": 1.6386683752498357,
           "measured_hardware": "NVIDIA GeForce RTX 5060 Ti",
           "run_id": "german-gbert-seed42"
         },
@@ -875,7 +875,7 @@
         "query": "json.load(open('research/cefr-classification/catalog/model-catalog.json', encoding='utf-8'))",
         "sql": "SELECT * FROM model_catalog ORDER BY catalog_id;",
         "description": "Read model capabilities, official-source links, and explicitly labelled hardware estimates.",
-        "executed_at": "2026-08-30T11:13:57+00:00",
+        "executed_at": "2026-08-30T11:27:07+00:00",
         "tables_used": [
           "research/cefr-classification/catalog/model-catalog.json"
         ],
@@ -897,7 +897,7 @@
         "query": "glob('research/cefr-classification/runs/**/run.json'); keep status == 'measured'; latest created_at per model.catalog_id",
         "sql": "SELECT * FROM measured_runs WHERE status = 'measured' QUALIFY ROW_NUMBER() OVER (PARTITION BY model_catalog_id ORDER BY created_at DESC) = 1;",
         "description": "Load only measured run artifacts and exclude all synthetic fixture results.",
-        "executed_at": "2026-08-30T11:13:57+00:00",
+        "executed_at": "2026-08-30T11:27:07+00:00",
         "tables_used": [
           "research/cefr-classification/runs/**/run.json"
         ],
@@ -923,7 +923,7 @@
         "query": "json.load(open('research/cefr-classification/catalog/corpus-inventory.json', encoding='utf-8'))",
         "sql": "SELECT * FROM corpus_inventory ORDER BY corpus_id;",
         "description": "Read corpus provenance, licence review, allowed uses, and project approval state.",
-        "executed_at": "2026-08-30T11:13:57+00:00",
+        "executed_at": "2026-08-30T11:27:07+00:00",
         "tables_used": [
           "research/cefr-classification/catalog/corpus-inventory.json"
         ],

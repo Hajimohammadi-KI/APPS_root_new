@@ -8,7 +8,7 @@ Status: published from `scripts/release-targets.json` on 30 August 2026.
 | --- | --- | --- | --- | --- |
 | English learning | English Automaticity | `Apps/English/English-Automaticity` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
 | German learning | Deutsch Automaticity | `Apps/Deutsch-Automaticity` | local 3210; Vercel project `deutschflow-grammar` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
-| Study planning | Cross Repository Tracker | `Apps/Cross_Repository_Code_Intelligence-Version` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
+| Study planning | Cross Repository Tracker | `Apps/Cross-Repository-Tracker` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
 | Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
 | Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
 

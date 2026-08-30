@@ -28,7 +28,7 @@ const REPO_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const DUPLICATE_FILE_PAIRS = [
   [
     "Apps/Apps-For-Integeration/Reader-PDF-App/lib/safe-remote-url.ts",
-    "Apps/Cross_Repository_Code_Intelligence-Version/lib/safe-remote-url.ts",
+    "Apps/Cross-Repository-Tracker/lib/safe-remote-url.ts",
     "SSRF guard for outbound remote-URL fetches; security-critical.",
   ],
   [

@@ -15,7 +15,7 @@ test("canonical app shells expose one reusable keyboard entry contract", async (
     source("Apps/English/English-Automaticity/apps/web/features/screens/dashboard-v2-screen.tsx"),
     source("Apps/Deutsch-Automaticity/apps/web/src/components/app-shell.tsx"),
     source("Apps/Deutsch-Automaticity/apps/web/src/features/dashboard/dashboard.tsx"),
-    source("Apps/Cross_Repository_Code_Intelligence-Version/app/study-tracker.tsx"),
+    source("Apps/Cross-Repository-Tracker/app/study-tracker.tsx"),
     source("Apps/Apps-For-Integeration/Einstellungen-APP/components/settings-app.tsx"),
     source("Apps/Apps-For-Integeration/Reader-PDF-App/app/page.tsx"),
   ]);
@@ -40,7 +40,7 @@ test("canonical app shells expose one reusable keyboard entry contract", async (
 test("navigation landmarks and async states have accessible names", async () => {
   const [germanNavigation, tracker, settings, pdf] = await Promise.all([
     source("Apps/Deutsch-Automaticity/apps/web/src/components/app-navigation.tsx"),
-    source("Apps/Cross_Repository_Code_Intelligence-Version/app/study-tracker.tsx"),
+    source("Apps/Cross-Repository-Tracker/app/study-tracker.tsx"),
     source("Apps/Apps-For-Integeration/Einstellungen-APP/components/settings-app.tsx"),
     source("Apps/Apps-For-Integeration/Reader-PDF-App/app/page.tsx"),
   ]);

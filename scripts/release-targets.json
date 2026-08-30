@@ -44,12 +44,12 @@
     {
       "id": "tracker",
       "name": "Cross Repository Tracker",
-      "projectDir": "Apps/Cross_Repository_Code_Intelligence-Version",
+      "projectDir": "Apps/Cross-Repository-Tracker",
       "deployment": {
         "provider": "vercel",
         "projectName": "study-tracker-plan",
-        "rootDirectory": "Apps/Cross_Repository_Code_Intelligence-Version",
-        "configFile": "Apps/Cross_Repository_Code_Intelligence-Version/vercel.json"
+        "rootDirectory": "Apps/Cross-Repository-Tracker",
+        "configFile": "Apps/Cross-Repository-Tracker/vercel.json"
       },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [

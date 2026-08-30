@@ -8,7 +8,7 @@ const root = resolve(import.meta.dirname, "..");
 const contractFiles = [
   "Apps/English/English-Automaticity/apps/web/app/styles/100-interaction-direction.css",
   "Apps/Deutsch-Automaticity/apps/web/src/app/styles/100-interaction-direction.css",
-  "Apps/Cross_Repository_Code_Intelligence-Version/app/styles/100-interaction-direction.css",
+  "Apps/Cross-Repository-Tracker/app/styles/100-interaction-direction.css",
   "Apps/Apps-For-Integeration/Einstellungen-APP/app/styles/100-interaction-direction.css",
   "Apps/Apps-For-Integeration/Reader-PDF-App/app/styles/100-interaction-direction.css",
 ];

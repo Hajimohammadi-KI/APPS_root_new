@@ -27,12 +27,12 @@ Apps/**/english-automaticity-compact-dashboard.png -filter -diff -merge -text
 Apps/**/dashboard-v2-comparison.png -filter -diff -merge -text
 Apps/**/dashboard-v2-implementation.png -filter -diff -merge -text
 Apps/**/coach-ava.png -filter -diff -merge -text
-Apps/Cross_Repository_Code_Intelligence-Version/**/Cross_Repository_Code_Intelligence_Expose_DE_2026_v2_4.pdf -filter -diff -merge -text
-Apps/Cross_Repository_Code_Intelligence-Version/public/expose.pdf -filter -diff -merge -text
+Apps/Cross-Repository-Tracker/**/Cross_Repository_Code_Intelligence_Expose_DE_2026_v2_4.pdf -filter -diff -merge -text
+Apps/Cross-Repository-Tracker/public/expose.pdf -filter -diff -merge -text
 Apps/**/apple-touch-icon.png -filter -diff -merge -text
 Apps/**/icon-192.png -filter -diff -merge -text
 Apps/**/icon-512.png -filter -diff -merge -text
-Apps/Cross_Repository_Code_Intelligence-Version/public/icon-maskable-512.png -filter -diff -merge -text
+Apps/Cross-Repository-Tracker/public/icon-maskable-512.png -filter -diff -merge -text
 Apps/**/automaticity-journey-hero.png -filter -diff -merge -text
 Apps/**/automaticity-progress-story.png -filter -diff -merge -text
 Apps/**/ava-language-coach.png -filter -diff -merge -text
@@ -41,4 +41,4 @@ Apps/**/navigation-narrow.png -filter -diff -merge -text
 
 # WSL launch scripts are executed directly from the Windows-mounted release.
 # A CRLF checkout makes `set -o pipefail` fail before installation can start.
-Apps/Cross_Repository_Code_Intelligence-Version/**/*.sh text eol=lf
+Apps/Cross-Repository-Tracker/**/*.sh text eol=lf

@@ -43,7 +43,7 @@ function wslLaunch(appRoot) {
 
 const englishRoot = join(appsRoot, "English", "English-Automaticity");
 const germanRoot = join(appsRoot, "Deutsch-Automaticity");
-const trackerRoot = join(appsRoot, "Cross_Repository_Code_Intelligence-Version");
+const trackerRoot = join(appsRoot, "Cross-Repository-Tracker");
 const settingsRoot = join(integration, "Einstellungen-APP");
 const pdfReaderRoot = join(integration, "Reader-PDF-App");
 

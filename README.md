@@ -11,7 +11,7 @@ just the map to get there.
 | --- | --- |
 | `Apps/English/English-Automaticity` | English Automaticity (canonical) |
 | `Apps/Deutsch-Automaticity` | Deutsch Automaticity (canonical) |
-| `Apps/Cross_Repository_Code_Intelligence-Version` | Cross Repository Tracker (canonical) |
+| `Apps/Cross-Repository-Tracker` | Cross Repository Tracker (canonical) |
 | `Apps/Apps-For-Integeration/Einstellungen-APP` | Settings (canonical, local-only) |
 | `Apps/Apps-For-Integeration/Reader-PDF-App` | Research PDF Studio (canonical) |
 | `Apps/Apps-For-Integeration/App_*` | Deprecated duplicate prototypes — do not extend, see the archive plan in `docs/CANONICAL-APP-MAP.md` |

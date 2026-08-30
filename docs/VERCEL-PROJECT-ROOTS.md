@@ -6,7 +6,7 @@ The public applications are separate Vercel projects inside this repository. Ver
 | --- | --- | --- | --- |
 | English Automaticity | `english-grammar-automaticity-pwa` | `Apps/English/English-Automaticity` | Framework default |
 | Deutsch Automaticity | `deutschflow-grammar` | `Apps/Deutsch-Automaticity` | Framework default; `apps/web/next.config.ts` writes the Vercel build to the project-root `.next` |
-| Cross Repository Tracker | `study-tracker-plan` | `Apps/Cross_Repository_Code_Intelligence-Version` | Framework default |
+| Cross Repository Tracker | `study-tracker-plan` | `Apps/Cross-Repository-Tracker` | Framework default |
 | Research PDF Studio | `research-pdf-studio` | `Apps/Apps-For-Integeration/Reader-PDF-App` | Framework default |
 | Settings | Local-only through Starter | N/A | N/A |
 

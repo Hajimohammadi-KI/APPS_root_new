@@ -448,7 +448,7 @@
 
             <section class="exercise-card" aria-labelledby="exercisePrompt">
               <div class="exercise-title">
-                <div><p class="eyebrow">Controlled recall</p><h3 id="exercisePrompt">Correct the sentence: I am agree.</h3></div>
+                <div><p class="eyebrow" id="exerciseEyebrow">Controlled recall</p><h3 id="exercisePrompt">Correct the sentence: I am agree.</h3></div>
                 <button class="audio-btn" id="audioBtn" aria-label="Read prompt aloud"><svg class="icon"><use href="#i-volume"/></svg></button>
               </div>
               <div class="answer-row"><label class="sr-only" for="answerInput">Enter English answer</label><input id="answerInput" placeholder="Enter English answer" autocomplete="off"/></div>
@@ -723,6 +723,7 @@
       };
       const normalize = text => text.toLowerCase().trim().replace(/[.!?]+$/, '').replace(/\s+/g, ' ');
       const currentTask = () => tasksForTopic()[taskIndex];
+      const isRecitationTask = (task) => Boolean(grammarUnit().recallTest) && task.answer === grammarUnit().recallTest;
       const currentExerciseKey = () => topicKey(progress.activeLevel, progress.activeTopic, taskIndex);
       const updatePathStatus = () => {
         const topicDone = topicCompleted(progress.activeLevel, progress.activeTopic);
@@ -743,6 +744,7 @@
       const resetTask = () => {
         const task = currentTask();
         $('#exercisePrompt').textContent = task.prompt;
+        $('#exerciseEyebrow').textContent = isRecitationTask(task) ? 'Free explanation — compare with the rule after' : 'Controlled recall';
         answer.value = '';
         repairInput.value = '';
         repairBox.classList.remove('show');
@@ -751,8 +753,21 @@
         updatePathStatus();
       };
       $('#checkBtn').addEventListener('click', () => {
-        const value = normalize(answer.value);
         const task = currentTask();
+        if (isRecitationTask(task)) {
+          if (!answer.value.trim()) {
+            feedback.className = 'feedback show bad';
+            feedback.textContent = 'Write your own explanation first, then compare.';
+            return;
+          }
+          feedback.className = 'feedback show good';
+          feedback.innerHTML = `<strong>The rule to compare against:</strong> ${task.answer}<br><span>There is no single correct wording here — compare meaning and completeness only.</span>`;
+          repairBox.classList.remove('show');
+          completeCurrent();
+          finishDailyActivity();
+          return;
+        }
+        const value = normalize(answer.value);
         const isCorrect = value === normalize(task.answer);
         feedback.className = `feedback show ${isCorrect ? 'good' : 'bad'}`;
         if (isCorrect) {

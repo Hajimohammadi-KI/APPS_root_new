@@ -116,6 +116,9 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
 
   const currentUnit = () => units[selectedIndex];
 
+  const isRecitationExercise = (unit, exercise) =>
+    Boolean(unit?.recallTest) && exercise?.[1] === unit.recallTest;
+
   const renderExercise = () => {
     const unit = currentUnit();
     if (!unit) return;
@@ -125,6 +128,9 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     exerciseIndex = Math.max(0, Math.min(exerciseIndex, exercises.length - 1));
     const exercise = exercises[exerciseIndex];
     $("#exercisePrompt").textContent = exercise[0];
+    $("#exerciseEyebrow").textContent = isRecitationExercise(unit, exercise)
+      ? "Freie Erklärung – vergleiche danach mit der Regel"
+      : "Gelenkter Abruf";
     $("#answerInput").value = "";
     const feedback = $("#feedback");
     feedback.textContent = "";
@@ -247,16 +253,23 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const answer = $("#answerInput").value;
     const expected = exercise[1] || unit.testAnswer || unit.examples?.[0] || "";
     const feedback = $("#feedback");
-    const correct = normalize(answer) === normalize(expected);
+    const recitation = isRecitationExercise(unit, exercise);
+    const correct = recitation ? answer.trim().length > 0 : normalize(answer) === normalize(expected);
     feedback.className = `feedback show ${correct ? "good" : "bad"}`;
-    if (!correct) {
+    if (recitation) {
+      if (!correct) {
+        feedback.innerHTML = `Schreibe zuerst deine eigene Erklärung, bevor du vergleichst.`;
+        return;
+      }
+      feedback.innerHTML = `<strong>Die Regel zum Vergleich:</strong> ${escapeHtml(expected)}<br><span>Es gibt hier keine einzig richtige Formulierung – vergleiche nur Bedeutung und Vollständigkeit.</span>`;
+    } else if (!correct) {
       feedback.innerHTML = `Noch nicht richtig. <strong>Eine passende Antwort ist:</strong> ${escapeHtml(expected)}<br><span>Vergleiche Bedeutung, Form und Wortstellung und versuche es erneut.</span>`;
       return;
     }
     const key = unitKey(unit);
     progress[key] = [...new Set([...(progress[key] || []), exerciseIndex])];
     saveProgress();
-    feedback.textContent = `Richtig. Übung ${progress[key].length} von ${unit.exercises.length} ist erledigt.`;
+    if (!recitation) feedback.textContent = `Richtig. Übung ${progress[key].length} von ${unit.exercises.length} ist erledigt.`;
     renderCatalog();
     if (progress[key].length === unit.exercises.length) markDailyComplete();
   };

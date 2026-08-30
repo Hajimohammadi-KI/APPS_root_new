@@ -63,3 +63,12 @@ test("roadmap highlights one mandatory output in every week", () => {
   assert.match(roadmapCss, /\.roadmap-weekly-output/);
   assert.match(roadmapCss, /\.roadmap-day\.is-weekly-output/);
 });
+
+test("each day can teach its prerequisites before the task starts", () => {
+  assert.match(tracker, /learningResourcesForDay\(day\)/);
+  assert.match(tracker, /Vorwissen für diesen Tag/);
+  assert.match(tracker, /Zuerst kurz lernen, dann die Aufgabe machen/);
+  assert.match(tracker, /Genau lesen:/);
+  assert.match(tracker, /Danach anwenden:/);
+  assert.match(tracker, /Lernseite öffnen/);
+});

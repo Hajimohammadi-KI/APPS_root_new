@@ -50,4 +50,15 @@
 - Interaction verification: the W1 weekly-output control opened `Anforderungs-Review-Gate`; Exposé sections § 7, § 16, and § 20 and the full Hevner reading were visible in that day's source list.
 - Browser console errors after desktop and responsive checks: none.
 
+## 0.6.4 — prerequisite learning links and four-hour budget
+
+- Installed production QA route: `http://127.0.0.1:4312/?qa=preqa-learning-064#plan`.
+- Desktop evidence: `outputs/design-qa/prerequisite-personas-desktop-0.6.4.png` — the `Stakeholder und Personas` day shows two authoritative learning cards side by side, the exact sections to read, the immediate application step, preparation time, and direct links.
+- Responsive evidence: `outputs/design-qa/prerequisite-personas-responsive-560px-0.6.4.png` — the same cards stack into one readable column at a 560 × 900 CSS viewport; both links remain visible and page-level horizontal overflow is zero.
+- Coverage contract: all 146 plan days resolve to one or two learning resources; all 32 unique HTTPS resources returned a successful HTTP response during release QA.
+- Persona contract: NN/g `Personas: Study Guide` and the GOV.UK user-needs guide appear on the same day as `stakeholders-and-personas.md`, with `Genau lesen` and `Danach anwenden` instructions.
+- Time contract: the visible preparation estimate is explicitly part of `Finden und verstehen`; regular medically cleared days use 210 task minutes plus two 15-minute breaks, not an additional learning block beyond four hours.
+- Installed runtime checks: web `/`, web `/api/state`, and API `/v1/health` returned HTTP 200; package version was `0.6.4-version2`.
+- Browser console warnings and errors after desktop and responsive checks: none.
+
 final result: passed

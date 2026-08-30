@@ -10,6 +10,8 @@ import {
   extractionSections,
   isNlpCatchUpSession,
   isNlpRemainingLiveSession,
+  learningResources,
+  learningResourcesForDay,
   nlpCourseMeta,
   nlpCourseSessions,
   nlpCourseTransferPlans,
@@ -208,6 +210,32 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
+  test("adds actionable prerequisite learning links to all 146 plan days", () => {
+    expect(allDays).toHaveLength(146);
+    for (const day of allDays) {
+      const resources = learningResourcesForDay(day);
+      expect(resources.length).toBeGreaterThanOrEqual(1);
+      expect(resources.length).toBeLessThanOrEqual(2);
+      expect(new Set(resources.map((resource) => resource.id)).size).toBe(resources.length);
+      for (const resource of resources) {
+        expect(learningResources[resource.id]).toBe(resource);
+        expect(resource.href.startsWith("https://")).toBeTrue();
+        expect(resource.provider.length).toBeGreaterThan(2);
+        expect(resource.read.length).toBeGreaterThan(20);
+        expect(resource.apply.length).toBeGreaterThan(20);
+        expect(resource.minutes).toBeGreaterThanOrEqual(5);
+        expect(resource.minutes).toBeLessThanOrEqual(25);
+      }
+    }
+
+    const personaDay = allDays.find((day) => day.title === "Stakeholder und Personas");
+    expect(personaDay).toBeDefined();
+    expect(personaDay?.learningResourceIds).toEqual(["personas", "userNeeds"]);
+    expect(learningResources.personas.href).toBe("https://www.nngroup.com/articles/personas-study-guide/");
+    expect(learningResources.userNeeds.href).toBe("https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs");
+    expect(Object.values(learningResources).every((resource) => resource.provider !== "Scribbr")).toBeTrue();
+  });
+
   test("starts on 30 August and protects full-rest and paper-only recovery windows", () => {
     expect(allDays[0]?.date).toBe(trackerRestartPlan.mainPlanStart);
     expect(allDays.at(-1)?.date).toBe("2027-03-06");
@@ -218,7 +246,7 @@ describe("Advanced Deep Learning reading plan", () => {
       "2026-10-16", "2026-10-23", "2026-10-26",
     ]);
     expect(defaultSettings.planStatus).toBe("running");
-    expect(defaultSettings.dailyWorkMode).toBe("light");
+    expect(defaultSettings.dailyWorkMode).toBe("full");
     expect(defaultSettings.dailyStart).toBe("15:00");
     expect(defaultSettings.planEndDate).toBe("2027-03-06");
 
@@ -256,7 +284,7 @@ describe("Advanced Deep Learning reading plan", () => {
     expect(trackerRestartPlan.recoveryPolicy.screenFreeDays).toBe(14);
     expect(trackerRestartPlan.recoveryPolicy.paperOnlyFromDay).toBe(8);
     expect(trackerRestartPlan.recoveryPolicy.gentleDailyMinutes).toBe(12);
-    expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(70);
+    expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(240);
     expect(trackerRestartPlan.recoveryPolicy.shiftWholePlanIfNotReady).toBeTrue();
     expect(trackerRestartPlan.recoveryPolicy.compressWeeks).toBeFalse();
     expect(trackerRestartPlan.recoveryPolicy.clinicalAdviceOverridesPlan).toBeTrue();
@@ -279,12 +307,13 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
-  test("records Revision 8 with explicit reading scope and weekly outputs", () => {
-    expect(PLAN_VERSION).toBe(8);
+  test("records Revision 10 with prerequisite learning inside the four-hour budget", () => {
+    expect(PLAN_VERSION).toBe(10);
     expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-30");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Kürzel");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Wochenoutput");
-    expect(appPackage.version).toBe("0.6.3-version2");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved).toEqual([]);
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksMoved.join(" ")).toContain("Finden und verstehen");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Vier-Stunden-Modus");
+    expect(appPackage.version).toBe("0.6.4-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

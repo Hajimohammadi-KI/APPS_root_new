@@ -14,6 +14,7 @@ import {
   defaultSettings,
   isNlpCatchUpSession,
   isNlpRemainingLiveSession,
+  learningResourcesForDay,
   migrateLegacyId,
   courseTransferForSession,
   nlpCourseMeta,
@@ -1274,6 +1275,12 @@ export default function StudyTracker({
           day.deliverable,
           ...day.lookFor,
           ...day.proposal,
+          ...learningResourcesForDay(day).flatMap((resource) => [
+            resource.title,
+            resource.provider,
+            resource.read,
+            resource.apply,
+          ]),
           ...day.sourceIds.flatMap((id) => {
             const source = sources[id];
             return source
@@ -2332,7 +2339,7 @@ export default function StudyTracker({
                 <li>
                   <time dateTime="2026-08-30">30. August–4. September</time>
                   <strong>W1 beginnt heute</strong>
-                  <span>Scope und Anforderungen im Leichtmodus. Kein Nachholen der alten Sitzungen.</span>
+                  <span>Scope und Anforderungen im Vier-Stunden-Modus. Kein Nachholen der alten Sitzungen.</span>
                 </li>
                 <li>
                   <time dateTime="2026-09-02">2.–7. September</time>
@@ -2366,8 +2373,8 @@ export default function StudyTracker({
                 </li>
                 <li>
                   <time dateTime="2026-10-19">Ab 19. Oktober</time>
-                  <strong>Leichtmodus bis zum technischen Start</strong>
-                  <span>Maximal 70 Minuten ab 15:00 Uhr; die technischen Bildschirmwochen beginnen am 26. Oktober.</span>
+                  <strong>Regulärer Vier-Stunden-Modus</strong>
+                  <span>Nur wenn medizinisch freigegeben und gut verträglich: maximal vier Stunden inklusive Vorwissen und Pausen ab 15:00 Uhr; die technischen Bildschirmwochen beginnen am 26. Oktober.</span>
                 </li>
               </ol>
               <aside className="restart-catchup-rule" aria-label="Regel für alte Kurssitzungen">
@@ -3828,6 +3835,7 @@ function DayCard({
   const planIsRunning = settings.planStatus === "running";
   const canStartDigitalFocus = planIsRunning && day.workMode === "screen";
   const relatedCourseSessions = nlpSessionsRelatedToPlanDay(day.title);
+  const dailyLearningResources = learningResourcesForDay(day);
   const courseRelated = relatedCourseSessions.length > 0;
   const relatedCourseSessionNumbers = relatedCourseSessions.map((session) => session.number);
 
@@ -3916,6 +3924,35 @@ function DayCard({
             <p className="module-line"><strong>Projektmodul:</strong> <span className="ltr-inline">{day.module}</span></p>
           </section>
         </div>
+
+        <section className="prerequisite-learning" aria-labelledby={`learning-${day.id}`}>
+          <div className="prerequisite-learning-heading">
+            <div>
+              <span className="eyebrow">Vorwissen für diesen Tag</span>
+              <h4 id={`learning-${day.id}`}><Icon name="book" size={18} /> Zuerst kurz lernen, dann die Aufgabe machen</h4>
+            </div>
+            <strong>{displayNumber(dailyLearningResources.reduce((sum, resource) => sum + resource.minutes, 0))} Min. · im ersten 70-Min.-Block</strong>
+          </div>
+          <p className="prerequisite-learning-intro">
+            Du musst das Thema nicht schon kennen. Öffne die Lernseite, lies nur den genannten Abschnitt und wende ihn danach direkt auf das heutige Ergebnis an. Diese Zeit ist bereits in „Finden und verstehen“ enthalten und kommt nicht zusätzlich zu den vier Stunden dazu.
+          </p>
+          <div className="prerequisite-learning-list">
+            {dailyLearningResources.map((resource, resourceIndex) => (
+              <article key={resource.id}>
+                <div className="prerequisite-learning-order" aria-hidden="true">{displayNumber(resourceIndex + 1)}</div>
+                <div className="prerequisite-learning-content">
+                  <span>{resource.provider} · ca. {displayNumber(resource.minutes)} Min.</span>
+                  <h5>{resource.title}</h5>
+                  <p><strong>Genau lesen:</strong> {resource.read}</p>
+                  <p><strong>Danach anwenden:</strong> {resource.apply}</p>
+                  <a href={resource.href} target="_blank" rel="noopener noreferrer">
+                    Lernseite öffnen <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
         <section className="sources-block">
           <h4><Icon name="book" size={18} /> Genaue Quelle für heute</h4>

@@ -98,6 +98,7 @@
   }
   .day-focus-button { order: 6; width: 100%; }
   .task-metadata { width: 100%; justify-content: flex-start; padding-left: 39px; }
+  .prerequisite-learning-list { grid-template-columns: 1fr; }
   .integration-grid { grid-template-columns: 1fr; }
   .expose-plan-card { grid-template-columns: 1fr; align-items: start; }
   .expose-plan-actions { grid-column: auto; grid-template-columns: 1fr; width: 100%; min-width: 0; }
@@ -182,6 +183,11 @@
   .week-output-rule { grid-template-columns: 1fr; }
   .week-output-rule > button { grid-column: 1; grid-row: auto; justify-self: start; }
   .day-body { padding: 10px; }
+  .prerequisite-learning { padding: 12px; }
+  .prerequisite-learning-heading { align-items: stretch; flex-direction: column; }
+  .prerequisite-learning-heading > strong { align-self: flex-start; }
+  .prerequisite-learning-list > article { grid-template-columns: 28px minmax(0, 1fr); }
+  .prerequisite-learning-order { width: 28px; height: 28px; }
   .source-list article > div { align-items: flex-start; flex-direction: column; }
   .source-list article > .source-reading-plan { display: block; width: 100%; }
   .source-reading-plan > ul { grid-template-columns: 1fr; }

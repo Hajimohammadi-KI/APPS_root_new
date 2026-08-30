@@ -1103,6 +1103,126 @@ details[open] > summary .summary-marker {
   font-size: 12px;
 }
 
+.prerequisite-learning {
+  border: 1px solid #cbb9df;
+  border-left: 4px solid #76529d;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #fbf8ff, #f5effb);
+  padding: 15px;
+}
+
+.prerequisite-learning-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.prerequisite-learning-heading h4 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 3px 0 0;
+  color: #332047;
+  font-size: 15px;
+}
+
+.prerequisite-learning-heading > strong {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #e8dcf4;
+  color: #4b2f6d;
+  padding: 6px 10px;
+  font-size: 11px;
+}
+
+.prerequisite-learning-intro {
+  max-width: 880px;
+  margin: 8px 0 13px;
+  color: #51636a;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.prerequisite-learning-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.prerequisite-learning-list > article {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  border: 1px solid #ddd1e9;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .9);
+  padding: 11px;
+}
+
+.prerequisite-learning-order {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  background: #76529d;
+  color: white;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.prerequisite-learning-content {
+  min-width: 0;
+}
+
+.prerequisite-learning-content > span {
+  color: #765c8c;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.prerequisite-learning-content h5 {
+  margin: 3px 0 8px;
+  color: #2f203d;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.prerequisite-learning-content p {
+  margin: 5px 0;
+  color: #485b63;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.prerequisite-learning-content p strong {
+  color: #332047;
+}
+
+.prerequisite-learning-content a {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 7px;
+  border: 1px solid #76529d;
+  border-radius: 9px;
+  background: #fff;
+  color: #4b2f6d;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.prerequisite-learning-content a:hover {
+  background: #76529d;
+  color: #fff;
+}
+
 .ltr-inline {
   direction: ltr;
   unicode-bidi: isolate;

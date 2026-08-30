@@ -40,6 +40,7 @@ export type PlannedDay = DaySpec & {
   phase: string;
   phaseId: string;
   weekTitle: string;
+  learningResourceIds: string[];
   taskMinutes: [number, number, number];
   tasks: Array<{
     id: string;
@@ -129,6 +130,16 @@ export type ArticleReadingPolicy = {
   requiredSections: readonly string[];
 };
 
+export type LearningResourceDefinition = {
+  id: string;
+  title: string;
+  provider: string;
+  href: string;
+  read: string;
+  apply: string;
+  minutes: number;
+};
+
 export const ARTICLE_READING_POLICIES: Record<ReadingMode, ArticleReadingPolicy> = {
   DEEP: {
     scope: "full",
@@ -169,6 +180,365 @@ export function articleReadingPolicy(reading: Pick<ArticleReading, "mode">) {
   return ARTICLE_READING_POLICIES[reading.mode];
 }
 
+export const learningResources: Record<string, LearningResourceDefinition> = {
+  researchProcess: {
+    id: "researchProcess",
+    title: "Conducting Research",
+    provider: "Purdue Online Writing Lab",
+    href: "https://owl.purdue.edu/owl/research_and_citation/conducting_research/index.html",
+    read: "Starting the Research Process und Choosing a Topic; nutze nur die Schritte von Problem zu fokussierbarer Frage.",
+    apply: "Formuliere Problem, Ziel und geplanten Beleg getrennt, bevor du das Tagesartefakt beginnst.",
+    minutes: 15,
+  },
+  researchQuestion: {
+    id: "researchQuestion",
+    title: "How to Write a Research Question",
+    provider: "George Mason University Writing Center",
+    href: "https://writingcenter.gmu.edu/writing-resources/research-based-writing",
+    read: "What is a research question?, Why is it essential? und Steps to developing a research question.",
+    apply: "Prüfe RQ1/RQ2 auf Fokus, Messbarkeit, Machbarkeit und Bezug zu einem einzigen Problem.",
+    minutes: 12,
+  },
+  personas: {
+    id: "personas",
+    title: "Personas: Study Guide",
+    provider: "Nielsen Norman Group",
+    href: "https://www.nngroup.com/articles/personas-study-guide/",
+    read: "What Is a Persona? sowie die ersten Hinweise unter How to Create Personas.",
+    apply: "Beschreibe Developer, Architect und QA anhand von Ziel, Entscheidung, Kontext und Informationsbedarf statt nur anhand ihrer Jobtitel.",
+    minutes: 15,
+  },
+  userNeeds: {
+    id: "userNeeds",
+    title: "Learning about users and their needs",
+    provider: "GOV.UK Service Manual",
+    href: "https://www.gov.uk/service-manual/user-research/start-by-learning-user-needs",
+    read: "Understanding user needs, Writing user needs und Linking user needs to user stories.",
+    apply: "Schreibe jeden Bedarf als Ziel und Nutzen; behandle unbelegte Annahmen ausdrücklich als Annahmen.",
+    minutes: 15,
+  },
+  userStories: {
+    id: "userStories",
+    title: "User stories with examples and a template",
+    provider: "Atlassian Agile Coach",
+    href: "https://www.atlassian.com/agile/project-management/user-stories",
+    read: "What is in a user story?, die 3 C's und User story template.",
+    apply: "Überführe Persona, Ziel und Nutzen in As a / I want / so that und ergänze testbare Bestätigung.",
+    minutes: 12,
+  },
+  acceptanceCriteria: {
+    id: "acceptanceCriteria",
+    title: "Acceptance criteria: definition, examples and tips",
+    provider: "Atlassian",
+    href: "https://www.atlassian.com/work-management/project-management/acceptance-criteria",
+    read: "Acceptance criteria vs. user story und die Beispiele für klare, messbare Bedingungen.",
+    apply: "Formuliere Erfolg als beobachtbare Bedingung; vermeide Formulierungen wie ‚funktioniert gut‘.",
+    minutes: 12,
+  },
+  definitionDone: {
+    id: "definitionDone",
+    title: "What is the Definition of Done?",
+    provider: "Atlassian",
+    href: "https://www.atlassian.com/agile/project-management/definition-of-done",
+    read: "Build a completion checklist und Assign acceptance criteria to user stories.",
+    apply: "Beende die Arbeit erst mit Artefakt, Test oder Sanity Check und rückverfolgbarem Beleg.",
+    minutes: 10,
+  },
+  qualityScenarios: {
+    id: "qualityScenarios",
+    title: "How to specify quality requirements",
+    provider: "arc42 Quality Model",
+    href: "https://quality.arc42.org/articles/specify-quality-requirements",
+    read: "Quality Attribute Scenarios: stimulus, artifact, environment, response und metric.",
+    apply: "Mache Reproduzierbarkeit, Erklärbarkeit oder Sicherheit mit einer messbaren Reaktion prüfbar.",
+    minutes: 15,
+  },
+  c4Model: {
+    id: "c4Model",
+    title: "C4 model diagrams",
+    provider: "C4 Model",
+    href: "https://c4model.com/diagrams",
+    read: "System Context, Container und Component diagram; Code diagram nur bei echtem Mehrwert.",
+    apply: "Wähle genau die Zoomstufe des Tages und beschrifte Personen, Systeme, Container und Beziehungen.",
+    minutes: 15,
+  },
+  architectureDecision: {
+    id: "architectureDecision",
+    title: "Maintain an architecture decision record",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/azure/well-architected/architect-role/architecture-decision-record",
+    read: "Implement an ADR und Suggested characteristics of an individual record.",
+    apply: "Dokumentiere Kontext, Optionen, Entscheidung, Trade-offs, Status und Confidence.",
+    minutes: 15,
+  },
+  roslynModel: {
+    id: "roslynModel",
+    title: ".NET Compiler Platform SDK concepts and object model",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/compiler-api-model",
+    read: "Compiler pipeline functional areas und API layers, besonders Syntax und Workspaces.",
+    apply: "Ordne die Tagesaufgabe der richtigen Roslyn-Schicht zu, bevor du APIs auswählst.",
+    minutes: 18,
+  },
+  roslynSemantics: {
+    id: "roslynSemantics",
+    title: "Work with the Roslyn semantic model",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/work-with-semantics",
+    read: "Compilation, Symbols und Semantic model.",
+    apply: "Nutze Symbolidentität statt Textnamen, wenn Aufrufe, Typen oder projektübergreifende Referenzen gemeint sind.",
+    minutes: 18,
+  },
+  efCoreOverview: {
+    id: "efCoreOverview",
+    title: "Overview of Entity Framework Core",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/ef/core/",
+    read: "The model, Querying und Saving data.",
+    apply: "Unterscheide DbContext, DbSet, Entity, Query und persistierende Operation, bevor du Evidenzregeln formulierst.",
+    minutes: 15,
+  },
+  efCoreQuerying: {
+    id: "efCoreQuerying",
+    title: "Querying Data with EF Core",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/ef/core/querying/",
+    read: "Loading, filtering und den Hinweis zur Übersetzung von LINQ in providerspezifische Queries.",
+    apply: "Markiere Query-Kandidat, Materialisierung und tatsächlichen READ-Beleg getrennt.",
+    minutes: 15,
+  },
+  efCoreSaving: {
+    id: "efCoreSaving",
+    title: "Saving Data with EF Core",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/ef/core/saving/",
+    read: "Change tracking and SaveChanges sowie ExecuteUpdate and ExecuteDelete.",
+    apply: "Trenne Mutation im Speicher von der Operation, die wirklich in die Datenbank persistiert.",
+    minutes: 18,
+  },
+  jsonSchema: {
+    id: "jsonSchema",
+    title: "Creating your first JSON Schema",
+    provider: "JSON Schema",
+    href: "https://json-schema.org/learn/getting-started-step-by-step",
+    read: "Create a schema definition, Define properties und Validate JSON data.",
+    apply: "Definiere Pflichtfelder, Typen und ungültige Beispiele für den Vertrag des Tages.",
+    minutes: 18,
+  },
+  jsonLines: {
+    id: "jsonLines",
+    title: "JSON Lines format",
+    provider: "JSONLines.org",
+    href: "https://jsonlines.org/",
+    read: "Die drei Regeln: UTF-8, genau ein gültiger JSON-Wert pro Zeile und Zeilenabschluss.",
+    apply: "Serialisiere deterministisch und teste jede Zeile unabhängig als gültiges JSON.",
+    minutes: 8,
+  },
+  graphConcepts: {
+    id: "graphConcepts",
+    title: "What is a graph database?",
+    provider: "Neo4j Documentation",
+    href: "https://neo4j.com/docs/getting-started/graph-database/",
+    read: "Nodes, relationships, properties, data model, indexes und constraints.",
+    apply: "Entscheide, was Entität, Beziehung oder Property ist, und begründe es mit einer Projektfrage.",
+    minutes: 15,
+  },
+  cypher: {
+    id: "cypher",
+    title: "Get started with Cypher",
+    provider: "Neo4j Documentation",
+    href: "https://neo4j.com/docs/getting-started/cypher/intro-tutorial/",
+    read: "Create the Movie Graph und die ersten MATCH-, CREATE- und MERGE-Beispiele.",
+    apply: "Übertrage das Muster auf Evidence-Nodes und gerichtete Beziehungen; teste Idempotenz mit MERGE.",
+    minutes: 20,
+  },
+  graphAcademy: {
+    id: "graphAcademy",
+    title: "Cypher Fundamentals",
+    provider: "Neo4j GraphAcademy",
+    href: "https://graphacademy.neo4j.com/courses/cypher-fundamentals",
+    read: "Für den heutigen Tag nur die passenden 5-Minuten-Lektionen zu Nodes, Relationships, Traversal oder MERGE.",
+    apply: "Führe mindestens ein kleines Beispiel aus, bevor du die Thesis-Query schreibst.",
+    minutes: 15,
+  },
+  unitTesting: {
+    id: "unitTesting",
+    title: "Best practices for writing unit tests",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-best-practices",
+    read: "Characteristics of a good unit test, naming und Arrange-Act-Assert.",
+    apply: "Baue einen kleinen deterministischen Test mit verständlichem Namen und nur einem klaren Verhalten.",
+    minutes: 15,
+  },
+  annotationGuide: {
+    id: "annotationGuide",
+    title: "Configure a labeling interface",
+    provider: "Label Studio Documentation",
+    href: "https://labelstud.io/guide/setup",
+    read: "Set up the labeling interface und Example labeling config.",
+    apply: "Definiere Einheit, Labels, Positiv/Negativ-Beispiele und erlaubte Entscheidungen vor der Annotation.",
+    minutes: 15,
+  },
+  irEvaluation: {
+    id: "irEvaluation",
+    title: "Evaluation in information retrieval",
+    provider: "Stanford IR Book",
+    href: "https://nlp.stanford.edu/IR-book/html/htmledition/evaluation-in-information-retrieval-1.html",
+    read: "Test collection, relevance judgments, precision/recall und ranked retrieval evaluation.",
+    apply: "Fixiere Corpus, Fragen und Relevanzurteile, bevor du Systeme oder Metriken vergleichst.",
+    minutes: 20,
+  },
+  metricBasics: {
+    id: "metricBasics",
+    title: "Accuracy, precision and recall",
+    provider: "Google Machine Learning Crash Course",
+    href: "https://developers.google.com/machine-learning/crash-course/classification/accuracy-precision-recall",
+    read: "True/false positives, precision, recall und F1; bearbeite die kurzen Verständnisfragen.",
+    apply: "Schreibe TP, FP und FN für die konkrete Extraktionsrelation aus, bevor du F1 berechnest.",
+    minutes: 18,
+  },
+  huggingFaceCourse: {
+    id: "huggingFaceCourse",
+    title: "Hugging Face LLM Course introduction",
+    provider: "Hugging Face",
+    href: "https://huggingface.co/docs/course/chapter1/1",
+    read: "Nur Introduction und die Übersicht zu Transformers, Datasets und Tokenizers.",
+    apply: "Nutze die Begriffe, um den optionalen Modellversuch zu verstehen; erweitere damit nicht automatisch den Thesis-Scope.",
+    minutes: 15,
+  },
+  ragBasics: {
+    id: "ragBasics",
+    title: "Retrieval augmented generation and indexes",
+    provider: "Microsoft Learn",
+    href: "https://learn.microsoft.com/en-us/azure/foundry/concepts/retrieval-augmented-generation",
+    read: "What is RAG?, Retrieve–Augment–Generate und Limitations and troubleshooting.",
+    apply: "Trenne Retrieval, Grounding, Generation, Citation und Verhalten bei unzureichender Evidenz.",
+    minutes: 18,
+  },
+  ragSecurity: {
+    id: "ragSecurity",
+    title: "LLM01: Prompt Injection",
+    provider: "OWASP GenAI Security Project",
+    href: "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+    read: "Description, attack scenarios und prevention/mitigation; beachte, dass RAG Prompt Injection nicht beseitigt.",
+    apply: "Behandle Dokumentinhalt als nicht vertrauenswürdige Daten und teste einen Refusal- oder Guardrail-Fall.",
+    minutes: 15,
+  },
+  reproducibleBuilds: {
+    id: "reproducibleBuilds",
+    title: "When is a build reproducible?",
+    provider: "Reproducible Builds",
+    href: "https://reproducible-builds.org/docs/definition/",
+    read: "Definition, build environment, instructions, artifacts und bit-by-bit verification.",
+    apply: "Fixiere Source-Revision, Toolchain, Konfiguration und prüfe das Ergebnis mit einem Hash.",
+    minutes: 10,
+  },
+  githubCi: {
+    id: "githubCi",
+    title: "Continuous integration with GitHub Actions",
+    provider: "GitHub Docs",
+    href: "https://docs.github.com/en/actions/get-started/continuous-integration",
+    read: "About continuous integration und About CI using GitHub Actions.",
+    apply: "Definiere den automatischen Build/Test-Schritt und das Artefakt, das bei Fehlern geprüft werden muss.",
+    minutes: 12,
+  },
+  thesisMethod: {
+    id: "thesisMethod",
+    title: "The Methodology",
+    provider: "USC Libraries Research Guide",
+    href: "https://libguides.usc.edu/writingguide/methodology",
+    read: "Definition, Importance of a Good Methodology Section und Structure and Writing Style.",
+    apply: "Beschreibe Auswahl, Werkzeug, Ablauf, Messung und Begründung so, dass der Versuch wiederholbar ist.",
+    minutes: 15,
+  },
+  thesisResults: {
+    id: "thesisResults",
+    title: "The Results",
+    provider: "USC Libraries Research Guide",
+    href: "https://libguides.usc.edu/writingguide/results",
+    read: "Definition, Importance of a Good Results Section und Structure and Writing Style.",
+    apply: "Berichte Zahlen und Beobachtungen ohne neue Interpretation; verweise auf RQ und Tabelle.",
+    minutes: 15,
+  },
+  thesisDiscussion: {
+    id: "thesisDiscussion",
+    title: "The Discussion",
+    provider: "USC Libraries Research Guide",
+    href: "https://libguides.usc.edu/writingguide/discussion",
+    read: "Definition, Importance of a Good Discussion und Organization and Structure.",
+    apply: "Interpretiere die Resultate gegenüber RQ, Related Work und Validitätsgrenzen, ohne neue Daten einzuführen.",
+    minutes: 15,
+  },
+};
+
+export function learningResourceIdsForDay(
+  day: Pick<DaySpec, "title" | "module" | "kind">,
+  phaseId: string,
+): string[] {
+  const text = `${day.title} ${day.module} ${phaseId}`.toLocaleLowerCase();
+  const has = (...terms: string[]) => terms.some((term) => text.includes(term.toLocaleLowerCase()));
+
+  if (has("stakeholder", "persona", "rollenbasierte", "rollenformat", "developer output", "architect output", "qa/compliance output")) {
+    return ["personas", "userNeeds"];
+  }
+  if (has("problemstellung", "projektwert")) return ["researchProcess", "userNeeds"];
+  if (has("forschungsfrage", "research contract")) return ["researchQuestion", "researchProcess"];
+  if (has("funktionale anforderungen")) return ["userStories", "acceptanceCriteria"];
+  if (has("nichtfunktionale", "quality attribute", "qualitäts")) return ["qualityScenarios"];
+  if (has("anforderungs-review", "akzeptanzkriterien", "definition of done", "readiness gate", "review gate")) {
+    return ["acceptanceCriteria", "definitionDone"];
+  }
+  if (phaseId === "design-architecture") {
+    return has("adr", "entscheidung") ? ["architectureDecision"] : ["c4Model", "architectureDecision"];
+  }
+  if (phaseId === "roslyn-syntax") return ["roslynModel", "unitTesting"];
+  if (phaseId === "roslyn-semantic") return ["roslynSemantics", "unitTesting"];
+  if (phaseId === "ef-read") return ["efCoreOverview", "efCoreQuerying"];
+  if (phaseId === "ef-write") return ["efCoreSaving", "efCoreOverview"];
+  if (has("node types", "relationship types", "graph model", "property graph")) {
+    return ["graphConcepts", "cypher"];
+  }
+  if (phaseId === "neo4j-graph" || has("graph query", "retrieval.graph")) return ["graphConcepts", "cypher"];
+  if (has("cypher", "node import", "relationship import", "graph build")) return ["cypher", "graphAcademy"];
+  if (phaseId === "evidence-model" || phaseId === "design-evidence-model" || has("schema", "contract", "evidencerecord", "sourcelocation")) {
+    return has("jsonl", "serial") ? ["jsonLines", "jsonSchema"] : ["jsonSchema", "jsonLines"];
+  }
+  if (phaseId === "goldstandard" || has("annotation", "gold", "sampling", "adjudikation")) {
+    return ["annotationGuide", "irEvaluation"];
+  }
+  if (phaseId === "rq1-evaluation" || has("precision", "recall", "f1", "metriken")) {
+    return ["metricBasics", "irEvaluation"];
+  }
+  if (phaseId === "rq2-evaluation" || phaseId === "retrieval-query" || has("retriever", "tf-idf", "cosine", "ranking")) {
+    return ["irEvaluation", "metricBasics"];
+  }
+  if (phaseId === "nlp-sequences" || has("embedding", "rnn", "lstm", "gru", "bert", "graphcodebert")) {
+    return ["huggingFaceCourse", "irEvaluation"];
+  }
+  if (phaseId === "nlp-transformers" || phaseId === "answerability-roles" || has("rag", "guardrail", "verifier", "refusal")) {
+    return ["ragBasics", "ragSecurity"];
+  }
+  if (phaseId === "validity" || has("validität", "validity", "bias", "ethik")) return ["thesisMethod", "researchProcess"];
+  if (has("methodenkapitel")) return ["thesisMethod", "reproducibleBuilds"];
+  if (has("ergebniskapitel")) return ["thesisResults", "metricBasics"];
+  if (has("diskussion", "thesis-quervergleich")) return ["thesisDiscussion", "researchQuestion"];
+  if (has("reproduktion", "replikation", "release", "build", "versionierung", "archiv", "übergabe", "freeze", "corpus")) {
+    return ["reproducibleBuilds", "githubCi"];
+  }
+  if (phaseId === "writing-delivery" || has("thesis", "präsentation", "demo")) return ["thesisResults", "thesisDiscussion"];
+  if (phaseId === "design-evaluation") return ["irEvaluation", "unitTesting"];
+  if (phaseId === "design-delivery-plan" || phaseId === "design-freeze" || phaseId.startsWith("buffer-")) {
+    return ["definitionDone", "githubCi"];
+  }
+  if (phaseId === "scope-corpus") return ["researchProcess", "reproducibleBuilds"];
+  if (phaseId === "nlp-foundations") return ["irEvaluation", "unitTesting"];
+  return ["definitionDone"];
+}
+
+export function learningResourcesForDay(day: Pick<PlannedDay, "learningResourceIds">) {
+  return day.learningResourceIds.map((id) => learningResources[id]).filter(Boolean);
+}
+
 export const extractionSections = [
   "Problem",
   "Method",
@@ -185,7 +555,7 @@ export const defaultSettings = {
   planEndDate: "2027-03-06",
   planStatus: "running" as "not_started" | "running" | "paused",
   planPausedAt: "",
-  dailyWorkMode: "light" as "rescue" | "light" | "full",
+  dailyWorkMode: "full" as "rescue" | "light" | "full",
   dailyStart: "15:00",
   driveFolderUrl:
     "https://drive.google.com/drive/folders/1rJmYt-fJrv06HjRntIGJtczYB7yy1GAW",
@@ -243,7 +613,7 @@ export const trackerRestartPlan = {
     screenFreeDays: 14,
     paperOnlyFromDay: 8,
     gentleDailyMinutes: 12,
-    mainDailyMaxMinutes: 70,
+    mainDailyMaxMinutes: 240,
     shiftWholePlanIfNotReady: true,
     compressWeeks: false,
     clinicalAdviceOverridesPlan: true,
@@ -1629,6 +1999,7 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
       phase: week.phase,
       phaseId: week.phaseId,
       weekTitle: week.title,
+      learningResourceIds: learningResourceIdsForDay(spec, week.phaseId),
       taskMinutes,
       tasks: taskTitles.map((title, taskIndex) => ({
         id: `${stableId}-task-${taskIndex + 1}`,
@@ -1892,6 +2263,34 @@ export const PLAN_VERSION_HISTORY: readonly PlanVersionEntry[] = [
       "Vollständig-lesen-Kennzeichnung für DEEP-Artikel",
       "Explizite Abschnittslisten und Lesefokus für TARGET-, REVIEW- und RELATED-Artikel",
       "Mindestens ein verbindlicher Wochenoutput in jeder der 25 Wochen",
+    ],
+  },
+  {
+    version: 9,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Jeder Plantag beginnt jetzt mit einer kurzen, auf genau diese Aufgabe zugeschnittenen Vorwissensphase aus verlässlichen Lernseiten, damit auch neue Begriffe wie Personas ohne vorausgesetztes Wissen bearbeitet werden können.",
+    tasksRemoved: [],
+    tasksMoved: [],
+    tasksAdded: [
+      "Ein bis zwei autoritative Lernseiten für jeden der 146 Plantage",
+      "Konkreter Abschnitt, geschätzte Vorbereitungszeit und direkte Verknüpfung pro Lernseite",
+      "Unmittelbare Anwendungsanweisung vom Gelesenen zum Tagesartefakt",
+    ],
+  },
+  {
+    version: 10,
+    effectiveDate: "2026-08-30",
+    reason:
+      "Die bestätigte Tageskapazität beträgt an medizinisch freigegebenen regulären Tagen vier Stunden. Die Vorwissenslektüre wird deshalb in den ersten 70-Minuten-Block integriert und erzeugt keine zusätzliche Arbeitszeit.",
+    tasksRemoved: [],
+    tasksMoved: [
+      "Vorwissenslektüre in den Block Finden und verstehen statt außerhalb des Tagesbudgets",
+    ],
+    tasksAdded: [
+      "Vier-Stunden-Modus als Standard: 210 Minuten Aufgaben und zwei Pausen zu je 15 Minuten",
+      "Sichtbare Kennzeichnung, dass die Lernseiten bereits im ersten Arbeitsblock enthalten sind",
+      "Medizinische Ruhe- und Papierphasen behalten Vorrang vor der regulären Tageskapazität",
     ],
   },
 ];

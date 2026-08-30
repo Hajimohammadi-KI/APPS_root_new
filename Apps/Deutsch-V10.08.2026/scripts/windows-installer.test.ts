@@ -21,6 +21,10 @@ const desktopPackage = JSON.parse(
 ) as {
   build: { extraResources: Array<{ from: string }>; win: { icon: string } };
 };
+const buildScript = readFileSync(
+  resolve(projectRoot, "distribution/windows-modern/build-modern-installer.ps1"),
+  "utf8",
+);
 
 describe("Windows installation roadmap", () => {
   test("offers the same four lifecycle actions as the tracker", () => {
@@ -96,5 +100,14 @@ describe("Windows installation roadmap", () => {
     expect([...icon.subarray(0, 8)]).toEqual([
       137, 80, 78, 71, 13, 10, 26, 10,
     ]);
+  });
+
+  test("builds without a legacy LFS compatibility launcher", () => {
+    expect(buildScript).toContain(
+      "Compatibility launcher payload is unavailable; retaining the newly built launcher.",
+    );
+    expect(buildScript).not.toContain(
+      'throw "Compatibility launcher payload does not exist:',
+    );
   });
 });

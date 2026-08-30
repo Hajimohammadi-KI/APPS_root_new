@@ -429,62 +429,65 @@ if (-not (Test-Path -LiteralPath $portableLauncher -PathType Leaf)) {
 $compatibilityLauncherArchive = Resolve-ConfiguredPath `
   -Base $configDirectory `
   -Value ([string]$config.compatibilityLauncherArchive)
-if (-not (Test-Path -LiteralPath $compatibilityLauncherArchive -PathType Leaf)) {
-  throw "Compatibility launcher archive is missing: $compatibilityLauncherArchive"
-}
-$expectedCompatibilityLauncherSha256 =
-  ([string]$config.compatibilityLauncherSha256).Trim()
-if ($expectedCompatibilityLauncherSha256 -notmatch '^[0-9A-Fa-f]{64}$') {
-  throw 'The compatibility launcher SHA-256 must contain exactly 64 hexadecimal characters.'
-}
+if (Test-Path -LiteralPath $compatibilityLauncherArchive -PathType Leaf) {
+  $expectedCompatibilityLauncherSha256 =
+    ([string]$config.compatibilityLauncherSha256).Trim()
+  if ($expectedCompatibilityLauncherSha256 -notmatch '^[0-9A-Fa-f]{64}$') {
+    throw 'The compatibility launcher SHA-256 must contain exactly 64 hexadecimal characters.'
+  }
 
-Add-Type -AssemblyName System.IO.Compression.FileSystem
-$compatibilityLauncherTemp = Join-Path $workRoot 'compatibility-launcher.exe'
-$compatibilityArchive = [System.IO.Compression.ZipFile]::OpenRead(
-  $compatibilityLauncherArchive)
-try {
-  $compatibilityEntries = @(
-    $compatibilityArchive.Entries | Where-Object {
-      $_.FullName -ceq $configuredMainExecutable -and
-      -not [string]::IsNullOrEmpty($_.Name)
+  Add-Type -AssemblyName System.IO.Compression.FileSystem
+  $compatibilityLauncherTemp = Join-Path $workRoot 'compatibility-launcher.exe'
+  $compatibilityArchive = [System.IO.Compression.ZipFile]::OpenRead(
+    $compatibilityLauncherArchive)
+  try {
+    $compatibilityEntries = @(
+      $compatibilityArchive.Entries | Where-Object {
+        $_.FullName -ceq $configuredMainExecutable -and
+        -not [string]::IsNullOrEmpty($_.Name)
+      }
+    )
+    if ($compatibilityEntries.Count -ne 1) {
+      throw (
+        "Compatibility launcher archive must contain exactly one root entry " +
+        "named '$configuredMainExecutable'; found $($compatibilityEntries.Count).")
     }
-  )
-  if ($compatibilityEntries.Count -ne 1) {
-    throw (
-      "Compatibility launcher archive must contain exactly one root entry " +
-      "named '$configuredMainExecutable'; found $($compatibilityEntries.Count).")
-  }
-  [System.IO.Compression.ZipFileExtensions]::ExtractToFile(
-    $compatibilityEntries[0],
-    $compatibilityLauncherTemp,
-    $true)
-} finally {
-  $compatibilityArchive.Dispose()
-}
-
-try {
-  $actualCompatibilityLauncherSha256 =
-    Get-Sha256Hex -LiteralPath $compatibilityLauncherTemp
-  if (-not [string]::Equals(
-    $actualCompatibilityLauncherSha256,
-    $expectedCompatibilityLauncherSha256,
-    [System.StringComparison]::OrdinalIgnoreCase)) {
-    throw (
-      'Compatibility launcher SHA-256 mismatch. ' +
-      "Expected $expectedCompatibilityLauncherSha256; " +
-      "found $actualCompatibilityLauncherSha256.")
+    [System.IO.Compression.ZipFileExtensions]::ExtractToFile(
+      $compatibilityEntries[0],
+      $compatibilityLauncherTemp,
+      $true)
+  } finally {
+    $compatibilityArchive.Dispose()
   }
 
-  # Preserve the launcher that already passes this Windows machine's App
-  # Control policy while retaining the current app.asar and resources.
-  Copy-Item `
-    -LiteralPath $compatibilityLauncherTemp `
-    -Destination $portableLauncher `
-    -Force
-} finally {
-  if (Test-Path -LiteralPath $compatibilityLauncherTemp -PathType Leaf) {
-    Remove-Item -LiteralPath $compatibilityLauncherTemp -Force
+  try {
+    $actualCompatibilityLauncherSha256 =
+      Get-Sha256Hex -LiteralPath $compatibilityLauncherTemp
+    if (-not [string]::Equals(
+      $actualCompatibilityLauncherSha256,
+      $expectedCompatibilityLauncherSha256,
+      [System.StringComparison]::OrdinalIgnoreCase)) {
+      throw (
+        'Compatibility launcher SHA-256 mismatch. ' +
+        "Expected $expectedCompatibilityLauncherSha256; " +
+        "found $actualCompatibilityLauncherSha256.")
+    }
+
+    # Preserve the launcher that already passes this Windows machine's App
+    # Control policy while retaining the current app.asar and resources.
+    Copy-Item `
+      -LiteralPath $compatibilityLauncherTemp `
+      -Destination $portableLauncher `
+      -Force
+  } finally {
+    if (Test-Path -LiteralPath $compatibilityLauncherTemp -PathType Leaf) {
+      Remove-Item -LiteralPath $compatibilityLauncherTemp -Force
+    }
   }
+} else {
+  # Clean migrations may omit the old LFS payload. Keep the newly built
+  # launcher so packaging remains reproducible; signing is verified separately.
+  Write-Warning "Compatibility launcher archive is unavailable; retaining the newly built launcher."
 }
 
 $workspaceRoot = $null

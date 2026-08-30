@@ -113,4 +113,13 @@ describe("Windows installation roadmap", () => {
       137, 80, 78, 71, 13, 10, 26, 10,
     ]);
   });
+
+  test("builds without a legacy LFS compatibility launcher", () => {
+    expect(buildScript).toContain(
+      "Compatibility launcher archive is unavailable; retaining the newly built launcher.",
+    );
+    expect(buildScript).not.toContain(
+      'throw "Compatibility launcher archive is missing:',
+    );
+  });
 });

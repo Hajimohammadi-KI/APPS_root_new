@@ -14,6 +14,6 @@
   "early_stopping_patience": 2,
   "random_seed": 42,
   "use_class_weights": true,
-  "gradient_checkpointing": true
+  "gradient_checkpointing": false
 }
 

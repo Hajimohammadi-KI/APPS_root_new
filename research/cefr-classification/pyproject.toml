@@ -25,7 +25,9 @@ transformer = [
   "accelerate>=1.2,<2",
   "datasets>=3.2,<5",
   "numpy>=1.26,<3",
+  "protobuf>=4,<6",
   "scikit-learn>=1.5,<2",
+  "sentencepiece>=0.2,<1",
   "transformers>=4.48,<5",
 ]
 dev = ["pytest>=8.3,<9"]

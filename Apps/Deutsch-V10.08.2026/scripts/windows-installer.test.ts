@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 const projectRoot = resolve(import.meta.dir, "..");
@@ -88,6 +88,12 @@ describe("Windows installation roadmap", () => {
     for (const resource of desktopPackage.build.extraResources) {
       expect(resource.from).not.toMatch(/^[A-Za-z]:[\\/]/);
       expect(resource.from).not.toContain("APPS_root");
+      expect(
+        existsSync(
+          // electron-builder resolves extraResources from its detected workspace root.
+          resolve(projectRoot, resource.from),
+        ),
+      ).toBe(true);
     }
     const icon = readFileSync(
       resolve(

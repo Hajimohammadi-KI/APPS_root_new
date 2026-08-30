@@ -54,3 +54,18 @@ test("the Settings app is deliberately local-only", () => {
   assert.equal(settings.deployment?.provider, "local");
   assert.equal(settings.publicChecks.length, 0);
 });
+
+test("nested language workspaces publish Next output at their Vercel project roots", async () => {
+  const nestedLanguageConfigs = [
+    "Apps/English/English-07082026/apps/web/next.config.mjs",
+    "Apps/Deutsch-V10.08.2026/apps/web/next.config.ts",
+  ];
+
+  for (const configPath of nestedLanguageConfigs) {
+    const source = await readFile(path.join(repoRoot, configPath), "utf8");
+
+    // Vercel validates the framework default at the project root, while Next executes in apps/web.
+    assert.match(source, /process\.env\.VERCEL/);
+    assert.match(source, /distDir:\s*["']\.\.\/\.\.\/\.next["']/);
+  }
+});

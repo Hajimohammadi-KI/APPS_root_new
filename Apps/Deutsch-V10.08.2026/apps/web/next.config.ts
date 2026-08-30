@@ -2,8 +2,11 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
-  // Vercel packages the Next output itself; standalone is only required by the Windows installer runtime.
-  ...(process.env.VERCEL ? {} : { output: "standalone" }),
+  // The Vercel project root is two levels above this nested web app, so its framework adapter must find .next there.
+  // Local and Windows builds keep standalone output inside the web workspace through the same configured path.
+  ...(process.env.VERCEL
+    ? { distDir: "../../.next" }
+    : { output: "standalone" }),
   outputFileTracingRoot: path.resolve(import.meta.dirname, "../.."),
   experimental: {
     useTypeScriptCli: true,

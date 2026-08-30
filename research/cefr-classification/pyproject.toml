@@ -19,12 +19,14 @@ baseline = [
 ]
 # ModernBERT support starts in Transformers 4.48; PyTorch remains unpinned so the
 # operator can select the correct CPU/CUDA wheel from the official PyTorch index.
+# Capped below 5: Transformers 5.x renamed/removed TrainingArguments(warmup_ratio=...)
+# and changed the slow-to-fast tokenizer conversion path this pipeline relies on.
 transformer = [
   "accelerate>=1.2,<2",
   "datasets>=3.2,<5",
   "numpy>=1.26,<3",
   "scikit-learn>=1.5,<2",
-  "transformers>=4.48,<6",
+  "transformers>=4.48,<5",
 ]
 dev = ["pytest>=8.3,<9"]
 

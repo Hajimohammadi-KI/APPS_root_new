@@ -17,11 +17,11 @@
       "corpus_id": "merlin-de",
       "name": "MERLIN German learner corpus",
       "languages": ["de"],
-      "approval_status": "review_required",
+      "approval_status": "approved",
       "licence_status": "verified",
       "allowed_uses": ["research", "training"],
       "licence_id": "CC-BY-SA-4.0",
-      "reason": "Strong German learner-writing candidate; explicit project approval and attribution/share-alike plan still required before download.",
+      "reason": "Freely downloadable without registration from the CLARIN Eurac repository; licence verified as CC-BY-SA-4.0. Approved 2026-08-30 for the German transformer run. Attribution/share-alike obligation: any redistribution of derived text or model outputs trained on this corpus must credit the MERLIN project (https://www.merlin-platform.eu/) and remain under a compatible share-alike licence.",
       "source_url": "https://www.merlin-platform.eu/"
     },
     {
@@ -31,8 +31,19 @@
       "approval_status": "blocked",
       "licence_status": "provenance_unverified",
       "allowed_uses": [],
-      "reason": "Uploader licence claim does not by itself resolve rights and label provenance for all underlying sources.",
+      "reason": "Confirmed 2026-08-30: the creator's own writeup states texts are pulled from The British Council, ESLFast, and the cnn-dailymail dataset. The Kaggle uploader does not hold rights to those underlying sources, so the dataset licence tag does not clear redistribution or training use. Remains blocked; use ace-cefr as the licensed substitute for English.",
       "source_url": "https://www.kaggle.com/datasets/amontgomerie/cefr-levelled-english-texts"
+    },
+    {
+      "corpus_id": "ace-cefr",
+      "name": "Ace-CEFR conversational text difficulty dataset",
+      "languages": ["en"],
+      "approval_status": "approved",
+      "licence_status": "verified",
+      "allowed_uses": ["research", "training"],
+      "licence_id": "CC0-1.0",
+      "reason": "Purpose-built human-expert-labelled CEFR difficulty dataset (890 conversational passages, 445 train / 445 test) authored by Kogan, Schumacher, Nguyen, Suzuki, Smith, Bellows, and Bernstein at Google Research, released CC0-1.0 as an arXiv ancillary file (arXiv:2506.14046). Approved 2026-08-30 as the licensed substitute for the blocked Kaggle English corpus. Retrieved via the GliteTech/research-ace-cefr mirror, which packages the same CC0 file under its own Apache-2.0 code licence (data licence governs, not the wrapper repo's code licence).",
+      "source_url": "https://arxiv.org/abs/2506.14046"
     },
     {
       "corpus_id": "kaggle-toefl-cefr-vocabulary",

@@ -90,8 +90,12 @@ describe("Windows installation roadmap", () => {
       expect(resource.from).not.toContain("APPS_root");
       expect(
         existsSync(
-          // electron-builder resolves extraResources from its detected workspace root.
-          resolve(projectRoot, resource.from),
+          // electron-builder resolves extraResources from the desktop package directory.
+          resolve(
+            projectRoot,
+            "distribution/windows-desktop",
+            resource.from,
+          ),
         ),
       ).toBe(true);
     }

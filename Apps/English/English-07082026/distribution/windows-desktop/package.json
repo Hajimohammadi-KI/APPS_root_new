@@ -24,15 +24,15 @@
     ],
     "extraResources": [
       {
-        "from": "../../../shared/google-calendar-bridge.cjs",
+        "from": "../../../../../shared/google-calendar-bridge.cjs",
         "to": "google-calendar-bridge.cjs"
       },
       {
-        "from": "../../../shared/learner-profile-bridge.cjs",
+        "from": "../../../../../shared/learner-profile-bridge.cjs",
         "to": "learner-profile-bridge.cjs"
       },
       {
-        "from": "../../../shared/ai-provider-bridge.cjs",
+        "from": "../../../../../shared/ai-provider-bridge.cjs",
         "to": "ai-provider-bridge.cjs"
       }
     ],

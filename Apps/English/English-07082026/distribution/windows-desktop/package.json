@@ -24,15 +24,15 @@
     ],
     "extraResources": [
       {
-        "from": "D:/APPS_root/shared/google-calendar-bridge.cjs",
+        "from": "../../../../../shared/google-calendar-bridge.cjs",
         "to": "google-calendar-bridge.cjs"
       },
       {
-        "from": "D:/APPS_root/shared/learner-profile-bridge.cjs",
+        "from": "../../../../../shared/learner-profile-bridge.cjs",
         "to": "learner-profile-bridge.cjs"
       },
       {
-        "from": "D:/APPS_root/shared/ai-provider-bridge.cjs",
+        "from": "../../../../../shared/ai-provider-bridge.cjs",
         "to": "ai-provider-bridge.cjs"
       }
     ],
@@ -49,7 +49,7 @@
           ]
         }
       ],
-      "icon": "../../apps/web/public/icons/icon-512.png"
+      "icon": "../../apps/web/public/icons/icon-512-generated.png"
     },
     "nsis": {
       "oneClick": true,

@@ -29,6 +29,6 @@
   "projectRoot": "../..",
   "desktopProject": "../windows-desktop",
   "readerProject": "../../../../Apps-For-Integeration/Reader-PDF-App",
-  "iconSource": "../../apps/web/public/icons/icon-512.png",
+  "iconSource": "../../apps/web/public/icons/icon-512-generated.png",
   "outputFile": "EnglishGrammar-Setup.exe"
 }

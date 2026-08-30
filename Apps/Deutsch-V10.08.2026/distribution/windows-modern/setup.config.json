@@ -28,6 +28,6 @@
   "desktopProject": "../windows-desktop",
   "compatibilityLauncherZip": "../../apps/web/public/downloads/DeutschFlow-Setup-v20.8.17.payload.zip",
   "compatibilityLauncherSha256": "06A4ADB5F0D063E956E97F4DBE1B26F03F03CB317A6D7178360FD296333118F0",
-  "iconSource": "../../apps/web/public/icons/icon-512.png",
+  "iconSource": "../../apps/web/public/icons/icon-512-generated.png",
   "outputFile": "DeutschFlow-Setup.exe"
 }

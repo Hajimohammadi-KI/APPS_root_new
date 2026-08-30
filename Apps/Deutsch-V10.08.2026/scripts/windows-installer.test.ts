@@ -13,6 +13,14 @@ const setupConfig = JSON.parse(
     "utf8",
   ),
 ) as Record<string, string>;
+const desktopPackage = JSON.parse(
+  readFileSync(
+    resolve(projectRoot, "distribution/windows-desktop/package.json"),
+    "utf8",
+  ),
+) as {
+  build: { extraResources: Array<{ from: string }>; win: { icon: string } };
+};
 
 describe("Windows installation roadmap", () => {
   test("offers the same four lifecycle actions as the tracker", () => {
@@ -69,5 +77,24 @@ describe("Windows installation roadmap", () => {
     expect(setupSource).toContain(
       "selectedOperation == SetupOperation.Install && openDeepLCheckBox.IsChecked == true",
     );
+  });
+
+  test("keeps installer resources portable and uses a real PNG icon", () => {
+    // Relative paths keep packaging valid after the repository folder is renamed or cloned elsewhere.
+    for (const resource of desktopPackage.build.extraResources) {
+      expect(resource.from).not.toMatch(/^[A-Za-z]:[\\/]/);
+      expect(resource.from).not.toContain("APPS_root");
+    }
+    const icon = readFileSync(
+      resolve(
+        projectRoot,
+        "distribution/windows-desktop",
+        desktopPackage.build.win.icon,
+      ),
+    );
+    // The PNG signature prevents an LFS recovery notice from reaching electron-builder.
+    expect([...icon.subarray(0, 8)]).toEqual([
+      137, 80, 78, 71, 13, 10, 26, 10,
+    ]);
   });
 });

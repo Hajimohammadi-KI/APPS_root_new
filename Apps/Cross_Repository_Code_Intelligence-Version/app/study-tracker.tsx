@@ -4078,31 +4078,34 @@ function DayCard({
               : "210 Minuten Arbeit + zwei Pausen à 15 Minuten = 4 Stunden."}
         </p>
 
-        <section className="note-box structured-note-box">
-          <label>
-            <Icon name="note" size={18} /> Tagesabschlussnotiz
-          </label>
+        <section className="note-box structured-note-box" aria-labelledby={`daily-note-${day.id}`}>
+          <div className="structured-note-heading">
+            <h4 id={`daily-note-${day.id}`}>
+              <Icon name="note" size={18} /> Tagesabschlussnotiz
+            </h4>
+            <p>Halte die wichtigsten Erkenntnisse des Tages kurz fest. Alle Felder bieten ausreichend Platz und können zusätzlich nach unten vergrößert werden.</p>
+          </div>
           {(() => {
             const noteFields = parseDailyNote(note);
             const updateField = <K extends keyof DailyNoteFields>(key: K, value: DailyNoteFields[K]) => {
               onNoteChange(serializeDailyNote({ ...noteFields, [key]: value }));
             };
             return <div className="structured-note-grid">
-              <label className="structured-note-field">
+              <label className="structured-note-field structured-note-field-wide structured-note-field-primary">
                 <span>Konzept</span>
-                <textarea id={`note-${day.id}`} value={noteFields.concept} onChange={(event) => updateField("concept", event.target.value)} placeholder="Was habe ich heute inhaltlich gelernt?" />
+                <textarea rows={5} id={`note-${day.id}`} value={noteFields.concept} onChange={(event) => updateField("concept", event.target.value)} placeholder="Was habe ich heute inhaltlich gelernt?" />
               </label>
               <label className="structured-note-field">
                 <span>Problem</span>
-                <textarea value={noteFields.problem} onChange={(event) => updateField("problem", event.target.value)} placeholder="Welches Problem/welche Frage stand im Zentrum?" />
+                <textarea rows={5} value={noteFields.problem} onChange={(event) => updateField("problem", event.target.value)} placeholder="Welches Problem oder welche Frage stand im Zentrum?" />
               </label>
               <label className="structured-note-field">
                 <span>Methode</span>
-                <textarea value={noteFields.method} onChange={(event) => updateField("method", event.target.value)} placeholder="Womit habe ich es untersucht/gelöst?" />
+                <textarea rows={5} value={noteFields.method} onChange={(event) => updateField("method", event.target.value)} placeholder="Womit habe ich es untersucht oder gelöst?" />
               </label>
               <label className="structured-note-field">
                 <span>Bezug zur Thesis</span>
-                <textarea value={noteFields.projectLink} onChange={(event) => updateField("projectLink", event.target.value)} placeholder="RQ, Architektur, Code, Daten oder Evaluation?" />
+                <textarea rows={5} value={noteFields.projectLink} onChange={(event) => updateField("projectLink", event.target.value)} placeholder="Bezug zu Forschungsfrage, Architektur, Code, Daten oder Evaluation" />
               </label>
               <label className="structured-note-field">
                 <span>Recall-Ergebnis</span>
@@ -4115,17 +4118,17 @@ function DayCard({
               </label>
               <label className="structured-note-field">
                 <span>Fehler</span>
-                <textarea value={noteFields.errors} onChange={(event) => updateField("errors", event.target.value)} placeholder="Was ist schiefgelaufen oder unklar geblieben?" />
+                <textarea rows={5} value={noteFields.errors} onChange={(event) => updateField("errors", event.target.value)} placeholder="Was ist schiefgelaufen oder unklar geblieben?" />
               </label>
               <label className="structured-note-field structured-note-field-wide">
                 <span>Genaue Aktion für morgen</span>
-                <textarea value={noteFields.tomorrowAction} onChange={(event) => updateField("tomorrowAction", event.target.value)} placeholder="Womit mache ich morgen konkret weiter?" />
+                <textarea rows={5} value={noteFields.tomorrowAction} onChange={(event) => updateField("tomorrowAction", event.target.value)} placeholder="Womit mache ich morgen konkret weiter?" />
               </label>
             </div>;
           })()}
-          <div>
+          <div className="structured-note-actions">
             <span>{displayNumber(dailyNoteSearchText(note).length)} Zeichen</span>
-            <button className="button secondary compact" type="button" onClick={() => onSaveNote(day.id)}>
+            <button className="button secondary" type="button" onClick={() => onSaveNote(day.id)}>
               Notiz speichern
             </button>
           </div>

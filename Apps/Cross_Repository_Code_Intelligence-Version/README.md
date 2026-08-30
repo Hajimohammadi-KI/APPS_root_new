@@ -1,6 +1,6 @@
 # Cross Repository Code Intelligence – Version2
 
-**CURRENT · Version2 0.6.1** — light-lavender, responsive interface. The Projekt-Fahrplan is integrated into the Projekt-Lernplan as a second view with one shared, clickable progress state. Legacy `/projekt-fahrplan` links redirect to the integrated view. The medically protected 25-week plan starts on **30 August 2026**: W1 runs before the first procedure, the first seven days after each procedure contain no work, and suitable software-engineering design tasks switch to a clearly marked paper-only mode during days 8–14. Digital focus is disabled on those paper days. Catch-up sessions 1–7 remain optional from 19 October, at most one per week after the core output.
+**CURRENT · Version2 0.6.2** — light-lavender, responsive interface. The Projekt-Fahrplan is integrated into the Projekt-Lernplan as a second view with one shared, clickable progress state. Legacy `/projekt-fahrplan` links redirect to the integrated view. The medically protected 25-week plan starts on **30 August 2026**: W1 runs before the first procedure, the first seven days after each procedure contain no work, and suitable software-engineering design tasks switch to a clearly marked paper-only mode during days 8–14. Digital focus is disabled on those paper days. The structured daily closing note now uses full-width, comfortably sized writing areas instead of a compressed single-row layout. Catch-up sessions 1–7 remain optional from 19 October, at most one per week after the core output.
 
 # Vercel-Web-App
 

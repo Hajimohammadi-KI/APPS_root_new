@@ -65,6 +65,18 @@ test("focus progress is gated by plan status and paper-only recovery mode", () =
   assert.match(tracker, /disabled=\{!canStartDigitalFocus\}/);
 });
 
+test("daily closing note provides large responsive writing areas", () => {
+  assert.match(tracker, /structured-note-heading/);
+  assert.match(tracker, /structured-note-field-wide structured-note-field-primary/);
+  assert.match(tracker, /<textarea rows=\{5\}/);
+  assert.match(tracker, /className="structured-note-actions"/);
+  assert.match(css, /\.structured-note-grid\s*\{[\s\S]*?grid-template-columns:\s*repeat\(2, minmax\(0, 1fr\)\)/);
+  assert.match(css, /\.structured-note-field textarea\s*\{[\s\S]*?min-height:\s*132px/);
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*?\.structured-note-grid\s*\{[\s\S]*?grid-template-columns:\s*1fr/);
+  assert.match(css, /\.note-box > \.structured-note-actions\s*\{/);
+  assert.doesNotMatch(css, /\.note-box > div\s*\{/);
+});
+
 test("restart recovery abandons old backlog and gates every optional catch-up", () => {
   const octoberMigrationPredicate = tracker.match(/function isOctoberRestartSettings[\s\S]*?\n\}/)?.[0] ?? "";
   assert.match(tracker, /0 \/ 438 ist korrekt/);

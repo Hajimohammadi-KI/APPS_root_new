@@ -1,39 +1,43 @@
-# Design QA — medically protected clickable project plan
+# Design QA — usable daily closing note
 
 ## Source visual truth
 
-- User reference for the incorrect schedule: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-4deb4200-01b5-4d6d-b5cb-980c2c1b123f.png` (1273 × 1283 px).
-- The reference showed W1 beginning on 19 October 2026.
-- The established application shell, hierarchy, typography, purple palette, integrated roadmap, and clickable progress interaction were preserved.
+- Source: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-2871b8fb-57a5-456e-a16f-54d1b99cc27a.png`.
+- Source pixels: 884 × 231 at 1× density.
+- Source state: desktop daily-plan detail with `Tagesabschlussnotiz`; seven controls were compressed into one row, textareas were roughly 68 px high, placeholder text wrapped into narrow vertical fragments, and writing was not practical.
 
-## Implementation evidence
+## Rendered implementation evidence
 
-- Updated paper-mode day: `outputs/design-qa/medical-paper-mode-0.6.1.jpg`.
-- Literal source/implementation comparison: `outputs/design-qa/comparison-medical-schedule-source-left-implementation-right-0.6.1.png` (source left, implementation right).
-- Browser verification ran on the isolated production build at `http://127.0.0.1:4412/#projekt-fahrplan`.
+- Desktop screenshot: `outputs/design-qa/daily-note-expanded-0.6.2.png` — 1265 × 712 pixels; browser CSS viewport 1280 × 720 at 1× density.
+- Lower-field screenshot: `outputs/design-qa/daily-note-expanded-fields-0.6.2.png` — 1265 × 712 pixels; same desktop viewport and state.
+- Responsive screenshot: `outputs/design-qa/daily-note-responsive-700px-0.6.2.png` — 685 × 881 pixels; browser CSS viewport 700 × 900 at 1× density.
+- Literal comparison: `outputs/design-qa/comparison-daily-note-source-left-implementation-right-0.6.2-final.png` — source on the left and post-fix implementation on the right.
+- Local production route: `http://127.0.0.1:4412/?qa=note-062#plan`.
 
-## Functional interaction proof
+## Findings and comparison history
 
-- Confirmed the plan is active from 30 August 2026 through 6 March 2027 and still contains 25 weeks, 146 days, and 438 outputs.
-- Confirmed W1 runs 30 August–4 September.
-- Confirmed no plan days exist during the two full-rest windows: 10–16 September and 29 September–5 October.
-- Confirmed paper-only days appear during 17–24 September and 6–13 October; each is labelled `Papiermodus · ohne Bildschirm`, explains the 14-day screen restriction, and disables digital focus.
-- Confirmed W2 roadmap deliverables are labelled `Papiermodus`.
-- Clicked the W1 `Problemstellung und Projektwert` roadmap checkbox: shared progress changed from `0 / 438` to `3 / 438`, W1 to 17%, Design to 3%, and overall to 1%.
-- Reloaded the route and confirmed the checkbox and `3 / 438` persisted.
+### Iteration 1 — P1 fixed
 
-## Visual and accessibility comparison
+- Location: `.note-box > div` and `.structured-note-grid` in `app/styles/pages/tracker.css`.
+- Evidence: the source capture shows every note control forced into a single narrow flex row even though the component declares a two-column grid.
+- Impact: the writing task is effectively blocked by tiny controls and severe placeholder wrapping.
+- Fix: limited the generic direct-child flex rule to `.structured-note-actions`, restored the real grid, made `Konzept` and `Genaue Aktion für morgen` full-width, set other desktop fields to two columns, and switched to one column below 760 px.
+- Post-fix evidence: the main field measures 797.8 × 150 px at the desktop viewport; paired fields measure about 389.9 px each with an 18 px gap. At the 700 px viewport, the grid reports one 495 px column and the main field remains 150 px high.
 
-- The source's 19 October W1 date has been replaced by the correct 30 August start.
-- The paper-only card uses the existing design system with a restrained amber status chip and note; no new visual language or fake asset was introduced.
-- Paper-mode Focus buttons are semantic disabled buttons. Roadmap controls remain labelled native checkboxes, week disclosures retain `aria-expanded`, and the plan/status hierarchy remains keyboard-readable.
-- Side-by-side inspection found no clipped date, overlapping status, broken card border, or unreadable changed text. The changed content remains usable at the browser's desktop viewport.
+## Required fidelity surfaces
 
-## Findings
+- Fonts and typography: retained the existing application font and hierarchy; labels are now 13 px/800 and writing text is 14 px with a 1.6 line height. No clipping or vertical letter stacking remains inside the note editor.
+- Spacing and layout rhythm: the card uses 20 px desktop padding, an 18 px grid gap, and 132–150 px minimum writing heights. The save row is separated from the writing grid and stacks on narrow screens.
+- Colors and tokens: existing paper, border, muted-text, focus-ring, and purple button tokens are unchanged; contrast remains consistent with the surrounding tracker.
+- Image quality and assets: no raster or decorative asset is part of this form. The existing note icon is preserved; no placeholder, CSS drawing, or replacement asset was introduced.
+- Copy and content: added one concise explanation of the form's purpose and improved awkward slash-heavy placeholders without changing the stored note schema.
 
-1. The prior schedule incorrectly deferred all work until 19 October.
-2. The corrected schedule protects both seven-day full-rest windows and restricts the second recovery week to paper-only engineering work.
-3. Clickable progress remains shared and persistent without weakening the medical screen restriction.
-4. No actionable P0, P1, or P2 visual, behavioral, or accessibility finding remains in the changed flow.
+## Functional and accessibility verification
+
+- Typed realistic text into `Konzept`, `Problem`, and `Genaue Aktion für morgen`.
+- Selected `Gut` for `Recall-Ergebnis`, saved the note, reloaded the production route, reopened the day, and confirmed all entered values persisted exactly.
+- Native labels, textareas, select, resize handles, focus styling, character count, and save button remain keyboard-accessible.
+- Browser console errors after the interaction: none.
+- No actionable P0, P1, or P2 issue remains in the changed daily-note flow. The focused comparison was required because the source's core defect is readable only at component scale.
 
 final result: passed

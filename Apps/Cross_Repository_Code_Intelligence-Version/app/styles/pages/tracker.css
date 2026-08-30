@@ -1377,50 +1377,106 @@ details[open] > summary .summary-marker {
   line-height: 1.9;
 }
 
-.note-box > div {
+.note-box > .structured-note-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 8px;
+  margin-top: 18px;
+}
+
+.structured-note-box {
+  padding: 20px;
+}
+
+.structured-note-heading h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.structured-note-heading p {
+  max-width: 760px;
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
 }
 
 .structured-note-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 8px;
+  gap: 18px;
+  margin-top: 18px;
 }
 .structured-note-field {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 750;
+  align-items: stretch;
+  min-width: 0;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
 }
 .structured-note-field textarea {
-  min-height: 68px;
+  box-sizing: border-box;
+  min-height: 132px;
   margin-top: 0;
+  padding: 13px 14px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  overflow-y: auto;
 }
 .structured-note-field select {
-  min-height: 40px;
-  border-radius: 9px;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 11px;
   border: 1px solid var(--line);
-  padding: 8px 10px;
-  font-size: 12px;
+  background: var(--paper);
+  padding: 10px 12px;
+  font-size: 14px;
 }
 .structured-note-field-wide {
   grid-column: 1 / -1;
 }
-@media (max-width: 640px) {
+.structured-note-field-primary textarea,
+.structured-note-field-wide:last-child textarea {
+  min-height: 150px;
+}
+@media (max-width: 760px) {
   .structured-note-grid {
     grid-template-columns: 1fr;
   }
+
+  .structured-note-field-wide {
+    grid-column: auto;
+  }
+
+  .structured-note-box {
+    padding: 16px;
+  }
 }
 
-.note-box > div > span {
+.note-box > .structured-note-actions > span {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
+}
+
+@media (max-width: 520px) {
+  .note-box > .structured-note-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .note-box > .structured-note-actions .button {
+    width: 100%;
+  }
 }
 
 .attachment-box {

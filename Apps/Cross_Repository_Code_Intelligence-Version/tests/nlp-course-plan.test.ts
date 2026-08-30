@@ -259,7 +259,7 @@ describe("Advanced Deep Learning reading plan", () => {
     expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-30");
     expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("Falscher Gesamtstart");
     expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Papiermodus");
-    expect(appPackage.version).toBe("0.6.1-version2");
+    expect(appPackage.version).toBe("0.6.2-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

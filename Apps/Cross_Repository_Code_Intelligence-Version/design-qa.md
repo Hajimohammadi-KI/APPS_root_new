@@ -1,82 +1,63 @@
-# Design QA — selective course/project highlighting
+# Design QA — Projekt-Fahrplan integrated into Projekt-Lernplan
 
-**Source visual truth path**
+## Source visual truth
 
-`C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-b7f6133e-de12-4db2-8034-25980e093176.png`
+- Desktop detail-plan reference: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-211b24d0-40fd-4fd8-a478-9b712ff7a17d.png` (3184 × 1242 px).
+- Standalone roadmap reference: `C:\Users\Elahe\AppData\Local\Temp\codex-clipboard-586ff30e-c7cb-44b6-a998-e01bd039e0fb.png` (955 × 1267 px).
 
-**Implementation screenshot paths**
+The requested change is an integration, so the standalone roadmap's separate page chrome is not copied. Its hierarchy, progress ring, stage/week structure, day rows and purple visual language are carried into the existing application shell.
 
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\desktop-related-red.png`
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\desktop-unrelated-normal.png`
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\mobile-related-red-card-390-fixed.png`
-- `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\production-related-red.png`
-- Combined comparison: `D:\APPS_root\Apps\Cross_Repository_Code_Intelligence-Version\outputs\course-related-red-v0.5.5\design-comparison.png`
+## Implementation evidence
 
-**Viewport and normalization**
+- Tablet integrated roadmap: `outputs/design-qa/project-learn-plan-tablet.png` (940 × 1253 px browser content).
+- Desktop integrated roadmap: `outputs/design-qa/project-learn-plan-roadmap-desktop.png` (1447 × 1236 px browser content).
+- Desktop shared detail view: `outputs/design-qa/project-learn-plan-details-desktop.png` (1447 × 1236 px browser content).
+- Literal full comparison: `outputs/design-qa/comparison-tablet-source-left-implementation-right.png`.
+- Literal desktop comparison: `outputs/design-qa/comparison-desktop-source-left-implementation-right.png`.
+- Focused roadmap comparison: `outputs/design-qa/comparison-focused-roadmap-source-left-implementation-right.png`.
 
-- Source: 3316 × 1316 px; CSS viewport and pixel density are unknown because this is a supplied screenshot.
-- Desktop implementation: requested 1440 × 900 CSS px; captured browser content is 1380 × 891 px at device density 1.
-- Mobile implementation: requested 390 × 844 CSS px; captured browser content is 375 × 812 px at device density 1.
-- The source and implementation intentionally show different scroll states. The comparison therefore evaluates the preserved Study Tracker visual language and the requested selective red state, not pixel-for-pixel page composition.
+## State and normalization
 
-**State**
+- Route: `/#projekt-fahrplan`; legacy `/projekt-fahrplan` redirects to that integrated view.
+- State: `not_started`, 0%, 0 / 438, 146 days, 25 weeks, W1 expanded.
+- The supplied roadmap is a standalone 955 px page. The implementation evidence uses the existing app shell at a requested 955 × 1273 viewport; the captured content area is 940 × 1253 px.
+- The desktop browser surface caps the requested 3184 px viewport at a 1447 px content width. Desktop comparison therefore evaluates structure and continuity rather than pixel-for-pixel width.
 
-- Route `/`, section `Gesamter Lernplan`.
-- Course filter `Sitzung 1` selected.
-- `NLP-Lab Integration 1` and `Woche 14` expanded.
-- Two explicitly mapped project days visible with red state.
-- Separate all-phases capture verifies `Design 1` has six normal/non-red days.
+## Full-view comparison
 
-**Full-view comparison evidence**
+- The integrated view preserves the reference's progress ring, five-stage hierarchy, stage progress bars, W1–W25 grouping, expandable weeks and scannable deliverable rows.
+- Existing application navigation, typography, spacing, card radii and purple tokens remain intact, matching the supplied detail-plan screen instead of introducing a second shell.
+- `Projekt-Lernplan` now contains two adjacent, accessible views: `Detailplan` and `Projekt-Fahrplan`.
+- The tablet capture shows no clipped labels or horizontal page overflow; the long day titles and `Tagesdetails öffnen` actions remain readable.
 
-- Existing purple course structure, cards, navigation, typography hierarchy and spacing remain visually consistent with the source screenshot.
-- Red is added only to the two mapped project-day cards and their `Kursrelevant · Sitzung 1` chips.
-- Unrelated Design 1 days retain their existing neutral or optional state colors.
+## Focused-region comparison
 
-**Focused-region comparison evidence**
+- The focused source/implementation comparison aligns the roadmap hero, 0%/146-day ring, Design stage, W1 description and first deliverable rows.
+- Differences in outer frame and title scale are intentional consequences of embedding the roadmap beneath the existing `Projekt-Lernplan` heading.
+- Disabled checkboxes correctly communicate preview-only state before the real plan starts; this preserves the user's no-backlog rule.
 
-- Desktop focused region: both mapped cards are fully visible, bordered red, and retain readable date, title, status and focus action.
-- Mobile focused region: the red border and chip fit inside the 375 px content viewport with no horizontal overflow (`scrollWidth = clientWidth = 375`).
-- No additional focused crop was needed because the affected cards and labels are legible in the saved desktop and mobile captures.
+## Functional interactions verified
 
-**Required fidelity surfaces**
+- Selected `Projekt-Fahrplan` through the tab interface.
+- Expanded W2 and confirmed `aria-expanded="true"`.
+- Opened `Problemstellung und Projektwert` from the roadmap and confirmed the view switches to `Detailplan`, the URL becomes `#plan`, and the matching day heading is present.
+- Opened `/projekt-fahrplan` directly and confirmed redirect to `/#projekt-fahrplan` with the roadmap visible.
+- Confirmed the integrated roadmap exposes the same 15 visible W1/W2 checkboxes in the tested expanded state and keeps them disabled while the plan is `not_started`.
+- Confirmed a clean browser tab produced no warning or error log entries through the tested flow.
 
-- Fonts and typography: existing family, weights and hierarchy are preserved; the new chip uses the established compact label scale and remains readable.
-- Spacing and layout rhythm: desktop card rhythm is unchanged; mobile chip now occupies its own wrapped row and does not collide with the date/status row.
-- Colors and visual tokens: semantic red tokens (`--red`, `--red-soft`) clearly distinguish project-related course days without replacing existing optional/status colors.
-- Image quality and asset fidelity: no image, logo, icon or other visual asset was changed or substituted.
-- Copy and content: the chip identifies the exact related session number; no label is rendered for an unrelated day.
+## Fidelity surfaces
 
-**Findings**
+- Typography: existing app family, weights and hierarchy preserved.
+- Layout: standalone roadmap hierarchy retained inside the current shell; no duplicate sidebar link remains.
+- Color and borders: existing purple/mint design tokens reused; no competing palette introduced.
+- Assets: no source image, logo or icon was substituted or redrawn.
+- Copy: explicitly states that roadmap and daily details share one plan and one progress state.
+- Accessibility: tablist/tabpanel relationships, expanded-state controls and disabled progress controls are exposed semantically.
 
-- No actionable P0, P1 or P2 finding remains.
-- [P3] The supplied source is an ultra-wide overview while the implementation evidence is a focused plan state, so exact crop fidelity is not applicable to this scoped change.
+## Findings and comparison history
 
-**Comparison history**
-
-1. Initial mobile pass found a P2 issue: the non-wrapping course chip was clipped at the right edge.
-2. Fixed in `app/styles/90-responsive.css` by placing the chip on the wrapped summary row, constraining its width, and allowing line wrapping.
-3. Post-fix evidence: `mobile-related-red-card-390-fixed.png`; chip right edge is 236.30 px inside a 375 px viewport, and page horizontal overflow is zero.
-
-**Primary interactions tested**
-
-- Opened `Lernplan`.
-- Selected a course session filter.
-- Expanded its mapped phase and week.
-- Opened a mapped day at mobile width.
-- Reset to all phases and verified an unrelated phase has zero red cards and zero course chips.
-
-**Console errors checked**
-
-- No browser warning or error entries were present after the tested interactions.
-- The final production capture also contained no browser warning or error entries.
-
-**Implementation checklist**
-
-- [x] Red state derives only from explicit `relatedDayTitles` mappings.
-- [x] Unrelated class/project days remain unmarked.
-- [x] Desktop card labels are readable.
-- [x] Mobile card labels wrap without overflow.
-- [x] Source and implementation were reviewed together in one combined image.
+1. Initial capture showed the app's optional reading ruler; it was disabled and the clean evidence was recaptured.
+2. A first test run in the LFS-skipped fresh clone found the app icon pointer instead of its binary. The exact locally verified LFS object (SHA-256 `79C914E6FF90BDE3CF45AD47B3EAC813586F3CD8A1CFD82638A0C23C4B6FA292`, 131958 bytes) was restored; the repository remained clean and the full suite passed.
+3. No actionable P0, P1 or P2 visual or interaction finding remains.
 
 final result: passed

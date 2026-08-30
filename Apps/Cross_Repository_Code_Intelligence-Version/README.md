@@ -1,6 +1,6 @@
 # Cross Repository Code Intelligence – Version2
 
-**CURRENT · Version2 0.5.9** — light-lavender, responsive interface. The tracker truthfully starts at **0 / 438** and keeps the 25-week plan on `not_started` until the learner chooses an actual start date on or after **19 October 2026**. A later start shifts the whole plan without compression.
+**CURRENT · Version2 0.6.0** — light-lavender, responsive interface. The Projekt-Fahrplan is integrated into the Projekt-Lernplan as a second view with one shared progress state; legacy `/projekt-fahrplan` links redirect to the integrated view. The tracker truthfully starts at **0 / 438** and keeps the 25-week plan on `not_started` until the learner chooses an actual start date on or after **19 October 2026**. A later start shifts the whole plan without compression.
 
 # Vercel-Web-App
 

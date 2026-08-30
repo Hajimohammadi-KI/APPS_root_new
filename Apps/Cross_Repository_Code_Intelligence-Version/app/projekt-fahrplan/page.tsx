@@ -1,5 +1,5 @@
-import RoadmapClient from "./roadmap-client";
+import { redirect } from "next/navigation";
 
 export default function ProjektFahrplanPage() {
-  return <RoadmapClient />;
+  redirect("/#projekt-fahrplan");
 }

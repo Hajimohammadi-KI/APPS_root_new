@@ -63,8 +63,10 @@ import {
   isDirectPdfUrl,
 } from "../lib/pdf-reader-link";
 import { buildCourseReadingPlanDescription } from "../lib/nlp-course-calendar";
+import ProjectRoadmap from "./projekt-fahrplan/roadmap-client";
 
 type StatusFilter = "all" | "open" | "started" | "optional" | "done";
+type PlanMode = "details" | "roadmap";
 
 type PlanRevision = {
   id: string;
@@ -816,6 +818,7 @@ export default function StudyTracker({
   const [activeDayId, setActiveDayId] = useState<string | null>(null);
   const [activeView, setActiveView] = useState<"plan" | "settings">("plan");
   const [showFullPlan, setShowFullPlan] = useState(false);
+  const [planMode, setPlanMode] = useState<PlanMode>("details");
   const [showProgressOverview, setShowProgressOverview] = useState(false);
   const [showJourneyOverview, setShowJourneyOverview] = useState(false);
   const [acknowledgedPlanVersion, setAcknowledgedPlanVersion] = useState<number | null>(null);
@@ -922,9 +925,10 @@ export default function StudyTracker({
 
   useEffect(() => {
     const syncHashView = () => {
-      if (window.location.hash === "#plan") {
+      if (window.location.hash === "#plan" || window.location.hash === "#projekt-fahrplan") {
         setActiveView("plan");
         setShowFullPlan(true);
+        setPlanMode(window.location.hash === "#projekt-fahrplan" ? "roadmap" : "details");
         window.requestAnimationFrame(() => {
           document.getElementById("plan")?.scrollIntoView({ block: "start" });
         });
@@ -1490,6 +1494,37 @@ export default function StudyTracker({
     });
   }
 
+  async function toggleRoadmapDay(day: PlannedDay, checked: boolean) {
+    if (settings.planStatus !== "running") {
+      setToast("Der Projekt-Fahrplan ist bis zum echten Start nur eine Vorschau. Es wurde nichts abgehakt.");
+      return false;
+    }
+    const previous = new Set(completed);
+    const next = new Set(completed);
+    for (const task of day.tasks) {
+      for (const item of task.items) {
+        if (checked) next.add(item.id);
+        else next.delete(item.id);
+      }
+    }
+    setCompleted(next);
+    const ok = await postState({
+      action: "import",
+      completedIds: [...next],
+      notes,
+      settings,
+    });
+    if (!ok) setCompleted(previous);
+    setToast(
+      ok
+        ? checked
+          ? `„${day.title}“ im gemeinsamen Projekt-Lernplan abgeschlossen.`
+          : `„${day.title}“ im gemeinsamen Projekt-Lernplan wieder geöffnet.`
+        : "Die Änderung konnte noch nicht dauerhaft gespeichert werden.",
+    );
+    return ok;
+  }
+
   async function toggleTaskGroup(
     day: PlannedDay,
     task: PlannedDay["tasks"][number],
@@ -1884,6 +1919,8 @@ export default function StudyTracker({
   function revealDay(day: PlannedDay, searchQuery = query, preservePhaseFilter = false) {
     setActiveView("plan");
     setShowFullPlan(true);
+    setPlanMode("details");
+    window.history.replaceState(null, "", "#plan");
     if (!preservePhaseFilter && phaseFilter !== "all" && phaseFilter !== day.phaseId) {
       setPhaseFilter(day.phaseId);
     }
@@ -1910,12 +1947,14 @@ export default function StudyTracker({
     }, 140);
   }
 
-  function openFullPlan(focusSearch = false) {
+  function openFullPlan(focusSearch = false, mode: PlanMode = "details") {
     setActiveView("plan");
     setShowFullPlan(true);
+    setPlanMode(mode);
+    window.history.replaceState(null, "", mode === "roadmap" ? "#projekt-fahrplan" : "#plan");
     window.setTimeout(() => {
       document.getElementById("plan")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      if (focusSearch) document.getElementById("plan-search")?.focus();
+      if (focusSearch && mode === "details") document.getElementById("plan-search")?.focus();
     }, 80);
   }
 
@@ -2162,9 +2201,6 @@ export default function StudyTracker({
             </a>
             <a href="/nlp-lab" {...internalLinkProps("/nlp-lab")}>
               <Icon name="pulse" /> NLP Retrieval Lab
-            </a>
-            <a href="/projekt-fahrplan" {...internalLinkProps("/projekt-fahrplan")}>
-              <Icon name="flag" /> Projekt-Fahrplan
             </a>
             <button
               type="button"
@@ -2538,7 +2574,7 @@ export default function StudyTracker({
               </ol>
               <footer>
                 <span>W1 beginnt erst mit deinem gewählten Startdatum. Eine Woche zählt dann nur mit Artefakt, Test und rückverfolgbarem Beleg.</span>
-                <a className="button secondary" href="/projekt-fahrplan" {...internalLinkProps("/projekt-fahrplan")}>Projekt-Fahrplan öffnen <Icon name="arrow" size={16} /></a>
+                <button className="button secondary" type="button" onClick={() => openFullPlan(false, "roadmap")}>Projekt-Fahrplan im Lernplan öffnen <Icon name="arrow" size={16} /></button>
               </footer>
             </details>
 
@@ -2657,8 +2693,8 @@ export default function StudyTracker({
                 <span>25 Wochen · 5 Phasen</span>
               </summary>
               <div className="journey-actions">
-                <button className="button secondary compact" type="button" aria-expanded={showFullPlan} aria-controls="plan" onClick={() => openFullPlan()}>
-                  Gesamten 25-Wochen-Plan ansehen <Icon name="calendar" size={17} />
+                <button className="button secondary compact" type="button" aria-expanded={showFullPlan} aria-controls="plan" onClick={() => openFullPlan(false, "roadmap")}>
+                  Projekt-Lernplan öffnen <Icon name="flag" size={17} />
                 </button>
               </div>
               <div className="journey-track">
@@ -2693,14 +2729,56 @@ export default function StudyTracker({
             <div className="section-heading plan-heading">
               <div>
                 <span className="eyebrow quiet">Phase → Woche → Tag → Aufgabe</span>
-                <h2 id="plan-title">Gesamter Lernplan</h2>
-                <p>Alle Karten sind standardmäßig geschlossen. Öffne nur den Abschnitt, den du heute brauchst.</p>
+                <h2 id="plan-title">Projekt-Lernplan</h2>
+                <p>Fahrplan und Tagesdetails sind jetzt ein gemeinsamer Lernplan mit demselben Fortschritt.</p>
               </div>
               <div className="plan-count">
                 <strong>{displayNumber(planMeta.totalWeeks)}</strong>
                 <span>Wochen</span>
               </div>
             </div>
+
+            <div className="plan-view-tabs" role="tablist" aria-label="Ansicht des Projekt-Lernplans">
+              <button
+                id="plan-details-tab"
+                type="button"
+                role="tab"
+                aria-selected={planMode === "details"}
+                aria-controls="plan-details-panel"
+                onClick={() => {
+                  setPlanMode("details");
+                  window.history.replaceState(null, "", "#plan");
+                }}
+              >
+                Detailplan
+              </button>
+              <button
+                id="plan-roadmap-tab"
+                type="button"
+                role="tab"
+                aria-selected={planMode === "roadmap"}
+                aria-controls="plan-roadmap-panel"
+                onClick={() => {
+                  setPlanMode("roadmap");
+                  window.history.replaceState(null, "", "#projekt-fahrplan");
+                }}
+              >
+                Projekt-Fahrplan
+              </button>
+            </div>
+
+            {planMode === "roadmap" ? (
+              <div id="plan-roadmap-panel" role="tabpanel" aria-labelledby="plan-roadmap-tab">
+                <ProjectRoadmap
+                  completed={completed}
+                  loading={loading}
+                  planStatus={settings.planStatus}
+                  onOpenDay={(day) => revealDay(day, "")}
+                  onToggleDay={toggleRoadmapDay}
+                />
+              </div>
+            ) : (
+              <div id="plan-details-panel" role="tabpanel" aria-labelledby="plan-details-tab">
 
             <article className="expose-plan-card" id="expose" aria-labelledby="expose-plan-title">
               <div className="expose-plan-icon" aria-hidden="true"><Icon name="book" size={24} /></div>
@@ -2959,6 +3037,8 @@ export default function StudyTracker({
                 </div>
               )}
             </div>
+              </div>
+            )}
           </section>}
 
             </>

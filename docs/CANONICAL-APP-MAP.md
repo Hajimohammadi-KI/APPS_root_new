@@ -6,11 +6,11 @@ Status: published from `scripts/release-targets.json` on 30 August 2026.
 
 | Job | Canonical product | Source | Runtime | Accountable owner |
 | --- | --- | --- | --- | --- |
-| English learning | English Automaticity | `Apps/English/English-07082026` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
-| German learning | Deutsch Automaticity | `Apps/Deutsch-V10.08.2026` | local 3210; Vercel project `deutschflow-grammar` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
-| Study planning | Cross Repository Tracker | `Apps/Cross_Repository_Code_Intelligence-Version` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
-| Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
-| Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Repository owner `Hajimohammadi-KI`; human owner name pending confirmation |
+| English learning | English Automaticity | `Apps/English/English-07082026` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
+| German learning | Deutsch Automaticity | `Apps/Deutsch-V10.08.2026` | local 3210; Vercel project `deutschflow-grammar` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
+| Study planning | Cross Repository Tracker | `Apps/Cross_Repository_Code_Intelligence-Version` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
+| Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
+| Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
 
 These five entries are the only active release targets. Conversation Studio, Daily Practice, Integrated Skills, and Teacher Studio are product surfaces inside the English/German canonical apps, not separate active products.
 
@@ -27,12 +27,12 @@ The following directories are retained as reference prototypes and must not rece
 
 ## Archive plan
 
-1. Label every duplicate `prototype-review`; do not delete it yet.
-2. Inventory unique learner content, assets, routes, and tests against the canonical English app.
-3. Migrate only unique, licensed, verified material through a focused commit.
-4. Add an `ARCHIVED.md` redirecting maintainers to the canonical product and freeze feature work in the duplicate.
-5. Run clean-clone builds and route checks before moving the prototype to an archive repository or recoverable archive folder.
-6. Delete nothing until the product owner approves the inventory and migration evidence.
+1. ✅ Label every duplicate `prototype-review`; do not delete it yet. Done 2026-08-30 via `ARCHIVED.md` in each directory.
+2. ⬜ Inventory unique learner content, assets, routes, and tests against the canonical English app. Not started.
+3. ⬜ Migrate only unique, licensed, verified material through a focused commit. Not started.
+4. ✅ Add an `ARCHIVED.md` redirecting maintainers to the canonical product and freeze feature work in the duplicate. Done 2026-08-30.
+5. ⬜ Run clean-clone builds and route checks before moving the prototype to an archive repository or recoverable archive folder. Not started.
+6. ⬜ Delete nothing until the product owner approves the inventory and migration evidence. Nothing has been deleted or moved; the six directories remain in place pending steps 2, 3, and 5.
 
 ## Evidence-based next investment
 

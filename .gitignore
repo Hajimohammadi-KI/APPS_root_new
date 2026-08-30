@@ -27,7 +27,8 @@ runtime-logs/
 
 # Local AI/editor working files
 .agents/
-.codex-temp/
+.codex-tmp/
+.audit/
 
 # Recoverable files intentionally kept outside the active source tree
 deleted/

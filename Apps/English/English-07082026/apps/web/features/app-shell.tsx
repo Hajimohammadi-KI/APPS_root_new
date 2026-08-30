@@ -484,7 +484,7 @@ export function AppShell() {
 					type="button"
 				/>
 			) : null}
-			<main className="app-main" id="main-content">
+			<main className="app-main" id="main-content" tabIndex={-1}>
 				<header className="app-topbar">
 					<div className="flex min-w-0 items-center gap-3">
 						<Button

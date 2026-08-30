@@ -92,7 +92,8 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
       </section>
 
       <div className="home-v2-grid">
-        <main className="home-v2-main">
+        {/* AppShell already owns the page's main landmark; this wrapper only controls the dashboard grid. */}
+        <div className="home-v2-main">
           <section className="home-v2-chart-card" aria-labelledby="performance-title">
             <div className="home-v2-card-head">
               <div><p>Learning activity</p><h2 id="performance-title">Performance chart</h2></div>
@@ -142,7 +143,7 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
               </dl>
             </article>
           </section>
-        </main>
+        </div>
 
         <aside className="home-v2-aside">
           <section className="home-v2-courses" aria-labelledby="courses-title">

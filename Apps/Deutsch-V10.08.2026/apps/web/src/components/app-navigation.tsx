@@ -8,16 +8,19 @@ import type { NavigationItem } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 
 export function AppNavigation({
+  ariaLabel,
   items,
   onNavigate,
 }: Readonly<{
+  ariaLabel: string;
   items: readonly NavigationItem[];
   onNavigate?: () => void;
 }>) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Hauptnavigation">
+    // Each navigation group has a distinct accessible name so landmark lists stay useful.
+    <nav aria-label={ariaLabel}>
       <ul className="space-y-1">
         {items.map((item) => {
           const active =

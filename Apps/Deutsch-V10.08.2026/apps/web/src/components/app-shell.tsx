@@ -89,6 +89,10 @@ export function AppShell({
 
   return (
     <div className="min-h-screen">
+      {/* Keyboard users can bypass repeated navigation and land on the single main region. */}
+      <a className="skip-link" href="#main-content">
+        Zum Hauptinhalt springen
+      </a>
       <aside className="german-app-sidebar fixed inset-y-0 left-0 z-30 hidden border-r bg-sidebar/95 backdrop-blur xl:flex xl:flex-col">
         <div className="px-2">
           <Brand />
@@ -115,7 +119,9 @@ export function AppShell({
                   <span>{group.caption}</span>
                   <ChevronDown className="ms-auto size-4" aria-hidden="true" />
                 </button>
-                {expanded ? <AppNavigation items={group.items} /> : null}
+                {expanded ? (
+                  <AppNavigation ariaLabel={group.title} items={group.items} />
+                ) : null}
               </section>
             );
           })}
@@ -160,6 +166,7 @@ export function AppShell({
         <main
           className="german-app-main mx-auto w-full max-w-7xl overflow-x-clip px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
           id="main-content"
+          tabIndex={-1}
         >
           {children}
         </main>

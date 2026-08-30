@@ -42,6 +42,7 @@ export function MobileNavigation() {
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-3 py-4">
           <AppNavigation
+            ariaLabel="Tägliche Praxis"
             items={coreNavigation}
             onNavigate={() => setOpen(false)}
           />
@@ -56,6 +57,7 @@ export function MobileNavigation() {
             </summary>
             <div className="mt-1 ps-2">
               <AppNavigation
+                ariaLabel="Weitere Lernbereiche"
                 items={libraryNavigation}
                 onNavigate={() => setOpen(false)}
               />
@@ -63,6 +65,7 @@ export function MobileNavigation() {
           </details>
           <div className="my-4 border-t" />
           <AppNavigation
+            ariaLabel="App und Einstellungen"
             items={secondaryNavigation}
             onNavigate={() => setOpen(false)}
           />

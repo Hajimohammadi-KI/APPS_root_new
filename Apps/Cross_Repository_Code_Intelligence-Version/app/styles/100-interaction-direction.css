@@ -1,4 +1,24 @@
 /* Keep language direction and interaction feedback consistent across app shells. */
+.skip-link {
+  position: fixed;
+  inset-block-start: 0.5rem;
+  inset-inline-start: 0.5rem;
+  z-index: 10000;
+  max-inline-size: calc(100vw - 1rem);
+  padding: 0.75rem 1rem;
+  border: 2px solid #6f42b5;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #24143d;
+  font-weight: 700;
+  transform: translateY(-160%);
+  transition: transform 120ms ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 html[lang="en"],
 html[lang^="en-"],
 html[lang="de"],
@@ -41,6 +61,10 @@ html[lang^="ar-"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none;
+  }
+
   :where(button, summary, select, [role="button"], nav a[href], a[class*="button"], a[class*="card"], a.action) {
     transition: none !important;
   }

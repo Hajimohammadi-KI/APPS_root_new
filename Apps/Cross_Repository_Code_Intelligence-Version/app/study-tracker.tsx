@@ -2068,8 +2068,9 @@ export default function StudyTracker({
 
   return (
     <div className="app-shell">
-      <a className="skip-link" href="#start-dashboard">
-        Zum Tagesdashboard springen
+      {/* The shared skip target works for every tracker view, not only the dashboard. */}
+      <a className="skip-link" href="#main-content">
+        Zum Hauptinhalt springen
       </a>
 
       <header className="topbar">
@@ -2124,7 +2125,7 @@ export default function StudyTracker({
 
       <div className="workspace">
         <aside className="sidebar" aria-label="Hauptnavigation">
-          <nav className="side-nav">
+          <nav className="side-nav" aria-label="Arbeitsbereiche">
             <a
               href="#start-dashboard"
               className={activeView === "plan" ? "active" : ""}
@@ -2197,7 +2198,7 @@ export default function StudyTracker({
           </div>
         </aside>
 
-        <main className="main-content">
+        <main className="main-content" id="main-content" tabIndex={-1}>
           {activeView === "plan" ? (
             <>
           <section className="start-dashboard" id="start-dashboard" aria-labelledby="dashboard-title">
@@ -3532,7 +3533,11 @@ export default function StudyTracker({
         </div>
       )}
 
-      {loading && <div className="loading-line" aria-label="Wird geladen" />}
+      {loading && (
+        <div className="loading-line" role="status" aria-live="polite">
+          <span className="sr-only">Wird geladen</span>
+        </div>
+      )}
       {toast && <div className="toast" role="status">{toast}</div>}
     </div>
   );

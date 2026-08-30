@@ -194,7 +194,8 @@ export function Dashboard() {
       </section>
 
       <div className="home-v2-grid">
-        <main className="home-v2-main">
+        {/* AppShell stellt bereits die Hauptregion bereit; dieser Container dient nur dem Dashboard-Raster. */}
+        <div className="home-v2-main">
           <section
             className="home-v2-chart-card"
             aria-labelledby="performance-title"
@@ -323,7 +324,7 @@ export function Dashboard() {
               </dl>
             </article>
           </section>
-        </main>
+        </div>
 
         <aside className="home-v2-aside">
           <section className="home-v2-courses" aria-labelledby="courses-title">

@@ -151,10 +151,13 @@ export default function SettingsApp() {
     settings.accessibility.focusMode ? "focus-mode" : "",
   ].filter(Boolean).join(" ");
 
-  return <main className={classNames}>
+  return <>
+    {/* The same skip-link contract is used by every active desktop web app. */}
+    <a className="skip-link" href="#main-content">Zum Hauptinhalt springen</a>
+    <main className={classNames} id="main-content" tabIndex={-1}>
     <header className="topbar settings-topbar">
       <Link className="brand" href={settings.integration.links.settingsUrl}><span>E</span><div><b>{settings.labels.appName}</b><small>{settings.labels.appSubtitle}</small></div></Link>
-      <div className="header-status"><span className="secure">● {saveState}</span><Link className="header-link" href={settings.integration.links.homeUrl}>← Zurück zur App</Link></div>
+      <nav className="header-status" aria-label="App-Navigation"><span className="secure" role="status" aria-live="polite">● {saveState}</span><Link className="header-link" href={settings.integration.links.homeUrl}>← Zurück zur App</Link></nav>
     </header>
     <section className="settings-content">
       <section className="settings-platform-card" aria-label="Systemstatus" aria-live="polite">
@@ -172,6 +175,7 @@ export default function SettingsApp() {
       </section>
       <SettingsHub settings={settings} onChange={setSettings} onToast={showToast} saveState={saveState} connections={connections} onConnectionsRefresh={refreshConnections}/>
     </section>
-    {toast && <div className="toast">✓ {toast}</div>}
-  </main>;
+    {toast && <div className="toast" role="status" aria-live="polite">✓ {toast}</div>}
+    </main>
+  </>;
 }

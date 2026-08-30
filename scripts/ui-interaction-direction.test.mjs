@@ -37,6 +37,7 @@ test("every canonical app imports the shared interaction and direction contract"
   for (const file of contractFiles) {
     const source = await readFile(resolve(root, file), "utf8");
     assertContract(source, file);
+    assert.match(source, /\.skip-link/, `${file} must style the shared keyboard skip link`);
     assert.match(source, /prefers-reduced-motion/, `${file} must protect reduced-motion users`);
   }
 });

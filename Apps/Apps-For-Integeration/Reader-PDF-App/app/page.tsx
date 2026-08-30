@@ -213,6 +213,8 @@ export default function Home() {
   const dragStart = useRef<{ x: number; width: number } | null>(null);
   const selectionMenuRef = useRef<HTMLDivElement>(null);
   const recoveryFileInputRef = useRef<HTMLInputElement>(null);
+  const settingsDialogRef = useRef<HTMLElement>(null);
+  const settingsReturnFocusRef = useRef<HTMLElement | null>(null);
   const requestedPage = useRef<number | null>(null);
 
   useEffect(() => {
@@ -1011,8 +1013,56 @@ export default function Home() {
     };
   }, [closeSelectionMenu, selectionMenu]);
 
+  useEffect(() => {
+    if (!settingsOpen) return;
+
+    // Keep keyboard focus inside the modal and return it to the control that opened it.
+    settingsReturnFocusRef.current = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const dialog = settingsDialogRef.current;
+    const focusableSelector = [
+      "button:not([disabled])",
+      "a[href]",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
+      "[tabindex]:not([tabindex='-1'])",
+    ].join(",");
+    const getFocusable = () => Array.from(dialog?.querySelectorAll<HTMLElement>(focusableSelector) ?? []);
+    getFocusable()[0]?.focus();
+
+    const handleDialogKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSettingsOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (!focusable.length) return;
+      const first = focusable[0]!;
+      const last = focusable.at(-1)!;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleDialogKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleDialogKeyDown);
+      settingsReturnFocusRef.current?.focus();
+    };
+  }, [settingsOpen]);
+
   return (
-    <main className={`app-shell pdf-reader-root ${embed ? "embed" : ""}`}>
+    <main className={`app-shell pdf-reader-root ${embed ? "embed" : ""}`} id="main-content" tabIndex={-1}>
+      {/* A shared skip target makes keyboard entry consistent with the learning and settings apps. */}
+      <a className="skip-link" href="#main-content">Zum Hauptinhalt springen</a>
       <ReadingRuler enabled={readingRuler} onToggle={setReadingRuler} zoom={zoom} />
       <header className="topbar">
         <div className="reader-history">
@@ -1041,7 +1091,7 @@ export default function Home() {
       )}
 
       <section className="workspace">
-        <nav className="sidebar">
+        <nav className="sidebar" aria-label="Dokumentbereiche">
           <button className={`nav-item ${activeCollection === "Bibliothek" ? "active" : ""}`} onClick={() => selectCollection("Bibliothek")}>▥ <span>Bibliothek</span></button>
           <button className={`nav-item ${activeCollection === "Heute lesen" ? "active" : ""}`} onClick={() => selectCollection("Heute lesen")}>◷ <span>Heute lesen</span></button>
           <p className="nav-label">SAMMLUNGEN</p>
@@ -1222,7 +1272,7 @@ export default function Home() {
       </section>
 
       {settingsOpen && <div className="modal-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setSettingsOpen(false); }}>
-        <section className="settings-modal" aria-modal="true" role="dialog" aria-label="Integrationen und Exporte">
+        <section ref={settingsDialogRef} className="settings-modal" aria-modal="true" role="dialog" aria-label="Integrationen und Exporte">
           <div className="modal-head"><div><small>INTEGRATIONEN</small><h2>Einstellungen</h2><p>Verbindungen werden erst nach einem echten Test als aktiv angezeigt.</p></div><button onClick={() => setSettingsOpen(false)} aria-label="Einstellungen schließen">×</button></div>
 
           <div className="setting-card">

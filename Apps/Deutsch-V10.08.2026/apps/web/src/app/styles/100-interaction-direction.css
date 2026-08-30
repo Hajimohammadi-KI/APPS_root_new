@@ -66,6 +66,10 @@ html[lang^="ar-"] {
   a[class*="card"],
   a.action
 ) {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
   transition:
     border-color 160ms ease,
     background-color 160ms ease,

@@ -38,6 +38,8 @@ test("every canonical app imports the shared interaction and direction contract"
     const source = await readFile(resolve(root, file), "utf8");
     assertContract(source, file);
     assert.match(source, /\.skip-link/, `${file} must style the shared keyboard skip link`);
+    assert.match(source, /overflow-wrap:\s*anywhere/, `${file} must wrap long localized control labels`);
+    assert.match(source, /white-space:\s*normal/, `${file} must not force localized controls onto one line`);
     assert.match(source, /prefers-reduced-motion/, `${file} must protect reduced-motion users`);
   }
 });

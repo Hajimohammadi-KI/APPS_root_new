@@ -44,6 +44,10 @@ html[lang^="ar-"] {
 }
 
 :where(button:not(:disabled), summary, select:not(:disabled), [role="button"]:not([aria-disabled="true"]), nav a[href], a[class*="button"], a[class*="card"], a.action) {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
   transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
 }
 

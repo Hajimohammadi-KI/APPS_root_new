@@ -18,12 +18,12 @@ export const DAILY_WORK_MODES = {
     description: "Ein Verständnis- und ein Tagesergebnis. Die formale Vertiefung bleibt optional und wird nicht als Rückstand gewertet.",
   },
   full: {
-    label: "4 Stunden vollständig",
-    shortLabel: "4 Stunden",
-    totalMinutes: 240,
-    taskMinutes: [70, 90, 50] as const,
+    label: "8 Stunden Vollzeit",
+    shortLabel: "8 Stunden",
+    totalMinutes: 480,
+    taskMinutes: [80, 100, 60] as const,
     requiredTaskIndexes: [0, 1, 2] as const,
-    description: "30–38 Minuten Vorwissen innerhalb des ersten 70-Minuten-Blocks, danach Verbindung und Tagesergebnis; zwei Pausen à 15 Minuten sind in den vier Stunden enthalten.",
+    description: "Vier Stunden Forschung oder Projektlernen und vier Stunden Umsetzung, Test und Dokumentation. Pausen teilen den Tag in kleine Einheiten; sie sind keine Lese-Deadline.",
   },
 } as const;
 

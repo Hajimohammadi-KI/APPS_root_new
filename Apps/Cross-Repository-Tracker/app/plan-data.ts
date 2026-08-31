@@ -40,6 +40,18 @@ export type PlannedDay = DaySpec & {
   phase: string;
   phaseId: string;
   weekTitle: string;
+  researchTrack: {
+    mode: "article" | "project-learning";
+    block: 1 | 2 | 3 | 4 | 5;
+    plannedMinutes: 240;
+    sourceId: string;
+    title: string;
+    readOnly: string;
+    doNotRead: string;
+    question: string;
+    expectedOutput: string;
+    stopRule: string;
+  };
   learningResourceIds: string[];
   taskMinutes: [number, number, number];
   tasks: Array<{
@@ -550,9 +562,9 @@ export const extractionSections = [
 
 export const defaultSettings = {
   projectName: "Cross_Repository_Code_Intelligence",
-  planName: "Cross Repository Code Intelligence – medizinisch geschützter 25-Wochen-Plan",
+  planName: "Cross Repository Code Intelligence – 37-Wochen-Vollzeitplan",
   planStartDate: "2026-08-30",
-  planEndDate: "2027-03-06",
+  planEndDate: "2027-05-27",
   planStatus: "running" as "not_started" | "running" | "paused",
   planPausedAt: "",
   dailyWorkMode: "full" as "rescue" | "light" | "full",
@@ -613,7 +625,7 @@ export const trackerRestartPlan = {
     screenFreeDays: 14,
     paperOnlyFromDay: 8,
     gentleDailyMinutes: 12,
-    mainDailyMaxMinutes: 240,
+    mainDailyMaxMinutes: 480,
     shiftWholePlanIfNotReady: true,
     compressWeeks: false,
     clinicalAdviceOverridesPlan: true,
@@ -1919,35 +1931,241 @@ function addUtcDays(date: Date, days: number) {
   return next;
 }
 
-export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) => {
-  let dates: Date[];
-  if (week.dates) {
-    dates = week.dates.map((iso) => new Date(`${iso}T12:00:00Z`));
-  } else {
-    const weekStart = week.startDate
-      ? new Date(`${week.startDate}T12:00:00Z`)
-      : addUtcDays(
-          new Date("2026-10-26T12:00:00Z"),
-          (week.technicalIndex ?? 0) * 7,
-        );
-    dates = [];
-    for (let offset = 0; offset < 7; offset += 1) {
-      const candidate = addUtcDays(weekStart, offset);
-      if (candidate.getUTCDay() !== 0) dates.push(candidate);
+type CapacityProjectDay = {
+  spec: DaySpec;
+  stableId: string;
+  phase: string;
+  phaseId: string;
+  weekTitle: string;
+  weekGoal: string;
+};
+
+const PROJECT_DAYS_PER_CAPACITY_WEEK = 4;
+const DAYS_PER_CAPACITY_WEEK = 5;
+const ARTICLE_HOURS_PER_REQUIRED_READING = 16;
+const WEEKLY_CAPACITY_HOURS = 40;
+
+const originalProjectDays: CapacityProjectDay[] = scheduledWeekSpecs.flatMap(
+  (week, originalWeekIndex) => week.days.map((spec, originalDayIndex) => ({
+    spec,
+    stableId: `w${originalWeekIndex + 1}-d${originalDayIndex + 1}`,
+    phase: week.phase,
+    phaseId: week.phaseId,
+    weekTitle: week.title,
+    weekGoal: week.goal,
+  })),
+);
+
+const closingCapacityDays: CapacityProjectDay[] = [
+  {
+    spec: d(
+      "Offene Qualitätskriterien schließen",
+      ["proposal", "hevner"],
+      "Der Vollzeitplan endet nicht mit halbfertigen Prüfungen, sondern mit nachvollziehbar geschlossenen Qualitätskriterien.",
+      ["Finde jedes noch offene Akzeptanzkriterium", "Schließe nur belegbare Lücken", "Dokumentiere bewusst verbleibende Grenzen"],
+      ["16", "17", "20"],
+      "Final Quality Closure",
+      "final-quality-closure.md",
+      "buffer",
+    ),
+    stableId: "capacity-final-quality",
+    phase: "Abgabe",
+    phaseId: "buffer-two",
+    weekTitle: "Finale Abgabe ohne offene Schulden",
+    weekGoal: "Alle belegbaren Qualitätskriterien schließen und Grenzen transparent lassen.",
+  },
+  {
+    spec: d(
+      "Reproduzierbarkeit aus sauberer Umgebung prüfen",
+      ["proposal", "danphe"],
+      "Ein letzter Clean-Run beweist, dass Artefakt, Test und Dokumentation außerhalb der Arbeitsumgebung zusammenpassen.",
+      ["Starte aus einer sauberen Umgebung", "Führe Schnellstart und Kerntests aus", "Vergleiche Ergebnis, Version und dokumentierte Befehle"],
+      ["11.3", "17", "20.2"],
+      "Release / Reproducibility",
+      "final-clean-run-evidence.md",
+      "buffer",
+    ),
+    stableId: "capacity-final-reproducibility",
+    phase: "Abgabe",
+    phaseId: "buffer-two",
+    weekTitle: "Finale Abgabe ohne offene Schulden",
+    weekGoal: "Die Abgabe in einer sauberen Umgebung reproduzierbar nachweisen.",
+  },
+];
+
+const capacityProjectDays = [...originalProjectDays];
+for (const closingDay of closingCapacityDays) {
+  if (capacityProjectDays.length % PROJECT_DAYS_PER_CAPACITY_WEEK === 0) break;
+  capacityProjectDays.push(closingDay);
+}
+
+if (capacityProjectDays.length % PROJECT_DAYS_PER_CAPACITY_WEEK !== 0) {
+  throw new Error("The project-day inventory must fill complete four-day capacity weeks");
+}
+
+function uniqueStrings(values: readonly string[]) {
+  return Array.from(new Set(values));
+}
+
+function integrationSpec(projectDays: readonly CapacityProjectDay[], weekNumber: number): DaySpec {
+  return d(
+    "Wochenintegration, Erklärung und Testbeleg",
+    uniqueStrings(projectDays.flatMap((day) => day.spec.sourceIds)).slice(0, 4),
+    "Vier kleine Projektschritte werden erst durch einen gemeinsamen Test, eine freie Erklärung und einen rückverfolgbaren Beleg zu belastbarem Wochenfortschritt.",
+    [
+      "Erkläre den Zusammenhang der vier Tagesergebnisse ohne Quelle",
+      "Führe den wichtigsten gemeinsamen Test oder Sanity Check erneut aus",
+      "Verknüpfe Ergebnis, Test und Quellenbeleg in einem Wochenprotokoll",
+    ],
+    uniqueStrings(projectDays.flatMap((day) => day.spec.proposal)).slice(0, 4),
+    "Weekly Integration / Evidence",
+    `week-${String(weekNumber).padStart(2, "0")}-integration-evidence.md`,
+    "evaluation",
+  );
+}
+
+const capacityWeekSpecs = Array.from(
+  { length: capacityProjectDays.length / PROJECT_DAYS_PER_CAPACITY_WEEK },
+  (_, weekIndex) => {
+    const projectDays = capacityProjectDays.slice(
+      weekIndex * PROJECT_DAYS_PER_CAPACITY_WEEK,
+      (weekIndex + 1) * PROJECT_DAYS_PER_CAPACITY_WEEK,
+    );
+    const first = projectDays[0]!;
+    const last = projectDays.at(-1)!;
+    const integration: CapacityProjectDay = {
+      spec: integrationSpec(projectDays, weekIndex + 1),
+      stableId: `capacity-w${weekIndex + 1}-integration`,
+      phase: first.phase === last.phase ? first.phase : `${first.phase} / ${last.phase}`,
+      phaseId: first.phaseId,
+      weekTitle: first.weekTitle === last.weekTitle ? first.weekTitle : `${first.weekTitle} → ${last.weekTitle}`,
+      weekGoal: first.weekGoal === last.weekGoal ? first.weekGoal : `${first.weekGoal} ${last.weekGoal}`,
+    };
+    return {
+      phase: integration.phase,
+      phaseId: integration.phaseId,
+      title: integration.weekTitle,
+      goal: integration.weekGoal,
+      projectDays: [...projectDays, integration],
+    };
+  },
+);
+
+function isFullRestDate(date: string) {
+  return trackerRestartPlan.screenBreaks.some(
+    (window) => date >= window.procedureDate && date <= window.fullRestEnd,
+  );
+}
+
+function capacityDates(totalDays: number) {
+  const dates: Date[] = [];
+  let candidate = new Date(`${trackerRestartPlan.mainPlanStart}T12:00:00Z`);
+  while (dates.length < totalDays) {
+    const date = isoDate(candidate);
+    const weekday = candidate.getUTCDay();
+    const isExceptionalFirstDay = date === trackerRestartPlan.mainPlanStart;
+    if ((isExceptionalFirstDay || (weekday >= 1 && weekday <= 5)) && !isFullRestDate(date)) {
+      dates.push(candidate);
     }
+    candidate = addUtcDays(candidate, 1);
+  }
+  return dates;
+}
+
+const allCapacityDates = capacityDates(capacityWeekSpecs.length * DAYS_PER_CAPACITY_WEEK);
+
+const ARTICLE_BLOCKS = [
+  {
+    title: "Orientierung und Artikelentscheidung",
+    read: "Nur Titel, Abstract, Überschriften, eine zentrale Figure/Table und die Conclusion überfliegen.",
+    skip: "Noch keine Detailabschnitte und keine vollständige Übersetzung lesen.",
+  },
+  {
+    title: "Direkt relevantes Konzept",
+    read: "Nur einen direkt relevanten Absatz, eine Definition oder einen kleinen Subsection zum ersten Artikelfokus lesen.",
+    skip: "Historischen Hintergrund und nicht projektbezogene Beispiele heute auslassen.",
+  },
+  {
+    title: "Methode, Guideline oder Evaluation",
+    read: "Nur die Methode, Guideline, Architekturpassage oder Evaluation lesen, die eine Projektentscheidung stützen kann.",
+    skip: "Keine zusätzliche Methode implementieren und keine Nebenexperimente verfolgen.",
+  },
+  {
+    title: "Conclusion, Grenzen und Projektbezug",
+    read: "Conclusion und relevante Limitations lesen; nur gezielt zu markierten Lücken zurückspringen.",
+    skip: "Den Artikel nicht pauschal von vorn lesen und keine neue Vollübersetzung beginnen.",
+  },
+] as const;
+
+function researchTrackForDay(
+  weekIndex: number,
+  dayIndex: number,
+  projectDay: CapacityProjectDay,
+): PlannedDay["researchTrack"] {
+  const block = (dayIndex + 1) as 1 | 2 | 3 | 4 | 5;
+  const reading = articleReadings[weekIndex];
+  if (reading) {
+    if (block === 5) {
+      return {
+        mode: "article",
+        block,
+        plannedMinutes: 240,
+        sourceId: reading.sourceId,
+        title: `Artikel ${reading.order}: frei erklären und abschließen`,
+        readOnly: "Keine neue Lektüre. Nur markierte Stellen öffnen, wenn beim freien Erklären eine konkrete Lücke sichtbar wird.",
+        doNotRead: "Nicht von vorn beginnen, nicht alles erneut übersetzen und keine neuen Nebenquellen öffnen.",
+        question: "Kann ich Problem, Methode, Ergebnis, Grenze und Projektbezug zuerst auf Persisch und danach kurz auf Englisch erklären?",
+        expectedOutput: `article-${String(reading.order).padStart(2, "0")}-teachback-and-project-link.md`,
+        stopRule: "Stoppe, sobald fünf Punkte frei erklärt, mit Seitenbelegen verbunden und als A/B/C-Entscheidung gespeichert sind.",
+      };
+    }
+    const stage = ARTICLE_BLOCKS[block - 1];
+    const focus = reading.readingFocus[Math.min(block - 1, reading.readingFocus.length - 1)]!;
+    return {
+      mode: "article",
+      block,
+      plannedMinutes: 240,
+      sourceId: reading.sourceId,
+      title: `Artikel ${reading.order} · Block ${block}/4 · ${stage.title}`,
+      readOnly: `${stage.read} Fokus: ${focus}.`,
+      doNotRead: stage.skip,
+      question: block === 1
+        ? "Warum ist dieser Artikel für die Thesis A, B oder C und welcher Teil ist wirklich erforderlich?"
+        : `Was behauptet dieser kleine Abschnitt zu „${focus}“ und was unterstützt er für das Projekt?`,
+      expectedOutput: `article-${String(reading.order).padStart(2, "0")}-block-${block}.md`,
+      stopRule: "Stoppe nach einer verstandenen Einheit, höchstens zwei notwendigen Begriffen, drei eigenen Sätzen und einem Seitenbeleg. Nicht wegen offener Seiten weiterlesen.",
+    };
   }
 
-  const days = week.days.map((spec, dayIndex) => {
-    const scheduledDate = dates[dayIndex];
-    if (!scheduledDate) {
-      throw new Error(
-        `Week ${week.phaseId} has ${week.days.length} days but only ${dates.length} schedulable dates`,
-      );
-    }
+  const sourceId = projectDay.spec.sourceIds.find((id) => Boolean(sources[id])) ?? "proposal";
+  return {
+    mode: "project-learning",
+    block,
+    plannedMinutes: 240,
+    sourceId,
+    title: block === 5 ? "Wochenwissen frei erklären und dokumentieren" : "Projektwissen gezielt lernen und sofort anwenden",
+    readOnly: block === 5
+      ? "Keine neue Quelle. Die vier Projektentscheidungen der Woche aus dem Gedächtnis erklären und nur konkrete Lücken gezielt prüfen."
+      : `Nur die unten genannte Quelle und die exakten Tagesfragen zu ${projectDay.spec.module} bearbeiten.`,
+    doNotRead: "Keine zusätzlichen Tabs, Tutorials oder vollständigen Dokumentationen öffnen, die das heutige Ergebnis nicht direkt ermöglichen.",
+    question: projectDay.spec.lookFor[Math.min(dayIndex, projectDay.spec.lookFor.length - 1)]!,
+    expectedOutput: block === 5
+      ? `week-${String(weekIndex + 1).padStart(2, "0")}-research-synthesis.md`
+      : `week-${String(weekIndex + 1).padStart(2, "0")}-day-${block}-learning-note.md`,
+    stopRule: "Stoppe nach einer verständlichen Idee, einer dokumentierten Entscheidung und einem direkten Bezug zum heutigen Projektartefakt.",
+  };
+}
+
+export const planWeeks: PlanWeek[] = capacityWeekSpecs.map((week, weekIndex) => {
+  const days = week.projectDays.map((projectDay, dayIndex) => {
+    const spec = projectDay.spec;
+    const scheduledDate = allCapacityDates[weekIndex * DAYS_PER_CAPACITY_WEEK + dayIndex];
+    if (!scheduledDate) throw new Error(`Missing capacity date for week ${weekIndex + 1}, day ${dayIndex + 1}`);
     const date = isoDate(scheduledDate);
-    const taskMinutes: [number, number, number] = spec.kind === "course" ? [105, 70, 35] : [70, 90, 50];
+    const taskMinutes: [number, number, number] = [80, 100, 60];
     const proposalText = spec.proposal.map((item) => `§ ${item}`).join(", ");
     const workMode = plannedWorkMode(date);
+    const researchTrack = researchTrackForDay(weekIndex, dayIndex, projectDay);
     const taskItems = [
       spec.lookFor,
       workMode === "paper"
@@ -1974,14 +2192,8 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
           ] as [string, string, string],
     ];
     const taskTitles = ["1. Finden und verstehen", "2. Mit dem Projekt verbinden", "3. Ergebnis erstellen"];
-    // Stable, date-independent id: earlier this session the plan's start
-    // date was recalculated to today, which shifted every day's computed
-    // date -- and until now day/task/item ids were literally that date
-    // string, so the recalculation silently orphaned every completed/
-    // notes/attachments entry keyed under the old dates. w<N>-d<N> only
-    // changes if the day's actual position in the schedule changes, not
-    // when the calendar dates it falls on shift.
-    const stableId = `w${weekIndex + 1}-d${dayIndex + 1}`;
+    const stableId = projectDay.stableId;
+    const sourceIds = uniqueStrings([researchTrack.sourceId, ...spec.sourceIds]);
 
     return {
       ...spec,
@@ -1991,15 +2203,17 @@ export const planWeeks: PlanWeek[] = scheduledWeekSpecs.map((week, weekIndex) =>
       // required-progress% (see docs/NLP-RETRIEVAL-LAB.md).
       optionalDuringCourse:
         spec.optionalDuringCourse ??
-        (!week.phaseId.startsWith("design-") && spec.kind !== "course" && date >= "2026-08-19" && date <= "2026-09-07"),
+        (!projectDay.phaseId.startsWith("design-") && spec.kind !== "course" && date >= "2026-08-19" && date <= "2026-09-07"),
       id: stableId,
       date,
       workMode,
       week: weekIndex + 1,
-      phase: week.phase,
-      phaseId: week.phaseId,
+      phase: projectDay.phase,
+      phaseId: projectDay.phaseId,
       weekTitle: week.title,
-      learningResourceIds: learningResourceIdsForDay(spec, week.phaseId),
+      sourceIds,
+      researchTrack,
+      learningResourceIds: learningResourceIdsForDay(spec, projectDay.phaseId),
       taskMinutes,
       tasks: taskTitles.map((title, taskIndex) => ({
         id: `${stableId}-task-${taskIndex + 1}`,
@@ -2037,6 +2251,8 @@ export const allTaskItems = allDays.flatMap((day) =>
   day.tasks.flatMap((task) => task.items),
 );
 
+const originalPlanDays = allDays.filter((day) => /^w\d+-d\d+$/.test(day.id));
+
 // Date-keyed data written before stable w<N>-d<N> IDs shipped used the
 // previous Revision 4 schedule. Keep that exact date sequence available
 // during read migration even though Revision 5 moves the calendar. Some old
@@ -2066,7 +2282,7 @@ export const PREVIOUS_PLAN_DAY_DATES = [
   ...previousTechnicalDayDates,
 ] as const;
 
-if (PREVIOUS_PLAN_DAY_DATES.length !== allDays.length) {
+if (PREVIOUS_PLAN_DAY_DATES.length !== originalPlanDays.length) {
   throw new Error("Revision 4 date migration no longer matches the stable plan positions");
 }
 
@@ -2077,7 +2293,7 @@ if (PREVIOUS_PLAN_DAY_DATES.length !== allDays.length) {
 // Revision 4 calendar above, so moving the new plan does not change the
 // meaning of those legacy keys.
 export const LEGACY_ID_MIGRATION: ReadonlyMap<string, string> = new Map(
-  allDays.flatMap((day, dayIndex) => {
+  originalPlanDays.flatMap((day, dayIndex) => {
     const previousDate = PREVIOUS_PLAN_DAY_DATES[dayIndex]!;
     const entries: [string, string][] = [[previousDate, day.id]];
     for (const [taskIndex, task] of day.tasks.entries()) {
@@ -2293,6 +2509,27 @@ export const PLAN_VERSION_HISTORY: readonly PlanVersionEntry[] = [
       "Medizinische Ruhe- und Papierphasen behalten Vorrang vor der regulären Tageskapazität",
     ],
   },
+  {
+    version: 11,
+    effectiveDate: "2026-08-31",
+    reason:
+      "Die bestätigte Vollzeitkapazität beträgt acht Stunden pro regulärem Arbeitstag. Jeder verpflichtend gelesene Artikel erhält einen eigenen 16-Stunden-Zyklus; Projektlernen, Implementierung, Test und Wochenbeleg laufen parallel. Die Dauer wird aus dem realen Arbeitsbestand berechnet und nicht mehr auf 25 Wochen begrenzt.",
+    tasksRemoved: [
+      "Pauschale Aufforderung, einen vollständigen Artikel in einem einzelnen 70-Minuten-Block zu lesen",
+      "Feste Obergrenze von 25 Planwochen",
+    ],
+    tasksMoved: [
+      "146 bestehende Projekttage in vier Projektschritte pro Vollzeitwoche",
+      "Artikelarbeit im 16-Stunden-Zyklus: vier Blöcke zu je vier Stunden plus freier Wochenabruf",
+    ],
+    tasksAdded: [
+      "37 kapazitätsbasierte Wochen mit fünf klaren Arbeitstagen",
+      "16 Stunden für jedes der 18 verpflichtend geplanten Paper",
+      "Täglich vier Stunden Forschung und vier Stunden Projektlernen oder Umsetzung",
+      "Ein verbindlicher Integrations-, Test- und Evidence-Beleg an jedem fünften Wochentag",
+      "Stressfreie Stoppregel: verstandene Einheit und sichtbarer Beleg statt Seitenzahl",
+    ],
+  },
 ];
 
 export const PLAN_VERSION =
@@ -2300,13 +2537,13 @@ export const PLAN_VERSION =
 
 export const planMeta = {
   start: trackerRestartPlan.mainPlanStart,
-  designEnd: "2026-10-24",
+  designEnd: allDays.filter((day) => day.phaseId.startsWith("design-")).at(-1)?.date ?? "2026-11-05",
   restStart: trackerRestartPlan.protectedBreakStart,
   restEnd: trackerRestartPlan.protectedBreakEnd,
   gentleRestartStart: trackerRestartPlan.gentleRestartStart,
   gentleRestartEnd: trackerRestartPlan.gentleRestartEnd,
-  technicalStart: "2026-10-26",
-  end: allDays[allDays.length - 1]?.date ?? "2027-03-06",
+  technicalStart: planWeeks.find((week) => !week.days.every((day) => day.phaseId.startsWith("design-")))?.days[0]?.date ?? "2026-10-19",
+  end: allDays[allDays.length - 1]?.date ?? "2027-05-27",
   designDays: planWeeks
     .filter((week) => week.phaseId.startsWith("design-"))
     .reduce((sum, week) => sum + week.days.length, 0),
@@ -2316,5 +2553,9 @@ export const planMeta = {
   totalWeeks: planWeeks.length,
   totalDays: allDays.length,
   totalItems: allTaskItems.length,
-  plannedHours: Math.round((allDays.length * 70 / 60) * 10) / 10,
+  requiredArticleCount: articleReadings.length,
+  articleHoursPerRequiredReading: ARTICLE_HOURS_PER_REQUIRED_READING,
+  requiredArticleHours: articleReadings.length * ARTICLE_HOURS_PER_REQUIRED_READING,
+  weeklyCapacityHours: WEEKLY_CAPACITY_HOURS,
+  plannedHours: planWeeks.length * WEEKLY_CAPACITY_HOURS,
 };

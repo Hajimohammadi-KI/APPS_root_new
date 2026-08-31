@@ -20,7 +20,7 @@ describe("plan day/task/item id stability", () => {
       // risks clashing with the Workers globals. Same assertion, same failure
       // message intent: the id must not simply be the date.
       expect(day.id === day.date).toBe(false);
-      expect(day.id).toMatch(/^w\d+-d\d+$/);
+      expect(day.id).toMatch(/^(?:w\d+-d\d+|capacity-(?:w\d+-integration|final-(?:quality|reproducibility)))$/);
       expect(ids.has(day.id)).toBe(false);
       ids.add(day.id);
       for (const task of day.tasks) {
@@ -46,9 +46,10 @@ describe("plan day/task/item id stability", () => {
   });
 
   test("migrateLegacyId maps every Revision 4 date-based id to its stable current id", () => {
+    const originalDays = allDays.filter((day) => /^w\d+-d\d+$/.test(day.id));
     expect(LEGACY_ID_MIGRATION.size).toBeGreaterThan(0);
-    expect(PREVIOUS_PLAN_DAY_DATES).toHaveLength(allDays.length);
-    for (const [dayIndex, day] of allDays.entries()) {
+    expect(PREVIOUS_PLAN_DAY_DATES).toHaveLength(originalDays.length);
+    for (const [dayIndex, day] of originalDays.entries()) {
       const previousDate = PREVIOUS_PLAN_DAY_DATES[dayIndex]!;
       expect(migrateLegacyId(previousDate)).toBe(day.id);
       for (const [taskIndex, task] of day.tasks.entries()) {

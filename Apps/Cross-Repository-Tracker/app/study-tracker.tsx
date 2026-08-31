@@ -538,6 +538,14 @@ function isOctoberRestartSettings(value: unknown) {
     partial.planEndDate === "2027-04-10";
 }
 
+function isLegacy25WeekSettings(value: unknown) {
+  if (!value || typeof value !== "object") return false;
+  const partial = value as Partial<TrackerSettings> & { totalPlanWeeks?: number };
+  return partial.planEndDate === "2027-03-06" ||
+    partial.totalPlanWeeks === 25 ||
+    (typeof partial.planName === "string" && partial.planName.includes("25-Wochen"));
+}
+
 function safeSettings(value: unknown): TrackerSettings {
   if (!value || typeof value !== "object") return baseSettings;
   const partial = value as Partial<TrackerSettings>;
@@ -557,7 +565,8 @@ function safeSettings(value: unknown): TrackerSettings {
         .slice(0, 50)
     : [];
   const migrateOctoberRestart = isOctoberRestartSettings(partial);
-  const migratedRevisionHistory = migrateOctoberRestart &&
+  const migrateCapacityPlan = isLegacy25WeekSettings(partial);
+  let migratedRevisionHistory = migrateOctoberRestart &&
     !planRevisionHistory.some((entry) => entry.id === "medical-recovery-replan-v7")
     ? [
         {
@@ -573,6 +582,21 @@ function safeSettings(value: unknown): TrackerSettings {
         ...planRevisionHistory,
       ].slice(0, 50)
     : planRevisionHistory;
+  if (migrateCapacityPlan && !migratedRevisionHistory.some((entry) => entry.id === "capacity-plan-v11")) {
+    migratedRevisionHistory = [
+      {
+        id: "capacity-plan-v11",
+        createdAt: "2026-08-31T00:00:00.000Z",
+        action: "route_changed" as const,
+        reason: "25-Wochen-Plan durch den bestätigten 37-Wochen-Vollzeitplan mit 16 Stunden pro Pflichtartikel ersetzt.",
+        previousStartDate: partial.planStartDate ?? defaultSettings.planStartDate,
+        previousEndDate: partial.planEndDate ?? "2027-03-06",
+        nextStartDate: defaultSettings.planStartDate,
+        nextEndDate: defaultSettings.planEndDate,
+      },
+      ...migratedRevisionHistory,
+    ].slice(0, 50);
+  }
   const normalizeLegacyAppUrl = (url: unknown, app: "reader" | "settings") => {
     const text = typeof url === "string" ? url.trim() : "";
     if (!text) return app === "reader" ? "/pdf-reader" : "/settings";
@@ -586,8 +610,9 @@ function safeSettings(value: unknown): TrackerSettings {
   return {
     ...baseSettings,
     ...partial,
+    planName: migrateCapacityPlan ? defaultSettings.planName : partial.planName ?? baseSettings.planName,
     planStartDate: migrateOctoberRestart ? defaultSettings.planStartDate : partial.planStartDate ?? baseSettings.planStartDate,
-    planEndDate: migrateOctoberRestart ? defaultSettings.planEndDate : partial.planEndDate ?? baseSettings.planEndDate,
+    planEndDate: migrateOctoberRestart || migrateCapacityPlan ? defaultSettings.planEndDate : partial.planEndDate ?? baseSettings.planEndDate,
     planStatus: migrateOctoberRestart
       ? "running"
       : partial.planStatus === "paused" || partial.planStatus === "running"
@@ -1047,6 +1072,8 @@ export default function StudyTracker({
         );
         const stateNeedsMedicalReplan = isOctoberRestartSettings(state.settings);
         const centralNeedsMedicalReplan = isOctoberRestartSettings(planning);
+        const stateNeedsCapacityPlan = isLegacy25WeekSettings(state.settings);
+        const centralNeedsCapacityPlan = isLegacy25WeekSettings(planning);
         let nextSettings = safeSettings(state.settings);
         if (planning) {
           nextSettings = safeSettings({
@@ -1067,7 +1094,7 @@ export default function StudyTracker({
         setSettingsDraft(nextSettings);
         setRequestedStartDate(nextSettings.planStartDate);
         setSyncState("saved");
-        if (stateNeedsMedicalReplan || centralNeedsMedicalReplan) {
+        if (stateNeedsMedicalReplan || centralNeedsMedicalReplan || stateNeedsCapacityPlan || centralNeedsCapacityPlan) {
           await Promise.all([
             postState({ action: "settings", settings: nextSettings }),
             saveCentralPlanning(nextSettings),
@@ -1389,11 +1416,11 @@ export default function StudyTracker({
   );
   const rhythmPercent = rhythmTotalItems ? Math.round((rhythmCompletedItems / rhythmTotalItems) * 100) : 0;
   const journeyStages = [
-    { number: 1, title: "Design", weeks: "Woche 1–6", start: 1, end: 6 },
-    { number: 2, title: "Extraktion", weeks: "Woche 7–12", start: 7, end: 12 },
-    { number: 3, title: "Graph & Retrieval", weeks: "Woche 13–16", start: 13, end: 16 },
-    { number: 4, title: "Evaluation", weeks: "Woche 17–20", start: 17, end: 20 },
-    { number: 5, title: "Abgabe", weeks: "Woche 21–25", start: 21, end: 25 },
+    { number: 1, title: "Design", weeks: "Woche 1–9", start: 1, end: 9 },
+    { number: 2, title: "Extraktion", weeks: "Woche 10–18", start: 10, end: 18 },
+    { number: 3, title: "Graph & Retrieval", weeks: "Woche 19–24", start: 19, end: 24 },
+    { number: 4, title: "Evaluation", weeks: "Woche 25–30", start: 25, end: 30 },
+    { number: 5, title: "Abgabe", weeks: "Woche 31–37", start: 31, end: 37 },
   ];
 
   function upsertFocusSession(session: FocusSession) {
@@ -1834,6 +1861,8 @@ export default function StudyTracker({
               planPausedAt: nextSettings.planPausedAt,
               dailyWorkMode: nextSettings.dailyWorkMode,
               totalPlanWeeks: planMeta.totalWeeks,
+              dailyCapacityMinutes: DAILY_WORK_MODES[nextSettings.dailyWorkMode].totalMinutes,
+              weeklyGoalMinutes: DAILY_WORK_MODES[nextSettings.dailyWorkMode].totalMinutes * 5,
               workdayStart: nextSettings.dailyStart,
             },
           },
@@ -2292,7 +2321,7 @@ export default function StudyTracker({
                 </h2>
                 <p>
                   {settings.planStatus === "not_started"
-                    ? "Wähle erst dann dein tatsächliches Startdatum, wenn du bereit bist. Ein späterer Start verschiebt alle 25 Wochen gemeinsam; nichts wird verdichtet oder doppelt geplant."
+                    ? `Wähle erst dann dein tatsächliches Startdatum, wenn du bereit bist. Ein späterer Start verschiebt alle ${planMeta.totalWeeks} Wochen gemeinsam; nichts wird verdichtet oder doppelt geplant.`
                     : settings.planStatus === "paused"
                       ? `Seit ${formatDate(settings.planPausedAt)} pausiert. Fortschritt, Notizen und Dateien bleiben erhalten.`
                       : `Beginn ${formatDate(settings.planStartDate)} · geplantes Ende ${formatDate(settings.planEndDate)}`}
@@ -2333,13 +2362,13 @@ export default function StudyTracker({
               <header>
                 <span className="eyebrow quiet">Medizinisch geschützter Plan</span>
                 <h2 id="restart-plan-title">Planstart 30. August · zwei Bildschirm-Pausen geschützt</h2>
-                <p><strong>0 / 438 ist korrekt:</strong> Der Plan beginnt am 30. August. Frühere Sitzungen 1–7 bleiben archiviert und sind kein Rückstand.</p>
+                <p><strong>0 / {displayNumber(planMeta.totalItems)} ist korrekt:</strong> Der kapazitätsbasierte Plan beginnt am 30. August. Frühere Sitzungen 1–7 bleiben archiviert und sind kein Rückstand.</p>
               </header>
               <ol>
                 <li>
-                  <time dateTime="2026-08-30">30. August–4. September</time>
+                  <time dateTime="2026-08-30">30. August–3. September</time>
                   <strong>W1 beginnt heute</strong>
-                  <span>Scope und Anforderungen im Vier-Stunden-Modus. Kein Nachholen der alten Sitzungen.</span>
+                  <span>Artikel 6 im ersten 16-Stunden-Zyklus und vier parallele Scope-Schritte. Kein Nachholen der alten Sitzungen.</span>
                 </li>
                 <li>
                   <time dateTime="2026-09-02">2.–7. September</time>
@@ -2373,8 +2402,8 @@ export default function StudyTracker({
                 </li>
                 <li>
                   <time dateTime="2026-10-19">Ab 19. Oktober</time>
-                  <strong>Regulärer Vier-Stunden-Modus</strong>
-                  <span>Nur wenn medizinisch freigegeben und gut verträglich: maximal vier Stunden inklusive Vorwissen und Pausen ab 15:00 Uhr; die technischen Bildschirmwochen beginnen am 26. Oktober.</span>
+                  <strong>Regulärer Vollzeitmodus</strong>
+                  <span>Nur wenn medizinisch freigegeben und gut verträglich: vier Stunden Forschung plus vier Stunden Projekt in kleinen Blöcken. Bei Beschwerden wird der ganze Plan verschoben, nicht verdichtet.</span>
                 </li>
               </ol>
               <aside className="restart-catchup-rule" aria-label="Regel für alte Kurssitzungen">
@@ -2538,8 +2567,8 @@ export default function StudyTracker({
                   </summary>
                   <p>{activeDailyWorkMode.description}</p>
                   <p className="daily-mode-budget">
-                    Mit diesem Modus umfasst der gesamte 25-Wochen-Plan ungefähr <strong>{displayNumber(activeModePlanHours)} Stunden</strong>
-                    {settings.dailyWorkMode !== "full" ? " statt 511 Stunden im Vollmodus." : "."}
+                    Mit diesem Modus umfasst der gesamte {displayNumber(planMeta.totalWeeks)}-Wochen-Plan ungefähr <strong>{displayNumber(activeModePlanHours)} Stunden</strong>
+                    {settings.dailyWorkMode !== "full" ? ` statt ${displayNumber(planMeta.plannedHours)} Stunden im Vollzeitmodus.` : "."}
                   </p>
                   <div className="daily-mode-options" role="group" aria-label="Arbeitsmodus für heute wählen">
                     {(Object.keys(DAILY_WORK_MODES) as DailyWorkMode[]).map((mode) => (
@@ -2633,7 +2662,7 @@ export default function StudyTracker({
                 <li className="is-gate"><b>W6</b><span>Mini-Demo + Readiness Gate; kein Design ohne Laufbeleg</span></li>
               </ol>
               <footer>
-                <span>W1 läuft vom 30. August bis 4. September. Papierentwürfe werden erst nach der Bildschirmfreigabe digital geprüft und abgehakt.</span>
+                <span>W1 läuft vom 30. August bis 3. September. Papierentwürfe werden erst nach der Bildschirmfreigabe digital geprüft und abgehakt.</span>
                 <button className="button secondary" type="button" onClick={() => openFullPlan(false, "roadmap")}>Projekt-Fahrplan im Lernplan öffnen <Icon name="arrow" size={16} /></button>
               </footer>
             </details>
@@ -2642,7 +2671,7 @@ export default function StudyTracker({
               <section className="plan-version-banner" aria-label="Planänderung">
                 <div>
                   <strong>Änderungsprotokoll · keine Aufgabenliste (Version {PLAN_VERSION})</strong>
-                  <p>Diese Box erklärt nur, was am Plan geändert wurde. Sie zählt nicht als Arbeit und verändert 0 / 438 nicht.</p>
+                  <p>Diese Box erklärt nur, was am Plan geändert wurde. Sie zählt nicht als Arbeit und verändert den Fortschritt nicht.</p>
                   <details>
                     <summary>Neueste Änderung anzeigen</summary>
                     {PLAN_VERSION_HISTORY.slice(-1).map((entry) => (
@@ -2750,7 +2779,7 @@ export default function StudyTracker({
             >
               <summary>
                 <h2 id="journey-title"><Icon name="book" size={22} /> Lernreise</h2>
-                <span>25 Wochen · 5 Phasen</span>
+                <span>{displayNumber(planMeta.totalWeeks)} Wochen · 5 Phasen</span>
               </summary>
               <div className="journey-actions">
                 <button className="button secondary compact" type="button" aria-expanded={showFullPlan} aria-controls="plan" onClick={() => openFullPlan(false, "roadmap")}>
@@ -3840,16 +3869,29 @@ function DayCard({
   const dailySourceAssignments = day.sourceIds.flatMap((sourceId) => {
     const source = sources[sourceId];
     if (!source) return [];
-    const focus = source.id === "proposal"
+    const isResearchSource = source.id === day.researchTrack.sourceId;
+    const focus = isResearchSource
+      ? day.researchTrack.question
+      : source.id === "proposal"
       ? `Exposé-Abschnitte: ${day.proposal.map((item) => `§ ${item}`).join(" · ")}`
       : day.lookFor.join(" · ");
-    const requiredSections = source.id === "proposal"
+    const requiredSections = isResearchSource
+      ? [day.researchTrack.readOnly]
+      : source.id === "proposal"
       ? day.proposal.map((item) => `Exposé § ${item}`)
       : day.lookFor;
     return [{
       source,
       focus,
-      readingPolicy: sourceReadingPolicy(source.id, requiredSections),
+      readingPolicy: isResearchSource
+        ? {
+            scope: "sections" as const,
+            label: day.researchTrack.mode === "article"
+              ? `Heute nur Block ${day.researchTrack.block}/5 des 16-Stunden-Zyklus`
+              : "Heute nur die genannte Lerneinheit",
+            requiredSections,
+          }
+        : sourceReadingPolicy(source.id, requiredSections),
     }];
   });
   const courseRelated = relatedCourseSessions.length > 0;
@@ -3946,10 +3988,10 @@ function DayCard({
             <span className="summary-marker"><Icon name="arrow" size={17} /></span>
             <span className="daily-study-guide-title">
               <strong><Icon name="book" size={18} /> Tagesanleitung · Schritt für Schritt</strong>
-              <small>Lesen → Wörter klären → Fragen beantworten → gezielt nachlesen → frei erklären → Ergebnis speichern</small>
+              <small>Eine kleine Einheit verstehen → mit eigenen Worten erklären → Projektwissen anwenden → testen → Beleg speichern</small>
             </span>
             <span className="daily-study-guide-duration">
-              {day.workMode === "paper" ? "Papiermodus" : "4 Stunden · 3 Blöcke"}
+              {day.workMode === "paper" ? "Papiermodus · medizinische Grenze zuerst" : "8 Stunden · 4 Std. Forschung + 4 Std. Projekt"}
             </span>
           </summary>
 
@@ -3957,13 +3999,17 @@ function DayCard({
             <section className="daily-study-guide-focus" aria-labelledby={`guide-focus-${day.id}`}>
               <div>
                 <span className="eyebrow">Nur für diesen Tag</span>
-                <h4 id={`guide-focus-${day.id}`}>Am Ende liegt <span className="ltr-inline">{day.deliverable}</span> vor.</h4>
+                <h4 id={`guide-focus-${day.id}`}>{day.researchTrack.title}</h4>
               </div>
               <p>
-                Du liest nicht „einfach alles“. Arbeite auf die drei Fragen unten hin und sammle nur Material, das für das heutige Ergebnis nötig ist.
+                Acht Stunden sind dein Kapazitätsrahmen, keine Deadline. Heute entstehen ein kleiner Forschungsbeleg
+                <span className="ltr-inline"> {day.researchTrack.expectedOutput}</span> und das Projektartefakt
+                <span className="ltr-inline"> {day.deliverable}</span>. Wenn eine verstandene Einheit länger braucht, wird der Plan weitergeschoben und nicht verdichtet.
               </p>
               <ol>
-                {day.lookFor.map((item) => <li key={item}>{item}</li>)}
+                <li><b>Nur lesen:</b> {day.researchTrack.readOnly}</li>
+                <li><b>Heute nicht lesen:</b> {day.researchTrack.doNotRead}</li>
+                <li><b>Leitfrage:</b> {day.researchTrack.question}</li>
               </ol>
             </section>
 
@@ -3971,39 +4017,44 @@ function DayCard({
               <li>
                 <span className="daily-study-guide-number">1</span>
                 <div>
-                  <strong>Block 1 · Finden und verstehen · 70 Min.</strong>
+                  <strong>Forschungsblock · insgesamt 4 Stunden · in kleinen Einheiten</strong>
                   <ul>
-                    <li><b>10 Min.:</b> Schreibe den Dateinamen <span className="ltr-inline">{day.deliverable}</span> und die drei Tagesfragen oben auf dein Arbeitsblatt.</li>
-                    <li><b>{displayNumber(prerequisiteMinutes)} Min.:</b> Öffne die Lernkarten unten. Lies jeweils nur „Genau lesen“ und führe sofort „Danach anwenden“ aus.</li>
-                    <li>
-                      <b>{displayNumber(Math.max(15, 60 - prerequisiteMinutes))} Min.:</b> Öffne die heutigen Quellen und markiere höchstens 12–15 wirklich wichtige Fachbegriffe — nicht jedes unbekannte Wort.
-                    </li>
+                    <li><b>Orientieren:</b> Öffne nur die angegebene Quelle und suche genau die heutige Einheit. Keine zusätzlichen Tabs.</li>
+                    <li><b>Langsam verstehen:</b> Bearbeite nur einen Absatz, eine Figure, eine Table, eine Definition oder einen kleinen Subsection gleichzeitig.</li>
+                    <li><b>Wörter:</b> Kläre höchstens zwei Begriffe, die das Verstehen dieser Einheit wirklich blockieren. Nicht jedes unbekannte Wort.</li>
+                    <li><b>Geschlossenes Buch:</b> Schließe die Quelle und erkläre drei Sätze zuerst auf Persisch. Danach schreibe drei kurze englische Sätze; Deutsch ist nur bei Bedarf optional.</li>
+                    <li><b>Forschungsbeleg:</b> Speichere <span className="ltr-inline">{day.researchTrack.expectedOutput}</span> mit Seitenzahl, Abschnitt oder Link.</li>
                   </ul>
                   {day.workMode === "paper" ? (
                     <p className="daily-study-guide-mode-note">
-                      Ohne Bildschirm: Begriffe im Ausdruck unterstreichen und auf Papier notieren. Erst nach der ärztlichen Bildschirmfreigabe nach Zotero übertragen.
+                      Ohne Bildschirm: Einheit, zwei Begriffe, drei eigene Sätze und Seitenbeleg auf Papier notieren. Erst nach der ärztlichen Freigabe nach Zotero übertragen.
                     </p>
                   ) : (
                     <p className="daily-study-guide-mode-note">
-                      PDF in Zotero: mit <b>Text Annotation (T)</b> direkt neben dem Begriff notieren. Webseite/GitHub: dieselbe Vorlage in einer Zotero-Notiz verwenden.
+                      Zotero enthält Highlight, zwei Begriffe, Seite und Citation. Im Tracker bleiben nur Auftrag, Ergebnisdatei, Status und höchstens drei Ergebniszeilen.
                     </p>
                   )}
                   <code className="vocabulary-template" dir="ltr">TERM: … | FA: … | EN: … | DE: … | Context: … | My sentence: …</code>
+                  <p className="daily-study-guide-done-rule"><b>Stoppregel:</b> {day.researchTrack.stopRule}</p>
                 </div>
               </li>
 
               <li className="daily-study-guide-break" aria-label="Pause">
-                <span><Icon name="clock" size={17} /> 15 Minuten Pause · Augen weg vom Text und Bildschirm</span>
+                <span><Icon name="clock" size={17} /> Große Pause · Augen weg von Text und Bildschirm; ärztliche Grenzen haben Vorrang</span>
               </li>
 
               <li>
                 <span className="daily-study-guide-number">2</span>
                 <div>
-                  <strong>Block 2 · Lesen, beantworten und verbinden · 90 Min.</strong>
+                  <strong>Projektblock · insgesamt 4 Stunden · lernen, bauen, prüfen</strong>
                   <ul>
-                    <li>Lies bei jeder Quelle nur den unten angegebenen Umfang. Eine als „Vollständig lesen“ markierte Quelle wird vom Abstract bis zur Conclusion gelesen.</li>
-                    <li>Notiere unter jeder der drei Tagesfragen eine kurze Antwort plus Seitenzahl, Abschnitt oder Link als Beleg.</li>
-                    <li>Verbinde die Antworten mit <span className="ltr-inline">{day.module}</span> und beginne den ersten Entwurf des Tagesergebnisses.</li>
+                    <li><b>Vorwissen ist enthalten:</b> Nutze innerhalb des ersten Projektabschnitts höchstens {displayNumber(prerequisiteMinutes)} Minuten für die Lernkarten unten; es kommt keine Zusatzzeit dazu.</li>
+                    {day.tasks.map((task, taskIndex) => (
+                      <li key={task.id}>
+                        <b>{displayNumber(workModeTaskMinutes("full", taskIndex))} Min. · {task.title.slice(3)}:</b> {task.items[0]?.label}
+                      </li>
+                    ))}
+                    <li><b>Ziellinie:</b> Erzeuge <span className="ltr-inline">{day.deliverable}</span>, führe mindestens einen Test oder Sanity Check aus und speichere den Beleg.</li>
                   </ul>
                   <div className="daily-study-guide-source-list">
                     {dailySourceAssignments.map(({ source, readingPolicy }) => (
@@ -4016,20 +4067,20 @@ function DayCard({
               </li>
 
               <li className="daily-study-guide-break" aria-label="Pause">
-                <span><Icon name="clock" size={17} /> 15 Minuten Pause · aufstehen, trinken, nicht weiterlesen</span>
+                <span><Icon name="clock" size={17} /> Tagesabschluss · nicht mit neuer Lektüre oder einer zweiten Funktion beginnen</span>
               </li>
 
               <li>
                 <span className="daily-study-guide-number">3</span>
                 <div>
-                  <strong>Block 3 · Prüfen, frei erklären und abgeben · 50 Min.</strong>
+                  <strong>Abhaken · nur mit sichtbarem Beleg</strong>
                   <ul>
-                    <li><b>10 Min.:</b> Quelle schließen und die drei Fragen aus dem Gedächtnis beantworten. Bei 2 von 3 guten Antworten den ganzen Artikel nicht erneut lesen; nur bei einer Lücke die markierten Seiten gezielt nachlesen.</li>
-                    <li><b>10 Min.:</b> Erkläre Ziel, Vorgehen und Ergebnis 2 Minuten auf Englisch. Eine kurze deutsche Version ist optional.</li>
-                    <li><b>30 Min.:</b> Fertigstellen, mindestens einen Test/Sanity Check durchführen und einen rückverfolgbaren Beleg speichern.</li>
+                    <li>Eine kleine Idee ist in eigenen Worten verstanden und mit einer genauen Quelle verbunden.</li>
+                    <li>Das Projektartefakt ist sichtbar; ein Test, Query, Build, Sanity Check oder Dokumentencheck wurde tatsächlich ausgeführt.</li>
+                    <li>Im Tagesbericht stehen Ergebnis, Fehler oder Grenze und genau der nächste kleine Schritt.</li>
                   </ul>
                   <p className="daily-study-guide-done-rule">
-                    <b>Erst dann abhaken:</b> Artefact <span aria-hidden="true">+</span> Test/Prüfung <span aria-hidden="true">+</span> Evidence/Seitenbeleg sind vorhanden. Wenn etwas fehlt, als „offen“ notieren und nicht den ganzen Artikel blind wiederholen.
+                    <b>Erst dann abhaken:</b> Forschungsbeleg <span aria-hidden="true">+</span> Projektartefakt <span aria-hidden="true">+</span> Test/Prüfung sind vorhanden. Wenn die Einheit mehr Zeit braucht, bleibt sie offen und der restliche Plan wird verschoben; nichts wird verdichtet.
                   </p>
                 </div>
               </li>
@@ -4041,10 +4092,10 @@ function DayCard({
                   <span className="eyebrow">Vorwissen für diesen Tag</span>
                   <h4 id={`learning-${day.id}`}><Icon name="book" size={18} /> Zuerst kurz lernen, dann die Aufgabe machen</h4>
                 </div>
-                <strong>{displayNumber(prerequisiteMinutes)} Min. · im ersten 70-Min.-Block</strong>
+                <strong>{displayNumber(prerequisiteMinutes)} Min. · im ersten Projektabschnitt enthalten</strong>
               </div>
               <p className="prerequisite-learning-intro">
-                Du musst das Thema nicht schon kennen. Öffne die Lernseite, lies nur den genannten Abschnitt und wende ihn danach direkt auf das heutige Ergebnis an. Diese Zeit ist bereits in „Finden und verstehen“ enthalten und kommt nicht zusätzlich zu den vier Stunden dazu.
+                Du musst das Thema nicht schon kennen. Öffne die Lernseite, lies nur den genannten Abschnitt und wende ihn danach direkt auf das heutige Ergebnis an. Diese Zeit ist bereits im vierstündigen Projektblock enthalten und kommt nicht zusätzlich zum Acht-Stunden-Tag dazu.
               </p>
               <div className="prerequisite-learning-list">
                 {dailyLearningResources.map((resource, resourceIndex) => (
@@ -4238,7 +4289,7 @@ function DayCard({
             ? "12 Minuten für genau ein Tagesergebnis. Die übrigen Ergebnisse bleiben optional und erzeugen keinen Rückstand."
             : settings.dailyWorkMode === "light"
               ? "70 Minuten für zwei Tagesergebnisse + eine Pause von 10 Minuten. Das dritte Ergebnis ist optional."
-              : "210 Minuten Arbeit + zwei Pausen à 15 Minuten = 4 Stunden."}
+              : "8 Stunden Vollzeitkapazität: 4 Stunden Forschung + 4 Stunden Projekt. Pausen und medizinische Grenzen haben Vorrang; offene Arbeit verschiebt den Plan statt Rückstand zu erzeugen."}
         </p>
 
         <section className="note-box structured-note-box" aria-labelledby={`daily-note-${day.id}`}>

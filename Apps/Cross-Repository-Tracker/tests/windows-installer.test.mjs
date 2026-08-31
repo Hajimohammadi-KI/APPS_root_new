@@ -16,7 +16,7 @@ const packageJson = JSON.parse(await readFile(new URL("../package.json", import.
 const packageLock = JSON.parse(await readFile(new URL("../package-lock.json", import.meta.url), "utf8"));
 
 test("release version is synchronized across package and Windows setup", () => {
-  assert.equal(packageJson.version, "0.6.7-version2");
+  assert.equal(packageJson.version, "0.7.0-version2");
   assert.equal(packageLock.version, packageJson.version);
   assert.equal(packageLock.packages[""].version, packageJson.version);
   assert.match(setup, /Version \$sourceVersion/);
@@ -164,6 +164,11 @@ test("Windows setup guarantees LF-only WSL shell payloads", () => {
 
 test("Windows setup excludes audit-only screenshots from the installed payload", () => {
   assert.match(setup, /"outputs"/);
+});
+
+test("Windows setup excludes local Bun caches from install and update payloads", () => {
+  assert.match(setup, /"\.bun-install-cache"/);
+  assert.match(setup, /"\.bun-install-cache-2"/);
 });
 
 test("Windows setup supports an isolated lifecycle verification target", () => {

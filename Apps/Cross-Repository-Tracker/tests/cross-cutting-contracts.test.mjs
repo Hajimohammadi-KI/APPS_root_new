@@ -110,7 +110,9 @@ test("article cards expose full-versus-section reading instructions", () => {
 
 test("restart recovery abandons old backlog and gates every optional catch-up", () => {
   const octoberMigrationPredicate = tracker.match(/function isOctoberRestartSettings[\s\S]*?\n\}/)?.[0] ?? "";
-  assert.match(tracker, /0 \/ 438 ist korrekt/);
+  assert.match(tracker, /0 \/ \{displayNumber\(planMeta\.totalItems\)\} ist korrekt/);
+  assert.match(tracker, /4 Stunden Forschung \+ 4 Stunden Projekt/);
+  assert.match(tracker, /höchstens zwei Begriffe/);
   assert.match(tracker, /Live-Sitzungen 8–10 nur beobachten/);
   assert.match(tracker, /Keine Vorbereitung/);
   assert.match(tracker, /höchstens drei Zeilen/);
@@ -121,7 +123,7 @@ test("restart recovery abandons old backlog and gates every optional catch-up", 
   assert.match(tracker, /nichts wird verdichtet oder doppelt geplant/);
   assert.match(tracker, /individuelle Anweisung des Operateurs/);
   assert.match(tracker, /hat Vorrang vor allgemeinen Internet-Empfehlungen/);
-  assert.match(tracker, /W1 läuft vom 30\. August bis 4\. September/);
+  assert.match(tracker, /W1 läuft vom 30\. August bis 3\. September/);
   assert.match(tracker, /Nur auf Papier arbeiten/);
   assert.match(tracker, /14-Tage-Pause/);
   assert.match(tracker, /isOctoberRestartSettings/);

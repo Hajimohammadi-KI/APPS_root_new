@@ -5,7 +5,7 @@ Cross-Repository Code Intelligence – iPad Offline-Vorschau
 3. Falls nur eine Vorschau erscheint: Teilen → In Safari öffnen.
 
 Die Vorschau benötigt keine Installation und keinen Cloud-Server.
-Sie enthält die Startseite, den 25-Wochen-Lernplan, PDF Visual und Einstellungen.
+Sie enthält die Startseite, den 37-Wochen-Vollzeitplan, PDF Visual und Einstellungen.
 
 Das Exposé liegt als separate PDF-Datei im gleichen Ordner.
 Google Drive, Google Calendar, OpenAI und DeepL benötigen die installierte

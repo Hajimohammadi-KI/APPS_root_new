@@ -226,7 +226,7 @@ function Start-VerifiedUpdate($ManifestInfo) {
     }
     Assert-PayloadVersion $payload ([string]$manifest.version)
     Write-State ([string]$manifest.version) "accepted"
-    $setupArguments = if ([string]$config.packageKind -eq "powershell") { "Update" } else { "--update" }
+    $setupArguments = if ([string]$config.packageKind -like "powershell*") { "Update" } else { "--update" }
     Start-Process -FilePath $setup -ArgumentList $setupArguments -WorkingDirectory $staging | Out-Null
     Write-UpdateLog ((T "Geprüftes Setup geöffnet: " "Verified setup opened: ") + [string]$manifest.version)
   } catch {

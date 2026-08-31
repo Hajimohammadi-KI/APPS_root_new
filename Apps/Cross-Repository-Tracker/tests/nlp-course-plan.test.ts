@@ -148,7 +148,9 @@ describe("Advanced Deep Learning reading plan", () => {
       expect(session.relatedDayTitles.every((title) => dayTitles.has(title))).toBeTrue();
     }
 
-    expect(mappedTitles).toEqual(new Set(nlpDays.map((day) => day.title)));
+    expect(mappedTitles).toEqual(new Set(
+      nlpDays.filter((day) => !day.id.startsWith("capacity-")).map((day) => day.title),
+    ));
     expect(
       allDays
         .filter((day) => mappedTitles.has(day.title))
@@ -203,15 +205,15 @@ describe("Advanced Deep Learning reading plan", () => {
   });
 
   test("assigns at least one explicit core output to every plan week", () => {
-    expect(planWeeks).toHaveLength(25);
+    expect(planWeeks).toHaveLength(37);
     for (const week of planWeeks) {
       expect(week.weeklyOutput.deliverable.length).toBeGreaterThan(0);
       expect(week.days.some((day) => day.id === week.weeklyOutput.dayId)).toBeTrue();
     }
   });
 
-  test("adds actionable prerequisite learning links to all 146 plan days", () => {
-    expect(allDays).toHaveLength(146);
+  test("adds actionable prerequisite learning links to all 185 plan days", () => {
+    expect(allDays).toHaveLength(185);
     for (const day of allDays) {
       const resources = learningResourcesForDay(day);
       expect(resources.length).toBeGreaterThanOrEqual(1);
@@ -238,17 +240,17 @@ describe("Advanced Deep Learning reading plan", () => {
 
   test("starts on 30 August and protects full-rest and paper-only recovery windows", () => {
     expect(allDays[0]?.date).toBe(trackerRestartPlan.mainPlanStart);
-    expect(allDays.at(-1)?.date).toBe("2027-03-06");
+    expect(allDays.at(-1)?.date).toBe("2027-05-27");
     expect(allDays.every((day) => day.date >= trackerRestartPlan.mainPlanStart)).toBeTrue();
     expect(allDays.every((day) => !day.optionalDuringCourse)).toBeTrue();
     expect(planWeeks.slice(0, 7).map((week) => week.days[0]?.date)).toEqual([
-      "2026-08-30", "2026-09-17", "2026-09-25", "2026-10-09",
-      "2026-10-16", "2026-10-23", "2026-10-26",
+      "2026-08-30", "2026-09-04", "2026-09-18", "2026-09-25",
+      "2026-10-09", "2026-10-16", "2026-10-23",
     ]);
     expect(defaultSettings.planStatus).toBe("running");
     expect(defaultSettings.dailyWorkMode).toBe("full");
     expect(defaultSettings.dailyStart).toBe("15:00");
-    expect(defaultSettings.planEndDate).toBe("2027-03-06");
+    expect(defaultSettings.planEndDate).toBe("2027-05-27");
 
     const firstRestDays = allDays.filter((day) => day.date >= "2026-09-10" && day.date <= "2026-09-16");
     const secondRestDays = allDays.filter((day) => day.date >= "2026-09-29" && day.date <= "2026-10-05");
@@ -257,8 +259,8 @@ describe("Advanced Deep Learning reading plan", () => {
 
     const paperDays = allDays.filter((day) => day.workMode === "paper");
     expect(paperDays.map((day) => day.date)).toEqual([
-      "2026-09-17", "2026-09-18", "2026-09-19", "2026-09-21", "2026-09-22", "2026-09-23",
-      "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-10", "2026-10-12", "2026-10-13",
+      "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24",
+      "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09", "2026-10-12", "2026-10-13",
     ]);
     expect(paperDays.every((day) => day.tasks[1]?.items.map((item) => item.label).join(" ").includes("auf Papier"))).toBeTrue();
     expect(paperDays.every((day) => day.tasks[2]?.items.map((item) => item.label).join(" ").includes("Bildschirmfreigabe"))).toBeTrue();
@@ -284,7 +286,7 @@ describe("Advanced Deep Learning reading plan", () => {
     expect(trackerRestartPlan.recoveryPolicy.screenFreeDays).toBe(14);
     expect(trackerRestartPlan.recoveryPolicy.paperOnlyFromDay).toBe(8);
     expect(trackerRestartPlan.recoveryPolicy.gentleDailyMinutes).toBe(12);
-    expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(240);
+    expect(trackerRestartPlan.recoveryPolicy.mainDailyMaxMinutes).toBe(480);
     expect(trackerRestartPlan.recoveryPolicy.shiftWholePlanIfNotReady).toBeTrue();
     expect(trackerRestartPlan.recoveryPolicy.compressWeeks).toBeFalse();
     expect(trackerRestartPlan.recoveryPolicy.clinicalAdviceOverridesPlan).toBeTrue();
@@ -307,13 +309,25 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
-  test("records Revision 10 with prerequisite learning inside the four-hour budget", () => {
-    expect(PLAN_VERSION).toBe(10);
-    expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-30");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved).toEqual([]);
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksMoved.join(" ")).toContain("Finden und verstehen");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Vier-Stunden-Modus");
-    expect(appPackage.version).toBe("0.6.7-version2");
+  test("assigns each required article exactly sixteen hours before teach-back", () => {
+    for (const [readingIndex, reading] of articleReadings.entries()) {
+      const articleWeek = planWeeks[readingIndex]!;
+      const readingDays = articleWeek.days.filter((day) => day.researchTrack.sourceId === reading.sourceId);
+      expect(readingDays).toHaveLength(5);
+      expect(readingDays.slice(0, 4).map((day) => day.researchTrack.block)).toEqual([1, 2, 3, 4]);
+      expect(readingDays.slice(0, 4).reduce((sum, day) => sum + day.researchTrack.plannedMinutes, 0)).toBe(16 * 60);
+      expect(readingDays[4]?.researchTrack.block).toBe(5);
+      expect(readingDays[4]?.researchTrack.readOnly).toContain("Keine neue Lektüre");
+    }
+  });
+
+  test("records Revision 11 with the capacity-based full-time plan", () => {
+    expect(PLAN_VERSION).toBe(11);
+    expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-31");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("25 Planwochen");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksMoved.join(" ")).toContain("16-Stunden-Zyklus");
+    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("37 kapazitätsbasierte Wochen");
+    expect(appPackage.version).toBe("0.7.0-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

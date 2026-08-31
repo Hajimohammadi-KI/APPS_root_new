@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { allDays, planMeta, planWeeks, type PlannedDay, type PlanWeek } from "../plan-data";
 import {
   countCompletedItems,
@@ -19,37 +19,37 @@ const ROADMAP_STAGES: Array<{
   {
     id: "design",
     title: "Design",
-    blurb: "Problem, Architektur und Evaluation mit einem ausführbaren Vertical Slice bereits in Woche 3.",
+    blurb: "Problem, Architektur und Evaluation werden in vier Projektschritten pro Woche aufgebaut; jeder fünfte Tag integriert und prüft die Ergebnisse.",
     start: 1,
-    end: 6,
+    end: 9,
   },
   {
     id: "extraktion",
     title: "Extraktion",
     blurb: "NLP-Lab-Integration, Roslyn-Syntax/Semantik und EF Core READ/WRITE bis zur Table-Ebene.",
-    start: 7,
-    end: 12,
+    start: 10,
+    end: 18,
   },
   {
     id: "graph-retrieval",
     title: "Graph & Retrieval",
     blurb: "Evidence Model, Neo4j-Graph, Flat- vs. Graph-Retrieval und Query Contracts.",
-    start: 13,
-    end: 16,
+    start: 19,
+    end: 24,
   },
   {
     id: "evaluation",
     title: "Evaluation",
     blurb: "Goldstandard, RQ1/RQ2-Messung, rollenbasierte Antworten und Threats to Validity.",
-    start: 17,
-    end: 20,
+    start: 25,
+    end: 30,
   },
   {
     id: "abgabe",
     title: "Abgabe",
     blurb: "Thesis-Kapitel, Replikationspaket, Demo und die beiden Puffer bis zur finalen Übergabe.",
-    start: 21,
-    end: 25,
+    start: 31,
+    end: 37,
   },
 ];
 
@@ -84,17 +84,7 @@ export default function ProjectRoadmap({
   onToggleDay,
 }: ProjectRoadmapProps) {
   const [pendingDayId, setPendingDayId] = useState<string | null>(null);
-  const [openWeeks, setOpenWeeks] = useState<Set<number>>(new Set());
-  const initializedOpenWeek = useRef(false);
-
-  useEffect(() => {
-    if (loading || initializedOpenWeek.current) return;
-    initializedOpenWeek.current = true;
-    const firstOpenWeek = planWeeks.find((week) =>
-      week.days.some((day) => !isDayDone(day, completed)),
-    );
-    if (firstOpenWeek) setOpenWeeks(new Set([firstOpenWeek.number]));
-  }, [completed, loading]);
+  const [openWeeks, setOpenWeeks] = useState<Set<number>>(() => new Set([1]));
 
   const totalOutputs = allDays.reduce((sum, day) => sum + outputTotal(day), 0);
   const totalCompleted = allDays.reduce(
@@ -129,8 +119,8 @@ export default function ProjectRoadmap({
           <p className="roadmap-eyebrow">Im Projekt-Lernplan integriert</p>
           <h3 id="project-roadmap-title">Projekt-Fahrplan</h3>
           <p className="roadmap-lead">
-            Alle 25 Wochen als scannbare Roadmap in fünf Etappen. Fortschritt,
-            Tagesdetails und Status gehören jetzt zu demselben Lernplan.
+            {planMeta.totalWeeks} kapazitätsbasierte Wochen als scannbare Roadmap in fünf Etappen.
+            Jede Woche verbindet Forschung, Projektarbeit und einen prüfbaren Wochenbeleg.
           </p>
         </div>
         <aside className="roadmap-progress" aria-label="Gesamtfortschritt im Projekt-Fahrplan">

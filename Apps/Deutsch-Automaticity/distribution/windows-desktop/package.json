@@ -1,6 +1,6 @@
 {
   "name": "deutschflow-windows",
-  "version": "20.8.26",
+  "version": "20.8.28",
   "private": true,
   "description": "DeutschFlow als einfach installierbare Windows-Desktop-App",
   "author": "DeutschFlow",
@@ -42,6 +42,14 @@
       {
         "from": "../windows-modern/update-config.json",
         "to": "update/update-config.json"
+      },
+      {
+        "from": "../../../../shared/windows-release/setup-language-payload.ps1",
+        "to": "update/setup-language-payload.ps1"
+      },
+      {
+        "from": "../windows-modern/language-release-config.json",
+        "to": "update/language-release-config.json"
       }
     ],
     "directories": {

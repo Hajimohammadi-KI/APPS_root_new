@@ -7,6 +7,9 @@ build
 outputs
 work
 .npm-cache
+.bun-install-cache
+.bun-install-cache-2
+node_modules
 *.log
 *.zip
 *.exe

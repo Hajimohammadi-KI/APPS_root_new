@@ -251,6 +251,8 @@ function Copy-ApplicationFiles {
     "out",
     ".wrangler",
     ".npm-cache",
+    ".bun-install-cache",
+    ".bun-install-cache-2",
     ".git",
     "outputs",
     "/XF",

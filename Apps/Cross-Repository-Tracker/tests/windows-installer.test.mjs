@@ -7,6 +7,8 @@ const setupLauncher = await readFile(new URL("../SETUP-WINDOWS.bat", import.meta
 const appLauncher = await readFile(new URL("../STARTEN-WINDOWS.bat", import.meta.url), "utf8");
 const localSupervisor = await readFile(new URL("../scripts/start-local-app.ps1", import.meta.url), "utf8");
 const uninstallLauncher = await readFile(new URL("../DEINSTALLIEREN-WINDOWS.bat", import.meta.url), "utf8");
+const updateLauncher = await readFile(new URL("../UPDATE-PRUEFEN-WINDOWS.bat", import.meta.url), "utf8");
+const updateChecker = await readFile(new URL("../scripts/check-for-updates.ps1", import.meta.url), "utf8");
 const localEnvGenerator = await readFile(new URL("../scripts/generate-local-env.mjs", import.meta.url), "utf8");
 const runWebScript = await readFile(new URL("../scripts/wsl/run-web.sh", import.meta.url), "utf8");
 const prepareWslScript = await readFile(new URL("../scripts/wsl/prepare-wsl.sh", import.meta.url), "utf8");
@@ -14,10 +16,37 @@ const packageJson = JSON.parse(await readFile(new URL("../package.json", import.
 const packageLock = JSON.parse(await readFile(new URL("../package-lock.json", import.meta.url), "utf8"));
 
 test("release version is synchronized across package and Windows setup", () => {
-  assert.equal(packageJson.version, "0.6.6-version2");
+  assert.equal(packageJson.version, "0.6.7-version2");
   assert.equal(packageLock.version, packageJson.version);
   assert.equal(packageLock.packages[""].version, packageJson.version);
-  assert.match(setup, /Version2 0\.6\.6/);
+  assert.match(setup, /Version \$sourceVersion/);
+});
+
+test("Windows updater asks for consent and verifies a trusted package", () => {
+  assert.match(appLauncher, /check-for-updates\.ps1/);
+  assert.match(updateLauncher, /check-for-updates\.ps1/);
+  assert.match(updateChecker, /MessageBoxButtons\]::YesNo/);
+  assert.match(updateChecker, /lastDecision = \$Decision/);
+  assert.match(updateChecker, /Write-UpdateState \$remoteVersion "later"/);
+  assert.match(updateChecker, /Invoke-WebRequest[^\n]+-OutFile/);
+  assert.match(updateChecker, /Get-FileHash[^\n]+-Algorithm SHA256/);
+  assert.match(updateChecker, /Assert-TrustedHttpsUrl/);
+  assert.match(updateChecker, /raw\.githubusercontent\.com/);
+  assert.match(updateChecker, /SHA-256-Prüfung fehlgeschlagen/);
+  assert.match(updateChecker, /Paketversion und Update-Manifest stimmen nicht überein/);
+  assert.match(updateChecker, /if \(\$CheckOnly -or \$NoDialogs\)/);
+});
+
+test("Windows setup registers standard update and uninstall integration", () => {
+  assert.match(setup, /Register-UninstallEntry/);
+  assert.match(setup, /CurrentVersion\\Uninstall\\CrossRepositoryCodeIntelligence/);
+  assert.match(setup, /DisplayVersion/);
+  assert.match(setup, /UninstallString/);
+  assert.match(setup, /QuietUninstallString/);
+  assert.match(setup, /ModifyPath/);
+  assert.match(setup, /Remove-UninstallEntry/);
+  assert.match(setup, /function Remove-UninstallEntry \{\s+if \(\$SkipShortcuts\)/);
+  assert.match(setup, /Nach Updates suchen/);
 });
 
 test("Windows setup exposes install, update, repair, and uninstall", () => {
@@ -102,8 +131,12 @@ test("Windows uninstaller releases local processes and removes from a temporary 
     assert.match(setup, new RegExp(`"${processName.replace(".", "\\.")}"`));
   }
   assert.match(setup, /Start-Process -FilePath "powershell\.exe" -ArgumentList \$arguments -WorkingDirectory \$env:TEMP/);
+  assert.match(setup, /Move-Item -LiteralPath \$InstallRoot -Destination \$tombstone/);
+  assert.match(setup, /Start-DeferredRemoval \$removalTarget/);
+  assert.match(setup, /\.CrossRepositoryCodeIntelligence\.uninstalling-/);
+  assert.match(setup, /robocopy\.exe \$emptyRoot \$targetPath \/MIR/);
   assert.match(setup, /Stop-LocalAppProcesses\s+if \(\$dataChoice -eq \[System\.Windows\.Forms\.DialogResult\]::Yes\)/);
-  assert.match(setup, /Remove-Shortcuts\s+Start-DeferredRemoval/);
+  assert.match(setup, /Remove-Shortcuts\s+Remove-UninstallEntry[\s\S]*Start-DeferredRemoval \$removalTarget/);
   assert.match(setup, /if \(\$Mode -ne "Install"\) \{\s+Stop-LocalAppProcesses\s+\}\s+Copy-ApplicationFiles/);
 });
 
@@ -146,7 +179,7 @@ test("Windows setup supports an isolated lifecycle verification target", () => {
 });
 
 test("Windows setup automatically restarts the app after a successful operation", () => {
-  assert.match(setup, /Create-Shortcuts\s+\$verb = switch/);
+  assert.match(setup, /Create-Shortcuts\s+Register-UninstallEntry\s+\$verb = switch/);
   assert.match(setup, /\$launcherProcess = Start-App/);
   assert.match(setup, /scripts\\start-local-app\.ps1/);
   assert.match(setup, /Start-Process -FilePath "powershell\.exe"[\s\S]*-WindowStyle Hidden -PassThru/);
@@ -160,7 +193,8 @@ test("Windows setup automatically restarts the app after a successful operation"
 
 test("Windows update also stops the WSL web host before replacing files", () => {
   assert.match(setup, /processNames\s*=\s*@\([^\n]*"wsl\.exe"/);
-  assert.match(setup, /CommandLine\s+-match\s+\$escapedRoot/);
+  assert.match(setup, /\$escapedWslRoot = \[Regex\]::Escape/);
+  assert.match(setup, /CommandLine -match \$escapedRoot -or \(\$escapedWslRoot/);
 });
 
 test("Windows setup closes itself after the launched app is ready", () => {

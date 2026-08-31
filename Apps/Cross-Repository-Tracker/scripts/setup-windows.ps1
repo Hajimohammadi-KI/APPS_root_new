@@ -2,6 +2,7 @@
   [ValidateSet("Menu", "Install", "Update", "Repair", "Uninstall")]
   [string]$Action = "Menu",
   [switch]$NoDialogs,
+  [switch]$AssumeYes,
   [string]$ScriptRoot = "",
   [string]$InstallRootOverride = "",
   [string]$SavedDataRootOverride = "",
@@ -30,12 +31,18 @@ $SavedDataRoot = if ([string]::IsNullOrWhiteSpace($SavedDataRootOverride)) {
 }
 $StartBatch = Join-Path $InstallRoot "STARTEN-WINDOWS.bat"
 $SetupBatch = Join-Path $InstallRoot "SETUP-WINDOWS.bat"
+$UpdateBatch = Join-Path $InstallRoot "UPDATE-PRUEFEN-WINDOWS.bat"
+$UninstallBatch = Join-Path $InstallRoot "DEINSTALLIEREN-WINDOWS.bat"
 $IconPath = Join-Path $InstallRoot "public\app-icon.ico"
 $DesktopShortcut = Join-Path ([Environment]::GetFolderPath("Desktop")) "$AppName.lnk"
 $ProgramsFolder = Join-Path ([Environment]::GetFolderPath("StartMenu")) "Programs"
 $StartShortcut = Join-Path $ProgramsFolder "$AppName.lnk"
 $SetupShortcut = Join-Path $ProgramsFolder "$AppName - Setup.lnk"
+$UpdateShortcut = Join-Path $ProgramsFolder "$AppName - Nach Updates suchen.lnk"
 $SetupLog = Join-Path $InstallRoot "setup-install.log"
+$VersionMarker = Join-Path $InstallRoot "version.txt"
+$InstallStatePath = Join-Path $InstallRoot "install-state.json"
+$UninstallRegistryPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\CrossRepositoryCodeIntelligence"
 
 function Show-Info([string]$Message) {
   if ($NoDialogs) {
@@ -64,6 +71,9 @@ function Show-Error([string]$Message) {
 }
 
 function Confirm-Action([string]$Message) {
+  if ($AssumeYes) {
+    return $true
+  }
   if ($NoDialogs) {
     return $false
   }
@@ -73,6 +83,103 @@ function Confirm-Action([string]$Message) {
     [System.Windows.Forms.MessageBoxButtons]::YesNo,
     [System.Windows.Forms.MessageBoxIcon]::Question
   ) -eq [System.Windows.Forms.DialogResult]::Yes
+}
+
+function Get-PackageVersion([string]$Root) {
+  $packagePath = Join-Path $Root "package.json"
+  if (-not (Test-Path -LiteralPath $packagePath -PathType Leaf)) {
+    return $null
+  }
+  try {
+    $package = Get-Content -LiteralPath $packagePath -Raw -Encoding UTF8 | ConvertFrom-Json
+    if ($package.version -is [string] -and -not [string]::IsNullOrWhiteSpace($package.version)) {
+      return $package.version.Trim()
+    }
+  }
+  catch { }
+  return $null
+}
+
+function ConvertTo-AppVersion([string]$Value) {
+  if ([string]::IsNullOrWhiteSpace($Value)) {
+    return [Version]"0.0.0"
+  }
+  $match = [Regex]::Match($Value, "^\s*(\d+)\.(\d+)\.(\d+)")
+  if (-not $match.Success) {
+    return [Version]"0.0.0"
+  }
+  return [Version]::new(
+    [int]$match.Groups[1].Value,
+    [int]$match.Groups[2].Value,
+    [int]$match.Groups[3].Value
+  )
+}
+
+function Test-SourceIsNewer {
+  $sourceVersion = Get-PackageVersion $SourceRoot
+  $installedVersion = Get-PackageVersion $InstallRoot
+  if (-not $sourceVersion -or -not $installedVersion) {
+    return $false
+  }
+  return (ConvertTo-AppVersion $sourceVersion) -gt (ConvertTo-AppVersion $installedVersion)
+}
+
+function Write-InstallMetadata([string]$Mode) {
+  $version = Get-PackageVersion $InstallRoot
+  if (-not $version) {
+    throw "Die installierte Versionsnummer konnte nicht gelesen werden."
+  }
+  Set-Content -LiteralPath $VersionMarker -Value $version -Encoding UTF8
+  $state = [ordered]@{
+    schemaVersion = 1
+    productId = "cross-repository-code-intelligence"
+    version = $version
+    operation = $Mode.ToLowerInvariant()
+    installedAt = (Get-Date).ToUniversalTime().ToString("o")
+    installRoot = $InstallRoot
+    dataRoot = $SavedDataRoot
+    updateManifestUrl = "https://raw.githubusercontent.com/Hajimohammadi-KI/APPS_root_new/main/releases/cross-repository-update.json"
+  }
+  $state | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $InstallStatePath -Encoding UTF8
+}
+
+function Get-EstimatedInstallSizeKb {
+  if (-not (Test-Path -LiteralPath $InstallRoot -PathType Container)) {
+    return 0
+  }
+  $bytes = (Get-ChildItem -LiteralPath $InstallRoot -Recurse -Force -File -ErrorAction SilentlyContinue |
+      Measure-Object -Property Length -Sum).Sum
+  if (-not $bytes) { return 0 }
+  return [int][Math]::Ceiling($bytes / 1KB)
+}
+
+function Register-UninstallEntry {
+  if ($SkipShortcuts) {
+    return
+  }
+  $version = Get-PackageVersion $InstallRoot
+  New-Item -Path $UninstallRegistryPath -Force | Out-Null
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "DisplayName" -Value $AppName
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "DisplayVersion" -Value $version
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "Publisher" -Value "Hajimohammadi-KI"
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "InstallLocation" -Value $InstallRoot
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "DisplayIcon" -Value $IconPath
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "UninstallString" -Value ('"{0}"' -f $UninstallBatch)
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "QuietUninstallString" -Value ('powershell.exe -NoProfile -ExecutionPolicy Bypass -File "{0}" -Action Uninstall -NoDialogs -AssumeYes -ScriptRoot "{1}"' -f (Join-Path $InstallRoot "scripts\setup-windows.ps1"), (Join-Path $InstallRoot "scripts"))
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "ModifyPath" -Value ('"{0}"' -f $SetupBatch)
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "URLInfoAbout" -Value "https://github.com/Hajimohammadi-KI/APPS_root_new"
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "EstimatedSize" -Value (Get-EstimatedInstallSizeKb) -Type DWord
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "NoModify" -Value 0 -Type DWord
+  Set-ItemProperty -Path $UninstallRegistryPath -Name "NoRepair" -Value 0 -Type DWord
+}
+
+function Remove-UninstallEntry {
+  if ($SkipShortcuts) {
+    return
+  }
+  if (Test-Path -LiteralPath $UninstallRegistryPath) {
+    Remove-Item -LiteralPath $UninstallRegistryPath -Recurse -Force
+  }
 }
 
 function Test-InstallFiles {
@@ -368,13 +475,14 @@ function Create-Shortcuts {
   New-Shortcut $DesktopShortcut $StartBatch "$AppName starten"
   New-Shortcut $StartShortcut $StartBatch "$AppName starten"
   New-Shortcut $SetupShortcut $SetupBatch "$AppName aktualisieren, reparieren oder deinstallieren"
+  New-Shortcut $UpdateShortcut $UpdateBatch "$AppName auf eine neue, geprüfte Version aktualisieren"
 }
 
 function Remove-Shortcuts {
   if ($SkipShortcuts) {
     return
   }
-  foreach ($shortcut in @($DesktopShortcut, $StartShortcut, $SetupShortcut)) {
+  foreach ($shortcut in @($DesktopShortcut, $StartShortcut, $SetupShortcut, $UpdateShortcut)) {
     if (Test-Path -LiteralPath $shortcut) {
       Remove-Item -LiteralPath $shortcut -Force
     }
@@ -464,6 +572,11 @@ function Invoke-InstallOperation(
   if ($Mode -eq "Update" -and (Test-SameDirectory $SourceRoot $InstallRoot)) {
     throw "Für ein Update bitte SETUP-WINDOWS.bat aus dem neu heruntergeladenen und entpackten Paket starten."
   }
+  if ($Mode -eq "Update" -and -not (Test-SourceIsNewer)) {
+    $sourceVersion = Get-PackageVersion $SourceRoot
+    $installedVersion = Get-PackageVersion $InstallRoot
+    throw "Es ist keine neuere Version vorhanden. Installiert: $installedVersion · Paket: $sourceVersion. Verwende bei Problemen Reparieren."
+  }
 
   $prerequisites = Assert-Prerequisites
   if ($Mode -ne "Install") {
@@ -474,7 +587,9 @@ function Invoke-InstallOperation(
   Normalize-ShellScriptLineEndings
   Remove-DownloadedFileMark
   Install-Dependencies $prerequisites
+  Write-InstallMetadata $Mode
   Create-Shortcuts
+  Register-UninstallEntry
 
   $verb = switch ($Mode) {
     "Install" { "installiert" }
@@ -492,28 +607,49 @@ function Invoke-InstallOperation(
   }
 }
 
-function Start-DeferredRemoval {
+function Start-DeferredRemoval([string]$Target = $InstallRoot) {
   $cleanupScript = Join-Path $env:TEMP ("cross-repository-uninstall-" + [Guid]::NewGuid().ToString("N") + ".ps1")
   $cleanupContent = @'
-param([Parameter(Mandatory = $true)][string]$Target, [Parameter(Mandatory = $true)][string]$AppName)
+param([Parameter(Mandatory = $true)][string]$Target, [Parameter(Mandatory = $true)][string]$AppName, [switch]$NoDialogs)
 Start-Sleep -Seconds 2
 $removed = $false
+$targetPath = [IO.Path]::GetFullPath($Target)
+$targetLeaf = Split-Path -Leaf $targetPath
+$defaultInstallRoot = [IO.Path]::GetFullPath((Join-Path $env:LOCALAPPDATA "CrossRepositoryCodeIntelligence"))
+$safeTarget = $targetLeaf.StartsWith(".CrossRepositoryCodeIntelligence.uninstalling-", [StringComparison]::OrdinalIgnoreCase) -or
+  $targetPath.Equals($defaultInstallRoot, [StringComparison]::OrdinalIgnoreCase)
+if (-not $safeTarget) {
+  exit 2
+}
 for ($attempt = 0; $attempt -lt 20; $attempt++) {
   try {
-    if (Test-Path -LiteralPath $Target) {
-      Remove-Item -LiteralPath $Target -Recurse -Force -ErrorAction Stop
+    if (Test-Path -LiteralPath $targetPath) {
+      $emptyRoot = Join-Path $env:TEMP ("cross-repository-empty-" + [Guid]::NewGuid().ToString("N"))
+      New-Item -ItemType Directory -Path $emptyRoot -Force | Out-Null
+      try {
+        & robocopy.exe $emptyRoot $targetPath /MIR /R:1 /W:1 /NFL /NDL /NJH /NJS /NP | Out-Null
+        if ($LASTEXITCODE -gt 7) {
+          throw "Robocopy-Code: $LASTEXITCODE"
+        }
+      }
+      finally {
+        Remove-Item -LiteralPath $emptyRoot -Recurse -Force -ErrorAction SilentlyContinue
+      }
+      Remove-Item -LiteralPath $targetPath -Recurse -Force -ErrorAction Stop
     }
-    $removed = -not (Test-Path -LiteralPath $Target)
+    $removed = -not (Test-Path -LiteralPath $targetPath)
     if ($removed) { break }
   }
   catch { }
   Start-Sleep -Milliseconds 750
 }
-Add-Type -AssemblyName System.Windows.Forms
-if ($removed) {
-  [void][System.Windows.Forms.MessageBox]::Show("Die App wurde vollständig deinstalliert.", $AppName)
-} else {
-  [void][System.Windows.Forms.MessageBox]::Show("Der Installationsordner konnte nicht vollständig entfernt werden. Bitte starte Windows neu und lösche ihn anschließend manuell:`n$Target", "$AppName - Fehler")
+if (-not $NoDialogs) {
+  Add-Type -AssemblyName System.Windows.Forms
+  if ($removed) {
+    [void][System.Windows.Forms.MessageBox]::Show("Die App wurde vollständig deinstalliert.", $AppName)
+  } else {
+    [void][System.Windows.Forms.MessageBox]::Show("Der Installationsordner konnte nicht vollständig entfernt werden. Bitte starte Windows neu und lösche ihn anschließend manuell:`n$Target", "$AppName - Fehler")
+  }
 }
 Remove-Item -LiteralPath $PSCommandPath -Force -ErrorAction SilentlyContinue
 '@
@@ -523,14 +659,25 @@ Remove-Item -LiteralPath $PSCommandPath -Force -ErrorAction SilentlyContinue
     "-ExecutionPolicy", "Bypass",
     "-WindowStyle", "Hidden",
     "-File", ('"{0}"' -f $cleanupScript),
-    "-Target", ('"{0}"' -f $InstallRoot),
+    "-Target", ('"{0}"' -f $Target),
     "-AppName", ('"{0}"' -f $AppName)
   )
+  if ($NoDialogs) {
+    $arguments += "-NoDialogs"
+  }
   Start-Process -FilePath "powershell.exe" -ArgumentList $arguments -WorkingDirectory $env:TEMP | Out-Null
 }
 
 function Stop-LocalAppProcesses {
   $escapedRoot = [Regex]::Escape($InstallRoot)
+  $escapedWslRoot = $null
+  try {
+    $wslRoot = (& wsl.exe wslpath -a "$($InstallRoot.Replace('\', '/'))") 2>$null
+    if ($LASTEXITCODE -eq 0 -and $wslRoot) {
+      $escapedWslRoot = [Regex]::Escape($wslRoot.Trim())
+    }
+  }
+  catch { }
   $processNames = @("bun.exe", "node.exe", "workerd.exe", "wrangler.exe", "esbuild.exe", "cmd.exe", "npm.exe", "powershell.exe", "wsl.exe")
   $protectedIds = [Collections.Generic.HashSet[int]]::new()
   $currentId = $PID
@@ -546,7 +693,7 @@ function Stop-LocalAppProcesses {
         -not $protectedIds.Contains([int]$_.ProcessId) -and
         $processNames -contains $_.Name -and
         $_.CommandLine -and
-        $_.CommandLine -match $escapedRoot
+        ($_.CommandLine -match $escapedRoot -or ($escapedWslRoot -and $_.CommandLine -match $escapedWslRoot))
       }
     if (-not $targets) { return }
     foreach ($target in ($targets | Sort-Object ProcessId -Descending)) {
@@ -566,12 +713,16 @@ function Invoke-Uninstall {
     return
   }
 
-  $dataChoice = [System.Windows.Forms.MessageBox]::Show(
-    "Möchtest du Lernfortschritt, Notizen, Uploads und Einstellungen für eine spätere Neuinstallation behalten?`n`nJa = Daten sichern`nNein = Daten löschen`nAbbrechen = Deinstallation abbrechen",
-    "$AppName - lokale Daten",
-    [System.Windows.Forms.MessageBoxButtons]::YesNoCancel,
-    [System.Windows.Forms.MessageBoxIcon]::Question
-  )
+  $dataChoice = if ($NoDialogs -and $AssumeYes) {
+    [System.Windows.Forms.DialogResult]::Yes
+  } else {
+    [System.Windows.Forms.MessageBox]::Show(
+      "Möchtest du Lernfortschritt, Notizen, Uploads und Einstellungen für eine spätere Neuinstallation behalten?`n`nJa = Daten sichern`nNein = Daten löschen`nAbbrechen = Deinstallation abbrechen",
+      "$AppName - lokale Daten",
+      [System.Windows.Forms.MessageBoxButtons]::YesNoCancel,
+      [System.Windows.Forms.MessageBoxIcon]::Question
+    )
+  }
   if ($dataChoice -eq [System.Windows.Forms.DialogResult]::Cancel) {
     return
   }
@@ -585,7 +736,19 @@ function Invoke-Uninstall {
   }
 
   Remove-Shortcuts
-  Start-DeferredRemoval
+  Remove-UninstallEntry
+  $removalTarget = $InstallRoot
+  try {
+    Set-Location $env:TEMP
+    $installParent = Split-Path -Parent $InstallRoot
+    $tombstone = Join-Path $installParent (".CrossRepositoryCodeIntelligence.uninstalling-" + [Guid]::NewGuid().ToString("N"))
+    Move-Item -LiteralPath $InstallRoot -Destination $tombstone
+    $removalTarget = $tombstone
+  }
+  catch {
+    Add-Content -LiteralPath (Join-Path $SavedDataRoot "uninstall.log") -Value ("[{0}] Installationsordner konnte nicht umbenannt werden: {1}" -f (Get-Date -Format "o"), $_.Exception.Message) -Encoding UTF8
+  }
+  Start-DeferredRemoval $removalTarget
   [Environment]::Exit(0)
 }
 
@@ -619,6 +782,7 @@ function New-UiButton([string]$Text, [int]$Left, [int]$Top, [int]$Width, [int]$H
 
 function Invoke-Menu {
   [System.Windows.Forms.Application]::EnableVisualStyles()
+  $sourceVersion = Get-PackageVersion $SourceRoot
   $navy = [System.Drawing.Color]::FromArgb(73, 52, 101)
   $ink = [System.Drawing.Color]::FromArgb(41, 35, 61)
   $muted = [System.Drawing.Color]::FromArgb(92, 79, 112)
@@ -658,7 +822,7 @@ function Invoke-Menu {
   $brandKicker = New-UiLabel "FORSCHEN · VERSTEHEN · BAUEN" 34 116 224 22 8.5 ([System.Drawing.FontStyle]::Bold) ([System.Drawing.Color]::FromArgb(216, 200, 233))
   $brandTitle = New-UiLabel "Cross Repository`nCode Intelligence" 34 148 224 72 19 ([System.Drawing.FontStyle]::Bold) $white
   $brandCopy = New-UiLabel "Ihr lokales Lernstudio für Forschungsplanung, PDF-Arbeit und Fokuszeit." 34 232 218 72 10 ([System.Drawing.FontStyle]::Regular) ([System.Drawing.Color]::FromArgb(237, 228, 245))
-  $brandFooter = New-UiLabel "LOKALE INSTALLATION`nVersion2 0.6.6 · Daten bleiben auf diesem PC" 34 510 224 48 8.5 ([System.Drawing.FontStyle]::Regular) ([System.Drawing.Color]::FromArgb(216, 200, 233))
+  $brandFooter = New-UiLabel "LOKALE INSTALLATION`nVersion $sourceVersion · Daten bleiben auf diesem PC" 34 510 224 48 8.5 ([System.Drawing.FontStyle]::Regular) ([System.Drawing.Color]::FromArgb(216, 200, 233))
   $brandPanel.Controls.AddRange(@($iconBox, $brandKicker, $brandTitle, $brandCopy, $brandFooter))
 
   $content = New-Object System.Windows.Forms.Panel
@@ -841,23 +1005,29 @@ function Invoke-Menu {
   $refreshState = {
     $installed = Test-Installed
     $incomplete = Test-IncompleteInstallation
+    $installedVersion = Get-PackageVersion $InstallRoot
+    $sourceIsNewer = Test-SourceIsNewer
     $availableModes.Clear()
     $availableModes["Install"] = -not $installed
-    $availableModes["Update"] = $installed
+    $availableModes["Update"] = ($installed -and $sourceIsNewer)
     $availableModes["Repair"] = ($installed -or $incomplete)
     $availableModes["Uninstall"] = ($installed -or $incomplete)
     foreach ($key in $modeButtons.Keys) {
       $modeButtons[$key].Enabled = [bool]$availableModes[$key]
     }
     $status.Text = if ($installed) {
-      "Bereit · installiert unter $InstallRoot"
+      if ($sourceIsNewer) {
+        "Update verfügbar · $installedVersion → $sourceVersion"
+      } else {
+        "Aktuell · Version $installedVersion · keine neuere Paketversion"
+      }
     } elseif ($incomplete) {
       "Unvollständige Installation erkannt · Reparieren wird empfohlen."
     } else {
       "Bereit für die lokale Erstinstallation."
     }
     $logButton.Visible = Test-Path -LiteralPath $SetupLog
-    $defaultMode = if ($incomplete) { "Repair" } elseif ($installed) { "Update" } else { "Install" }
+    $defaultMode = if ($incomplete) { "Repair" } elseif ($sourceIsNewer) { "Update" } elseif ($installed) { "Repair" } else { "Install" }
     & $selectMode $defaultMode
   }
 
@@ -871,9 +1041,17 @@ function Invoke-Menu {
 
   $actionButton.Add_Click({
     if ($uiState.Busy) { return }
+    $mode = $uiState.SelectedMode
+    if ($mode -eq "Update") {
+      $installedVersion = Get-PackageVersion $InstallRoot
+      $packageVersion = Get-PackageVersion $SourceRoot
+      if (-not (Confirm-Action "Eine neue geprüfte Version ist verfügbar.`n`nInstalliert: $installedVersion`nNeu: $packageVersion`n`nJetzt aktualisieren? Persönliche Daten bleiben erhalten.")) {
+        $status.Text = "Aktualisierung wurde nicht gestartet · Version $installedVersion bleibt installiert."
+        return
+      }
+    }
     $uiState.Busy = $true
     $operationSucceeded = $false
-    $mode = $uiState.SelectedMode
     $status.Text = switch ($mode) {
       "Install" { "Installation läuft · Pakete werden geprüft und geladen ..." }
       "Update" { "Aktualisierung läuft · persönliche Daten bleiben erhalten ..." }

@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "productId": "cross-repository-code-intelligence",
+  "version": "0.6.7-version2",
+  "publishedAt": "2026-08-31",
+  "fileName": "CrossRepositoryCodeIntelligence-0.6.7-Version2-final.zip",
+  "downloadUrl": "https://raw.githubusercontent.com/Hajimohammadi-KI/APPS_root_new/main/releases/CrossRepositoryCodeIntelligence-0.6.7-Version2-final.zip",
+  "sha256": "A110D1D109462569DAB4ABC645FA2E304B5E5DE297AA09B48C6B67F3FAEE426F",
+  "integrity": "sha256",
+  "codeSigningStatus": "not-signed",
+  "releaseNotes": [
+    "Fragt vor jeder neu angebotenen Version ausdrücklich nach Zustimmung",
+    "Lädt Updates ausschließlich über eine zugelassene HTTPS-Adresse",
+    "Prüft SHA-256 und Paketversion vor dem Öffnen des Setups",
+    "Registriert Update, Repair und Uninstall in Windows Apps",
+    "Bewahrt lokale Lerndaten bei Update, Repair und Standard-Deinstallation"
+  ]
+}

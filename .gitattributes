@@ -42,3 +42,8 @@ Apps/**/navigation-narrow.png -filter -diff -merge -text
 # WSL launch scripts are executed directly from the Windows-mounted release.
 # A CRLF checkout makes `set -o pipefail` fail before installation can start.
 Apps/Cross-Repository-Tracker/**/*.sh text eol=lf
+
+# The small current Windows update archive is served directly from the public
+# repository. Keep it outside LFS so an exhausted LFS quota cannot break the
+# consent-based updater. The SHA-256 is published in the adjacent manifest.
+releases/CrossRepositoryCodeIntelligence-*-Version2-final.zip -filter -diff -merge -text

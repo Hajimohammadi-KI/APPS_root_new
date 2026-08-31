@@ -7,6 +7,11 @@ if not exist "node_modules\.bin\bun.cmd" goto :not_installed
 if not exist "dist\server\index.js" goto :not_built
 if not exist "apps\api\dist\main.js" goto :not_built
 
+if not "%CROSS_REPOSITORY_DISABLE_UPDATE_CHECK%"=="1" if exist "scripts\check-for-updates.ps1" (
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\check-for-updates.ps1" -InstalledRoot "%~dp0" -Automatic
+  if errorlevel 10 exit /b 0
+)
+
 powershell.exe -NoProfile -Command "try { $web = Invoke-WebRequest -Uri 'http://127.0.0.1:4312/api/state' -UseBasicParsing -TimeoutSec 2; $api = Invoke-WebRequest -Uri 'http://127.0.0.1:4313/v1/health' -UseBasicParsing -TimeoutSec 2; if ($web.StatusCode -eq 200 -and $api.StatusCode -eq 200) { exit 0 } } catch { }; exit 1" >nul 2>nul
 if not errorlevel 1 (
   start "" "http://127.0.0.1:4312/"

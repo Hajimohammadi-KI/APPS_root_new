@@ -47,6 +47,7 @@ API-CONNECTION-INFORMATION.txt
 *.msi
 *.dll
 *.zip
+!releases/CrossRepositoryCodeIntelligence-*-Version2-final.zip
 
 artifacts/
 release/

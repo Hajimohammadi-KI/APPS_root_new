@@ -17,7 +17,9 @@ const checks = [];
 
 try {
   for (const profile of [
+    { name: "desktop-wide-1920", viewport: { width: 1920, height: 1080 } },
     { name: "desktop-1440", viewport: { width: 1440, height: 1000 } },
+    { name: "compact-1150", viewport: { width: 1150, height: 900 } },
     { name: "compact-946", viewport: { width: 946, height: 900 } },
     { name: "laptop-1024", viewport: { width: 1024, height: 900 } },
     { name: "tablet-768", viewport: { width: 768, height: 1024 }, hasTouch: true },
@@ -54,6 +56,7 @@ try {
         hasErrorOverlay: Boolean(document.querySelector("[data-nextjs-dialog], .vite-error-overlay, #webpack-dev-server-client-overlay")),
         viewportWidth: window.innerWidth,
         scrollWidth: document.documentElement.scrollWidth,
+        planControlCopyWidth: document.querySelector(".plan-control-copy")?.getBoundingClientRect().width ?? null,
       }));
       const routeName = route === "/" ? "home" : route.slice(1);
       await page.screenshot({ path: join(outputDirectory, `${profile.name}-${routeName}.png`), fullPage: false });
@@ -63,6 +66,7 @@ try {
         status: response?.status() ?? 0,
         ...state,
         horizontalOverflow: state.scrollWidth > state.viewportWidth + 1,
+        planControlReadable: state.planControlCopyWidth === null || state.planControlCopyWidth >= 260,
       });
     }
 
@@ -136,7 +140,8 @@ try {
     await persistencePage.clock.setFixedTime(new Date("2026-10-19T10:00:00+02:00"));
     await persistencePage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded", timeout: 45_000 });
     await persistencePage.waitForTimeout(1_000);
-    await persistencePage.getByRole("button", { name: "Lernplan starten", exact: true }).click();
+    const startPlanButton = persistencePage.getByRole("button", { name: "Lernplan starten", exact: true });
+    if (await startPlanButton.isVisible()) await startPlanButton.click();
     await persistencePage.waitForFunction(() => {
       const checkbox = document.querySelector(".today-task-list input[type=checkbox]");
       return checkbox instanceof HTMLInputElement && !checkbox.disabled;
@@ -175,7 +180,7 @@ try {
 }
 
 const failures = checks.filter((check) =>
-  ("status" in check && (check.status !== 200 || check.textLength === 0 || check.hasErrorOverlay || check.horizontalOverflow))
+  ("status" in check && (check.status !== 200 || check.textLength === 0 || check.hasErrorOverlay || check.horizontalOverflow || !check.planControlReadable))
   || ("pageErrors" in check && (check.pageErrors.length > 0 || (!allowLocalApiFailures && check.consoleErrors.length > 0)))
   || (check.kind === "reader-readability" && !check.passed)
   || (check.kind === "pdf-research-library" && !check.passed)

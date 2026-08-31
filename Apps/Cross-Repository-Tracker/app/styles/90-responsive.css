@@ -277,6 +277,16 @@ body {
    cross a layout breakpoint while the browser does not. */
 .main-content { container-type: inline-size; }
 
+@container (max-width: 1180px) {
+  .plan-control-panel {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .plan-control-copy,
+  .plan-control-actions { min-width: 0; }
+  .plan-control-actions { justify-content: flex-start; }
+}
+
 @container (max-width: 1080px) {
   .dashboard-primary-grid,
   .rhythm-content { grid-template-columns: 1fr; }
@@ -301,6 +311,9 @@ body {
   .today-card-controls > *,
   .today-actions > *,
   .hero-actions > * { width: 100%; }
+  .plan-control-actions,
+  .plan-control-actions label,
+  .plan-control-actions .button { width: 100%; }
 }
 
 :where(.workspace, .main-content, .topbar, .dashboard-primary-grid, .today-card,

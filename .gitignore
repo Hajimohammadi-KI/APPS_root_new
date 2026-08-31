@@ -49,6 +49,12 @@ API-CONNECTION-INFORMATION.txt
 *.zip
 !releases/CrossRepositoryCodeIntelligence-*-Version2-final.zip
 
+# Local-only update channels for the language apps and PDF Reader. Their large
+# packages are intentionally not published until external signing/hosting is ready.
+releases/english-grammar-update.json
+releases/deutschflow-update.json
+releases/research-pdf-studio-update.json
+
 artifacts/
 release/
 

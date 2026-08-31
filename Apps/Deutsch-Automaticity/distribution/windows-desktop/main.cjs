@@ -13,13 +13,24 @@ const {
   shell,
 } = require("electron");
 
-const WEB_PORT = 3000;
-const API_PORT = 4000;
+const WEB_PORT = 3210;
+const API_PORT = 4210;
 const APP_URL = `http://127.0.0.1:${WEB_PORT}/`;
 const APP_ORIGIN = new URL(APP_URL).origin;
-const DESKTOP_USER_AGENT_TOKEN = "DeutschFlowDesktop/1.0";
+const DESKTOP_VERSION = "20.8.26";
+const DESKTOP_USER_AGENT_TOKEN = `DeutschFlowDesktop/${DESKTOP_VERSION}`;
 const ALLOWED_PERMISSIONS = new Set(["media", "notifications"]);
 const USER_DATA_DIRECTORY = "DeutschFlow";
+const UPDATE_CHECK_SCRIPT = path.join(
+  process.resourcesPath,
+  "update",
+  "check-for-updates.ps1",
+);
+const UPDATE_CONFIG = path.join(
+  process.resourcesPath,
+  "update",
+  "update-config.json",
+);
 const PDF_CHANNEL = "desktop:choose-pdf";
 const CALENDAR_RESOURCES_PATH =
   process.env.STUDY_CALENDAR_RESOURCE_ROOT || process.resourcesPath;
@@ -40,6 +51,39 @@ let disposeLearnerProfileBridge = null;
 let disposeAIProviderBridge = null;
 let webProcess = null;
 let apiProcess = null;
+
+function checkForUpdatesInBackground() {
+  if (
+    process.env.DEUTSCHFLOW_DISABLE_UPDATE_CHECK === "1" ||
+    !fs.existsSync(UPDATE_CHECK_SCRIPT) ||
+    !fs.existsSync(UPDATE_CONFIG)
+  ) {
+    return;
+  }
+  const powershell = path.join(
+    process.env.SystemRoot || "C:\\Windows",
+    "System32",
+    "WindowsPowerShell",
+    "v1.0",
+    "powershell.exe",
+  );
+  const child = spawn(
+    powershell,
+    [
+      "-NoLogo",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      UPDATE_CHECK_SCRIPT,
+      "-Configuration",
+      UPDATE_CONFIG,
+      "-Automatic",
+    ],
+    { detached: true, windowsHide: true, stdio: "ignore" },
+  );
+  child.unref();
+}
 
 app.setPath("userData", path.join(app.getPath("appData"), USER_DATA_DIRECTORY));
 
@@ -479,6 +523,7 @@ app.whenReady().then(async () => {
   try {
     await startLocalApplication();
     createMainWindow();
+    setTimeout(checkForUpdatesInBackground, 2_500);
   } catch (error) {
     dialog.showErrorBox(
       "DeutschFlow",

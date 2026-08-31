@@ -91,4 +91,31 @@ for (const destination of destinations) {
   console.log(`Windows setup saved: ${destination}`);
 }
 
+const publisher = Bun.spawn(
+  [
+    "powershell.exe",
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    resolve(projectRoot, "../../../shared/windows-release/publish-language-update.ps1"),
+    "-ProjectRoot",
+    projectRoot,
+    "-ProductId",
+    "EnglishGrammarAutomaticityDesktop",
+    "-ManifestName",
+    "english-grammar-update.json",
+    "-SetupFile",
+    "EnglishGrammar-Setup.exe",
+    "-PayloadFile",
+    "EnglishGrammar-Setup.payload.zip",
+    "-ReleaseSlug",
+    "english-grammar",
+  ],
+  { cwd: projectRoot, stdout: "inherit", stderr: "inherit" },
+);
+if ((await publisher.exited) !== 0) {
+  throw new Error("English update package publication failed.");
+}
+
 console.log(`SHA-256: ${checksum}`);

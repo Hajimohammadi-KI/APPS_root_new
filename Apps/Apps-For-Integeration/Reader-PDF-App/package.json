@@ -1,6 +1,6 @@
 {
   "name": "research-pdf-studio",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "packageManager": "bun@1.3.14",
   "engines": {
@@ -13,14 +13,15 @@
     "build": "bun run prepare:pdf-worker && vinext build",
     "start": "wrangler dev dist/server/index.js --config dist/server/wrangler.json --persist-to .wrangler/state --ip 127.0.0.1 --port 4332",
     "start:local": "node scripts/start-local.mjs",
-    "test": "bun run build && bun test tests/pdf-marks.test.ts tests/pdf-reader-state.test.ts tests/provider-integration.test.ts tests/document-converters.test.ts && node --test tests/rendered-html.test.mjs",
+    "test": "bun run build && bun test tests/pdf-marks.test.ts tests/pdf-reader-state.test.ts tests/provider-integration.test.ts tests/document-converters.test.ts && node --test tests/rendered-html.test.mjs tests/windows-release.test.mjs",
     "test:runtime": "node --test tests/local-runtime.test.mjs",
     "test:e2e": "playwright test",
     "validate:artifact": "bash scripts/validate-artifact.sh",
     "typecheck": "node node_modules/typescript7/lib/tsc.js --noEmit --incremental false",
     "check:duplicates": "node ../../../shared/check-duplicated-files.mjs",
     "lint": "node ../../../shared/check-duplicated-files.mjs && eslint \"app/**/*.{ts,tsx}\" \"components/**/*.{ts,tsx}\" \"lib/**/*.{ts,tsx}\" \"db/**/*.ts\" \"scripts/**/*.{js,mjs,ts}\" \"tests/**/*.{js,mjs,ts}\" \"*.{ts,tsx,js,mjs}\" --no-error-on-unmatched-pattern",
-    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate"
+    "db:generate": "bash scripts/sites-env.sh -- drizzle-kit generate",
+    "package:windows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package-windows-release.ps1"
   },
   "dependencies": {
     "docx": "^9.7.1",

@@ -78,4 +78,31 @@ for (const destination of destinations) {
   console.log(`Windows setup saved: ${destination}`);
 }
 
+const publisher = Bun.spawn(
+  [
+    "powershell.exe",
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    resolve(projectRoot, "../../shared/windows-release/publish-language-update.ps1"),
+    "-ProjectRoot",
+    projectRoot,
+    "-ProductId",
+    "DeutschFlowDesktop",
+    "-ManifestName",
+    "deutschflow-update.json",
+    "-SetupFile",
+    "DeutschFlow-Setup.exe",
+    "-PayloadFile",
+    "DeutschFlow-Setup.payload.zip",
+    "-ReleaseSlug",
+    "deutschflow",
+  ],
+  { cwd: projectRoot, stdout: "inherit", stderr: "inherit" },
+);
+if ((await publisher.exited) !== 0) {
+  throw new Error("DeutschFlow update package publication failed.");
+}
+
 console.log(`SHA-256: ${checksum}`);

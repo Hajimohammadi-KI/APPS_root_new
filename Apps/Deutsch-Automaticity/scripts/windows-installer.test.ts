@@ -25,6 +25,20 @@ const buildScript = readFileSync(
   resolve(projectRoot, "distribution/windows-modern/build-modern-installer.ps1"),
   "utf8",
 );
+const desktopMain = readFileSync(
+  resolve(projectRoot, "distribution/windows-desktop/main.cjs"),
+  "utf8",
+);
+const updateConfig = JSON.parse(
+  readFileSync(
+    resolve(projectRoot, "distribution/windows-modern/update-config.json"),
+    "utf8",
+  ),
+) as Record<string, string>;
+const updaterSource = readFileSync(
+  resolve(projectRoot, "../../shared/windows-release/check-for-updates.ps1"),
+  "utf8",
+);
 
 describe("Windows installation roadmap", () => {
   test("offers the same four lifecycle actions as the tracker", () => {
@@ -119,5 +133,18 @@ describe("Windows installation roadmap", () => {
     expect(buildScript).not.toContain(
       'throw "Compatibility launcher payload does not exist:',
     );
+  });
+
+  test("checks verified updates only after explicit consent", () => {
+    expect(updateConfig.productId).toBe("DeutschFlowDesktop");
+    expect(desktopMain).toContain("checkForUpdatesInBackground");
+    expect(desktopMain).toContain("DEUTSCHFLOW_DISABLE_UPDATE_CHECK");
+    expect(setupSource).toContain("InstalledUpdater");
+    expect(setupSource).toContain("QuietUninstallString");
+    expect(setupSource).toContain('key.SetValue("NoRepair", 0');
+    expect(updaterSource).toContain("MessageBoxButtons]::YesNo");
+    expect(updaterSource).toContain("Expand-SafeArchive");
+    expect(updaterSource).toContain("setupSha256");
+    expect(updaterSource).toContain("payloadSha256");
   });
 });

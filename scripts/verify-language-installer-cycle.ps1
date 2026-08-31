@@ -76,7 +76,7 @@ function Stop-IsolatedProductProcesses {
 $profiles = @{
   English = @{
     Prefix = 'ENGLISH_GRAMMAR'
-    Version = '27.3.18'
+    Version = '27.3.19'
     MainExecutable = 'English Grammar Automaticity.exe'
     WebUrl = 'http://127.0.0.1:3202/'
     ApiUrl = 'http://127.0.0.1:4201/api/health'
@@ -89,7 +89,7 @@ $profiles = @{
   }
   German = @{
     Prefix = 'DEUTSCHFLOW'
-    Version = '20.8.25'
+    Version = '20.8.26'
     MainExecutable = 'DeutschFlow.exe'
     WebUrl = 'http://127.0.0.1:3210/'
     ApiUrl = 'http://127.0.0.1:4210/api/v1/health'
@@ -127,6 +127,7 @@ $learnerDataHash = (Get-FileHash -LiteralPath $learnerDataPath -Algorithm SHA256
 $prefix = [string]$profile.Prefix
 [Environment]::SetEnvironmentVariable("${prefix}_INSTALL_ROOT", $installRoot, 'Process')
 [Environment]::SetEnvironmentVariable("${prefix}_DATA_ROOT", $dataRoot, 'Process')
+[Environment]::SetEnvironmentVariable("${prefix}_USER_DATA_ROOT", $dataRoot, 'Process')
 [Environment]::SetEnvironmentVariable("${prefix}_NO_SHORTCUTS", '1', 'Process')
 [Environment]::SetEnvironmentVariable("${prefix}_NO_LAUNCH", '1', 'Process')
 
@@ -162,7 +163,13 @@ try {
 
   try {
     [Environment]::SetEnvironmentVariable("${prefix}_NO_LAUNCH", $null, 'Process')
-    Start-Process -FilePath $mainExecutable -WorkingDirectory $installRoot | Out-Null
+    $electronRunAsNode = [Environment]::GetEnvironmentVariable('ELECTRON_RUN_AS_NODE', 'Process')
+    [Environment]::SetEnvironmentVariable('ELECTRON_RUN_AS_NODE', $null, 'Process')
+    try {
+      Start-Process -FilePath $mainExecutable -WorkingDirectory $installRoot -WindowStyle Hidden | Out-Null
+    } finally {
+      [Environment]::SetEnvironmentVariable('ELECTRON_RUN_AS_NODE', $electronRunAsNode, 'Process')
+    }
     $deadline = (Get-Date).AddSeconds($StartupTimeoutSeconds)
     $webReady = Wait-ForHttpContract `
       -Url ([string]$profile.WebUrl) `

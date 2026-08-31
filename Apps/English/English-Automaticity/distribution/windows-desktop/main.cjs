@@ -14,14 +14,14 @@ const {
   shell,
 } = require("electron");
 
-const WEB_PORT = 3201;
+const WEB_PORT = 3202;
 const API_PORT = 4201;
 const APP_URL = `http://127.0.0.1:${WEB_PORT}/`;
 const APP_ORIGIN = new URL(APP_URL).origin;
 const READER_PORT = 4332;
 const READER_URL = `http://127.0.0.1:${READER_PORT}/`;
 const READER_ORIGIN = new URL(READER_URL).origin;
-const DESKTOP_VERSION = "27.3.18";
+const DESKTOP_VERSION = "27.3.19";
 const DESKTOP_USER_AGENT_TOKEN = `EnglishGrammarAutomaticityDesktop/${DESKTOP_VERSION}`;
 const ALLOWED_PERMISSIONS = new Set(["media", "notifications"]);
 const USER_DATA_DIRECTORY = "English Grammar Automaticity";
@@ -41,6 +41,16 @@ const AI_PROVIDER_BRIDGE_PATH = path.join(
   CALENDAR_RESOURCES_PATH,
   "ai-provider-bridge.cjs",
 );
+const UPDATE_CHECK_SCRIPT = path.join(
+  process.resourcesPath,
+  "update",
+  "check-for-updates.ps1",
+);
+const UPDATE_CONFIG = path.join(
+  process.resourcesPath,
+  "update",
+  "update-config.json",
+);
 let disposeGoogleCalendarBridge = null;
 let disposeLearnerProfileBridge = null;
 let disposeAIProviderBridge = null;
@@ -49,6 +59,39 @@ let apiProcess = null;
 let readerProcess = null;
 let readerManagedByDesktop = false;
 const readerWindows = new Set();
+
+function checkForUpdatesInBackground() {
+  if (
+    process.env.ENGLISH_GRAMMAR_DISABLE_UPDATE_CHECK === "1" ||
+    !fs.existsSync(UPDATE_CHECK_SCRIPT) ||
+    !fs.existsSync(UPDATE_CONFIG)
+  ) {
+    return;
+  }
+  const powershell = path.join(
+    process.env.SystemRoot || "C:\\Windows",
+    "System32",
+    "WindowsPowerShell",
+    "v1.0",
+    "powershell.exe",
+  );
+  const child = spawn(
+    powershell,
+    [
+      "-NoLogo",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      UPDATE_CHECK_SCRIPT,
+      "-Configuration",
+      UPDATE_CONFIG,
+      "-Automatic",
+    ],
+    { detached: true, windowsHide: true, stdio: "ignore" },
+  );
+  child.unref();
+}
 
 app.setPath(
   "userData",
@@ -581,6 +624,7 @@ app.whenReady().then(async () => {
   try {
     await startLocalApplication();
     createMainWindow();
+    setTimeout(checkForUpdatesInBackground, 2_500);
   } catch (error) {
     dialog.showErrorBox(
       "English Grammar Automaticity",

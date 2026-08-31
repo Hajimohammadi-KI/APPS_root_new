@@ -83,6 +83,16 @@ namespace ModernLanguageSetup
             get { return Path.Combine(InstallRoot, SetupFileName); }
         }
 
+        internal static string InstalledUpdater
+        {
+            get { return Path.Combine(InstallRoot, "resources", "update", "check-for-updates.ps1"); }
+        }
+
+        internal static string InstalledUpdateConfig
+        {
+            get { return Path.Combine(InstallRoot, "resources", "update", "update-config.json"); }
+        }
+
         internal static string InstalledVersion
         {
             get
@@ -462,6 +472,25 @@ namespace ModernLanguageSetup
                     "Installation aktualisieren oder entfernen",
                     "Update or remove the installation"));
 
+            if (File.Exists(Product.InstalledUpdater) && File.Exists(Product.InstalledUpdateConfig))
+            {
+                string powershell = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.System),
+                    "WindowsPowerShell",
+                    "v1.0",
+                    "powershell.exe");
+                string updateArguments = "-NoProfile -ExecutionPolicy Bypass -File " +
+                    Quote(Product.InstalledUpdater) + " -Configuration " +
+                    Quote(Product.InstalledUpdateConfig) + " -ForcePrompt";
+                CreateShortcut(
+                    Path.Combine(startMenu, Text("Nach Updates suchen.lnk", "Check for updates.lnk")),
+                    powershell,
+                    updateArguments,
+                    Product.InstallRoot,
+                    icon,
+                    Text("Neue Versionen prüfen und nur nach Zustimmung installieren", "Check for new versions and install only with consent"));
+            }
+
             string desktop = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             CreateShortcut(
                 Path.Combine(desktop, Product.ShortcutName + ".lnk"),
@@ -553,8 +582,10 @@ namespace ModernLanguageSetup
                 key.SetValue("InstallLocation", Product.InstallRoot);
                 key.SetValue("DisplayIcon", Product.InstalledSetup);
                 key.SetValue("UninstallString", Quote(Product.InstalledSetup) + " --uninstall");
+                key.SetValue("QuietUninstallString", Quote(Product.InstalledSetup) + " --silent-uninstall");
                 key.SetValue("ModifyPath", Quote(Product.InstalledSetup));
-                key.SetValue("NoRepair", 1, RegistryValueKind.DWord);
+                key.SetValue("NoModify", 0, RegistryValueKind.DWord);
+                key.SetValue("NoRepair", 0, RegistryValueKind.DWord);
             }
         }
 

@@ -183,6 +183,23 @@
   .week-output-rule { grid-template-columns: 1fr; }
   .week-output-rule > button { grid-column: 1; grid-row: auto; justify-self: start; }
   .day-body { padding: 10px; }
+  .daily-study-guide > summary {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    padding: 11px;
+  }
+  .daily-study-guide-duration {
+    grid-column: 2;
+    justify-self: start;
+  }
+  .daily-study-guide-body { padding: 10px; }
+  .daily-study-guide-steps > li:not(.daily-study-guide-break) {
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 9px;
+    padding: 10px;
+  }
+  .daily-study-guide-number { width: 30px; height: 30px; }
+  .daily-study-guide-break > span { width: 100%; justify-content: center; border-radius: 10px; }
   .prerequisite-learning { padding: 12px; }
   .prerequisite-learning-heading { align-items: stretch; flex-direction: column; }
   .prerequisite-learning-heading > strong { align-self: flex-start; }

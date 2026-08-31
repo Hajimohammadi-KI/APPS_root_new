@@ -14,10 +14,10 @@ const packageJson = JSON.parse(await readFile(new URL("../package.json", import.
 const packageLock = JSON.parse(await readFile(new URL("../package-lock.json", import.meta.url), "utf8"));
 
 test("release version is synchronized across package and Windows setup", () => {
-  assert.equal(packageJson.version, "0.6.5-version2");
+  assert.equal(packageJson.version, "0.6.6-version2");
   assert.equal(packageLock.version, packageJson.version);
   assert.equal(packageLock.packages[""].version, packageJson.version);
-  assert.match(setup, /Version2 0\.6\.5/);
+  assert.match(setup, /Version2 0\.6\.6/);
 });
 
 test("Windows setup exposes install, update, repair, and uninstall", () => {

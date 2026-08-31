@@ -99,7 +99,8 @@ test("authored interface text never falls below 12px", () => {
 });
 
 test("article cards expose full-versus-section reading instructions", () => {
-  assert.match(tracker, /sourceReadingPolicy\(source\.id, dailyReadingSections\)/);
+  assert.match(tracker, /dailySourceAssignments/);
+  assert.match(tracker, /sourceReadingPolicy\(source\.id, requiredSections\)/);
   assert.match(tracker, /readingPolicy\.label/);
   assert.match(tracker, /Fokus für heute/);
   assert.match(nlpLab, /articleReadingPolicy\(reading\)/);

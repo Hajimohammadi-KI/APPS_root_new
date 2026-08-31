@@ -1103,6 +1103,209 @@ details[open] > summary .summary-marker {
   font-size: 12px;
 }
 
+.daily-study-guide {
+  overflow: clip;
+  border: 1px solid #bfa9d8;
+  border-left: 4px solid #6f5296;
+  border-radius: 15px;
+  background: #faf7fd;
+}
+
+.daily-study-guide > summary {
+  display: grid;
+  min-height: 66px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 15px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.daily-study-guide > summary::-webkit-details-marker { display: none; }
+.daily-study-guide > summary:hover { background: #f3edf9; }
+.daily-study-guide > summary:focus-visible { outline: 3px solid #76529d; outline-offset: -3px; }
+.daily-study-guide[open] > summary { border-bottom: 1px solid #d9cce7; background: #f3edf9; }
+.daily-study-guide[open] > summary .summary-marker { transform: rotate(90deg); }
+
+.daily-study-guide-title {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.daily-study-guide-title > strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #35234e;
+  font-size: 15px;
+}
+
+.daily-study-guide-title > small {
+  color: #5b6770;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.daily-study-guide-duration {
+  border-radius: 999px;
+  background: #e8dcf4;
+  color: #4b2f6d;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.daily-study-guide-body {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+}
+
+.daily-study-guide-focus {
+  border: 1px solid #d9cce7;
+  border-radius: 13px;
+  background: #fff;
+  padding: 13px 15px;
+}
+
+.daily-study-guide-focus h4 {
+  margin: 4px 0 0;
+  color: #332047;
+  font-size: 14px;
+}
+
+.daily-study-guide-focus p {
+  margin: 9px 0 7px;
+  color: #4b5e66;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.daily-study-guide-focus ol {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding-left: 22px;
+  color: #304b55;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.daily-study-guide-steps {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.daily-study-guide-steps > li:not(.daily-study-guide-break) {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 11px;
+  border: 1px solid #ded3e9;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, .94);
+  padding: 13px;
+}
+
+.daily-study-guide-number {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 11px;
+  background: #6f5296;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.daily-study-guide-steps > li > div { min-width: 0; }
+
+.daily-study-guide-steps > li > div > strong {
+  display: block;
+  color: #332047;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.daily-study-guide-steps ul {
+  display: grid;
+  gap: 6px;
+  margin: 9px 0 0;
+  padding-left: 19px;
+  color: #3f555e;
+  font-size: 12px;
+  line-height: 1.58;
+}
+
+.daily-study-guide-mode-note,
+.daily-study-guide-done-rule {
+  margin: 10px 0 0;
+  border-left: 3px solid #8267a6;
+  border-radius: 8px;
+  background: #f5f0fb;
+  color: #3e4e56;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.vocabulary-template {
+  display: block;
+  max-width: 100%;
+  margin-top: 8px;
+  border: 1px dashed #b9a5cf;
+  border-radius: 8px;
+  background: #fff;
+  color: #35234e;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.daily-study-guide-break {
+  display: flex;
+  justify-content: center;
+  color: #5d6870;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.daily-study-guide-break > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 999px;
+  background: #ece8f1;
+  padding: 6px 12px;
+  text-align: center;
+}
+
+.daily-study-guide-source-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.daily-study-guide-source-list p {
+  margin: 0;
+  border-radius: 8px;
+  background: #f6f2fa;
+  color: #465860;
+  padding: 8px 10px;
+  font-size: 12px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
 .prerequisite-learning {
   border: 1px solid #cbb9df;
   border-left: 4px solid #76529d;

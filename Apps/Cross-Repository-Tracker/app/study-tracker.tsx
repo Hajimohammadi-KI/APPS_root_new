@@ -3836,6 +3836,22 @@ function DayCard({
   const canStartDigitalFocus = planIsRunning && day.workMode === "screen";
   const relatedCourseSessions = nlpSessionsRelatedToPlanDay(day.title);
   const dailyLearningResources = learningResourcesForDay(day);
+  const prerequisiteMinutes = dailyLearningResources.reduce((sum, resource) => sum + resource.minutes, 0);
+  const dailySourceAssignments = day.sourceIds.flatMap((sourceId) => {
+    const source = sources[sourceId];
+    if (!source) return [];
+    const focus = source.id === "proposal"
+      ? `Exposé-Abschnitte: ${day.proposal.map((item) => `§ ${item}`).join(" · ")}`
+      : day.lookFor.join(" · ");
+    const requiredSections = source.id === "proposal"
+      ? day.proposal.map((item) => `Exposé § ${item}`)
+      : day.lookFor;
+    return [{
+      source,
+      focus,
+      readingPolicy: sourceReadingPolicy(source.id, requiredSections),
+    }];
+  });
   const courseRelated = relatedCourseSessions.length > 0;
   const relatedCourseSessionNumbers = relatedCourseSessions.map((session) => session.number);
 
@@ -3925,51 +3941,136 @@ function DayCard({
           </section>
         </div>
 
-        <section className="prerequisite-learning" aria-labelledby={`learning-${day.id}`}>
-          <div className="prerequisite-learning-heading">
-            <div>
-              <span className="eyebrow">Vorwissen für diesen Tag</span>
-              <h4 id={`learning-${day.id}`}><Icon name="book" size={18} /> Zuerst kurz lernen, dann die Aufgabe machen</h4>
-            </div>
-            <strong>{displayNumber(dailyLearningResources.reduce((sum, resource) => sum + resource.minutes, 0))} Min. · im ersten 70-Min.-Block</strong>
-          </div>
-          <p className="prerequisite-learning-intro">
-            Du musst das Thema nicht schon kennen. Öffne die Lernseite, lies nur den genannten Abschnitt und wende ihn danach direkt auf das heutige Ergebnis an. Diese Zeit ist bereits in „Finden und verstehen“ enthalten und kommt nicht zusätzlich zu den vier Stunden dazu.
-          </p>
-          <div className="prerequisite-learning-list">
-            {dailyLearningResources.map((resource, resourceIndex) => (
-              <article key={resource.id}>
-                <div className="prerequisite-learning-order" aria-hidden="true">{displayNumber(resourceIndex + 1)}</div>
-                <div className="prerequisite-learning-content">
-                  <span>{resource.provider} · ca. {displayNumber(resource.minutes)} Min.</span>
-                  <h5>{resource.title}</h5>
-                  <p><strong>Genau lesen:</strong> {resource.read}</p>
-                  <p><strong>Danach anwenden:</strong> {resource.apply}</p>
-                  <a href={resource.href} target="_blank" rel="noopener noreferrer">
-                    Lernseite öffnen <span aria-hidden="true">↗</span>
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <details className="daily-study-guide">
+          <summary>
+            <span className="summary-marker"><Icon name="arrow" size={17} /></span>
+            <span className="daily-study-guide-title">
+              <strong><Icon name="book" size={18} /> Tagesanleitung · Schritt für Schritt</strong>
+              <small>Lesen → Wörter klären → Fragen beantworten → gezielt nachlesen → frei erklären → Ergebnis speichern</small>
+            </span>
+            <span className="daily-study-guide-duration">
+              {day.workMode === "paper" ? "Papiermodus" : "4 Stunden · 3 Blöcke"}
+            </span>
+          </summary>
 
-        <section className="sources-block">
-          <h4><Icon name="book" size={18} /> Genaue Quelle für heute</h4>
-          <div className="source-list">
-            {day.sourceIds.map((sourceId) => {
-              const source = sources[sourceId];
-              if (!source) return null;
+          <div className="daily-study-guide-body">
+            <section className="daily-study-guide-focus" aria-labelledby={`guide-focus-${day.id}`}>
+              <div>
+                <span className="eyebrow">Nur für diesen Tag</span>
+                <h4 id={`guide-focus-${day.id}`}>Am Ende liegt <span className="ltr-inline">{day.deliverable}</span> vor.</h4>
+              </div>
+              <p>
+                Du liest nicht „einfach alles“. Arbeite auf die drei Fragen unten hin und sammle nur Material, das für das heutige Ergebnis nötig ist.
+              </p>
+              <ol>
+                {day.lookFor.map((item) => <li key={item}>{item}</li>)}
+              </ol>
+            </section>
+
+            <ol className="daily-study-guide-steps">
+              <li>
+                <span className="daily-study-guide-number">1</span>
+                <div>
+                  <strong>Block 1 · Finden und verstehen · 70 Min.</strong>
+                  <ul>
+                    <li><b>10 Min.:</b> Schreibe den Dateinamen <span className="ltr-inline">{day.deliverable}</span> und die drei Tagesfragen oben auf dein Arbeitsblatt.</li>
+                    <li><b>{displayNumber(prerequisiteMinutes)} Min.:</b> Öffne die Lernkarten unten. Lies jeweils nur „Genau lesen“ und führe sofort „Danach anwenden“ aus.</li>
+                    <li>
+                      <b>{displayNumber(Math.max(15, 60 - prerequisiteMinutes))} Min.:</b> Öffne die heutigen Quellen und markiere höchstens 12–15 wirklich wichtige Fachbegriffe — nicht jedes unbekannte Wort.
+                    </li>
+                  </ul>
+                  {day.workMode === "paper" ? (
+                    <p className="daily-study-guide-mode-note">
+                      Ohne Bildschirm: Begriffe im Ausdruck unterstreichen und auf Papier notieren. Erst nach der ärztlichen Bildschirmfreigabe nach Zotero übertragen.
+                    </p>
+                  ) : (
+                    <p className="daily-study-guide-mode-note">
+                      PDF in Zotero: mit <b>Text Annotation (T)</b> direkt neben dem Begriff notieren. Webseite/GitHub: dieselbe Vorlage in einer Zotero-Notiz verwenden.
+                    </p>
+                  )}
+                  <code className="vocabulary-template" dir="ltr">TERM: … | FA: … | EN: … | DE: … | Context: … | My sentence: …</code>
+                </div>
+              </li>
+
+              <li className="daily-study-guide-break" aria-label="Pause">
+                <span><Icon name="clock" size={17} /> 15 Minuten Pause · Augen weg vom Text und Bildschirm</span>
+              </li>
+
+              <li>
+                <span className="daily-study-guide-number">2</span>
+                <div>
+                  <strong>Block 2 · Lesen, beantworten und verbinden · 90 Min.</strong>
+                  <ul>
+                    <li>Lies bei jeder Quelle nur den unten angegebenen Umfang. Eine als „Vollständig lesen“ markierte Quelle wird vom Abstract bis zur Conclusion gelesen.</li>
+                    <li>Notiere unter jeder der drei Tagesfragen eine kurze Antwort plus Seitenzahl, Abschnitt oder Link als Beleg.</li>
+                    <li>Verbinde die Antworten mit <span className="ltr-inline">{day.module}</span> und beginne den ersten Entwurf des Tagesergebnisses.</li>
+                  </ul>
+                  <div className="daily-study-guide-source-list">
+                    {dailySourceAssignments.map(({ source, readingPolicy }) => (
+                      <p key={source.id}>
+                        <b>{sourceText(source, settings)}:</b> {readingPolicy.label} — {readingPolicy.requiredSections.join(" · ")}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              </li>
+
+              <li className="daily-study-guide-break" aria-label="Pause">
+                <span><Icon name="clock" size={17} /> 15 Minuten Pause · aufstehen, trinken, nicht weiterlesen</span>
+              </li>
+
+              <li>
+                <span className="daily-study-guide-number">3</span>
+                <div>
+                  <strong>Block 3 · Prüfen, frei erklären und abgeben · 50 Min.</strong>
+                  <ul>
+                    <li><b>10 Min.:</b> Quelle schließen und die drei Fragen aus dem Gedächtnis beantworten. Bei 2 von 3 guten Antworten den ganzen Artikel nicht erneut lesen; nur bei einer Lücke die markierten Seiten gezielt nachlesen.</li>
+                    <li><b>10 Min.:</b> Erkläre Ziel, Vorgehen und Ergebnis 2 Minuten auf Englisch. Eine kurze deutsche Version ist optional.</li>
+                    <li><b>30 Min.:</b> Fertigstellen, mindestens einen Test/Sanity Check durchführen und einen rückverfolgbaren Beleg speichern.</li>
+                  </ul>
+                  <p className="daily-study-guide-done-rule">
+                    <b>Erst dann abhaken:</b> Artefact <span aria-hidden="true">+</span> Test/Prüfung <span aria-hidden="true">+</span> Evidence/Seitenbeleg sind vorhanden. Wenn etwas fehlt, als „offen“ notieren und nicht den ganzen Artikel blind wiederholen.
+                  </p>
+                </div>
+              </li>
+            </ol>
+
+            <section className="prerequisite-learning" aria-labelledby={`learning-${day.id}`}>
+              <div className="prerequisite-learning-heading">
+                <div>
+                  <span className="eyebrow">Vorwissen für diesen Tag</span>
+                  <h4 id={`learning-${day.id}`}><Icon name="book" size={18} /> Zuerst kurz lernen, dann die Aufgabe machen</h4>
+                </div>
+                <strong>{displayNumber(prerequisiteMinutes)} Min. · im ersten 70-Min.-Block</strong>
+              </div>
+              <p className="prerequisite-learning-intro">
+                Du musst das Thema nicht schon kennen. Öffne die Lernseite, lies nur den genannten Abschnitt und wende ihn danach direkt auf das heutige Ergebnis an. Diese Zeit ist bereits in „Finden und verstehen“ enthalten und kommt nicht zusätzlich zu den vier Stunden dazu.
+              </p>
+              <div className="prerequisite-learning-list">
+                {dailyLearningResources.map((resource, resourceIndex) => (
+                  <article key={resource.id}>
+                    <div className="prerequisite-learning-order" aria-hidden="true">{displayNumber(resourceIndex + 1)}</div>
+                    <div className="prerequisite-learning-content">
+                      <span>{resource.provider} · ca. {displayNumber(resource.minutes)} Min.</span>
+                      <h5>{resource.title}</h5>
+                      <p><strong>Genau lesen:</strong> {resource.read}</p>
+                      <p><strong>Danach anwenden:</strong> {resource.apply}</p>
+                      <a href={resource.href} target="_blank" rel="noopener noreferrer">
+                        Lernseite öffnen <span aria-hidden="true">↗</span>
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+
+            <section className="sources-block">
+              <h4><Icon name="book" size={18} /> Genaue Quelle für heute</h4>
+              <div className="source-list">
+                {dailySourceAssignments.map(({ source, focus, readingPolicy }) => {
               const href = sourceHref(source, settings);
               const meta = priorityMeta[source.priority];
               const driveId = googleDriveFileId(href);
-              const focus = source.id === "proposal"
-                ? `Exposé-Abschnitte: ${day.proposal.map((item) => `§ ${item}`).join(" · ")}`
-                : day.lookFor.join(" · ");
-              const dailyReadingSections = source.id === "proposal"
-                ? day.proposal.map((item) => `Exposé § ${item}`)
-                : day.lookFor;
-              const readingPolicy = sourceReadingPolicy(source.id, dailyReadingSections);
               const readerHref = pdfReaderHref(source, settings, {
                 focus,
                 context: `${day.title} · ${day.module}`,
@@ -4031,10 +4132,12 @@ function DayCard({
                   ) : null}
                 </article>
               );
-            })}
+                })}
+              </div>
+              {day.recording && <p className="recording"><strong>Kurs/Aufzeichnung:</strong> {day.recording}</p>}
+            </section>
           </div>
-          {day.recording && <p className="recording"><strong>Kurs/Aufzeichnung:</strong> {day.recording}</p>}
-        </section>
+        </details>
 
         <div className="task-stack">
           {day.tasks.map((task, taskIndex) => {

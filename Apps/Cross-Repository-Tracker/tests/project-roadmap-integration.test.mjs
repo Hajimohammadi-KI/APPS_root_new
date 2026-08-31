@@ -12,6 +12,7 @@ const legacyRoute = readFileSync(
   "utf8",
 );
 const globalCss = readFileSync(new URL("../app/globals.css", import.meta.url), "utf8");
+const trackerCss = readFileSync(new URL("../app/styles/pages/tracker.css", import.meta.url), "utf8");
 const roadmapCss = readFileSync(
   new URL("../app/projekt-fahrplan/projekt-fahrplan.css", import.meta.url),
   "utf8",
@@ -71,4 +72,20 @@ test("each day can teach its prerequisites before the task starts", () => {
   assert.match(tracker, /Genau lesen:/);
   assert.match(tracker, /Danach anwenden:/);
   assert.match(tracker, /Lernseite öffnen/);
+});
+
+test("every day card contains one collapsible step-by-step study guide", () => {
+  assert.match(tracker, /<details className="daily-study-guide">/);
+  assert.match(tracker, /Tagesanleitung · Schritt für Schritt/);
+  assert.match(tracker, /day\.lookFor\.map/);
+  assert.match(tracker, /dailySourceAssignments\.map/);
+  assert.match(tracker, /12–15 wirklich wichtige Fachbegriffe/);
+  assert.match(tracker, /Text Annotation \(T\)/);
+  assert.match(tracker, /TERM: … \| FA: … \| EN: … \| DE: …/);
+  assert.match(tracker, /Bei 2 von 3 guten Antworten/);
+  assert.match(tracker, /2 Minuten auf Englisch/);
+  assert.match(tracker, /Artefact[\s\S]*Test\/Prüfung[\s\S]*Evidence\/Seitenbeleg/);
+  assert.match(trackerCss, /\.daily-study-guide\s*\{/);
+  assert.match(trackerCss, /\.daily-study-guide\[open\]/);
+  assert.match(trackerCss, /\.daily-study-guide-steps/);
 });

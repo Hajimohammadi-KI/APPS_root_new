@@ -313,7 +313,7 @@ describe("Advanced Deep Learning reading plan", () => {
     expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved).toEqual([]);
     expect(PLAN_VERSION_HISTORY.at(-1)?.tasksMoved.join(" ")).toContain("Finden und verstehen");
     expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("Vier-Stunden-Modus");
-    expect(appPackage.version).toBe("0.6.5-version2");
+    expect(appPackage.version).toBe("0.6.6-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");
     expect(nlpLabDefinition.catchUpStart).toBe("2026-10-19");

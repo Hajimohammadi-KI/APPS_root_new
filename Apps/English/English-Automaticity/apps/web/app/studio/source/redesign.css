@@ -39,3 +39,35 @@ footer{grid-template-columns:auto 1fr auto minmax(270px,320px);align-items:cente
 .mode:focus-visible,.steps button:focus-visible,.record-controls button:focus-visible,.flow-actions button:focus-visible,.improve-actions button:focus-visible{outline:3px solid rgba(116,68,218,.25);outline-offset:2px}
 @media(max-width:1180px){.conversation-filter-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){.conversation-filter{margin:12px;padding:16px}.conversation-filter-grid{grid-template-columns:1fr}.conversation-filter-grid select{height:46px}}
+
+/* Spoken chunks are reusable sentence frames, shown as practice guidance rather
+   than a score so learners can build natural answers without memorizing scripts. */
+.spoken-chunk-bank{margin:0 22px 18px;padding:16px;border:1px solid #ddd2f2;border-radius:18px;background:linear-gradient(135deg,#fcfbff,#f4efff)}
+.spoken-chunk-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.spoken-chunk-heading small{color:var(--violet);font-size:10px;font-weight:900;letter-spacing:.12em}
+.spoken-chunk-heading h3{margin:4px 0 5px;color:var(--ink);font-size:17px}
+.spoken-chunk-heading p{max-width:600px;margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.spoken-chunk-heading>strong{flex:none;border-radius:999px;background:#e9e0ff;color:var(--violet);padding:7px 11px;font-size:11px}
+.spoken-chunk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0 0;padding:0;list-style:none}
+.spoken-chunk-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;min-width:0;padding:13px;border:1px solid #e2d9f2;border-radius:13px;background:#fff;transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}
+.spoken-chunk-list li[data-used="true"]{border-color:#69bda1;box-shadow:0 0 0 3px rgba(26,155,114,.1);transform:translateY(-1px)}
+.spoken-chunk-list li b{display:block;color:var(--ink);font-size:14px}
+.spoken-chunk-list li small{display:block;margin-top:4px;color:var(--violet);font-size:10px;font-weight:800}
+.spoken-chunk-list li p{margin:7px 0 0;color:var(--muted);font-size:11px;line-height:1.45}
+.spoken-chunk-list li p span{color:var(--ink);font-weight:800}
+.spoken-chunk-actions{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;gap:8px}
+.spoken-chunk-actions button{border:1px solid #d8cef0;border-radius:9px;background:#fff;color:var(--violet);padding:7px 9px;font-size:10px;font-weight:900;white-space:nowrap}
+.spoken-chunk-actions button:hover{border-color:var(--violet);background:#f7f3ff}
+.spoken-chunk-actions button:focus-visible{outline:3px solid rgba(116,68,218,.2);outline-offset:2px}
+.spoken-chunk-actions span{color:#087a58;font-size:10px;font-weight:900}
+.spoken-chunk-review{margin:12px 0 0;padding:12px 14px;border-left:4px solid var(--violet);border-radius:9px;background:#f4efff;color:var(--muted);font-size:12px;line-height:1.5}
+.spoken-chunk-review b{color:var(--ink)}
+.f4>span{background:#eee7ff;color:var(--violet)}
+.f4>strong{color:var(--violet)}
+
+@media(max-width:760px){
+  .spoken-chunk-bank{margin:0 12px 14px;padding:14px}
+  .spoken-chunk-heading{display:grid}
+  .spoken-chunk-heading>strong{justify-self:start}
+  .spoken-chunk-list{grid-template-columns:1fr}
+}

@@ -1,5 +1,11 @@
 export type CefrLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
+export interface SpokenChunk {
+  text: string;
+  purpose: string;
+  example: string;
+}
+
 export interface ConversationTopic {
   track: string;
   level: CefrLevel;
@@ -9,6 +15,7 @@ export interface ConversationTopic {
   task: string;
   modelAnswer: string;
   targetGrammar: CefrLevel;
+  spokenChunks: SpokenChunk[];
 }
 
 export type GrammarResourceRole = "explanation" | "exercise";

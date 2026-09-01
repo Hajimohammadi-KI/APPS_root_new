@@ -140,7 +140,7 @@ function Stop-IsolatedProductProcesses {
 $profiles = @{
   English = @{
     Prefix = 'ENGLISH_GRAMMAR'
-    Version = '27.3.20'
+    Version = '27.3.21'
     MainExecutable = 'English Grammar Automaticity.exe'
     WebUrl = 'http://127.0.0.1:3202/'
     ApiUrl = 'http://127.0.0.1:4201/api/health'

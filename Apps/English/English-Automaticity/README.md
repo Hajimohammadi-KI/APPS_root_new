@@ -143,6 +143,10 @@ gate cannot pass until the full online assessment succeeds.
 ## Version 16 complete content
 
 - 72 conversation topics
+- Four level-appropriate natural spoken-English chunks in every conversation
+  topic, each with a usage purpose, adaptable example, and listen control
+- Live transcript matching for chunk practice, explicitly separated from
+  mastery assessment
 - 84 grammar units from A1 to C2
 - Test-answer button for every writing or speaking task
 - Test answers can be inserted and read aloud

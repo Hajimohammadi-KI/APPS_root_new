@@ -1,4 +1,5 @@
 import { conversationTopics as curriculumTopics } from "@grammar/content";
+import type { SpokenChunk } from "@grammar/content";
 
 export type StudioLanguage = "en" | "de";
 export type CefrLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
@@ -14,6 +15,7 @@ export interface ConversationTopic {
   readonly task: string;
   readonly goal: string;
   readonly targetForm: string;
+  readonly spokenChunks: readonly SpokenChunk[];
   readonly contentVersion: string;
   readonly sourceId: string;
 }
@@ -34,15 +36,38 @@ export const conversationTopics: readonly ConversationTopic[] = curriculumTopics
     category: topic.category,
     topic: topic.topic,
     task: topic.task,
-    goal: `Complete this ${topic.level} can-do task independently and use the target language accurately: ${topic.targetGrammar}.`,
+    goal: `Complete this ${topic.level} can-do task independently, use the target language accurately, and include at least two natural spoken chunks.`,
     targetForm:
       topic.targetGrammar === topic.level
         ? `${topic.level} ${topic.skill} can-do production`
         : topic.targetGrammar,
-    contentVersion: `27.3.13-${topic.level.toLowerCase()}-runtime`,
+    spokenChunks: topic.spokenChunks,
+    contentVersion: `27.3.21-${topic.level.toLowerCase()}-spoken-chunks`,
     sourceId: "english-authored-conversation-curriculum-v27",
   };
 });
+
+function canonicalSpokenText(value: string): string {
+  return value
+    .normalize("NFKC")
+    .replace(/[’‘]/gu, "'")
+    .toLocaleLowerCase("en")
+    .replace(/[^\p{L}\p{N}']+/gu, " ")
+    .trim()
+    .replace(/\s+/gu, " ");
+}
+
+export function spokenChunksUsed(
+  transcript: string,
+  chunks: readonly SpokenChunk[],
+): readonly SpokenChunk[] {
+  const canonicalTranscript = canonicalSpokenText(transcript);
+  if (!canonicalTranscript) return [];
+  return chunks.filter((chunk) => {
+    const anchor = canonicalSpokenText(chunk.text);
+    return anchor.length > 0 && canonicalTranscript.includes(anchor);
+  });
+}
 
 export const speechLocale: Readonly<Record<StudioLanguage, string>> = {
   en: "en-US",

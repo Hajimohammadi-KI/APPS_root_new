@@ -47,7 +47,152 @@ type LegacyTopic = {
   targetGrammar: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 };
 
-function normalizeTopic(topic: LegacyTopic, index: number): LegacyTopic {
+type SpokenChunk = {
+  text: string;
+  purpose: string;
+  example: string;
+};
+
+type EnrichedTopic = LegacyTopic & {
+  spokenChunks: SpokenChunk[];
+};
+
+const SPOKEN_CHUNKS_BY_LEVEL: Record<LegacyTopic["level"], readonly SpokenChunk[]> = {
+  A1: [
+    {
+      text: "Let me think.",
+      purpose: "Give yourself a natural moment to think.",
+      example: "Let me think. I usually cook at home.",
+    },
+    {
+      text: "For me, ...",
+      purpose: "Make the answer personal.",
+      example: "For me, weekends are family time.",
+    },
+    {
+      text: "For example, ...",
+      purpose: "Add one clear example.",
+      example: "For example, I walk to work.",
+    },
+    {
+      text: "What about you?",
+      purpose: "Return the conversation to the other person.",
+      example: "I like quiet places. What about you?",
+    },
+  ],
+  A2: [
+    {
+      text: "To be honest, ...",
+      purpose: "Introduce a genuine opinion or feeling.",
+      example: "To be honest, I was nervous at first.",
+    },
+    {
+      text: "The thing is, ...",
+      purpose: "Explain the important detail.",
+      example: "The thing is, I did not have much time.",
+    },
+    {
+      text: "In the end, ...",
+      purpose: "Finish a short story or experience.",
+      example: "In the end, everything worked out well.",
+    },
+    {
+      text: "Compared with before, ...",
+      purpose: "Make a simple comparison with the past.",
+      example: "Compared with before, I feel much more confident.",
+    },
+  ],
+  B1: [
+    {
+      text: "From my point of view, ...",
+      purpose: "State your position clearly.",
+      example: "From my point of view, flexible learning works best.",
+    },
+    {
+      text: "It really depends on ...",
+      purpose: "Show that the answer changes with the situation.",
+      example: "It really depends on the person and their goals.",
+    },
+    {
+      text: "On the other hand, ...",
+      purpose: "Introduce a contrasting point.",
+      example: "On the other hand, the change may cost more.",
+    },
+    {
+      text: "What I mean is ...",
+      purpose: "Clarify or repair what you just said.",
+      example: "What I mean is we need a more practical solution.",
+    },
+  ],
+  B2: [
+    {
+      text: "What stands out to me is ...",
+      purpose: "Highlight the most important observation.",
+      example: "What stands out to me is the speed of the change.",
+    },
+    {
+      text: "That said, ...",
+      purpose: "Add a measured contrast or limitation.",
+      example: "That said, the benefits should not be ignored.",
+    },
+    {
+      text: "The main issue is that ...",
+      purpose: "Frame the central problem precisely.",
+      example: "The main issue is that access is still unequal.",
+    },
+    {
+      text: "All things considered, ...",
+      purpose: "Give a balanced spoken conclusion.",
+      example: "All things considered, the plan is worth trying.",
+    },
+  ],
+  C1: [
+    {
+      text: "From a broader perspective, ...",
+      purpose: "Move from one example to the wider context.",
+      example: "From a broader perspective, the policy affects everyone.",
+    },
+    {
+      text: "What tends to happen is ...",
+      purpose: "Describe a recurring pattern naturally.",
+      example: "What tends to happen is that short-term fixes become permanent.",
+    },
+    {
+      text: "That raises the question of ...",
+      purpose: "Introduce the next issue in the discussion.",
+      example: "That raises the question of who should be responsible.",
+    },
+    {
+      text: "To put it another way, ...",
+      purpose: "Rephrase a complex idea for clarity.",
+      example: "To put it another way, trust matters more than speed.",
+    },
+  ],
+  C2: [
+    {
+      text: "The crux of the matter is ...",
+      purpose: "Identify the decisive point in a nuanced argument.",
+      example: "The crux of the matter is whether the evidence is reliable.",
+    },
+    {
+      text: "Be that as it may, ...",
+      purpose: "Acknowledge a point before redirecting the argument.",
+      example: "Be that as it may, the underlying problem remains unresolved.",
+    },
+    {
+      text: "What is often overlooked is ...",
+      purpose: "Surface a subtle or neglected consideration.",
+      example: "What is often overlooked is the effect on informal workers.",
+    },
+    {
+      text: "If we take that argument to its logical conclusion, ...",
+      purpose: "Test the full implication of a claim.",
+      example: "If we take that argument to its logical conclusion, no exception would be possible.",
+    },
+  ],
+};
+
+function normalizeTopicCopy(topic: LegacyTopic, index: number): LegacyTopic {
   const subject = `“${topic.topic}”`;
   const variants = index % 3;
 
@@ -91,6 +236,13 @@ function normalizeTopic(topic: LegacyTopic, index: number): LegacyTopic {
   }
 
   return topic;
+}
+
+function normalizeTopic(topic: LegacyTopic, index: number): EnrichedTopic {
+  return {
+    ...normalizeTopicCopy(topic, index),
+    spokenChunks: SPOKEN_CHUNKS_BY_LEVEL[topic.level].map((chunk) => ({ ...chunk })),
+  };
 }
 
 const [indexHtml, resourcesJs] = await Promise.all([

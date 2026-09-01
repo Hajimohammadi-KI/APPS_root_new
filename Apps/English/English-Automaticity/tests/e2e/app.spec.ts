@@ -835,6 +835,13 @@ test("records a speaking answer and creates a playable local recording", async (
     page.getByRole("heading", { level: 1, name: "Speaking Studio" }),
   ).toBeVisible();
   await expect(page.getByLabel("Topic").locator("option")).toHaveCount(72);
+  const chunkBank = page.getByRole("region", {
+    name: "Build your answer with chunks",
+  });
+  await expect(chunkBank).toBeVisible();
+  await expect(chunkBank.locator("li")).toHaveCount(4);
+  await expect(chunkBank).toContainText("Let me think.");
+  await expect(chunkBank.getByText("0/4 used", { exact: true })).toBeVisible();
   await expect(
     page.getByRole("navigation", { name: "Main navigation" }).getByRole("button", {
       name: "Home",
@@ -853,6 +860,12 @@ test("records a speaking answer and creates a playable local recording", async (
   await expect(
     page.getByRole("heading", { name: "Listen to your real recording" }),
   ).toBeVisible();
+
+  await page
+    .getByLabel("Your transcript")
+    .fill("Let me think. For example, I usually practise on the train.");
+  await expect(chunkBank.getByText("2/4 used", { exact: true })).toBeVisible();
+  await expect(chunkBank.getByText("✓ Used", { exact: true })).toHaveCount(2);
 
   await page
     .getByLabel("Your transcript")

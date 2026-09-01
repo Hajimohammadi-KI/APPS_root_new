@@ -93,6 +93,36 @@ describe("legacy content parity", () => {
     }
   });
 
+  test("gives every conversation topic four level-appropriate spoken chunks", () => {
+    const levels = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
+    const firstChunkByLevel = new Map<string, string>();
+
+    for (const level of levels) {
+      const topics = conversationTopics.filter((topic) => topic.level === level);
+      expect(topics).toHaveLength(12);
+
+      for (const topic of topics) {
+        expect(topic.spokenChunks).toHaveLength(4);
+        expect(
+          topic.spokenChunks.every(
+            (chunk) =>
+              chunk.text.trim().length >= 5 &&
+              chunk.purpose.trim().length >= 8 &&
+              chunk.example.trim().length >= 12,
+          ),
+        ).toBe(true);
+        expect(new Set(topic.spokenChunks.map((chunk) => chunk.text)).size).toBe(
+          4,
+        );
+      }
+
+      firstChunkByLevel.set(level, topics[0]?.spokenChunks[0]?.text ?? "");
+    }
+
+    expect(firstChunkByLevel.size).toBe(levels.length);
+    expect(new Set(firstChunkByLevel.values()).size).toBe(levels.length);
+  });
+
   test("ships the exact authored grammar catalog to the visual Grammar Lab", async () => {
     const root = resolve(import.meta.dir, "../../..");
     const browserSource = await Bun.file(

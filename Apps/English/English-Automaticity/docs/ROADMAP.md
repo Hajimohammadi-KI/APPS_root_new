@@ -20,7 +20,9 @@ component application. The migration target therefore includes all of these
 behaviours and catalogs:
 
 - 72 A1–C2 conversation topics with cascading path, level, skill, category,
-  and topic filters.
+  and topic filters. Every topic also supplies four reusable, level-appropriate
+  spoken-English chunks with usage guidance, examples, audio playback, and
+  transcript-based practice matching.
 - 84 A1–C2 grammar units, 14 derived categories, search, controlled practice,
   open production, exact-topic explanation links, and exact-topic exercises.
 - A seven-stage daily automaticity cycle with blocking online assessment,

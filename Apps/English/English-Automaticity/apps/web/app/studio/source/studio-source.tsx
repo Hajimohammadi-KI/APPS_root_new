@@ -12,6 +12,7 @@ import {
   conversationTopics,
   copy,
   speechLocale,
+  spokenChunksUsed,
   type StudioLanguage,
 } from "./conversation-data";
 import {
@@ -364,6 +365,14 @@ export default function Home() {
   const wordCount = transcript.trim().match(/[\p{L}\p{N}'’-]+/gu)?.length ?? 0;
   const wordsPerMinute =
     seconds > 0 ? Math.round(wordCount / (seconds / 60)) : 0;
+  const matchedSpokenChunks = useMemo(
+    () =>
+      spokenChunksUsed(
+        `${transcript} ${interimTranscript}`.trim(),
+        selected.spokenChunks,
+      ),
+    [interimTranscript, selected.spokenChunks, transcript],
+  );
 
   useEffect(() => {
     if (recordingState !== "recording") return;
@@ -1022,6 +1031,55 @@ export default function Home() {
                   </button>
                 </div>
               </div>
+              <section
+                className="spoken-chunk-bank"
+                aria-labelledby="spoken-chunk-title"
+              >
+                <div className="spoken-chunk-heading">
+                  <div>
+                    <small>NATURAL SPOKEN ENGLISH</small>
+                    <h3 id="spoken-chunk-title">
+                      Build your answer with chunks
+                    </h3>
+                    <p>
+                      Choose at least two and adapt the ending to this topic.
+                      The examples are models, not lines to memorize.
+                    </p>
+                  </div>
+                  <strong aria-live="polite">
+                    {matchedSpokenChunks.length}/{selected.spokenChunks.length}{" "}
+                    used
+                  </strong>
+                </div>
+                <ul className="spoken-chunk-list">
+                  {selected.spokenChunks.map((chunk) => {
+                    const used = matchedSpokenChunks.some(
+                      (matched) => matched.text === chunk.text,
+                    );
+                    return (
+                      <li key={chunk.text} data-used={used}>
+                        <div>
+                          <b>{chunk.text}</b>
+                          <small>{chunk.purpose}</small>
+                          <p>
+                            <span>Example:</span> {chunk.example}
+                          </p>
+                        </div>
+                        <div className="spoken-chunk-actions">
+                          <button
+                            type="button"
+                            onClick={() => speak(chunk.example)}
+                            aria-label={`Hear ${chunk.text}`}
+                          >
+                            ▶ Hear
+                          </button>
+                          {used && <span>✓ Used</span>}
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
             </div>
 
             <div className="record-card">
@@ -1240,6 +1298,15 @@ export default function Home() {
                         </p>
                       </article>
                     </div>
+                    <p className="spoken-chunk-review" role="status">
+                      <b>
+                        Natural spoken chunks detected: {matchedSpokenChunks.length}/
+                        {selected.spokenChunks.length}.
+                      </b>{" "}
+                      {matchedSpokenChunks.length >= 2
+                        ? "You reached the practice target. This is transcript guidance, not a mastery score."
+                        : "Try again with at least two chunks. This is transcript guidance, not a mastery score."}
+                    </p>
                     <div className="flow-actions">
                       <button onClick={() => setActive(1)}>Try again</button>
                       <button className="primary" onClick={() => setActive(4)}>
@@ -1477,6 +1544,18 @@ export default function Home() {
                   </small>
                 </div>
                 <strong>{wordCount || "—"}</strong>
+              </div>
+              <div className="feedback-row f4">
+                <span>Ch</span>
+                <div>
+                  <b>Natural chunks</b>
+                  <small>
+                    Matched in the transcript for practice; not a mastery score
+                  </small>
+                </div>
+                <strong>
+                  {matchedSpokenChunks.length}/{selected.spokenChunks.length}
+                </strong>
               </div>
               <div className="coach-tip">
                 <b>☼ Evidence rule</b>

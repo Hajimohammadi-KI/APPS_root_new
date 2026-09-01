@@ -563,7 +563,7 @@ export const extractionSections = [
 export const defaultSettings = {
   projectName: "Cross_Repository_Code_Intelligence",
   planName: "Cross Repository Code Intelligence – 37-Wochen-Vollzeitplan",
-  planStartDate: "2026-08-30",
+  planStartDate: "2026-10-15",
   planEndDate: "2027-05-27",
   planStatus: "running" as "not_started" | "running" | "paused",
   planPausedAt: "",
@@ -1807,7 +1807,7 @@ const designWeekSpecs: ScheduledWeekSpec[] = [
     phase: "Design 1: Problem und Anforderungen",
     phaseId: "design-requirements",
     title: "Problem, Stakeholder und vertretbarer Scope",
-    goal: "Der Plan beginnt am 30. August. Problem, Nutzende, Anforderungen und Projektgrenzen werden präzise und testbar, bevor die medizinisch geschützten Pausen beginnen.",
+    goal: "Der Plan beginnt am 15. Oktober, nach den medizinisch geschützten Pausen. Problem, Nutzende, Anforderungen und Projektgrenzen werden präzise und testbar.",
     dates: ["2026-08-30", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04"],
     days: [
       d("Problemstellung und Projektwert", ["proposal", "hevner"], "Ohne präzises Problem zerfallen Architektur und Implementierung in unverbundene Funktionen.", ["Formuliere das Kernproblem der Cross-Repository-Analyse in einem Satz", "Kläre den Unterschied zwischen Evidenz und Textähnlichkeit", "Beschreibe den Artefaktwert für drei Rollen getrennt"], ["1", "6", "7"], "Design / Problem Framing", "problem-statement-v1.md"),
@@ -2533,6 +2533,21 @@ export const PLAN_VERSION_HISTORY: readonly PlanVersionEntry[] = [
       "Täglich vier Stunden Forschung und vier Stunden Projektlernen oder Umsetzung",
       "Ein verbindlicher Integrations-, Test- und Evidence-Beleg an jedem fünften Wochentag",
       "Stressfreie Stoppregel: verstandene Einheit und sichtbarer Beleg statt Seitenzahl",
+    ],
+  },
+  {
+    version: 12,
+    effectiveDate: "2026-09-01",
+    reason:
+      "Der tatsächliche Projektstart wird jetzt verbindlich auf den 15. Oktober 2026 festgelegt. Der bisherige Standardwert vom 30. August war ein Platzhalter aus der Zeit vor Abschluss der medizinisch geschützten Pausen und entsprach nicht mehr dem realen Beginn.",
+    tasksRemoved: [
+      "Platzhalter-Startdatum 30. August als aktiver Planbeginn",
+    ],
+    tasksMoved: [
+      "Alle Wochen und Tage bleiben inhaltlich unverändert und verschieben sich gemeinsam um denselben Versatz auf den 15. Oktober 2026",
+    ],
+    tasksAdded: [
+      "15. Oktober 2026 als verbindlicher Standardstart in den App-Einstellungen",
     ],
   },
 ];

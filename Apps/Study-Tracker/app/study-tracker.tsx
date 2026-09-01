@@ -2349,7 +2349,7 @@ export default function StudyTracker({
                     <span>{settings.planStatus === "running" ? "Neues Startdatum" : "Startdatum"}</span>
                     <input dir="ltr" type="date" min={trackerRestartPlan.mainPlanStart} value={requestedStartDate} onChange={(event) => setRequestedStartDate(event.target.value)} />
                     <small className="localized-date-preview">{formatDate(requestedStartDate, true)}</small>
-                    <small>Basisstart 30. August · medizinische Pausen bleiben geschützt.</small>
+                    <small>Standardstart 15. Oktober · medizinische Pausen bleiben geschützt.</small>
                   </label>
                   <button className="button primary" type="button" onClick={() => void startPlan()}>
                     {settings.planStatus === "running" ? "Mit neuem Datum erneut starten" : "Lernplan starten"}
@@ -2366,56 +2366,14 @@ export default function StudyTracker({
             <section className="restart-plan-card" aria-labelledby="restart-plan-title">
               <header>
                 <span className="eyebrow quiet">Medizinisch geschützter Plan</span>
-                <h2 id="restart-plan-title">Planstart 30. August · zwei Bildschirm-Pausen geschützt</h2>
-                <p><strong>0 / {displayNumber(planMeta.totalItems)} ist korrekt:</strong> Der kapazitätsbasierte Plan beginnt am 30. August. Frühere Sitzungen 1–7 bleiben archiviert und sind kein Rückstand.</p>
+                <h2 id="restart-plan-title">Planstart 15. Oktober · Neustart</h2>
+                <p><strong>0 / {displayNumber(planMeta.totalItems)} ist korrekt:</strong> Der kapazitätsbasierte Plan beginnt frisch am 15. Oktober. Frühere Sitzungen 1–7 bleiben archiviert und sind kein Rückstand.</p>
               </header>
-              <ol>
-                <li>
-                  <time dateTime="2026-08-30">30. August–3. September</time>
-                  <strong>W1 beginnt heute</strong>
-                  <span>Artikel 6 im ersten 16-Stunden-Zyklus und vier parallele Scope-Schritte. Kein Nachholen der alten Sitzungen.</span>
-                </li>
-                <li>
-                  <time dateTime="2026-09-02">2.–7. September</time>
-                  <strong>Live-Sitzungen 8–10 nur beobachten</strong>
-                  <span>Keine Vorbereitung. Danach höchstens drei Zeilen: verstanden, Thesis-Bezug, offene Frage. Verpasst heißt: vorerst nicht nachholen.</span>
-                </li>
-                <li>
-                  <time dateTime="2026-09-10">10.–16. September</time>
-                  <strong>Erste vollständige Ruhephase</strong>
-                  <span>Sieben Tage ohne Studium, Computer, Tablet, Tracker-Pflicht oder Streak.</span>
-                </li>
-                <li>
-                  <time dateTime="2026-09-17">17.–24. September</time>
-                  <strong>Nur Papiermodus</strong>
-                  <span>W2-Entwürfe auf Ausdruck oder Papier. Kein Computer oder Tablet; digitale Prüfung wird später nachgeholt.</span>
-                </li>
-                <li>
-                  <time dateTime="2026-09-29">29. September–5. Oktober</time>
-                  <strong>Zweite vollständige Ruhephase</strong>
-                  <span>Wieder sieben Tage ohne Studium, Bildschirm, Pflichtaufgabe oder Streak.</span>
-                </li>
-                <li>
-                  <time dateTime="2026-10-06">6.–13. Oktober</time>
-                  <strong>Nur Papiermodus</strong>
-                  <span>Geeignete Design- und Testentwürfe auf Papier; kein Bildschirm bis einschließlich 13. Oktober.</span>
-                </li>
-                <li>
-                  <time dateTime={trackerRestartPlan.gentleRestartStart}>{formatDate(trackerRestartPlan.gentleRestartStart)}–{formatDate(trackerRestartPlan.gentleRestartEnd)}</time>
-                  <strong>Sanfter Bildschirm-Wiedereinstieg</strong>
-                  <span>Nur wenn ärztlich erlaubt: zunächst 12 Minuten, dann langsam steigern. Kein Verdichten versäumter Tage.</span>
-                </li>
-                <li>
-                  <time dateTime="2026-10-19">Ab 19. Oktober</time>
-                  <strong>Regulärer Vollzeitmodus</strong>
-                  <span>Nur wenn medizinisch freigegeben und gut verträglich: vier Stunden Forschung plus vier Stunden Projekt in kleinen Blöcken. Bei Beschwerden wird der ganze Plan verschoben, nicht verdichtet.</span>
-                </li>
-              </ol>
               <aside className="restart-catchup-rule" aria-label="Regel für alte Kurssitzungen">
                 <strong>Sitzungen 1–7 bleiben archiviert</strong>
                 <p>Erst nach dem verpflichtenden Wochenartefakt und höchstens eine Sitzung pro Woche. Nur öffnen, wenn sie Artefakt, Test oder Evidence der aktuellen Woche direkt blockiert; sonst endgültig überspringen.</p>
               </aside>
-              <p className="restart-health-priority">Die individuelle Anweisung des Operateurs — 14 Tage ohne Computer und Tablet — hat Vorrang vor allgemeinen Internet-Empfehlungen, Uhrzeit, Startdatum und Streak.</p>
+              <p className="restart-health-priority">Bei Beschwerden wird der ganze Plan verschoben, nicht verdichtet. Die individuelle Anweisung des Operateurs hat Vorrang vor allgemeinen Internet-Empfehlungen, Uhrzeit, Startdatum und Streak.</p>
             </section>
 
             {todayCourseSession ? (
@@ -2656,7 +2614,7 @@ export default function StudyTracker({
             <details className="critical-path-card dashboard-disclosure" open>
               <summary>
                 <h2><Icon name="flag" size={20} /> Kritischer Pfad · erste 6 Wochen</h2>
-                <span>W1 startet am 30. August · Ruhe- und Papierphasen erzeugen keinen Rückstand</span>
+                <span>W1 startet am 15. Oktober · Ruhe- und Papierphasen erzeugen keinen Rückstand</span>
               </summary>
               <ol className="critical-path-list">
                 <li><b>W1</b><span>Scope + eine prüfbare End-to-End-Frage</span></li>
@@ -2667,7 +2625,7 @@ export default function StudyTracker({
                 <li className="is-gate"><b>W6</b><span>Mini-Demo + Readiness Gate; kein Design ohne Laufbeleg</span></li>
               </ol>
               <footer>
-                <span>W1 läuft vom 30. August bis 3. September. Papierentwürfe werden erst nach der Bildschirmfreigabe digital geprüft und abgehakt.</span>
+                <span>W1 läuft vom 15. bis 19. Oktober. Papierentwürfe werden erst nach der Bildschirmfreigabe digital geprüft und abgehakt.</span>
                 <button className="button secondary" type="button" onClick={() => openFullPlan(false, "roadmap")}>Projekt-Fahrplan im Lernplan öffnen <Icon name="arrow" size={16} /></button>
               </footer>
             </details>

@@ -37,12 +37,14 @@ Record behavior by task, not general opinion:
 | Horizontal scroll needed | yes / no |
 | Recovery succeeded | yes / no / N/A |
 | Friction marker | concise interface observation without learner content |
+| Next-task explanation (learner task 1 only) | correct / partly correct / incorrect / N/A |
+| Multi-select comprehension (learner task 2 only) | independently completed / completed with assistance / not completed / N/A |
 
 Stop a task after ten minutes or when the participant asks to stop. Do not coach unless the task is blocked; record each intervention as assistance.
 
 ## Decision rule
 
-Do not call the flow successful from opinion alone. A task is successful only when the intended outcome is completed without essential horizontal scrolling and with no more than one facilitator intervention. Publish completion rate, median time, range, assistance count, and the three most frequent friction markers. With seven sessions, treat results as directional product evidence rather than population estimates.
+Do not call the flow successful from opinion alone. A task is successful only when the intended outcome is completed without essential horizontal scrolling and with no more than one facilitator intervention. Publish completion rate, median time, range, assistance count, and the three most frequent friction markers. Separately publish (a) how many learners correctly explained why the recommended task was next and (b) how many independently completed search, multi-select, Apply, and task opening. Do not infer those two comprehension outcomes from the overall task-completion rate. With seven sessions, treat results as directional product evidence rather than population estimates.
 
 ## Session ledger
 

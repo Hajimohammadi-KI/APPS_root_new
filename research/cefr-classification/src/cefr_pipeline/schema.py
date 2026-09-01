@@ -95,9 +95,18 @@ class CorpusApproval:
     def permits_training(self) -> bool:
         """Require affirmative approval and an explicit training permission."""
 
+        return self.permits_use("training")
+
+    def permits_evaluation(self) -> bool:
+        """Require affirmative approval and an explicit evaluation permission."""
+
+        return self.permits_use("evaluation")
+
+    def permits_use(self, use: str) -> bool:
+        """Fail closed unless the inventory explicitly permits the requested use."""
+
         return (
             self.approval_status == "approved"
             and self.licence_status == "verified"
-            and "training" in self.allowed_uses
+            and use.lower().strip() in self.allowed_uses
         )
-

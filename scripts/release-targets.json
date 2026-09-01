@@ -5,6 +5,13 @@
       "id": "english",
       "name": "English Automaticity",
       "projectDir": "Apps/English/English-Automaticity",
+      "owner": {
+        "name": "Elahe Hajimohammadi",
+        "github": "Hajimohammadi-KI",
+        "status": "assigned",
+        "assignedOn": "2026-09-01",
+        "reviewBy": "2026-12-01"
+      },
       "deployment": {
         "provider": "vercel",
         "projectName": "english-grammar-automaticity-pwa",
@@ -25,6 +32,13 @@
       "id": "german",
       "name": "Deutsch Automaticity",
       "projectDir": "Apps/Deutsch-Automaticity",
+      "owner": {
+        "name": "Elahe Hajimohammadi",
+        "github": "Hajimohammadi-KI",
+        "status": "assigned",
+        "assignedOn": "2026-09-01",
+        "reviewBy": "2026-12-01"
+      },
       "deployment": {
         "provider": "vercel",
         "projectName": "deutschflow-grammar",
@@ -45,6 +59,13 @@
       "id": "tracker",
       "name": "Cross Repository Tracker",
       "projectDir": "Apps/Cross-Repository-Tracker",
+      "owner": {
+        "name": "Elahe Hajimohammadi",
+        "github": "Hajimohammadi-KI",
+        "status": "assigned",
+        "assignedOn": "2026-09-01",
+        "reviewBy": "2026-12-01"
+      },
       "deployment": {
         "provider": "vercel",
         "projectName": "study-tracker-plan",
@@ -65,6 +86,13 @@
       "id": "settings",
       "name": "Settings",
       "projectDir": "Apps/Apps-For-Integeration/Einstellungen-APP",
+      "owner": {
+        "name": "Elahe Hajimohammadi",
+        "github": "Hajimohammadi-KI",
+        "status": "assigned",
+        "assignedOn": "2026-09-01",
+        "reviewBy": "2026-12-01"
+      },
       "deployment": { "provider": "local", "reason": "Starter-managed local application" },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [
@@ -77,6 +105,13 @@
       "id": "pdf",
       "name": "Research PDF Studio",
       "projectDir": "Apps/Apps-For-Integeration/Reader-PDF-App",
+      "owner": {
+        "name": "Elahe Hajimohammadi",
+        "github": "Hajimohammadi-KI",
+        "status": "assigned",
+        "assignedOn": "2026-09-01",
+        "reviewBy": "2026-12-01"
+      },
       "deployment": {
         "provider": "vercel",
         "projectName": "research-pdf-studio",

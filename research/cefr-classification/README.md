@@ -5,7 +5,8 @@ This workspace implements the Phase 5 strategy in the APPS_root Product Quality 
 ## Current evidence state
 
 - Data contract, conservative cleaning, corpus approval gate, group-aware splitting, leakage audit, feature baseline, Transformer trainer, ordinal/calibration metrics, run artifacts, and dashboard generator are implemented.
-- The checked-in dashboard is intentionally `partial`: no real corpus has been approved or trained.
+- Seven saved checkpoints covering all six catalog model types are measured on approved Ace-CEFR and MERLIN data.
+- Independent, evaluation-only UniversalCEFR ELG corpora were pinned for English and German. Nine saved-checkpoint/language evaluations are published in `dashboard/external-evaluation-summary.json`; every result shows a large reference-domain generalisation loss, so product integration is blocked by evidence rather than merely unfinished.
 - `tests/fixtures/synthetic-learner-texts.csv` is generated test scaffolding. Its scores are labelled `fixture` and excluded from the dashboard.
 - No paid API is required. The feature baseline runs on CPU. Transformer experiments use local open-source checkpoints and can be run on owned hardware or a free GPU session when available.
 
@@ -46,6 +47,26 @@ Transformer dependencies are deliberately separate:
   --run-id english-modernbert-seed42
 ```
 
+## Independent external evaluation
+
+The external datasets are reference documents, not learner writing. They test
+cross-corpus and cross-domain robustness and must not be described as learner
+proficiency validation. Raw data, predictions, and weights stay ignored; the
+checked-in summary contains only provenance and aggregate metrics.
+
+```powershell
+python scripts\fetch_external_corpora.py
+
+cefr-pipeline external-evaluate `
+  --run runs\english-roberta-seed42 `
+  --input data\processed\external-evaluation-v1\universalcefr-elg-en.csv `
+  --inventory catalog\corpus-inventory.json `
+  --output runs\english-roberta-seed42\external\universalcefr-elg-en
+
+# Re-run the product abstention gate over every external prediction file.
+python scripts\evaluate_external_abstention.py
+```
+
 ## Repository contract
 
 - `catalog/corpus-inventory.json`: approval and licence gate. Unknown means blocked.
@@ -54,6 +75,7 @@ Transformer dependencies are deliberately separate:
 - `src/cefr_pipeline/`: preprocessing, splitting, training, evaluation, run, and dashboard code.
 - `runs/**/run.json`: one traceable non-fixture experiment record. Model weights and predictions remain local and ignored by Git.
 - `dashboard/artifact.json`: canonical source-backed snapshot. It shows `N/A` until measured runs exist.
+- `dashboard/external-evaluation-summary.json`: pinned external-corpus provenance, aggregate metrics, and the evidence-based no-ship decision.
 - `dashboard/cefr-model-dashboard.html`: self-contained, responsive dashboard built from the exact canonical payload.
 
 ## Package and verify the dashboard

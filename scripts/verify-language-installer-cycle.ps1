@@ -6,7 +6,14 @@ param(
   [Parameter(Mandatory = $true)]
   [string]$SetupPath,
 
-  [int]$StartupTimeoutSeconds = 45
+  # Conservative cold-start ceiling. The verified 1 September root cause was
+  # not extraction time: Electron inherited ELECTRON_RUN_AS_NODE by presence
+  # and exited with code 134 before serving HTTP. Removing that environment
+  # entry around Start-Process fixed the exact current artifacts; the fresh
+  # isolated runs answered in 1.768s (English) and 7.400s (German). Keep a
+  # larger ceiling for slower disks/antivirus while the per-contract evidence
+  # below still records attempts, last errors, process exit, and elapsed time.
+  [int]$StartupTimeoutSeconds = 180
 )
 
 Set-StrictMode -Version Latest
@@ -29,31 +36,88 @@ function Invoke-SetupAction {
   }
 }
 
-function Wait-ForHttpContract {
+function Wait-ForHttpContracts {
   param(
     [Parameter(Mandatory = $true)]
-    [string]$Url,
+    [array]$Contracts,
 
     [Parameter(Mandatory = $true)]
-    [scriptblock]$Validate,
+    [datetime]$Deadline,
 
     [Parameter(Mandatory = $true)]
-    [datetime]$Deadline
+    [System.Diagnostics.Process]$DesktopProcess
+  )
+
+  $startedAt = Get-Date
+  $states = @(
+    foreach ($contract in $Contracts) {
+      [ordered]@{
+        name = [string]$contract.Name
+        url = [string]$contract.Url
+        validator = [scriptblock]$contract.Validator
+        ready = $false
+        attempts = 0
+        lastStatus = $null
+        lastError = $null
+        satisfiedAtMs = $null
+      }
+    }
   )
 
   do {
-    try {
-      $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 3
-      if ($response.StatusCode -eq 200 -and (& $Validate $response)) {
-        return $true
+    foreach ($state in $states) {
+      if ($state.ready) {
+        continue
       }
-    } catch {
-      # Startup is asynchronous; transient connection failures are expected.
+
+      $state.attempts += 1
+      try {
+        $response = Invoke-WebRequest -Uri $state.url -UseBasicParsing -TimeoutSec 3
+        $state.lastStatus = [int]$response.StatusCode
+        if ($response.StatusCode -eq 200 -and (& $state.validator $response)) {
+          $state.ready = $true
+          $state.lastError = $null
+          $state.satisfiedAtMs = [int][Math]::Round(
+            ((Get-Date) - $startedAt).TotalMilliseconds
+          )
+        } else {
+          $state.lastError = 'HTTP response did not satisfy the expected contract.'
+        }
+      } catch {
+        # Startup is asynchronous; retain the last transient failure as evidence.
+        $state.lastError = $_.Exception.Message
+      }
+    }
+
+    $allReady = @($states | Where-Object { -not $_.ready }).Count -eq 0
+    $DesktopProcess.Refresh()
+    if ($allReady -or $DesktopProcess.HasExited) {
+      break
     }
     Start-Sleep -Milliseconds 750
   } while ((Get-Date) -lt $Deadline)
 
-  return $false
+  $checks = @(
+    foreach ($state in $states) {
+      [ordered]@{
+        name = $state.name
+        url = $state.url
+        ready = $state.ready
+        attempts = $state.attempts
+        lastStatus = $state.lastStatus
+        lastError = $state.lastError
+        satisfiedAtMs = $state.satisfiedAtMs
+      }
+    }
+  )
+  $DesktopProcess.Refresh()
+  return [ordered]@{
+    ready = @($states | Where-Object { -not $_.ready }).Count -eq 0
+    elapsedMs = [int][Math]::Round(((Get-Date) - $startedAt).TotalMilliseconds)
+    processExited = $DesktopProcess.HasExited
+    processExitCode = if ($DesktopProcess.HasExited) { $DesktopProcess.ExitCode } else { $null }
+    checks = $checks
+  }
 }
 
 function Stop-IsolatedProductProcesses {
@@ -142,6 +206,12 @@ $report = [ordered]@{
   install = 'not-run'
   startup = 'not-run'
   startupError = $null
+  startupElapsedMs = $null
+  startupProcessExited = $null
+  startupProcessExitCode = $null
+  startupContracts = @()
+  startupStdoutPath = $null
+  startupStderrPath = $null
   update = 'not-run'
   repair = 'not-run'
   uninstall = 'not-run'
@@ -163,24 +233,62 @@ try {
 
   try {
     [Environment]::SetEnvironmentVariable("${prefix}_NO_LAUNCH", $null, 'Process')
-    $electronRunAsNode = [Environment]::GetEnvironmentVariable('ELECTRON_RUN_AS_NODE', 'Process')
-    [Environment]::SetEnvironmentVariable('ELECTRON_RUN_AS_NODE', $null, 'Process')
+    $hadElectronRunAsNode = Test-Path Env:ELECTRON_RUN_AS_NODE
+    $electronRunAsNode = if ($hadElectronRunAsNode) {
+      [string]$env:ELECTRON_RUN_AS_NODE
+    } else {
+      $null
+    }
+    # PowerShell's Start-Process can retain an Env: provider entry that was
+    # cleared only through Environment.SetEnvironmentVariable(). Electron
+    # treats ELECTRON_RUN_AS_NODE as enabled by presence, even with an empty
+    # value, then aborts because the packaged app has no Node snapshot.
+    Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
     try {
-      Start-Process -FilePath $mainExecutable -WorkingDirectory $installRoot -WindowStyle Hidden | Out-Null
+      $startupStdoutPath = Join-Path $evidenceRoot 'startup.stdout.log'
+      $startupStderrPath = Join-Path $evidenceRoot 'startup.stderr.log'
+      $desktopProcess = Start-Process `
+        -FilePath $mainExecutable `
+        -WorkingDirectory $installRoot `
+        -WindowStyle Hidden `
+        -RedirectStandardOutput $startupStdoutPath `
+        -RedirectStandardError $startupStderrPath `
+        -PassThru
+      $report.startupStdoutPath = $startupStdoutPath
+      $report.startupStderrPath = $startupStderrPath
     } finally {
-      [Environment]::SetEnvironmentVariable('ELECTRON_RUN_AS_NODE', $electronRunAsNode, 'Process')
+      if ($hadElectronRunAsNode) {
+        Set-Item Env:ELECTRON_RUN_AS_NODE $electronRunAsNode
+      } else {
+        Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
+      }
     }
     $deadline = (Get-Date).AddSeconds($StartupTimeoutSeconds)
-    $webReady = Wait-ForHttpContract `
-      -Url ([string]$profile.WebUrl) `
-      -Validate $profile.WebValidator `
-      -Deadline $deadline
-    $apiReady = Wait-ForHttpContract `
-      -Url ([string]$profile.ApiUrl) `
-      -Validate $profile.ApiValidator `
-      -Deadline $deadline
-    if (-not ($webReady -and $apiReady)) {
-      throw 'Installed application did not satisfy both HTTP readiness contracts.'
+    $startupResult = Wait-ForHttpContracts `
+      -Contracts @(
+        @{ Name = 'web'; Url = [string]$profile.WebUrl; Validator = $profile.WebValidator },
+        @{ Name = 'api'; Url = [string]$profile.ApiUrl; Validator = $profile.ApiValidator }
+      ) `
+      -Deadline $deadline `
+      -DesktopProcess $desktopProcess
+    $report.startupElapsedMs = $startupResult.elapsedMs
+    $report.startupProcessExited = $startupResult.processExited
+    $report.startupProcessExitCode = $startupResult.processExitCode
+    $report.startupContracts = $startupResult.checks
+    if (-not $startupResult.ready) {
+      $failedContracts = @(
+        $startupResult.checks |
+          Where-Object { -not $_.ready } |
+          ForEach-Object { "$($_.name): $($_.lastError)" }
+      ) -join '; '
+      throw "Installed application did not satisfy its HTTP readiness contracts. $failedContracts"
+    }
+    Start-Sleep -Seconds 2
+    $desktopProcess.Refresh()
+    if ($desktopProcess.HasExited) {
+      $report.startupProcessExited = $true
+      $report.startupProcessExitCode = $desktopProcess.ExitCode
+      throw "Installed desktop process exited after HTTP readiness with code $($desktopProcess.ExitCode)."
     }
     $report.startup = 'verified'
   } catch {
@@ -222,8 +330,8 @@ try {
   Stop-IsolatedProductProcesses -InstallRoot $installRoot
   New-Item -ItemType Directory -Force -Path $evidenceRoot | Out-Null
   $reportPath = Join-Path $evidenceRoot 'report.json'
-  $report | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $reportPath -Encoding utf8
-  Write-Output ($report | ConvertTo-Json -Depth 5)
+  $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $reportPath -Encoding utf8
+  Write-Output ($report | ConvertTo-Json -Depth 8)
 }
 
 if ($null -ne $report.error) {

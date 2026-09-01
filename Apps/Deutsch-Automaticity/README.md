@@ -104,6 +104,7 @@ sign-in and consent flow explicitly enables synchronization.
 ## Plans and decisions
 
 - `docs/ROADMAP-V10.08.2026.md`
+- `docs/product/real-learning-roadmap.md`
 - `docs/LEGACY-INVENTORY-V10.08.2026.md`
 - `plans/001-production-roadmap.md`
 - `docs/adr/0001-platform-stack.md`

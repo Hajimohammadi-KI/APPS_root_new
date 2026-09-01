@@ -9,6 +9,9 @@ test("every canonical target has a build and an honest access contract", async (
   assert.deepEqual(targets.map((target) => target.id), ["english", "german", "tracker", "settings", "pdf"]);
   for (const target of targets) {
     assert.ok(target.projectDir);
+    assert.equal(target.owner?.status, "assigned");
+    assert.ok(target.owner?.name);
+    assert.ok(target.owner?.reviewBy);
     assert.ok(target.build.command);
     assert.ok(target.build.args.length > 0);
     assert.ok(target.localChecks.length > 0);

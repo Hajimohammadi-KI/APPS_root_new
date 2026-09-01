@@ -56,8 +56,17 @@ def load_corpus_inventory(path: Path) -> dict[str, CorpusApproval]:
     return approvals
 
 
-def read_approved_csv(csv_path: Path, inventory_path: Path) -> list[LearnerTextRecord]:
+def read_approved_csv(
+    csv_path: Path,
+    inventory_path: Path,
+    *,
+    required_use: str = "training",
+) -> list[LearnerTextRecord]:
     """Read, validate, clean, and licence-gate records before model code sees them."""
+
+    requested_use = required_use.lower().strip()
+    if not requested_use:
+        raise DataContractError("required_use must not be empty")
 
     approvals = load_corpus_inventory(inventory_path)
     records: list[LearnerTextRecord] = []
@@ -69,9 +78,9 @@ def read_approved_csv(csv_path: Path, inventory_path: Path) -> list[LearnerTextR
             except DataContractError as error:
                 raise DataContractError(f"{csv_path}:{line_number}: {error}") from error
             approval = approvals.get(record.corpus_id)
-            if approval is None or not approval.permits_training():
+            if approval is None or not approval.permits_use(requested_use):
                 raise DataContractError(
-                    f"Corpus {record.corpus_id!r} is not approved for training in {inventory_path}"
+                    f"Corpus {record.corpus_id!r} is not approved for {requested_use} in {inventory_path}"
                 )
             if record.is_fixture != approval.is_fixture:
                 raise DataContractError(
@@ -98,4 +107,3 @@ def write_records_csv(records: Iterable[LearnerTextRecord], path: Path) -> None:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
-

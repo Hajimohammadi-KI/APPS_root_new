@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Sequence
 
 from .dashboard import build_dashboard_artifact, write_dashboard_artifact
+from .external_evaluate import evaluate_saved_run
 from .preprocess import read_approved_csv
 from .split import SplitConfig, split_records, write_split_bundle
 from .train_feature import train_feature_baseline
@@ -65,6 +66,15 @@ def build_parser() -> argparse.ArgumentParser:
     transformer.add_argument("--repo-root", required=True, type=_existing_path)
     transformer.add_argument("--run-id", required=True)
 
+    external = subparsers.add_parser(
+        "external-evaluate", help="Evaluate one immutable saved model on an evaluation-only corpus"
+    )
+    external.add_argument("--run", required=True, type=_existing_path)
+    external.add_argument("--input", required=True, type=_existing_path)
+    external.add_argument("--inventory", required=True, type=_existing_path)
+    external.add_argument("--output", required=True, type=Path)
+    external.add_argument("--batch-size", type=int, default=16)
+
     dashboard = subparsers.add_parser("build-dashboard", help="Build canonical dashboard JSON from catalogs and runs")
     dashboard.add_argument("--models", required=True, type=_existing_path)
     dashboard.add_argument("--corpora", required=True, type=_existing_path)
@@ -118,6 +128,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             "stage": "train-transformer",
             "status": artifact["status"],
             "run_id": artifact["run_id"],
+            "output": str(args.output.resolve()),
+        }
+    elif args.command == "external-evaluate":
+        artifact = evaluate_saved_run(
+            run_dir=args.run,
+            input_path=args.input,
+            inventory_path=args.inventory,
+            output_dir=args.output.resolve(),
+            batch_size=args.batch_size,
+        )
+        receipt = {
+            "stage": "external-evaluate",
+            "status": artifact["status"],
+            "run_id": artifact["run_id"],
+            "sample_count": artifact["metrics"]["sample_count"],
             "output": str(args.output.resolve()),
         }
     else:

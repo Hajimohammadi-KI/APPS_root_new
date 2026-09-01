@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-30",
-  "policy": "Only approval_status=approved, licence_status=verified, and allowed_uses containing training may enter the pipeline.",
+  "updated_at": "2026-09-01",
+  "policy": "Only approval_status=approved, licence_status=verified, and the exact requested use in allowed_uses may enter the pipeline.",
   "corpora": [
     {
       "corpus_id": "universalcefr-index",
@@ -12,6 +12,28 @@
       "allowed_uses": [],
       "reason": "Useful discovery index, but every subcorpus has separate terms and must be approved independently.",
       "source_url": "https://universalcefr.github.io/"
+    },
+    {
+      "corpus_id": "universalcefr-elg-en",
+      "name": "UniversalCEFR ELG English reference documents",
+      "languages": ["en"],
+      "approval_status": "approved",
+      "licence_status": "verified",
+      "allowed_uses": ["research", "evaluation"],
+      "licence_id": "CC-BY-NC-SA-4.0",
+      "reason": "Pinned evaluation-only copy of 712 manually labelled reference documents. It is independent of Ace-CEFR but changes both corpus and domain, so results measure cross-domain robustness and must not be represented as learner-proficiency validation. Non-commercial/share-alike terms prohibit product training and raw-data redistribution here.",
+      "source_url": "https://huggingface.co/datasets/UniversalCEFR/elg_cefr_en"
+    },
+    {
+      "corpus_id": "universalcefr-elg-de",
+      "name": "UniversalCEFR ELG German reference documents",
+      "languages": ["de"],
+      "approval_status": "approved",
+      "licence_status": "verified",
+      "allowed_uses": ["research", "evaluation"],
+      "licence_id": "CC-BY-NC-SA-4.0",
+      "reason": "Pinned evaluation-only copy of 509 manually labelled reference documents. It is independent of MERLIN and intentionally changes from learner paragraphs to reference documents, so results measure cross-domain robustness only. Non-commercial/share-alike terms prohibit product training and raw-data redistribution here.",
+      "source_url": "https://huggingface.co/datasets/UniversalCEFR/elg_cefr_de"
     },
     {
       "corpus_id": "merlin-de",
@@ -98,4 +120,3 @@
     }
   ]
 }
-

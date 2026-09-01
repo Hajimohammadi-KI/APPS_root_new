@@ -35,7 +35,11 @@ The verification checks TypeScript, builds the browser package, validates all in
 3. Choose **Load unpacked**.
 4. Select this exact folder:
 
-`D:\APPS_root\Rememberry - Translate and Memorize with Flashcards\dist`
+`D:\APPS_root_new\Apps\Apps-For-Integeration\App_Rememberry - Translate and Memorize with Flashcards\dist`
+
+LingoBridge is a supported companion, not a sixth Starter/Vercel release
+target. Its product status and accountable owner are recorded in
+[`docs/CANONICAL-APP-MAP.md`](../../../docs/CANONICAL-APP-MAP.md).
 
 Browsers require this final confirmation for security; an application installer must not silently install an unpacked extension.
 

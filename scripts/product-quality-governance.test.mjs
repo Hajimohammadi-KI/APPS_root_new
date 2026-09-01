@@ -38,8 +38,20 @@ test("canonical map names every active release target and keeps human ownership 
 
   for (const target of manifest.targets) {
     assert.match(map, new RegExp(target.projectDir.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.equal(target.owner?.name, "Elahe Hajimohammadi", `${target.id} needs an accountable owner`);
+    assert.equal(target.owner?.status, "assigned", `${target.id} ownership must be explicit`);
+    assert.match(target.owner?.assignedOn ?? "", /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(target.owner?.reviewBy ?? "", /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(map, new RegExp(target.owner.name));
   }
-  assert.match(map, /human owner name pending confirmation/i);
+  assert.match(map, /ownership review due 1 December 2026/i);
+  assert.match(map, /supported companion/i);
+  assert.match(map, /LingoBridge/);
+  assert.doesNotMatch(
+    manifest.targets.map((target) => target.name).join("\n"),
+    /LingoBridge/,
+    "LingoBridge is a supported companion, not a sixth Starter release target",
+  );
   for (const participant of ["L01", "L02", "L03", "L04", "L05", "T01", "T02"]) {
     assert.match(protocol, new RegExp(`\\| ${participant} \\|`));
   }

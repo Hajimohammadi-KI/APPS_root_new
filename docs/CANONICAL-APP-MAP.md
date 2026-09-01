@@ -1,18 +1,35 @@
 # Canonical app map and archive plan
 
-Status: published from `scripts/release-targets.json` on 30 August 2026.
+Status: published from `scripts/release-targets.json`; ownership and companion
+status reviewed on 1 September 2026.
 
 ## Active products
 
 | Job | Canonical product | Source | Runtime | Accountable owner |
 | --- | --- | --- | --- | --- |
-| English learning | English Automaticity | `Apps/English/English-Automaticity` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
-| German learning | Deutsch Automaticity | `Apps/Deutsch-Automaticity` | local 3210; Vercel project `deutschflow-grammar` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
-| Study planning | Cross Repository Tracker | `Apps/Cross-Repository-Tracker` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
-| Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
-| Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Elahe Hajimohammadi (solo maintainer; GitHub `Hajimohammadi-KI`) |
+| English learning | English Automaticity | `Apps/English/English-Automaticity` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
+| German learning | Deutsch Automaticity | `Apps/Deutsch-Automaticity` | local 3210; Vercel project `deutschflow-grammar` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
+| Study planning | Cross Repository Tracker | `Apps/Cross-Repository-Tracker` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
+| Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
+| Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
 
 These five entries are the only active release targets. Conversation Studio, Daily Practice, Integrated Skills, and Teacher Studio are product surfaces inside the English/German canonical apps, not separate active products.
+
+The assignment is also machine-readable in `scripts/release-targets.json` and
+has an ownership review due 1 December 2026. This is a formal repository
+assignment, not evidence that one person has enough capacity to operate all
+five products indefinitely.
+
+## Supported companion
+
+**LingoBridge** at
+`Apps/Apps-For-Integeration/App_Rememberry - Translate and Memorize with Flashcards`
+is retained as a supported, local-first browser-extension companion. It is not
+retired, not a duplicate prototype, and not a sixth Starter/Vercel release
+target. It remains independently buildable and may exchange the documented
+`lingobridge.flashcards.v1` payload with the language apps and Tracker when the
+user explicitly loads the extension. Its accountable owner is Elahe
+Hajimohammadi under the same 1 September assignment and 1 December review.
 
 ## Duplicate prototypes
 
@@ -26,7 +43,7 @@ Five directories are confirmed duplicate prototypes and must not receive indepen
 | `Apps/Apps-For-Integeration/App_english-automaticity-routed-HOME` | 369 KB Next.js routing preview (`app/[workspace]`) | Early UI/routing iteration, superseded by the canonical app |
 | `Apps/Apps-For-Integeration/App_english-conversation-studio-source` | 2.7 MB; mostly a generic Cloudflare "vinext-starter" scaffold plus `conversation-data.ts`/`conversation-storage.ts` | Canonical English already has `test-results/parity-migrated-conversation.png`, evidence this was already migrated |
 
-**Not a duplicate — removed from this list:** `Apps/Apps-For-Integeration/App_Rememberry - Translate and Memorize with Flashcards` is **LingoBridge**, an original browser extension that integrates with the German app, English app, and project tracker (see its own `README.md`). It was archived under this list by mistake; see the note left in its `ARCHIVED.md`. Whether it stays a live sixth product or is deliberately retired is a product-owner decision, not a cleanup task, and is still open.
+**Not a duplicate — removed from this list:** `Apps/Apps-For-Integeration/App_Rememberry - Translate and Memorize with Flashcards` is **LingoBridge**, an original browser extension that integrates with the German app, English app, and project tracker (see its own `README.md`). It was archived under this list by mistake. Its status was resolved on 1 September 2026 as a supported companion, not an independent Starter/Vercel release target; see the corrected notice in its `ARCHIVED.md`.
 
 Before this inventory, `du` over these directories reported roughly 1.9 GB, which read as source bloat. It was not: 1.75 GB of that was gitignored `node_modules`/`.next`/`.sites-runtime`/`.wrangler` build caches, already excluded from git and safe to delete outright since any package manager regenerates them from the lockfile. That cache was cleared on 2026-08-30 (one accidental deletion of tracked `.vinext/fonts/*` files was caught via `git status` and restored immediately). The five confirmed duplicates now total under 4 MB of real, git-tracked content combined.
 
@@ -37,7 +54,7 @@ Before this inventory, `du` over these directories reported roughly 1.9 GB, whic
 3. N/A — the inventory found nothing unique to migrate from the five confirmed duplicates.
 4. ✅ Add an `ARCHIVED.md` redirecting maintainers to the canonical product and freeze feature work in the duplicate. Done 2026-08-30 (corrected for LingoBridge, which got its own notice instead).
 5. ⬜ Run clean-clone builds and route checks before moving the prototype to an archive repository or recoverable archive folder. Not started — low priority now that the real content is under 4 MB total; a build/route check mainly matters if something here is ever revived, not to justify deletion.
-6. ⬜ Delete nothing until the product owner approves the inventory and migration evidence above. Nothing has been deleted or moved except regenerable dependency caches; the six directories remain in place pending explicit approval, and LingoBridge's status is unresolved.
+6. ⬜ Delete nothing until the product owner approves the inventory and migration evidence above. Nothing has been deleted or moved except regenerable dependency caches; the five prototypes remain pending explicit deletion approval, while LingoBridge is retained as a supported companion.
 
 ## Evidence-based next investment
 

@@ -11,7 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from cefr_pipeline.preprocess import canonical_text_fingerprint, clean_learner_text
-from cefr_pipeline.schema import DataContractError, LearnerTextRecord
+from cefr_pipeline.schema import CorpusApproval, DataContractError, LearnerTextRecord
 from cefr_pipeline.split import SplitConfig, split_records
 
 
@@ -52,6 +52,18 @@ class PreprocessingTests(unittest.TestCase):
                 {"document_id": "1", "corpus_id": "x", "text": "Text", "cefr": "B3", "language": "en"}
             )
 
+    def test_corpus_permissions_are_use_specific(self) -> None:
+        evaluation_only = CorpusApproval.from_mapping(
+            {
+                "corpus_id": "external",
+                "approval_status": "approved",
+                "licence_status": "verified",
+                "allowed_uses": ["research", "evaluation"],
+            }
+        )
+        self.assertTrue(evaluation_only.permits_evaluation())
+        self.assertFalse(evaluation_only.permits_training())
+
 
 class SplitTests(unittest.TestCase):
     def test_group_identifiers_never_cross_partitions(self) -> None:
@@ -85,4 +97,3 @@ class SplitTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

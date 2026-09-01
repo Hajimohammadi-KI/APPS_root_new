@@ -1,7 +1,10 @@
 {
-  "version": "27.3.21",
+  "version": "27.3.22",
   "publishedAt": "2026-09-01",
   "changes": [
+    "Conversation Studio cards and text now stay inside compact desktop windows",
+    "Long C2 topics remain readable without widening or breaking their selectors",
+    "Practice steps and evidence panels now reflow before they become cramped",
     "Every A1-C2 conversation topic now includes four natural spoken-English chunks",
     "Each chunk includes its speaking purpose, a topic-ready example, and audio playback",
     "The Speaking Studio detects practiced chunks in the learner-reviewed transcript",

@@ -874,3 +874,77 @@ test("records a speaking answer and creates a playable local recording", async (
   await expect(page.getByLabel("Your transcript")).toHaveValue("");
   await page.getByRole("button", { name: /Stop/ }).click();
 });
+
+test("keeps long Conversation Studio content inside a compact desktop window", async ({
+  page,
+}) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") consoleErrors.push(message.text());
+  });
+  await page.setViewportSize({ width: 1266, height: 813 });
+  await page.goto("/studio");
+  await page.getByLabel("Category").selectOption({ label: "Law" });
+
+  await expect(page.getByLabel("Topic")).toHaveValue(/.+/);
+  await expect(
+    page.getByRole("heading", {
+      name: "Regulation, proportionality and unintended effects",
+    }),
+  ).toBeVisible();
+
+  const layout = await page.evaluate(() => {
+    const root = document.documentElement;
+    const tracked = [
+      ".conversation-filter",
+      ".conversation-filter-grid",
+      ".mode-cards",
+      ".workspace",
+      ".steps",
+      ".coach-card",
+      ".evidence",
+    ];
+    const clipped = tracked.flatMap((selector) =>
+      [...document.querySelectorAll<HTMLElement>(selector)]
+        .filter((element) => {
+          const rect = element.getBoundingClientRect();
+          return rect.left < -1 || rect.right > root.clientWidth + 1;
+        })
+        .map((element) => element.className),
+    );
+    const overflowingSteps = [
+      ...document.querySelectorAll<HTMLElement>(".steps button"),
+    ]
+      .filter(
+        (button) =>
+          button.scrollWidth > button.clientWidth + 1 ||
+          button.scrollHeight > button.clientHeight + 1,
+      )
+      .map((button) => button.textContent?.trim());
+
+    return {
+      documentOverflow: root.scrollWidth - root.clientWidth,
+      clipped,
+      overflowingSteps,
+      filterColumns: getComputedStyle(
+        document.querySelector<HTMLElement>(".conversation-filter-grid")!,
+      ).gridTemplateColumns.split(" ").length,
+      workspaceColumns: getComputedStyle(
+        document.querySelector<HTMLElement>(".workspace")!,
+      ).gridTemplateColumns.split(" ").length,
+    };
+  });
+
+  expect(layout).toEqual({
+    documentOverflow: 0,
+    clipped: [],
+    overflowingSteps: [],
+    filterColumns: 4,
+    workspaceColumns: 1,
+  });
+  expect(consoleErrors).toEqual([]);
+  await page.screenshot({
+    path: "test-results/design-qa-studio-1266x813.png",
+    fullPage: false,
+  });
+});

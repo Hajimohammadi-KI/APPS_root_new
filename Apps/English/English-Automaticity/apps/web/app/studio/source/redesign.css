@@ -73,3 +73,30 @@ footer{grid-template-columns:auto 1fr auto minmax(270px,320px);align-items:cente
   .spoken-chunk-heading>strong{justify-self:start}
   .spoken-chunk-list{grid-template-columns:1fr}
 }
+
+/* Defensive sizing for translated copy, long C2 topics, and desktop text
+   scaling. Grid children must be allowed to shrink before their text wraps. */
+main,.workspace,.studio,.evidence,.panel,.mode>div,.coach-card,.coach-topic,.coach-stage,.coach-dialogue,.feedback-row>div{min-width:0}
+.mode b,.mode small,.coach-topic h2,.coach-dialogue p,.feedback-row small,.coach-tip p,.spoken-chunk-list li b,.spoken-chunk-list li p{overflow-wrap:anywhere}
+.coach-topic{gap:14px}
+.coach-topic h2{min-width:0;line-height:1.25}
+.coach-topic>span{flex:none;max-width:42%;text-align:center;white-space:normal}
+.coach-dialogue p{max-width:none}
+.feedback-row{grid-template-columns:38px minmax(0,1fr) auto}
+.feedback-row small{min-width:0;line-height:1.35}
+.coach-tip{min-width:0;overflow:hidden}
+.steps{min-width:0}
+.steps button{min-width:0;grid-template-columns:24px minmax(0,1fr);padding-inline:6px}
+.steps button span{min-width:0;line-height:1.2;overflow-wrap:normal;word-break:normal}
+
+@media(max-width:1400px){
+  .header-actions>span:nth-of-type(2){display:none}
+  .evidence>.panel{min-width:0}
+}
+
+@media(max-width:760px){
+  .coach-topic{align-items:flex-start}
+  .coach-topic h2{font-size:17px}
+  .coach-topic>span{max-width:44%;font-size:10px}
+  .steps button{padding-inline:4px}
+}

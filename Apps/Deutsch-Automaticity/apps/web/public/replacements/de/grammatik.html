@@ -186,6 +186,8 @@
     .feedback.bad { color: #9e233b; background: #fff0f2; }
     .feedback ul { margin: 8px 0 0; padding-inline-start: 22px; font-weight: 650; }
     .feedback li + li { margin-top: 6px; }
+    .feedback-error-token { color: #b4233b; font-weight: 850; text-decoration: underline wavy #d0445d 1px; }
+    .feedback-correct-token { color: #08702d; font-weight: 850; }
 
     .rule-panel { border: 1px solid var(--line-strong); border-radius: 11px; overflow: hidden; background: #fff; }
     .rule-heading { display: flex; align-items: center; gap: 12px; min-height: 45px; padding: 0 14px; color: #4d2aac; background: linear-gradient(90deg, #faf8ff, #fff); }
@@ -506,8 +508,8 @@
     <div style="display:grid;gap:10px"><button class="primary-btn" id="dailyReturnBtn">OK · Zum heutigen Training</button><button class="ghost-btn" id="dailyRepeatBtn">Noch einmal üben</button><button class="ghost-btn" id="dailyMistakesBtn">Meine Fehler ansehen</button></div>
   </dialog>
 
-  <script src="/replacements/de/grammar-catalog.js"></script>
-  <script src="/replacements/de/grammar-runtime.js?v=20260902-feedback"></script>
+  <script src="/replacements/de/grammar-catalog.js?v=20260902-valency-1"></script>
+  <script src="/replacements/de/grammar-runtime.js?v=20260902-valency-1"></script>
   <script>
     if (!window.GERMAN_GRAMMAR_RUNTIME) (() => {
       const $ = (selector, root = document) => root.querySelector(selector);
@@ -595,11 +597,21 @@
       const answer = $('#answerInput');
       const feedback = $('#feedback');
       const normalize = text => text.toLowerCase().trim().replace(/[.!?]+$/, '').replace(/\s+/g, ' ');
+      const detailedFallbackFeedback = (value, task) => {
+        const text = value.trim();
+        if (/\bich sehe der mann\b/i.test(text)) {
+          return '<strong>بررسی پاسخ شما</strong><ul class="feedback-points"><li><strong>حالت دستوری:</strong> «der Mann» ❌ → «den Mann» ✅. «Mann» مفعول مستقیم فعل «sehen» است؛ بنابراین باید در حالت Akkusativ بیاید.</li><li><strong>قاعده:</strong> der → den در Akkusativ مذکر.</li></ul><p><strong>جملهٔ اصلاح‌شده:</strong> Ich sehe den Mann.</p>';
+        }
+        if (task.answer && text && text !== normalize(task.answer)) {
+          return `<strong>بررسی پاسخ شما</strong><ul class="feedback-points"><li><strong>شکل نادرست:</strong> ${escapeHtml(value.trim())}</li><li><strong>شکل درست:</strong> ${escapeHtml(task.answer)}</li><li><strong>دلیل:</strong> پاسخ را با قاعدهٔ همین تمرین مقایسه کن.</li></ul>`;
+        }
+        return '<strong>بررسی پاسخ شما</strong><p>پاسخ را به‌صورت کامل و به آلمانی بنویس.</p>';
+      };
       $('#checkBtn').addEventListener('click', () => {
         const value = normalize(answer.value);
         const task=tasks[taskIndex];const correct=task.answer ? value===task.answer : value.split(/\s+/).length>=4;
         feedback.className='feedback show '+(correct?'good':'bad');
-        feedback.textContent=correct?'Richtig — gut abgerufen.':task.answer?`Versuche es noch einmal. Eine richtige Antwort ist: ${task.answer.replace(/^./,c=>c.toUpperCase())}.`:'Schreibe bitte einen vollständigen Satz mit mindestens vier Wörtern.';
+        feedback.innerHTML=correct?'<strong>آفرین، پاسخ درست است.</strong>':detailedFallbackFeedback(answer.value, task);
         if(!correct)lastMistake=answer.value.trim();
         if(correct&&taskIndex===tasks.length-1&&dailyContext)finishDailyActivity();
       });

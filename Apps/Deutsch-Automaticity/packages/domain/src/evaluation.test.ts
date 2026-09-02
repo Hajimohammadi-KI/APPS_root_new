@@ -55,6 +55,35 @@ describe("legacy-compatible evaluator", () => {
     ).toBe(true);
   });
 
+  it("explains the masculine Akkusativ article correction", () => {
+    const result = analyzeClosedAnswer(
+      "Ich sehe der Mann.",
+      "Ich sehe den Mann.",
+    );
+
+    expect(result.status).toBe("nearly_correct");
+    expect(result.corrected).toBe("Ich sehe den Mann.");
+    expect(result.issues[0]).toMatchObject({
+      category: "wrong_case",
+      correctedText: "den Mann",
+    });
+  });
+
+  it("explains geben as Dativ recipient plus Akkusativ object", () => {
+    const result = analyzeClosedAnswer(
+      "Ich gebe der Mann dem Buch.",
+      "Ich gebe dem Mann das Buch.",
+    );
+
+    expect(result.status).toBe("nearly_correct");
+    expect(result.issues[0]).toMatchObject({
+      category: "wrong_case",
+      userText: "der Mann dem Buch",
+      correctedText: "dem Mann das Buch",
+      hint: "der Mann → dem Mann; dem Buch → das Buch",
+    });
+  });
+
   it("akzeptiert eine kurze direkte Perfekt-Antwort ohne kopierte Aufgabenwörter", () => {
     const report = evaluateAnswer(
       "Ich habe heute gearbeitet.",

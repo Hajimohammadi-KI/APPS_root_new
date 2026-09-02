@@ -288,6 +288,14 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
           `<li><strong>${escapeHtml(localizedIssueLabel(point.type || "check"))}:</strong> ${escapeHtml(point.message)}</li>`,
       )
       .join("")}</ul>`;
+  const renderFeedbackHtml = (points) =>
+    `<ul class="feedback-points">${points
+      .filter((point) => point?.message || point?.html)
+      .map(
+        (point) =>
+          `<li><strong>${escapeHtml(localizedIssueLabel(point.type || "check"))}:</strong> ${point.html ? `${point.html} ${escapeHtml(point.message || "")}` : escapeHtml(point.message)}</li>`,
+      )
+      .join("")}</ul>`;
   const localizedMessage = (messages) =>
     messages?.[explanationLanguage] || messages?.Deutsch || "";
   const containsPersian = (value) => /[\u0600-\u06ff]/u.test(String(value ?? ""));
@@ -316,6 +324,38 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     return (metadata?.feedbackDimensions || [])
       .map((dimension) => labels[dimension] || dimension)
       .join(", ");
+  };
+  const recordGrammarError = (unit, exercise, answer, category, corrected) => {
+    const key = "deutschflow:grammar-error-patterns:v1";
+    const existing = readJson(key, []);
+    const rows = Array.isArray(existing) ? existing : [];
+    const metadata = exerciseMetadata(exercise);
+    const signature = `${unit.level}:${unit.title}:${category}`;
+    const current = rows.find((row) => row.signature === signature);
+    const next = current
+      ? rows.map((row) =>
+          row.signature === signature
+            ? {
+                ...row,
+                occurrences: row.occurrences + 1,
+                lastSeenAt: new Date().toISOString(),
+              }
+            : row,
+        )
+      : [
+          ...rows,
+          {
+            signature,
+            level: unit.level,
+            topic: unit.title,
+            contentType: metadata?.contentType || unit.contentType || "sentence",
+            category,
+            corrected,
+            occurrences: 1,
+            lastSeenAt: new Date().toISOString(),
+          },
+        ];
+    localStorage.setItem(key, JSON.stringify(next.slice(-200)));
   };
 
   const localClosedFeedback = (answer, expected) => {
@@ -383,6 +423,46 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
           },
         ],
         corrected: expected,
+      };
+    }
+    if (/\bich sehe der mann\b/iu.test(answer)) {
+      const highlighted = '<span class="feedback-error-token">der Mann</span> → <span class="feedback-correct-token">den Mann</span>';
+      return {
+        status: "nearly_correct",
+        points: [{
+          type: "case",
+          html: `${highlighted}. ${escapeHtml(localizedMessage({
+            Deutsch: "„Mann“ ist das direkte Objekt von „sehen“ und steht deshalb im Akkusativ.",
+            English: "“Mann” is the direct object of “sehen”, so it takes the accusative.",
+            فارسی: "«Mann» مفعول مستقیمِ «sehen» است و باید در حالت Akkusativ بیاید.",
+          }))}`,
+        }],
+        corrected: "Ich sehe den Mann.",
+      };
+    }
+    if (/\bich gebe der mann dem buch\b/iu.test(answer)) {
+      return {
+        status: "nearly_correct",
+        points: [
+          {
+            type: "case",
+            html: '<span class="feedback-error-token">der Mann</span> → <span class="feedback-correct-token">dem Mann</span>; <span class="feedback-error-token">dem Buch</span> → <span class="feedback-correct-token">das Buch</span>.',
+            message: localizedMessage({
+              Deutsch: "Bei „geben“ ist der Empfänger Dativ und die gegebene Sache Akkusativ.",
+              English: "With “geben”, the recipient is dative and the thing given is accusative.",
+              فارسی: "در فعل «geben»، گیرنده در حالت Dativ و چیزی که داده می‌شود در حالت Akkusativ است.",
+            }),
+          },
+          {
+            type: "target_grammar",
+            message: localizedMessage({
+              Deutsch: "Valenz: jemandem etwas geben → dem Mann das Buch.",
+              English: "Valency: jemandem etwas geben → dem Mann das Buch.",
+              فارسی: "الگوی فعل: jemandem etwas geben → dem Mann das Buch.",
+            }),
+          },
+        ],
+        corrected: "Ich gebe dem Mann das Buch.",
       };
     }
     const answerWords = answer.replace(/[.!?]+$/gu, "").split(/\s+/u);
@@ -1060,10 +1140,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       }
       feedback.innerHTML = `<strong>Die Regel zum Vergleich:</strong> ${escapeHtml(expected)}<br><span>Es gibt hier keine einzig richtige Formulierung – vergleiche nur Bedeutung und Vollständigkeit.</span>`;
     } else if (!correct) {
-      const localIssue =
-        (unit.title === "es gibt mit Akkusativ"
-          ? localClosedFeedback(answer, expected) || localEsGibtFeedback(answer)
-          : null);
+      const localIssue = localClosedFeedback(answer, expected);
       const points = localIssue?.points?.length
         ? localIssue.points
         : [
@@ -1074,11 +1151,20 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
               message: `${copy.dimensions}: ${localizedDimensions(metadata)}`,
             },
           ];
-      feedback.innerHTML = `<strong>${escapeHtml(copy.feedbackTitle)}</strong>${renderFeedbackPoints(points)}${
+      feedback.innerHTML = `<strong>${escapeHtml(copy.feedbackTitle)}</strong>${localIssue?.points?.some((point) => point.html) ? renderFeedbackHtml(localIssue.points) : renderFeedbackPoints(points)}${
         localIssue?.corrected
           ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(localIssue.corrected)}</p>`
           : ""
       }`;
+      if (localIssue?.points?.length) {
+        recordGrammarError(
+          unit,
+          exercise,
+          answer,
+          localIssue.points[0]?.type || "needs_revision",
+          localIssue.corrected || expected,
+        );
+      }
       return;
     }
     const completed = markExerciseComplete(unit);

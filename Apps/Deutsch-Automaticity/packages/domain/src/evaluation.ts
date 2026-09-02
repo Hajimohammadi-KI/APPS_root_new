@@ -210,6 +210,30 @@ export function analyzeClosedAnswer(
       severity: "critical",
     });
   }
+  if (/\bich sehe der mann\b/iu.test(text)) {
+    issues.push({
+      type: "Kasus",
+      category: "wrong_case",
+      message: "„der Mann“ muss hier „den Mann“ heißen.",
+      userText: "der Mann",
+      correctedText: "den Mann",
+      explanation: "„Mann“ ist das direkte Objekt von „sehen“ und steht im Akkusativ.",
+      hint: "der → den im Akkusativ",
+      severity: "critical",
+    });
+  }
+  if (/\bich gebe der mann dem buch\b/iu.test(text)) {
+    issues.push({
+      type: "Valenz und Kasus",
+      category: "wrong_case",
+      message: "Bei „geben“ ist die Person der Empfänger im Dativ und die Sache das direkte Objekt im Akkusativ.",
+      userText: "der Mann dem Buch",
+      correctedText: "dem Mann das Buch",
+      explanation: "Das Verb „geben“ folgt dem Muster „jemandem etwas geben“: dem Mann = Dativ, das Buch = Akkusativ.",
+      hint: "der Mann → dem Mann; dem Buch → das Buch",
+      severity: "critical",
+    });
+  }
   if (/\bes gibt (ein|eine) supermarkt\b/iu.test(text)) {
     issues.push({
       type: "Artikel und Kasus",

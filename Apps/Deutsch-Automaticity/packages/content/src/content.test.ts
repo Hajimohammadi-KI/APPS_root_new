@@ -168,11 +168,18 @@ describe("legacy content extraction", () => {
       );
       expect(open?.[2]?.prompt.Deutsch).toContain(unit.title);
       expect(open?.[2]?.prompt.Deutsch).toContain("auf Deutsch");
-      expect(open?.[2]?.prompt.Deutsch).toContain("Inspiration");
+      expect(open?.[2]?.prompt.Deutsch).toContain(
+        "erst nach deinem ersten Versuch",
+      );
       expect(open?.[2]?.prompt.English).toContain("in German");
-      expect(open?.[2]?.prompt.English).toContain("inspiration");
+      expect(open?.[2]?.prompt.English).toContain(
+        "only after your first attempt",
+      );
       expect(open?.[2]?.prompt.فارسی).toContain("به آلمانی");
-      expect(open?.[2]?.prompt.فارسی).toContain("الهام");
+      expect(open?.[2]?.prompt.فارسی).toContain("پس از اولین تلاش");
+      expect(open?.[2]?.prompt.Deutsch).not.toContain(open?.[1] || "");
+      expect(open?.[2]?.prompt.English).not.toContain(open?.[1] || "");
+      expect(open?.[2]?.prompt.فارسی).not.toContain(open?.[1] || "");
     }
 
     const prompts = grammarUnits.flatMap((unit) =>
@@ -206,6 +213,9 @@ describe("legacy content extraction", () => {
     expect(correction?.[2]?.mode).toBe("closed_recall");
     expect(correction?.[0]).toContain("Es gibt ein Supermarkt");
     expect(correction?.[1]).toBe("In meiner Straße gibt es einen Supermarkt.");
+    expect(correction?.[2]?.acceptedAnswers).toContain(
+      "Es gibt einen Supermarkt in meiner Straße.",
+    );
 
     const production = unit!.exercises.at(-1);
     expect(production?.[2]?.mode).toBe("open_production");
@@ -213,7 +223,10 @@ describe("legacy content extraction", () => {
     expect(production?.[2]?.prompt.English).toContain("your city");
     expect(production?.[2]?.prompt.فارسی).toContain("شهر");
     expect(production?.[2]?.prompt.Deutsch).toContain(
-      "Schreibe bitte einen anderen Satz",
+      "erst nach deinem ersten Versuch",
+    );
+    expect(production?.[2]?.prompt.Deutsch).not.toContain(
+      production?.[1] || "",
     );
   });
 

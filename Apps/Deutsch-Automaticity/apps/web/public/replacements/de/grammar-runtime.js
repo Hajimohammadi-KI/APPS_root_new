@@ -65,12 +65,22 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       openEyebrow: "Freie Produktion · mehrere Antworten möglich",
       closedPlaceholder: "Vollständige Antwort auf Deutsch",
       openPlaceholder: "Schreibe deinen eigenen Text auf Deutsch",
+      intentLabel: "Schritt 1 · Beabsichtigte Bedeutung auf Persisch",
+      intentPlaceholder:
+        "ابتدا معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، به فارسی بنویس",
+      intentHelp:
+        "Schreibe zuerst selbst auf Persisch, was dein deutscher Satz bedeuten soll. Das verhindert bloßes Abschreiben.",
+      answerLabel: "Schritt 2 · Eigene deutsche Antwort",
       check: "Antwort prüfen",
       evaluate: "Eigenen Text auswerten",
       checking: "Eigener Text wird geprüft …",
       correct: "Richtig — diese geschlossene Aufgabe ist eindeutig gelöst.",
       expected: "Noch nicht richtig. Eine passende Antwort ist:",
       empty: "Schreibe zuerst deine eigene deutsche Antwort.",
+      intentEmpty:
+        "Schreibe zuerst auf Persisch, was dein deutscher Satz bedeuten soll.",
+      intentPersian:
+        "Der erste Schritt muss persischen Text enthalten, damit deine beabsichtigte Bedeutung feststeht.",
       incomplete: (minimum) =>
         `Schreibe mindestens ${minimum} vollständige${minimum === 1 ? "n Satz" : " Sätze"} auf Deutsch.`,
       aiCorrect: "Sehr gut — deine eigene Formulierung wurde ausgewertet.",
@@ -81,18 +91,32 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       dimensions: "Geprüfte Bereiche",
       aiUnavailable:
         "Online-KI ist nicht freigegeben oder nicht verbunden. Deshalb wird keine vollständige Korrektur vorgetäuscht.",
+      corrected: "Verbesserte deutsche Form",
+      acceptedAlternative: "Diese deutsche Form ist ebenfalls richtig.",
+      exampleLocked:
+        "Die deutschen Beispiele bleiben bis nach deinem eigenen Versuch verborgen.",
     },
     English: {
       closedEyebrow: "Closed task · objectively checkable",
       openEyebrow: "Open production · many answers are possible",
       closedPlaceholder: "Write the complete answer in German",
       openPlaceholder: "Write your own text in German",
+      intentLabel: "Step 1 · Intended meaning in Persian",
+      intentPlaceholder:
+        "ابتدا معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، به فارسی بنویس",
+      intentHelp:
+        "First write in Persian what your German sentence should mean. This prevents copying a model.",
+      answerLabel: "Step 2 · Your own German answer",
       check: "Check answer",
       evaluate: "Evaluate my own text",
       checking: "Evaluating your own text …",
       correct: "Correct — this closed task has one controlled answer.",
       expected: "Not correct yet. One suitable answer is:",
       empty: "Write your own German answer first.",
+      intentEmpty:
+        "First write in Persian what your German sentence should mean.",
+      intentPersian:
+        "Step 1 must contain Persian text so your intended meaning is recorded.",
       incomplete: (minimum) =>
         `Write at least ${minimum} complete German ${minimum === 1 ? "sentence" : "sentences"}.`,
       aiCorrect: "Very good — your own wording was evaluated.",
@@ -103,18 +127,31 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       dimensions: "Checked dimensions",
       aiUnavailable:
         "Online AI is not approved or connected, so the app does not pretend to provide a complete correction.",
+      corrected: "Improved German version",
+      acceptedAlternative: "This German form is also correct.",
+      exampleLocked:
+        "The German examples stay hidden until after your own attempt.",
     },
     فارسی: {
       closedEyebrow: "تمرین بسته · دارای پاسخ عینی",
       openEyebrow: "تولید آزاد · پاسخ‌های درست متعدد",
       closedPlaceholder: "پاسخ کامل را به آلمانی بنویس",
       openPlaceholder: "متن خودت را به آلمانی بنویس",
+      intentLabel: "مرحلهٔ ۱ · معنیِ موردنظر به فارسی",
+      intentPlaceholder:
+        "ابتدا معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، به فارسی بنویس",
+      intentHelp:
+        "اول خودت مشخص کن که می‌خواهی چه بگویی؛ به این ترتیب جملهٔ آلمانی از روی نمونه کپی نمی‌شود.",
+      answerLabel: "مرحلهٔ ۲ · پاسخ آلمانیِ خودت",
       check: "بررسی پاسخ",
       evaluate: "ارزیابی متن خودم",
       checking: "متن خودت در حال بررسی است…",
       correct: "درست است — این تمرین بسته یک پاسخ کنترل‌شده دارد.",
       expected: "هنوز درست نیست. یک پاسخ مناسب:",
       empty: "ابتدا پاسخ آلمانی خودت را بنویس.",
+      intentEmpty: "ابتدا معنیِ موردنظرت را به فارسی بنویس.",
+      intentPersian:
+        "مرحلهٔ اول باید دارای متن فارسی باشد تا معنیِ موردنظرت مشخص شود.",
       incomplete: (minimum) =>
         `حداقل ${minimum} جملهٔ کامل به آلمانی بنویس.`,
       aiCorrect: "بسیار خوب — جمله‌بندی خودت ارزیابی شد.",
@@ -125,6 +162,10 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       dimensions: "موارد بررسی‌شده",
       aiUnavailable:
         "هوش مصنوعی آنلاین مجاز یا متصل نیست؛ بنابراین اپ وانمود نمی‌کند که تصحیح کامل انجام شده است.",
+      corrected: "صورت اصلاح‌شدهٔ آلمانی",
+      acceptedAlternative: "این صورت آلمانی نیز درست است.",
+      exampleLocked:
+        "مثال‌های آلمانی تا پس از تلاش خودت پنهان می‌مانند.",
     },
   };
 
@@ -167,7 +208,71 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     },
   };
 
+  const issueLabels = {
+    Deutsch: {
+      meaning: "Bedeutung",
+      target_grammar: "Zielgrammatik",
+      case: "Kasus",
+      preposition: "Präposition und Kasus",
+      word_order: "Wortstellung",
+      spelling: "Rechtschreibung",
+      vocabulary: "Wortschatz",
+      style: "Stil",
+      completeness: "Vollständigkeit",
+      target_missing: "Zielstruktur",
+      check: "Selbstcheck",
+      model: "Beispiel nach dem Versuch",
+      answer: "Deine Antwort",
+      expected: "Passende Lösung",
+    },
+    English: {
+      meaning: "Meaning",
+      target_grammar: "Target grammar",
+      case: "Case",
+      preposition: "Preposition and case",
+      word_order: "Word order",
+      spelling: "Spelling",
+      vocabulary: "Vocabulary",
+      style: "Style",
+      completeness: "Completeness",
+      target_missing: "Target structure",
+      check: "Self-check",
+      model: "Example after your attempt",
+      answer: "Your answer",
+      expected: "Suitable solution",
+    },
+    فارسی: {
+      meaning: "معنا",
+      target_grammar: "گرامر هدف",
+      case: "حالت دستوری",
+      preposition: "حرف اضافه و حالت دستوری",
+      word_order: "ترتیب واژه‌ها",
+      spelling: "املا",
+      vocabulary: "واژگان",
+      style: "سبک",
+      completeness: "کامل‌بودن جمله",
+      target_missing: "ساختار هدف",
+      check: "خودارزیابی",
+      model: "مثال پس از تلاش تو",
+      answer: "پاسخ تو",
+      expected: "پاسخ مناسب",
+    },
+  };
+
   const activeCopy = () => uiCopy[explanationLanguage] || uiCopy.Deutsch;
+  const localizedIssueLabel = (type) =>
+    (issueLabels[explanationLanguage] || issueLabels.Deutsch)[type] || type;
+  const renderFeedbackPoints = (points) =>
+    `<ul class="feedback-points">${points
+      .filter((point) => point?.message)
+      .map(
+        (point) =>
+          `<li><strong>${escapeHtml(localizedIssueLabel(point.type || "check"))}:</strong> ${escapeHtml(point.message)}</li>`,
+      )
+      .join("")}</ul>`;
+  const localizedMessage = (messages) =>
+    messages?.[explanationLanguage] || messages?.Deutsch || "";
+  const containsPersian = (value) => /[\u0600-\u06ff]/u.test(String(value ?? ""));
   const exerciseMetadata = (exercise) =>
     exercise?.[2] && typeof exercise[2] === "object" ? exercise[2] : null;
   const isOpenProduction = (exercise) =>
@@ -192,15 +297,22 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
   const learnerAllowsOnlineAI = () =>
     readJson(learnerStateKey, {})?.learner?.allowOnlineAI === true;
 
-  const saveOpenResponse = (unit, exercise, response, outcome) => {
+  const saveOpenResponse = (
+    unit,
+    exercise,
+    learnerIntentFa,
+    response,
+    outcome,
+  ) => {
     const existing = readJson(productionKey, []);
     const rows = Array.isArray(existing) ? existing : [];
     const metadata = exerciseMetadata(exercise);
     rows.push({
-      version: 1,
+      version: 2,
       level: unit.level,
       topic: unit.title,
       contentType: metadata?.contentType || unit.contentType || "sentence",
+      learnerIntentFa,
       response,
       outcome,
       occurredAt: new Date().toISOString(),
@@ -219,17 +331,35 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         typeof value.targetUsed !== "boolean" ||
         typeof value.complete !== "boolean" ||
         typeof value.correctedGerman !== "string" ||
-        typeof value.feedback !== "string" ||
         !Array.isArray(value.issueTypes)
       ) {
         return null;
       }
+      const feedbackPoints = Array.isArray(value.feedbackPoints)
+        ? value.feedbackPoints
+            .filter(
+              (point) =>
+                point &&
+                typeof point.type === "string" &&
+                typeof point.message === "string" &&
+                point.message.trim(),
+            )
+            .map((point) => ({
+              type: point.type.slice(0, 50),
+              message: point.message.trim().slice(0, 1_000),
+            }))
+            .slice(0, 10)
+        : [];
+      if (!feedbackPoints.length && typeof value.feedback === "string") {
+        feedbackPoints.push({ type: "check", message: value.feedback.trim() });
+      }
+      if (!feedbackPoints.length) return null;
       return {
         verdict: value.verdict,
         targetUsed: value.targetUsed,
         complete: value.complete,
         correctedGerman: value.correctedGerman.trim(),
-        feedback: value.feedback.trim(),
+        feedbackPoints,
         issueTypes: value.issueTypes.map(String).slice(0, 8),
       };
     } catch {
@@ -237,7 +367,12 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     }
   };
 
-  const requestOpenProductionEvaluation = async (unit, exercise, answer) => {
+  const requestOpenProductionEvaluation = async (
+    unit,
+    exercise,
+    learnerIntentFa,
+    answer,
+  ) => {
     if (!learnerAllowsOnlineAI()) return null;
     const metadata = exerciseMetadata(exercise);
     const request = {
@@ -250,6 +385,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         task: localizedExerciseText(exercise, "prompt", exercise[0]),
         inspirationOnly: exercise[1],
       }),
+      learnerIntentFa,
       learnerInput: answer,
       language: explanationLanguage,
       purpose: "grammar-evaluation",
@@ -294,43 +430,80 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
 
   const localEsGibtFeedback = (answer) => {
     const normalizedAnswer = normalize(answer);
+    const points = [];
     if (/\bin meiner stadt viele parks\b/u.test(normalizedAnswer)) {
       return {
         corrected: "In meiner Stadt gibt es viele Parks.",
-        message: {
-          Deutsch:
-            "Deine Idee ist klar, aber das Verb fehlt. Verwende „es gibt“.",
-          English:
-            "Your idea is clear, but the verb is missing. Use “es gibt”.",
-          فارسی:
-            "منظورت روشن است، اما فعل در جمله نیست. از «es gibt» استفاده کن.",
-        },
+        points: [
+          {
+            type: "target_missing",
+            message: localizedMessage({
+              Deutsch:
+                "Deine Idee ist klar, aber das Verb fehlt. Verwende „es gibt“.",
+              English:
+                "Your idea is clear, but the verb is missing. Use “es gibt”.",
+              فارسی:
+                "منظورت روشن است، اما فعل در جمله نیست. از «es gibt» استفاده کن.",
+            }),
+          },
+        ],
       };
     }
-    if (/\bes gibt ein supermarkt\b/u.test(normalizedAnswer)) {
-      return {
-        corrected: "In meiner Straße gibt es einen Supermarkt.",
-        message: {
+
+    if (/\bspermarket\b/u.test(normalizedAnswer)) {
+      points.push({
+        type: "spelling",
+        message: localizedMessage({
+          Deutsch: "„Spermarket“ → „Supermarkt“.",
+          English: "“Spermarket” → “Supermarkt”.",
+          فارسی: "املای درست: «Spermarket» → «Supermarkt».",
+        }),
+      });
+    }
+    if (/\bes gibt (?:ein|eine) (?:supermarkt|spermarket)\b/u.test(normalizedAnswer)) {
+      points.push({
+        type: "case",
+        message: localizedMessage({
           Deutsch:
-            "Fast richtig. „Supermarkt“ ist maskulin. Nach „es gibt“ steht Akkusativ: ein Supermarkt → einen Supermarkt.",
+            "„eine/ein Supermarkt“ → „einen Supermarkt“: Supermarkt ist maskulin und steht nach „es gibt“ im Akkusativ.",
           English:
-            "Almost right. “Supermarkt” is masculine. After “es gibt”, use the accusative: ein Supermarkt → einen Supermarkt.",
+            "“eine/ein Supermarkt” → “einen Supermarkt”: Supermarkt is masculine and takes the accusative after “es gibt”.",
           فارسی:
-            "تقریباً درست است. «Supermarkt» مذکر است و بعد از «es gibt» حالت Akkusativ می‌آید: ein Supermarkt → einen Supermarkt.",
-        },
-      };
+            "شکل درست: «eine/ein Supermarkt» → «einen Supermarkt»؛ Supermarkt مذکر است و پس از «es gibt» در حالت Akkusativ می‌آید.",
+        }),
+      });
+    }
+    if (/\bim strasse\b/u.test(normalizedAnswer)) {
+      points.push({
+        type: "preposition",
+        message: localizedMessage({
+          Deutsch:
+            "„im Strasse“ → „in meiner Straße“ oder „in der Straße“: Straße ist feminin; „im“ bedeutet „in dem“ und passt hier nicht.",
+          English:
+            "“im Strasse” → “in meiner Straße” or “in der Straße”: Straße is feminine; “im” means “in dem” and does not fit here.",
+          فارسی:
+            "شکل درست: «im Strasse» → «in meiner Straße» یا «in der Straße»؛ Straße مؤنث است و «im = in dem» اینجا درست نیست.",
+        }),
+      });
     }
     if (!/\b(?:es gibt|gibt es)\b/u.test(normalizedAnswer)) {
-      return {
-        corrected: "",
-        message: {
+      points.push({
+        type: "target_missing",
+        message: localizedMessage({
           Deutsch: "Verwende die Zielstruktur „es gibt“ in deinem Satz.",
           English: "Use the target structure “es gibt” in your sentence.",
           فارسی: "ساختار هدف «es gibt» را در جمله‌ات به‌کار ببر.",
-        },
-      };
+        }),
+      });
     }
-    return null;
+    if (!points.length) return null;
+    return {
+      corrected:
+        /\b(?:supermarkt|spermarket)\b/u.test(normalizedAnswer)
+          ? "Es gibt einen Supermarkt in meiner Straße."
+          : "",
+      points,
+    };
   };
 
   const progress = readJson(progressKey, {});
@@ -394,6 +567,19 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
 
   const currentUnit = () => units[selectedIndex];
 
+  const renderExamples = (unit, reveal) => {
+    const container = $("#examplesContent");
+    if (!reveal) {
+      container.innerHTML = `<p>${escapeHtml(activeCopy().exampleLocked)}</p>`;
+      container.closest("details")?.removeAttribute("open");
+      return;
+    }
+    container.innerHTML = `
+      <p><strong>Vergleiche die Modelle:</strong></p>
+      <ul>${(unit.examples || []).map((example) => `<li>${escapeHtml(example)}</li>`).join("")}</ul>
+      <p><strong>Abruf:</strong> ${escapeHtml(unit.recallTest || "Erkläre die Regel ohne nachzusehen.")}</p>`;
+  };
+
   const isRecitationExercise = (unit, exercise) =>
     !exerciseMetadata(exercise) &&
     Boolean(unit?.recallTest) &&
@@ -409,6 +595,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const exercise = exercises[exerciseIndex];
     const open = isOpenProduction(exercise);
     const copy = activeCopy();
+    renderExamples(unit, !open);
     $("#exercisePrompt").textContent = localizedExerciseText(
       exercise,
       "prompt",
@@ -420,6 +607,12 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         ? "Freie Erklärung – vergleiche danach mit der Regel"
         : copy.closedEyebrow;
     const answerInput = $("#answerInput");
+    const intentInput = $("#intentInput");
+    intentInput.value = "";
+    intentInput.placeholder = copy.intentPlaceholder;
+    $("#intentLabel").textContent = copy.intentLabel;
+    $("#intentHelp").textContent = copy.intentHelp;
+    $("#answerLabel").textContent = copy.answerLabel;
     answerInput.value = "";
     answerInput.placeholder = open
       ? copy.openPlaceholder
@@ -445,10 +638,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     $(".crumbs .badge").textContent = unit.level;
     $(".crumbs .foundations").textContent = `${completed}/${total} Übungen`;
     $("#canDoGoal").textContent = deriveGoal(unit);
-    $("#examplesContent").innerHTML = `
-      <p><strong>Vergleiche die Modelle:</strong></p>
-      <ul>${(unit.examples || []).map((example) => `<li>${escapeHtml(example)}</li>`).join("")}</ul>
-      <p><strong>Abruf:</strong> ${escapeHtml(unit.recallTest || "Erkläre die Regel ohne nachzusehen.")}</p>`;
+    renderExamples(unit, true);
     $("#mistakeContent").innerHTML = `
       <p>${escapeHtml(unit.commonError || "Prüfe Form, Bedeutung und Satzstellung.")}</p>
       <p><strong>Reparatur:</strong> ${escapeHtml(unit.repairTest || "Korrigiere den Fehler und erkläre die Änderung.")}</p>`;
@@ -557,19 +747,40 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const unit = currentUnit();
     if (!unit) return;
     const exercise = unit.exercises?.[exerciseIndex] || [unit.recallTest, unit.testAnswer];
+    const learnerIntentFa = $("#intentInput").value.trim();
     const answer = $("#answerInput").value.trim();
     const expected = exercise[1] || unit.testAnswer || unit.examples?.[0] || "";
     const metadata = exerciseMetadata(exercise);
     const feedback = $("#feedback");
     const copy = activeCopy();
 
+    if (!learnerIntentFa) {
+      feedback.className = "feedback show bad";
+      feedback.innerHTML = renderFeedbackPoints([
+        { type: "meaning", message: copy.intentEmpty },
+      ]);
+      $("#intentInput").focus();
+      return;
+    }
+    if (!containsPersian(learnerIntentFa)) {
+      feedback.className = "feedback show bad";
+      feedback.innerHTML = renderFeedbackPoints([
+        { type: "meaning", message: copy.intentPersian },
+      ]);
+      $("#intentInput").focus();
+      return;
+    }
+    if (!answer) {
+      feedback.className = "feedback show bad";
+      feedback.innerHTML = renderFeedbackPoints([
+        { type: "completeness", message: copy.empty },
+      ]);
+      $("#answerInput").focus();
+      return;
+    }
+
     if (isOpenProduction(exercise)) {
       const minimumSentences = Math.max(1, metadata?.minimumSentences || 1);
-      if (!answer) {
-        feedback.className = "feedback show bad";
-        feedback.textContent = copy.empty;
-        return;
-      }
       if (countSentences(answer) < minimumSentences || countWords(answer) < 4) {
         feedback.className = "feedback show bad";
         feedback.textContent = copy.incomplete(minimumSentences);
@@ -579,15 +790,19 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       if (unit.title === "es gibt mit Akkusativ") {
         const localIssue = localEsGibtFeedback(answer);
         if (localIssue) {
-          const message =
-            localIssue.message[explanationLanguage] || localIssue.message.Deutsch;
           feedback.className = "feedback show bad";
-          feedback.innerHTML = `<strong>${escapeHtml(message)}</strong>${
+          feedback.innerHTML = `${renderFeedbackPoints(localIssue.points)}${
             localIssue.corrected
-              ? `<br><span>${escapeHtml(localIssue.corrected)}</span>`
+              ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(localIssue.corrected)}</p>`
               : ""
           }`;
-          saveOpenResponse(unit, exercise, answer, "local-revision");
+          saveOpenResponse(
+            unit,
+            exercise,
+            learnerIntentFa,
+            answer,
+            "local-revision",
+          );
           return;
         }
       }
@@ -604,7 +819,12 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       checkButton.textContent = copy.checking;
       $("#previousBtn").disabled = true;
       $("#nextBtn").disabled = true;
-      const result = await requestOpenProductionEvaluation(unit, exercise, answer);
+      const result = await requestOpenProductionEvaluation(
+        unit,
+        exercise,
+        learnerIntentFa,
+        answer,
+      );
       checkingOpenProduction = false;
       if (
         unitKey(currentUnit()) !== evaluationContext.unit ||
@@ -623,8 +843,28 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       if (!result) {
         const completed = markExerciseComplete(unit);
         feedback.className = "feedback show";
-        feedback.innerHTML = `<strong>${escapeHtml(copy.selfCheck)}</strong><br><span>${escapeHtml(copy.aiUnavailable)}</span><br><span>${escapeHtml(copy.inspiration)} ${escapeHtml(expected)}</span><br><span>${escapeHtml(copy.dimensions)}: ${escapeHtml(localizedDimensions(metadata))}</span>`;
-        saveOpenResponse(unit, exercise, answer, "self-check");
+        feedback.innerHTML = `<strong>${escapeHtml(copy.selfCheck)}</strong>${renderFeedbackPoints([
+          { type: "check", message: copy.aiUnavailable },
+          {
+            type: "meaning",
+            message: `${learnerIntentFa} ↔ ${answer}`,
+          },
+          {
+            type: "check",
+            message: `${copy.dimensions}: ${localizedDimensions(metadata)}`,
+          },
+          {
+            type: "model",
+            message: `${copy.inspiration} ${expected}`,
+          },
+        ])}`;
+        saveOpenResponse(
+          unit,
+          exercise,
+          learnerIntentFa,
+          answer,
+          "self-check",
+        );
         notify(`${completed}/${unit.exercises.length}`);
         return;
       }
@@ -635,15 +875,16 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         evaluation.targetUsed &&
         evaluation.complete;
       feedback.className = `feedback show ${accepted ? "good" : "bad"}`;
-      feedback.innerHTML = `<strong>${escapeHtml(accepted ? copy.aiCorrect : copy.aiRevision)}</strong><br><span>${escapeHtml(evaluation.feedback)}</span>${
+      feedback.innerHTML = `<strong>${escapeHtml(accepted ? copy.aiCorrect : copy.aiRevision)}</strong>${renderFeedbackPoints(evaluation.feedbackPoints)}${
         evaluation.correctedGerman &&
         normalize(evaluation.correctedGerman) !== normalize(answer)
-          ? `<br><span>${escapeHtml(evaluation.correctedGerman)}</span>`
+          ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(evaluation.correctedGerman)}</p>`
           : ""
-      }<br><small>${escapeHtml(source)} · ${escapeHtml(copy.dimensions)}: ${escapeHtml(localizedDimensions(metadata))}</small>`;
+      }<small>${escapeHtml(source)} · ${escapeHtml(copy.dimensions)}: ${escapeHtml(localizedDimensions(metadata))}</small>`;
       saveOpenResponse(
         unit,
         exercise,
+        learnerIntentFa,
         answer,
         accepted ? "ai-accepted" : "ai-revision",
       );
@@ -652,7 +893,17 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     }
 
     const recitation = isRecitationExercise(unit, exercise);
-    const correct = recitation ? answer.trim().length > 0 : normalize(answer) === normalize(expected);
+    const acceptedAnswers = [
+      expected,
+      ...(Array.isArray(metadata?.acceptedAnswers)
+        ? metadata.acceptedAnswers
+        : []),
+    ];
+    const correct = recitation
+      ? answer.trim().length > 0
+      : acceptedAnswers.some(
+          (acceptedAnswer) => normalize(answer) === normalize(acceptedAnswer),
+        );
     feedback.className = `feedback show ${correct ? "good" : "bad"}`;
     if (recitation) {
       if (!correct) {
@@ -661,12 +912,36 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       }
       feedback.innerHTML = `<strong>Die Regel zum Vergleich:</strong> ${escapeHtml(expected)}<br><span>Es gibt hier keine einzig richtige Formulierung – vergleiche nur Bedeutung und Vollständigkeit.</span>`;
     } else if (!correct) {
-      feedback.innerHTML = `${escapeHtml(copy.expected)} <strong>${escapeHtml(expected)}</strong><br><span>${escapeHtml(copy.dimensions)}: ${escapeHtml(localizedDimensions(metadata))}</span>`;
+      const localIssue =
+        unit.title === "es gibt mit Akkusativ"
+          ? localEsGibtFeedback(answer)
+          : null;
+      const points = localIssue?.points?.length
+        ? localIssue.points
+        : [
+            { type: "answer", message: answer || copy.empty },
+            { type: "expected", message: `${copy.expected} ${expected}` },
+            {
+              type: "check",
+              message: `${copy.dimensions}: ${localizedDimensions(metadata)}`,
+            },
+          ];
+      feedback.innerHTML = `${renderFeedbackPoints(points)}${
+        localIssue?.corrected
+          ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(localIssue.corrected)}</p>`
+          : ""
+      }`;
       return;
     }
     const completed = markExerciseComplete(unit);
     if (!recitation) {
-      feedback.textContent = `${copy.correct} ${completed}/${unit.exercises.length}`;
+      const usedAlternative = normalize(answer) !== normalize(expected);
+      feedback.innerHTML = `<strong>${escapeHtml(copy.correct)}</strong>${renderFeedbackPoints([
+        {
+          type: "meaning",
+          message: usedAlternative ? copy.acceptedAlternative : learnerIntentFa,
+        },
+      ])}<span>${completed}/${unit.exercises.length}</span>`;
     }
   };
 
@@ -685,15 +960,15 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
   const languageGuides = {
     Deutsch: {
       dir: "ltr",
-      html: "<strong>So arbeitest du:</strong> Geschlossene Aufgaben haben eine eindeutig prüfbare Antwort. In freien Aufgaben formulierst du selbst auf Deutsch; das Beispiel ist nur Inspiration. Ohne freigegebene, verbundene KI zeigt die App einen ehrlichen Selbstcheck statt einer vorgetäuschten Korrektur.",
+      html: "<strong>So arbeitest du:</strong> Schreibe zuerst selbst auf Persisch, was du sagen willst, und formuliere es danach auf Deutsch. Beispiele werden bei freien Aufgaben erst nach deinem Versuch gezeigt. Fehler erscheinen einzeln als Stichpunkte. Ohne freigegebene, verbundene KI zeigt die App einen ehrlichen Selbstcheck statt einer vorgetäuschten Korrektur.",
     },
     English: {
       dir: "ltr",
-      html: "<strong>How to work:</strong> Closed tasks have an objectively checkable answer. In open tasks, create your own German response; the example is inspiration only. Without approved, connected AI, the app provides an honest self-check instead of pretending to correct every response.",
+      html: "<strong>How to work:</strong> First write in Persian what you intend to say, then produce it in German. In open tasks, examples appear only after your attempt. Errors are separated into bullet points. Without approved, connected AI, the app provides an honest self-check instead of pretending to correct every response.",
     },
     "فارسی": {
       dir: "rtl",
-      html: "<strong>روش انجام تمرین:</strong> تمرین بسته پاسخ عینی و قابل‌بررسی دارد. در تمرین باز، پاسخ متفاوت و واقعی خودت را به آلمانی می‌سازی و مثال فقط برای الهام است. بدون هوش مصنوعیِ متصل و مجاز، اپ به‌جای تصحیح ساختگی یک خودارزیابی صادقانه نشان می‌دهد.",
+      html: "<strong>روش انجام تمرین:</strong> ابتدا خودت به فارسی بنویس که می‌خواهی چه بگویی و سپس آن را به آلمانی تولید کن. در تمرین باز، مثال فقط پس از تلاش تو نمایش داده می‌شود و هر خطا در یک بولت جدا توضیح داده می‌شود. بدون هوش مصنوعیِ متصل و مجاز، اپ به‌جای تصحیح ساختگی یک خودارزیابی صادقانه نشان می‌دهد.",
     },
   };
 

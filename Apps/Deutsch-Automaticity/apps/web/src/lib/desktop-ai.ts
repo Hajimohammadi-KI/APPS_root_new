@@ -20,6 +20,7 @@ export interface AIProviderConfiguration {
 export interface AIExplanationRequest {
   readonly topic: string;
   readonly content: string;
+  readonly learnerIntentFa?: string;
   readonly learnerInput?: string;
   readonly language: string;
   readonly purpose?: "explanation" | "follow-up" | "grammar-evaluation";

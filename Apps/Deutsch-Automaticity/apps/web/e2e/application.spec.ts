@@ -177,9 +177,30 @@ test("grammar lab separates exact recall from honest multilingual open productio
   await expect(page.locator("#exercisePrompt")).toContainText(
     "Es gibt ein Supermarkt in meiner Straße.",
   );
+  await expect(page.locator("#intentInput")).toBeVisible();
+  await expect(page.locator("#intentLabel")).toContainText("Persisch");
   await page
     .locator("#answerInput")
-    .fill("In meiner Straße gibt es einen Supermarkt.");
+    .fill("Es gibt eine Spermarket im Strasse");
+  await page.locator("#checkBtn").click();
+  await expect(page.locator("#feedback")).toContainText(
+    "Schreibe zuerst auf Persisch",
+  );
+
+  await page
+    .locator("#intentInput")
+    .fill("در خیابان من یک سوپرمارکت وجود دارد.");
+  await page.locator("#checkBtn").click();
+  await expect(page.locator("#feedback li")).toHaveCount(3);
+  await expect(page.locator("#feedback")).toContainText(
+    "„Spermarket“ → „Supermarkt“",
+  );
+  await expect(page.locator("#feedback")).toContainText("einen Supermarkt");
+  await expect(page.locator("#feedback")).toContainText("in meiner Straße");
+
+  await page
+    .locator("#answerInput")
+    .fill("Es gibt einen Supermarkt in meiner Straße.");
   await page.locator("#checkBtn").click();
   await expect(page.locator("#feedback")).toContainText("Richtig");
 
@@ -190,12 +211,13 @@ test("grammar lab separates exact recall from honest multilingual open productio
     "Freie Produktion",
   );
   await expect(page.locator("#exercisePrompt")).toContainText(
-    "Beispiel nur zur Inspiration",
+    "erst nach deinem ersten Versuch",
   );
-  await expect(page.locator("#exercisePrompt")).toContainText(
-    "Schreibe bitte einen anderen Satz",
+  await expect(page.locator("#exercisePrompt")).not.toContainText(
+    "In meiner Straße gibt es einen Supermarkt.",
   );
 
+  await page.locator("#intentInput").fill("در شهر من پارک‌های زیادی وجود دارد.");
   await page
     .locator("#answerInput")
     .fill("In meiner Stadt gibt es viele Parks.");
@@ -204,6 +226,7 @@ test("grammar lab separates exact recall from honest multilingual open productio
   await expect(page.locator("#feedback")).toContainText(
     "nicht mit dem Modellsatz verglichen",
   );
+  await expect(page.locator("#feedback li")).toHaveCount(4);
 
   await page
     .locator("#answerInput")
@@ -232,6 +255,7 @@ test("grammar lab separates exact recall from honest multilingual open productio
 test("approved connected AI evaluates a different valid open answer instead of a fixed model", async ({
   page,
 }) => {
+  let evaluationRequest: Record<string, unknown> | undefined;
   await page.addInitScript(() => {
     localStorage.setItem(
       "GrammarAutomaticityV11_de",
@@ -246,6 +270,10 @@ test("approved connected AI evaluates a different valid open answer instead of a
       });
       return;
     }
+    evaluationRequest = route.request().postDataJSON() as Record<
+      string,
+      unknown
+    >;
     await route.fulfill({
       contentType: "application/json",
       body: JSON.stringify({
@@ -254,7 +282,12 @@ test("approved connected AI evaluates a different valid open answer instead of a
           targetUsed: true,
           complete: true,
           correctedGerman: "In meiner Stadt gibt es viele Parks.",
-          feedback: "The target is used correctly in your own sentence.",
+          feedbackPoints: [
+            {
+              type: "target_grammar",
+              message: "The target is used correctly in your own sentence.",
+            },
+          ],
           issueTypes: [],
         }),
         providerLabel: "Test AI",
@@ -267,6 +300,7 @@ test("approved connected AI evaluates a different valid open answer instead of a
   for (let index = 0; index < 4; index += 1) {
     await page.locator("#nextBtn").click();
   }
+  await page.locator("#intentInput").fill("در شهر من پارک‌های زیادی وجود دارد.");
   await page
     .locator("#answerInput")
     .fill("In meiner Stadt gibt es viele Parks.");
@@ -279,6 +313,9 @@ test("approved connected AI evaluates a different valid open answer instead of a
     "The target is used correctly in your own sentence.",
   );
   await expect(page.locator("#feedback")).toContainText("Test AI · test-model");
+  expect(evaluationRequest?.learnerIntentFa).toBe(
+    "در شهر من پارک‌های زیادی وجود دارد.",
+  );
 });
 
 test("grammar catalog stays usable on a narrow mobile screen", async ({

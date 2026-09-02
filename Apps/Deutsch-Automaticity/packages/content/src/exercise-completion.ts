@@ -31,6 +31,7 @@ export interface GrammarExerciseMetadata {
   readonly feedbackDimensions: readonly GrammarFeedbackDimension[];
   readonly minimumSentences: number;
   readonly outputLanguage: "de";
+  readonly acceptedAnswers?: readonly string[];
 }
 
 export type GrammarExercise = readonly [
@@ -240,6 +241,7 @@ function closedMetadata(
   contentType: GrammarContentType,
   prompt: LocalizedExerciseCopy,
   hint: LocalizedExerciseCopy,
+  acceptedAnswers: readonly string[] = [],
 ): GrammarExerciseMetadata {
   return {
     mode: "closed_recall",
@@ -251,6 +253,7 @@ function closedMetadata(
     feedbackDimensions: feedbackDimensionsFor(contentType),
     minimumSentences: 1,
     outputLanguage: "de",
+    ...(acceptedAnswers.length ? { acceptedAnswers } : {}),
   };
 }
 
@@ -368,22 +371,21 @@ function productionBlueprint(level: string): ProductionBlueprint {
 function openPrompt(
   unit: ExerciseCompletionInput,
   blueprint: ProductionBlueprint,
-  inspiration: string,
 ): LocalizedExerciseCopy {
   if (unit.title === "es gibt mit Akkusativ") {
     return {
       Deutsch:
         `Was gibt es in deiner Stadt, deiner Straße, deiner Universität oder deinem Zimmer? ` +
         `Schreibe genau einen vollständigen Satz auf Deutsch zum Ziel „es gibt mit Akkusativ“. ` +
-        `Beispiel nur zur Inspiration: „${inspiration}“ Schreibe bitte einen anderen Satz.`,
+        `Formuliere zuerst deine beabsichtigte Bedeutung auf Persisch. Das Beispiel wird erst nach deinem ersten Versuch gezeigt.`,
       English:
         `What is there in your city, street, university, or room? ` +
         `Write exactly one complete sentence in German using the target “es gibt mit Akkusativ”. ` +
-        `Example for inspiration only: “${inspiration}” Please write a different sentence.`,
+        `First state your intended meaning in Persian. The example is revealed only after your first attempt.`,
       فارسی:
         `در شهر، خیابان، دانشگاه یا اتاق تو چه چیزهایی وجود دارد؟ ` +
         `دقیقاً یک جملهٔ کامل به آلمانی با ساختار هدف «es gibt mit Akkusativ» بنویس. ` +
-        `مثال فقط برای الهام: «${inspiration}» لطفاً جمله‌ای متفاوت بنویس.`,
+        `ابتدا معنیِ موردنظرت را به فارسی بنویس. مثال فقط پس از اولین تلاش تو نمایش داده می‌شود.`,
     };
   }
 
@@ -404,15 +406,15 @@ function openPrompt(
     Deutsch:
       `Schreibe ${countDe} auf Deutsch über ${blueprint.situationDe}. ` +
       `Verwende dabei gezielt „${unit.title}“. ` +
-      `Beispiel nur zur Inspiration: „${inspiration}“ Schreibe einen anderen eigenen Text.`,
+      `Formuliere zuerst deine beabsichtigte Bedeutung auf Persisch. Das Beispiel wird erst nach deinem ersten Versuch gezeigt.`,
     English:
       `Write ${countEn} in German about ${blueprint.situationEn}. ` +
       `Use “${unit.title}” deliberately. ` +
-      `Example for inspiration only: “${inspiration}” Write your own different text.`,
+      `First state your intended meaning in Persian. The example is revealed only after your first attempt.`,
     فارسی:
       `${countFa} به آلمانی دربارهٔ ${blueprint.situationFa} بنویس. ` +
       `ساختار «${unit.title}» را آگاهانه به‌کار ببر. ` +
-      `مثال فقط برای الهام: «${inspiration}» متن متفاوت خودت را بنویس.`,
+      `ابتدا معنیِ موردنظرت را به فارسی بنویس. مثال فقط پس از اولین تلاش تو نمایش داده می‌شود.`,
   };
 }
 
@@ -422,7 +424,7 @@ function openExercise(
 ): GrammarExercise {
   const inspiration = clean(unit.examples[0] || unit.testAnswer || unit.rule);
   const blueprint = productionBlueprint(unit.level);
-  const prompt = openPrompt(unit, blueprint, inspiration);
+  const prompt = openPrompt(unit, blueprint);
   const focus = feedbackDimensionsFor(contentType).join(", ");
   const hint: LocalizedExerciseCopy = {
     Deutsch: `Deine Antwort bleibt Deutsch. Prüfe „${unit.title}“ sowie ${focus}. Das Modell ist keine Musterlösung.`,
@@ -463,6 +465,10 @@ export function completeControlledExercises(
   const secondary = clean(unit.examples[1] || unit.testAnswer || primary);
   const changed = changedToken(correct, incorrect);
   const hint = closedHint(contentType);
+  const correctionAlternatives =
+    unit.title === "es gibt mit Akkusativ"
+      ? ["Es gibt einen Supermarkt in meiner Straße."]
+      : [];
   const correctionPrompt = localizedClosedPrompt(
     "correction",
     normalizeSentenceEnd(incorrect),
@@ -500,7 +506,12 @@ export function completeControlledExercises(
     [
       correctionPrompt.Deutsch,
       correct,
-      closedMetadata(contentType, correctionPrompt, hint),
+      closedMetadata(
+        contentType,
+        correctionPrompt,
+        hint,
+        correctionAlternatives,
+      ),
     ],
     [
       primaryCloze.Deutsch,

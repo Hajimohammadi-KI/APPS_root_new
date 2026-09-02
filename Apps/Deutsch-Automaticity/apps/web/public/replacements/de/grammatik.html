@@ -169,14 +169,22 @@
     .exercise-title { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .exercise-title h3 { margin: 5px 0 10px; font-size: 21px; letter-spacing: -.01em; }
     .audio-btn { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 9px; color: var(--ink-soft); background: transparent; cursor: pointer; }
-    .answer-row { display: flex; gap: 10px; }
-    .answer-row input { width: 100%; height: 43px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--ink); background: #fff; }
+    .answer-stack { display: grid; gap: 10px; }
+    .answer-field { display: grid; gap: 5px; }
+    .answer-field label { color: #352665; font-size: 13px; font-weight: 800; }
+    .answer-field small { color: var(--ink-soft); font-weight: 600; }
+    .answer-field input, .answer-field textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--ink); background: #fff; font: inherit; }
+    .answer-field input { height: 43px; }
+    .answer-field textarea { min-height: 66px; resize: vertical; }
+    .answer-field input:focus, .answer-field textarea:focus { outline: 3px solid #7c4dff22; border-color: #7c4dff; }
     .exercise-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
     .exercise-actions .primary-btn, .exercise-actions .ghost-btn { min-height: 38px; }
     .feedback { display: none; margin-top: 10px; padding: 10px 12px; border-radius: 8px; font-weight: 700; }
     .feedback.show { display: block; }
     .feedback.good { color: #08702d; background: #e8f8ed; }
     .feedback.bad { color: #9e233b; background: #fff0f2; }
+    .feedback ul { margin: 8px 0 0; padding-inline-start: 22px; font-weight: 650; }
+    .feedback li + li { margin-top: 6px; }
 
     .rule-panel { border: 1px solid var(--line-strong); border-radius: 11px; overflow: hidden; background: #fff; }
     .rule-heading { display: flex; align-items: center; gap: 12px; min-height: 45px; padding: 0 14px; color: #4d2aac; background: linear-gradient(90deg, #faf8ff, #fff); }
@@ -452,7 +460,17 @@
                 <div><p class="eyebrow" id="exerciseEyebrow">Gelenkter Abruf</p><h3 id="exercisePrompt">Korrigiere den Satz: I am agree.</h3></div>
                 <button class="audio-btn" id="audioBtn" aria-label="Aufgabe vorlesen"><svg class="icon"><use href="#i-volume"/></svg></button>
               </div>
-              <div class="answer-row"><label class="sr-only" for="answerInput">Deutsche Antwort eingeben</label><input id="answerInput" placeholder="Deutsche Antwort eingeben" autocomplete="off"/></div>
+              <div class="answer-stack">
+                <div class="answer-field">
+                  <label id="intentLabel" for="intentInput">Schritt 1 · Beabsichtigte Bedeutung auf Persisch</label>
+                  <textarea id="intentInput" lang="fa" dir="rtl" placeholder="معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، ابتدا به فارسی بنویس" autocomplete="off"></textarea>
+                  <small id="intentHelp">این متن نشان می‌دهد قصد داشتی چه بگویی و از کپی‌کردن جملهٔ نمونه جلوگیری می‌کند.</small>
+                </div>
+                <div class="answer-field">
+                  <label id="answerLabel" for="answerInput">Schritt 2 · Eigene deutsche Antwort</label>
+                  <input id="answerInput" placeholder="Deutsche Antwort eingeben" autocomplete="off" lang="de"/>
+                </div>
+              </div>
               <div class="exercise-actions">
                 <button class="ghost-btn" id="previousBtn">← Zurück</button>
                 <button class="primary-btn" id="checkBtn"><svg class="icon"><use href="#i-check"/></svg>Antwort prüfen</button>

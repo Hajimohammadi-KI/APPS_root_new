@@ -171,6 +171,7 @@
     .audio-btn { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 9px; color: var(--ink-soft); background: transparent; cursor: pointer; }
     .answer-stack { display: grid; gap: 10px; }
     .answer-field { display: grid; gap: 5px; }
+    .answer-field[hidden] { display: none; }
     .answer-field label { color: #352665; font-size: 13px; font-weight: 800; }
     .answer-field small { color: var(--ink-soft); font-weight: 600; }
     .answer-field input, .answer-field textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--line-strong); border-radius: 9px; color: var(--ink); background: #fff; font: inherit; }
@@ -461,7 +462,7 @@
                 <button class="audio-btn" id="audioBtn" aria-label="Aufgabe vorlesen"><svg class="icon"><use href="#i-volume"/></svg></button>
               </div>
               <div class="answer-stack">
-                <div class="answer-field">
+                <div class="answer-field" id="intentField" hidden>
                   <label id="intentLabel" for="intentInput">Schritt 1 · Beabsichtigte Bedeutung auf Persisch</label>
                   <textarea id="intentInput" lang="fa" dir="rtl" placeholder="معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، ابتدا به فارسی بنویس" autocomplete="off"></textarea>
                   <small id="intentHelp">این متن نشان می‌دهد قصد داشتی چه بگویی و از کپی‌کردن جملهٔ نمونه جلوگیری می‌کند.</small>

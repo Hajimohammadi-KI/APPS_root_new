@@ -69,8 +69,9 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       intentPlaceholder:
         "ابتدا معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، به فارسی بنویس",
       intentHelp:
-        "Schreibe zuerst selbst auf Persisch, was dein deutscher Satz bedeuten soll. Das verhindert bloßes Abschreiben.",
+        "Nur bei freien Aufgaben: Lege zuerst auf Persisch fest, was dein eigener deutscher Satz bedeuten soll.",
       answerLabel: "Schritt 2 · Eigene deutsche Antwort",
+      closedAnswerLabel: "Deine vollständige deutsche Antwort",
       check: "Antwort prüfen",
       evaluate: "Eigenen Text auswerten",
       checking: "Eigener Text wird geprüft …",
@@ -105,8 +106,9 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       intentPlaceholder:
         "ابتدا معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، به فارسی بنویس",
       intentHelp:
-        "First write in Persian what your German sentence should mean. This prevents copying a model.",
+        "Open tasks only: first state in Persian what your own German sentence should mean.",
       answerLabel: "Step 2 · Your own German answer",
+      closedAnswerLabel: "Your complete German answer",
       check: "Check answer",
       evaluate: "Evaluate my own text",
       checking: "Evaluating your own text …",
@@ -141,8 +143,9 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       intentPlaceholder:
         "ابتدا معنیِ جمله‌ای را که می‌خواهی به آلمانی بنویسی، به فارسی بنویس",
       intentHelp:
-        "اول خودت مشخص کن که می‌خواهی چه بگویی؛ به این ترتیب جملهٔ آلمانی از روی نمونه کپی نمی‌شود.",
+        "فقط در تمرین باز: ابتدا به فارسی مشخص کن که جملهٔ آلمانیِ خودت باید چه معنایی داشته باشد.",
       answerLabel: "مرحلهٔ ۲ · پاسخ آلمانیِ خودت",
+      closedAnswerLabel: "پاسخ کامل آلمانی",
       check: "بررسی پاسخ",
       evaluate: "ارزیابی متن خودم",
       checking: "متن خودت در حال بررسی است…",
@@ -460,16 +463,19 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         }),
       });
     }
-    if (/\bes gibt (?:ein|eine) (?:supermarkt|spermarket)\b/u.test(normalizedAnswer)) {
+    const supermarketArticle = normalizedAnswer.match(
+      /\bes gibt (ein|eine) (?:supermarkt|spermarket)\b/u,
+    )?.[1];
+    if (supermarketArticle) {
       points.push({
         type: "case",
         message: localizedMessage({
           Deutsch:
-            "„eine/ein Supermarkt“ → „einen Supermarkt“: Supermarkt ist maskulin und steht nach „es gibt“ im Akkusativ.",
+            `„${supermarketArticle}“ → „einen“: Supermarkt ist maskulin und steht nach „es gibt“ im Akkusativ.`,
           English:
-            "“eine/ein Supermarkt” → “einen Supermarkt”: Supermarkt is masculine and takes the accusative after “es gibt”.",
+            `“${supermarketArticle}” → “einen”: Supermarkt is masculine and takes the accusative after “es gibt”.`,
           فارسی:
-            "شکل درست: «eine/ein Supermarkt» → «einen Supermarkt»؛ Supermarkt مذکر است و پس از «es gibt» در حالت Akkusativ می‌آید.",
+            `«${supermarketArticle}» → «einen»؛ Supermarkt مذکر است و پس از «es gibt» در حالت Akkusativ می‌آید.`,
         }),
       });
     }
@@ -593,7 +599,10 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       : [[unit.recallTest || `Bilde einen Satz mit ${unit.title}.`, unit.testAnswer || unit.examples?.[0] || ""]];
     exerciseIndex = Math.max(0, Math.min(exerciseIndex, exercises.length - 1));
     const exercise = exercises[exerciseIndex];
+    const metadata = exerciseMetadata(exercise);
     const open = isOpenProduction(exercise);
+    const requiresLearnerIntentFa =
+      metadata?.requiresLearnerIntentFa === true;
     const copy = activeCopy();
     renderExamples(unit, !open);
     $("#exercisePrompt").textContent = localizedExerciseText(
@@ -608,11 +617,15 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         : copy.closedEyebrow;
     const answerInput = $("#answerInput");
     const intentInput = $("#intentInput");
+    $("#intentField").hidden = !requiresLearnerIntentFa;
+    intentInput.disabled = !requiresLearnerIntentFa;
     intentInput.value = "";
     intentInput.placeholder = copy.intentPlaceholder;
     $("#intentLabel").textContent = copy.intentLabel;
     $("#intentHelp").textContent = copy.intentHelp;
-    $("#answerLabel").textContent = copy.answerLabel;
+    $("#answerLabel").textContent = requiresLearnerIntentFa
+      ? copy.answerLabel
+      : copy.closedAnswerLabel;
     answerInput.value = "";
     answerInput.placeholder = open
       ? copy.openPlaceholder
@@ -751,10 +764,11 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const answer = $("#answerInput").value.trim();
     const expected = exercise[1] || unit.testAnswer || unit.examples?.[0] || "";
     const metadata = exerciseMetadata(exercise);
+    const open = isOpenProduction(exercise);
     const feedback = $("#feedback");
     const copy = activeCopy();
 
-    if (!learnerIntentFa) {
+    if (open && !learnerIntentFa) {
       feedback.className = "feedback show bad";
       feedback.innerHTML = renderFeedbackPoints([
         { type: "meaning", message: copy.intentEmpty },
@@ -762,7 +776,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       $("#intentInput").focus();
       return;
     }
-    if (!containsPersian(learnerIntentFa)) {
+    if (open && !containsPersian(learnerIntentFa)) {
       feedback.className = "feedback show bad";
       feedback.innerHTML = renderFeedbackPoints([
         { type: "meaning", message: copy.intentPersian },
@@ -779,7 +793,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       return;
     }
 
-    if (isOpenProduction(exercise)) {
+    if (open) {
       const minimumSentences = Math.max(1, metadata?.minimumSentences || 1);
       if (countSentences(answer) < minimumSentences || countWords(answer) < 4) {
         feedback.className = "feedback show bad";
@@ -936,12 +950,13 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const completed = markExerciseComplete(unit);
     if (!recitation) {
       const usedAlternative = normalize(answer) !== normalize(expected);
-      feedback.innerHTML = `<strong>${escapeHtml(copy.correct)}</strong>${renderFeedbackPoints([
-        {
-          type: "meaning",
-          message: usedAlternative ? copy.acceptedAlternative : learnerIntentFa,
-        },
-      ])}<span>${completed}/${unit.exercises.length}</span>`;
+      feedback.innerHTML = `<strong>${escapeHtml(copy.correct)}</strong>${
+        usedAlternative
+          ? renderFeedbackPoints([
+              { type: "meaning", message: copy.acceptedAlternative },
+            ])
+          : ""
+      }<span>${completed}/${unit.exercises.length}</span>`;
     }
   };
 
@@ -960,15 +975,15 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
   const languageGuides = {
     Deutsch: {
       dir: "ltr",
-      html: "<strong>So arbeitest du:</strong> Schreibe zuerst selbst auf Persisch, was du sagen willst, und formuliere es danach auf Deutsch. Beispiele werden bei freien Aufgaben erst nach deinem Versuch gezeigt. Fehler erscheinen einzeln als Stichpunkte. Ohne freigegebene, verbundene KI zeigt die App einen ehrlichen Selbstcheck statt einer vorgetäuschten Korrektur.",
+      html: "<strong>So arbeitest du:</strong> Bei einer Übersetzungsaufgabe gibt die App den persischen Ausgangssatz vor; du schreibst nur die deutsche Fassung. Nur bei freien Aufgaben formulierst du zuerst deine eigene Bedeutung auf Persisch. Fehler erscheinen einzeln als Stichpunkte. Ohne freigegebene, verbundene KI zeigt die App einen ehrlichen Selbstcheck statt einer vorgetäuschten Korrektur.",
     },
     English: {
       dir: "ltr",
-      html: "<strong>How to work:</strong> First write in Persian what you intend to say, then produce it in German. In open tasks, examples appear only after your attempt. Errors are separated into bullet points. Without approved, connected AI, the app provides an honest self-check instead of pretending to correct every response.",
+      html: "<strong>How to work:</strong> In a translation task, the app provides the Persian source sentence and you write only the German version. Only open tasks ask you to define your own meaning in Persian first. Errors are separated into bullet points. Without approved, connected AI, the app provides an honest self-check instead of pretending to correct every response.",
     },
     "فارسی": {
       dir: "rtl",
-      html: "<strong>روش انجام تمرین:</strong> ابتدا خودت به فارسی بنویس که می‌خواهی چه بگویی و سپس آن را به آلمانی تولید کن. در تمرین باز، مثال فقط پس از تلاش تو نمایش داده می‌شود و هر خطا در یک بولت جدا توضیح داده می‌شود. بدون هوش مصنوعیِ متصل و مجاز، اپ به‌جای تصحیح ساختگی یک خودارزیابی صادقانه نشان می‌دهد.",
+      html: "<strong>روش انجام تمرین:</strong> در تمرین ترجمه، اپ جملهٔ فارسی را می‌دهد و تو فقط ترجمهٔ آلمانی را می‌نویسی. فقط در تمرین باز، ابتدا معنیِ انتخابی خودت را به فارسی مشخص می‌کنی. هر خطا در یک بولت جدا توضیح داده می‌شود. بدون هوش مصنوعیِ متصل و مجاز، اپ به‌جای تصحیح ساختگی یک خودارزیابی صادقانه نشان می‌دهد.",
     },
   };
 

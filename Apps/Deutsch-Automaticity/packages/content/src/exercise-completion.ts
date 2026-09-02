@@ -32,6 +32,7 @@ export interface GrammarExerciseMetadata {
   readonly minimumSentences: number;
   readonly outputLanguage: "de";
   readonly acceptedAnswers?: readonly string[];
+  readonly requiresLearnerIntentFa?: boolean;
 }
 
 export type GrammarExercise = readonly [
@@ -445,7 +446,74 @@ function openExercise(
       feedbackDimensions: feedbackDimensionsFor(contentType),
       minimumSentences: blueprint.minimumSentences,
       outputLanguage: "de",
+      requiresLearnerIntentFa: true,
     },
+  ];
+}
+
+function esGibtClosedExercises(
+  contentType: GrammarContentType,
+): readonly GrammarExercise[] {
+  const hint = closedHint(contentType);
+  const streetTranslation: LocalizedExerciseCopy = {
+    Deutsch:
+      "Übersetze diesen persischen Satz ins Deutsche: در خیابان من یک سوپرمارکت وجود دارد.",
+    English:
+      "Write this Persian sentence in German: در خیابان من یک سوپرمارکت وجود دارد.",
+    فارسی: "این جمله را به آلمانی بنویس: در خیابان من یک سوپرمارکت وجود دارد.",
+  };
+  const accusativeChoice: LocalizedExerciseCopy = {
+    Deutsch:
+      "Setze die richtige Akkusativform ein und schreibe den vollständigen Satz: Es gibt ___ Supermarkt in meiner Straße. (ein / einen)",
+    English:
+      "Choose the correct accusative form and write the complete sentence in German: Es gibt ___ Supermarkt in meiner Straße. (ein / einen)",
+    فارسی:
+      "شکل درست Akkusativ را انتخاب کن و جملهٔ کامل را به آلمانی بنویس: Es gibt ___ Supermarkt in meiner Straße. (ein / einen)",
+  };
+  const wordOrder: LocalizedExerciseCopy = {
+    Deutsch:
+      "Ordne die Teile und schreibe den vollständigen Satz: In / meiner Straße / gibt es / einen Supermarkt.",
+    English:
+      "Put the parts in order and write the complete German sentence: In / meiner Straße / gibt es / einen Supermarkt.",
+    فارسی:
+      "بخش‌ها را مرتب کن و جملهٔ کامل آلمانی را بنویس: In / meiner Straße / gibt es / einen Supermarkt.",
+  };
+  const roomTranslation: LocalizedExerciseCopy = {
+    Deutsch:
+      "Übersetze diesen neuen persischen Satz ins Deutsche: در اتاق من یک میز تحریر وجود دارد.",
+    English:
+      "Write this new Persian sentence in German: در اتاق من یک میز تحریر وجود دارد.",
+    فارسی:
+      "این جملهٔ جدید را به آلمانی بنویس: در اتاق من یک میز تحریر وجود دارد.",
+  };
+
+  return [
+    [
+      streetTranslation.Deutsch,
+      "In meiner Straße gibt es einen Supermarkt.",
+      closedMetadata(contentType, streetTranslation, hint, [
+        "Es gibt einen Supermarkt in meiner Straße.",
+      ]),
+    ],
+    [
+      accusativeChoice.Deutsch,
+      "Es gibt einen Supermarkt in meiner Straße.",
+      closedMetadata(contentType, accusativeChoice, hint),
+    ],
+    [
+      wordOrder.Deutsch,
+      "In meiner Straße gibt es einen Supermarkt.",
+      closedMetadata(contentType, wordOrder, hint, [
+        "Es gibt einen Supermarkt in meiner Straße.",
+      ]),
+    ],
+    [
+      roomTranslation.Deutsch,
+      "In meinem Zimmer gibt es einen Schreibtisch.",
+      closedMetadata(contentType, roomTranslation, hint, [
+        "Es gibt einen Schreibtisch in meinem Zimmer.",
+      ]),
+    ],
   ];
 }
 
@@ -458,6 +526,12 @@ export function completeControlledExercises(
   unit: ExerciseCompletionInput,
 ): readonly GrammarExercise[] {
   const contentType = classifyGrammarContent(unit);
+  if (unit.title === "es gibt mit Akkusativ") {
+    return [
+      ...esGibtClosedExercises(contentType),
+      openExercise(unit, contentType),
+    ];
+  }
   const pair = parseCorrection(unit.commonError);
   const correct = correctionAnswer(unit, pair, contentType);
   const incorrect = correctionSource(unit, pair);
@@ -465,10 +539,6 @@ export function completeControlledExercises(
   const secondary = clean(unit.examples[1] || unit.testAnswer || primary);
   const changed = changedToken(correct, incorrect);
   const hint = closedHint(contentType);
-  const correctionAlternatives =
-    unit.title === "es gibt mit Akkusativ"
-      ? ["Es gibt einen Supermarkt in meiner Straße."]
-      : [];
   const correctionPrompt = localizedClosedPrompt(
     "correction",
     normalizeSentenceEnd(incorrect),
@@ -506,12 +576,7 @@ export function completeControlledExercises(
     [
       correctionPrompt.Deutsch,
       correct,
-      closedMetadata(
-        contentType,
-        correctionPrompt,
-        hint,
-        correctionAlternatives,
-      ),
+      closedMetadata(contentType, correctionPrompt, hint),
     ],
     [
       primaryCloze.Deutsch,

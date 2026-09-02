@@ -174,22 +174,33 @@ test("grammar lab separates exact recall from honest multilingual open productio
   await expect(page.locator("#exerciseEyebrow")).toContainText(
     "Geschlossene Übung",
   );
-  await expect(page.locator("#exercisePrompt")).toContainText(
+  await page.getByText("Erklärungssprache (HONOVR)").click();
+  await page.locator('[data-language="فارسی"]').click();
+  await expect(page.locator("#exercisePrompt")).toHaveText(
+    "این جمله را به آلمانی بنویس: در خیابان من یک سوپرمارکت وجود دارد.",
+  );
+  await expect(page.locator("#intentField")).toBeHidden();
+  await expect(page.locator("#intentInput")).toBeDisabled();
+  await expect(page.locator("#exercisePrompt")).not.toContainText(
     "Es gibt ein Supermarkt in meiner Straße.",
   );
-  await expect(page.locator("#intentInput")).toBeVisible();
-  await expect(page.locator("#intentLabel")).toContainText("Persisch");
+  await page
+    .locator("#answerInput")
+    .fill("Es gibt ein Supermarkt in meiner Straße.");
+  await page.locator("#checkBtn").click();
+  await expect(page.locator("#feedback li")).toHaveCount(1);
+  await expect(page.locator("#feedback")).toContainText(
+    "«ein» → «einen»",
+  );
+  await expect(page.locator("#feedback")).toContainText(
+    "Es gibt einen Supermarkt in meiner Straße.",
+  );
+
+  await page.locator('[data-language="Deutsch"]').click();
+  await page.getByText("Erklärungssprache (HONOVR)").click();
   await page
     .locator("#answerInput")
     .fill("Es gibt eine Spermarket im Strasse");
-  await page.locator("#checkBtn").click();
-  await expect(page.locator("#feedback")).toContainText(
-    "Schreibe zuerst auf Persisch",
-  );
-
-  await page
-    .locator("#intentInput")
-    .fill("در خیابان من یک سوپرمارکت وجود دارد.");
   await page.locator("#checkBtn").click();
   await expect(page.locator("#feedback li")).toHaveCount(3);
   await expect(page.locator("#feedback")).toContainText(
@@ -216,11 +227,16 @@ test("grammar lab separates exact recall from honest multilingual open productio
   await expect(page.locator("#exercisePrompt")).not.toContainText(
     "In meiner Straße gibt es einen Supermarkt.",
   );
+  await expect(page.locator("#intentField")).toBeVisible();
 
-  await page.locator("#intentInput").fill("در شهر من پارک‌های زیادی وجود دارد.");
   await page
     .locator("#answerInput")
     .fill("In meiner Stadt gibt es viele Parks.");
+  await page.locator("#checkBtn").click();
+  await expect(page.locator("#feedback")).toContainText(
+    "Schreibe zuerst auf Persisch",
+  );
+  await page.locator("#intentInput").fill("در شهر من پارک‌های زیادی وجود دارد.");
   await page.locator("#checkBtn").click();
   await expect(page.locator("#feedback")).toContainText("Selbstcheck");
   await expect(page.locator("#feedback")).toContainText(

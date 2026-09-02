@@ -153,6 +153,7 @@ describe("legacy content extraction", () => {
         expect(exercise[2]?.validation).toBe("exact");
         expect(exercise[2]?.answerRole).toBe("expected");
         expect(exercise[2]?.outputLanguage).toBe("de");
+        expect(exercise[2]?.requiresLearnerIntentFa).not.toBe(true);
         expect(exercise[2]?.feedbackDimensions).toEqual(
           expectedDimensions[unit.contentType!],
         );
@@ -162,6 +163,7 @@ describe("legacy content extraction", () => {
       expect(open?.[2]?.validation).toBe("ai_or_self_check");
       expect(open?.[2]?.answerRole).toBe("inspiration");
       expect(open?.[2]?.outputLanguage).toBe("de");
+      expect(open?.[2]?.requiresLearnerIntentFa).toBe(true);
       expect(open?.[2]?.minimumSentences).toBeGreaterThanOrEqual(1);
       expect(open?.[2]?.feedbackDimensions).toEqual(
         expectedDimensions[unit.contentType!],
@@ -203,7 +205,7 @@ describe("legacy content extraction", () => {
     }
   });
 
-  it("gives es gibt one exact repair and one genuinely open localized task", () => {
+  it("gives es gibt clear Persian-source and controlled Akkusativ tasks", () => {
     const unit = grammarUnits.find(
       (candidate) => candidate.title === "es gibt mit Akkusativ",
     );
@@ -211,11 +213,36 @@ describe("legacy content extraction", () => {
 
     const correction = unit!.exercises[0];
     expect(correction?.[2]?.mode).toBe("closed_recall");
-    expect(correction?.[0]).toContain("Es gibt ein Supermarkt");
+    expect(correction?.[2]?.prompt.فارسی).toBe(
+      "این جمله را به آلمانی بنویس: در خیابان من یک سوپرمارکت وجود دارد.",
+    );
+    expect(correction?.[2]?.prompt.Deutsch).toContain(
+      "در خیابان من یک سوپرمارکت وجود دارد.",
+    );
+    expect(correction?.[2]?.prompt.Deutsch).not.toContain(
+      "Es gibt ein Supermarkt",
+    );
     expect(correction?.[1]).toBe("In meiner Straße gibt es einen Supermarkt.");
     expect(correction?.[2]?.acceptedAnswers).toContain(
       "Es gibt einen Supermarkt in meiner Straße.",
     );
+
+    const controlled = unit!.exercises.slice(0, 4);
+    expect(controlled[1]?.[2]?.prompt.Deutsch).toContain(
+      "Es gibt ___ Supermarkt",
+    );
+    expect(controlled[1]?.[2]?.prompt.Deutsch).toContain("ein / einen");
+    expect(controlled[2]?.[2]?.prompt.Deutsch).toContain(
+      "In / meiner Straße / gibt es / einen Supermarkt",
+    );
+    expect(controlled[3]?.[2]?.prompt.فارسی).toBe(
+      "این جملهٔ جدید را به آلمانی بنویس: در اتاق من یک میز تحریر وجود دارد.",
+    );
+    expect(
+      controlled.some((exercise) =>
+        exercise[2]?.prompt.Deutsch.includes("Sondern:"),
+      ),
+    ).toBe(false);
 
     const production = unit!.exercises.at(-1);
     expect(production?.[2]?.mode).toBe("open_production");

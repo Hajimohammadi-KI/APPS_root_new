@@ -133,6 +133,99 @@ describe("legacy content extraction", () => {
     }
   });
 
+  it("separates closed recall from honest open production for all 144 topics", () => {
+    const expectedDimensions = {
+      sentence: ["meaning", "form", "word_order"],
+      pattern: ["meaning", "form"],
+      contrast: ["meaning", "use"],
+      text: ["coherence", "linkage", "text_function"],
+      style: ["register", "effect", "naturalness"],
+    } as const;
+
+    for (const unit of grammarUnits) {
+      expect(unit.contentType).toBeDefined();
+      expect(unit.exercises).toHaveLength(5);
+      const closed = unit.exercises.slice(0, 4);
+      const open = unit.exercises[4];
+
+      for (const exercise of closed) {
+        expect(exercise[2]?.mode).toBe("closed_recall");
+        expect(exercise[2]?.validation).toBe("exact");
+        expect(exercise[2]?.answerRole).toBe("expected");
+        expect(exercise[2]?.outputLanguage).toBe("de");
+        expect(exercise[2]?.feedbackDimensions).toEqual(
+          expectedDimensions[unit.contentType!],
+        );
+      }
+
+      expect(open?.[2]?.mode).toBe("open_production");
+      expect(open?.[2]?.validation).toBe("ai_or_self_check");
+      expect(open?.[2]?.answerRole).toBe("inspiration");
+      expect(open?.[2]?.outputLanguage).toBe("de");
+      expect(open?.[2]?.minimumSentences).toBeGreaterThanOrEqual(1);
+      expect(open?.[2]?.feedbackDimensions).toEqual(
+        expectedDimensions[unit.contentType!],
+      );
+      expect(open?.[2]?.prompt.Deutsch).toContain(unit.title);
+      expect(open?.[2]?.prompt.Deutsch).toContain("auf Deutsch");
+      expect(open?.[2]?.prompt.Deutsch).toContain("Inspiration");
+      expect(open?.[2]?.prompt.English).toContain("in German");
+      expect(open?.[2]?.prompt.English).toContain("inspiration");
+      expect(open?.[2]?.prompt.فارسی).toContain("به آلمانی");
+      expect(open?.[2]?.prompt.فارسی).toContain("الهام");
+    }
+
+    const prompts = grammarUnits.flatMap((unit) =>
+      unit.exercises.map((exercise) => exercise[0]),
+    );
+    expect(prompts).not.toContainEqual(
+      expect.stringMatching(/Ergänze oder korrigiere ein passendes Beispiel/),
+    );
+    expect(prompts).not.toContainEqual(
+      expect.stringMatching(/Schreibe das Modell ohne Hilfe neu/),
+    );
+
+    for (const unit of grammarUnits.filter(
+      (candidate) => candidate.contentType === "pattern",
+    )) {
+      expect(
+        unit.exercises.some((exercise) =>
+          exercise[2]?.prompt.Deutsch.includes("Ordne die Teile"),
+        ),
+      ).toBe(false);
+    }
+  });
+
+  it("gives es gibt one exact repair and one genuinely open localized task", () => {
+    const unit = grammarUnits.find(
+      (candidate) => candidate.title === "es gibt mit Akkusativ",
+    );
+    expect(unit).toBeDefined();
+
+    const correction = unit!.exercises[0];
+    expect(correction?.[2]?.mode).toBe("closed_recall");
+    expect(correction?.[0]).toContain("Es gibt ein Supermarkt");
+    expect(correction?.[1]).toBe("In meiner Straße gibt es einen Supermarkt.");
+
+    const production = unit!.exercises.at(-1);
+    expect(production?.[2]?.mode).toBe("open_production");
+    expect(production?.[2]?.prompt.Deutsch).toContain("deiner Stadt");
+    expect(production?.[2]?.prompt.English).toContain("your city");
+    expect(production?.[2]?.prompt.فارسی).toContain("شهر");
+    expect(production?.[2]?.prompt.Deutsch).toContain(
+      "Schreibe bitte einen anderen Satz",
+    );
+  });
+
+  it("keeps short closed corrections aligned with the exact faulty form", () => {
+    const unit = grammarUnits.find(
+      (candidate) => candidate.title === "Präsens unregelmäßiger Verben",
+    );
+    expect(unit).toBeDefined();
+    expect(unit!.exercises[0]?.[0]).toContain("Du fahrst.");
+    expect(unit!.exercises[0]?.[1]).toBe("Du fährst.");
+  });
+
   it("does not expose retired Lingolia routes", () => {
     for (const link of grammarUnits.flatMap((unit) => unit.links)) {
       expect(isRetiredGermanResource(link[1])).toBe(false);

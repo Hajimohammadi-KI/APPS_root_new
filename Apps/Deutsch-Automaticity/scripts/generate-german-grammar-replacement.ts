@@ -8,6 +8,7 @@ const outputPath = new URL(
 const payload = grammarUnits.map((unit) => ({
   level: unit.level,
   title: unit.title,
+  contentType: unit.contentType,
   rule: unit.rule,
   explanation: unit.explanation,
   examples: unit.examples,

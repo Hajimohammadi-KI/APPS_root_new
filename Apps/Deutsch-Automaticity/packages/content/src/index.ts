@@ -1,7 +1,9 @@
 import grammarData from "./data/grammar.json";
 import topicsData from "./data/topics.json";
 import {
+  classifyGrammarContent,
   completeControlledExercises,
+  type GrammarContentType,
   type GrammarExercise,
 } from "./exercise-completion";
 import {
@@ -65,6 +67,7 @@ export {
   type DriveMaterialItem,
   type GrammarTrainingPart,
   type GrammarCategory,
+  type GrammarContentType,
   type GrammarExercise,
   type GrammarExplanation,
   type GrammarMaterialSource,
@@ -94,9 +97,10 @@ export interface GrammarUnit {
   readonly title: string;
   readonly rule: string;
   readonly explanation: GrammarExplanation;
+  readonly contentType?: GrammarContentType;
   readonly examples: readonly string[];
   readonly commonError: string;
-  readonly exercises: readonly (readonly string[])[];
+  readonly exercises: readonly GrammarExercise[];
   readonly links: readonly GrammarLink[];
   readonly testAnswer: string;
   readonly recallTest: string;
@@ -183,11 +187,18 @@ export const grammarUnits: readonly GrammarUnit[] = [
 
     return repairGermanGrammarLinks({
       ...unit,
+      contentType: classifyGrammarContent(unit),
       exercises: completeControlledExercises(unit),
       explanation,
     });
   }),
-  ...supplementalGrammarUnits,
+  ...supplementalGrammarUnits.map((unit) =>
+    repairGermanGrammarLinks({
+      ...unit,
+      contentType: classifyGrammarContent(unit),
+      exercises: completeControlledExercises(unit),
+    }),
+  ),
 ];
 
 export const catalogSummary = {

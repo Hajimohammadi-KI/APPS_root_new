@@ -163,6 +163,124 @@ test("grammar lab exposes all 144 CEFR units and working search", async ({
   );
 });
 
+test("grammar lab separates exact recall from honest multilingual open production", async ({
+  page,
+}) => {
+  await page.goto("/grammatik?topic=es%20gibt%20mit%20Akkusativ");
+
+  await expect(page.locator("#lessonTitle")).toHaveText(
+    "es gibt mit Akkusativ",
+  );
+  await expect(page.locator("#exerciseEyebrow")).toContainText(
+    "Geschlossene Übung",
+  );
+  await expect(page.locator("#exercisePrompt")).toContainText(
+    "Es gibt ein Supermarkt in meiner Straße.",
+  );
+  await page
+    .locator("#answerInput")
+    .fill("In meiner Straße gibt es einen Supermarkt.");
+  await page.locator("#checkBtn").click();
+  await expect(page.locator("#feedback")).toContainText("Richtig");
+
+  for (let index = 0; index < 4; index += 1) {
+    await page.locator("#nextBtn").click();
+  }
+  await expect(page.locator("#exerciseEyebrow")).toContainText(
+    "Freie Produktion",
+  );
+  await expect(page.locator("#exercisePrompt")).toContainText(
+    "Beispiel nur zur Inspiration",
+  );
+  await expect(page.locator("#exercisePrompt")).toContainText(
+    "Schreibe bitte einen anderen Satz",
+  );
+
+  await page
+    .locator("#answerInput")
+    .fill("In meiner Stadt gibt es viele Parks.");
+  await page.locator("#checkBtn").click();
+  await expect(page.locator("#feedback")).toContainText("Selbstcheck");
+  await expect(page.locator("#feedback")).toContainText(
+    "nicht mit dem Modellsatz verglichen",
+  );
+
+  await page
+    .locator("#answerInput")
+    .fill("Es gibt ein Supermarkt in meiner Straße.");
+  await page.locator("#checkBtn").click();
+  await expect(page.locator("#feedback")).toContainText("einen Supermarkt");
+
+  await page.getByText("Erklärungssprache (HONOVR)").click();
+  await page.locator('[data-language="English"]').click();
+  await expect(page.locator("#exercisePrompt")).toContainText(
+    "Write exactly one complete sentence in German",
+  );
+  await page.locator("#hintBtn").click();
+  await expect(page.locator("#feedback")).toContainText(
+    "Keep your answer in German",
+  );
+
+  await page.locator('[data-language="فارسی"]').click();
+  await expect(page.locator("#exercisePrompt")).toContainText("به آلمانی");
+  await expect(page.locator("#answerInput")).toHaveAttribute(
+    "placeholder",
+    "متن خودت را به آلمانی بنویس",
+  );
+});
+
+test("approved connected AI evaluates a different valid open answer instead of a fixed model", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      "GrammarAutomaticityV11_de",
+      JSON.stringify({ learner: { allowOnlineAI: true } }),
+    );
+  });
+  await page.route("**/api/ai", async (route) => {
+    if (route.request().method() === "GET") {
+      await route.fulfill({
+        contentType: "application/json",
+        body: JSON.stringify({ connected: true }),
+      });
+      return;
+    }
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        text: JSON.stringify({
+          verdict: "correct",
+          targetUsed: true,
+          complete: true,
+          correctedGerman: "In meiner Stadt gibt es viele Parks.",
+          feedback: "The target is used correctly in your own sentence.",
+          issueTypes: [],
+        }),
+        providerLabel: "Test AI",
+        model: "test-model",
+      }),
+    });
+  });
+
+  await page.goto("/grammatik?topic=es%20gibt%20mit%20Akkusativ");
+  for (let index = 0; index < 4; index += 1) {
+    await page.locator("#nextBtn").click();
+  }
+  await page
+    .locator("#answerInput")
+    .fill("In meiner Stadt gibt es viele Parks.");
+  await page.locator("#checkBtn").click();
+
+  await expect(page.locator("#feedback")).toContainText(
+    "deine eigene Formulierung wurde ausgewertet",
+  );
+  await expect(page.locator("#feedback")).toContainText(
+    "The target is used correctly in your own sentence.",
+  );
+  await expect(page.locator("#feedback")).toContainText("Test AI · test-model");
+});
+
 test("grammar catalog stays usable on a narrow mobile screen", async ({
   page,
 }) => {

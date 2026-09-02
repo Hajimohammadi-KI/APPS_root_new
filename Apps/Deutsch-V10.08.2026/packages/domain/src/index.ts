@@ -1,5 +1,17 @@
 export { DAILY_PRACTICE_STEPS, type DailyPracticeStep } from "./practice-plan";
 export {
+  analyzeSentence,
+  checkSentence,
+  detectErrors,
+  GRAMMAR_RULES,
+  tagTokens,
+  tokenize,
+  type Analysis,
+  type DetectedError,
+  type GrammarRule as GrammarEngineRule,
+  type TaggedToken,
+} from "./grammar-engine/index";
+export {
   allocateCoreMissionMinutes,
   buildAdaptiveDailyPlan,
   calculateDailyProgress,
@@ -24,6 +36,7 @@ export {
   evaluateAnswer,
   getTaskIssues,
   offlineCorrect,
+  ruleEngineIssues,
   targetEvidencePresent,
   type EvaluationIssue,
   type EvaluationKind,

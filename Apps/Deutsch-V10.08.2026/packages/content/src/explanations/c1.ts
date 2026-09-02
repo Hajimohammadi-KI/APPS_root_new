@@ -5,7 +5,14 @@ export const c1Explanations = defineExplanations({
     overview:
       "Der Konjunktiv I markiert vor allem indirekte Rede und damit die Quelle einer Aussage. Ein vollständiger Gebrauch umfasst Präsens, Vergangenheit, Zukunft und Passiv sowie Ersatzformen bei Formgleichheit.",
     formation: [
-      "Präsens: Infinitivstamm + -e, -est, -e, -en, -et, -en; sein: sei, seiest, sei, seien, seiet, seien.",
+      "Personalendungen im Konjunktiv I (Präsens):",
+      "Pronomen ich passt zur Endung [[-e]].",
+      "Pronomen du passt zur Endung [[-est]].",
+      "Pronomen er/sie/es passt zur Endung [[-e]].",
+      "Pronomen wir passt zur Endung [[-en]].",
+      "Pronomen ihr passt zur Endung [[-et]].",
+      "Pronomen sie/Sie passt zur Endung [[-en]].",
+      "sein bildet eigene Formen: sei, seiest, sei, seien, seiet, seien.",
       "Vergangenheit: habe/sei im Konjunktiv I + Partizip II.",
       "Zukunft: werde im Konjunktiv I + Infinitiv; Passiv: werde + Partizip II.",
       "Bei Gleichheit mit Indikativ wird zur eindeutigen Markierung häufig Konjunktiv II verwendet.",
@@ -81,7 +88,11 @@ export const c1Explanations = defineExplanations({
       "Komplexe Nominalgruppen bündeln mehrere Informationen um ein Kernnomen. Attribute können vorangestellt, nachgestellt oder als Nebensatz realisiert werden.",
     formation: [
       "Linksattribute: Artikel, Adjektive, Partizipialattribute und Genitive vor dem Kern.",
-      "Rechtsattribute: Genitiv, Präpositionalgruppe, Apposition, Relativ- oder Infinitivsatz.",
+      "Rechtsattribute einer Nominalgruppe:",
+      "Rechtsattribut: [[Genitiv]].",
+      "Rechtsattribut: [[Präpositionalgruppe]].",
+      "Rechtsattribut: [[Apposition]].",
+      "Rechtsattribut: [[Relativsatz]] oder [[Infinitivsatz]].",
       "Kasus, Numerus und Genus werden am Kopf und an kongruierenden Begleitern sichtbar.",
     ],
     usage: [
@@ -223,8 +234,16 @@ export const c1Explanations = defineExplanations({
     overview:
       "Hedging begrenzt Reichweite und Sicherheit wissenschaftlicher Aussagen. Es ist keine Unklarheit, sondern eine präzise Markierung von Evidenz, Wahrscheinlichkeit und Geltungsbereich.",
     formation: [
-      "Modalität: könnte, dürfte, scheint zu, lässt vermuten.",
-      "Reichweitenmarker: häufig, tendenziell, unter diesen Bedingungen, in der Stichprobe.",
+      "Modalität als Hedging-Mittel:",
+      "Hedging-Ausdruck: [[könnte]].",
+      "Hedging-Ausdruck: [[dürfte]].",
+      "Hedging-Ausdruck: [[scheint zu]].",
+      "Hedging-Ausdruck: [[lässt vermuten]].",
+      "Reichweitenmarker als Hedging-Mittel:",
+      "Reichweitenmarker: [[häufig]].",
+      "Reichweitenmarker: [[tendenziell]].",
+      "Reichweitenmarker: [[unter diesen Bedingungen]].",
+      "Reichweitenmarker: [[in der Stichprobe]].",
       "Unpersönliche Evidenzformeln: Die Ergebnisse deuten darauf hin, dass ...",
     ],
     usage: [
@@ -271,8 +290,16 @@ export const c1Explanations = defineExplanations({
     overview:
       "Register bezeichnet die sprachliche Anpassung an Situation, Medium, Beziehung und Zweck. Grammatik trägt dazu durch Anrede, Satzkomplexität, Modalität und Nominal- oder Verbalstil bei.",
     formation: [
-      "Formell: Sie, höflicher Konjunktiv, explizite Verknüpfung, kontrollierte Distanz.",
-      "Informell: du, Ellipsen, Partikeln, kürzere Einheiten und stärkere Kontextabhängigkeit.",
+      "Merkmale des formellen Registers:",
+      "Formelles Merkmal: [[Sie]].",
+      "Formelles Merkmal: [[höflicher Konjunktiv]].",
+      "Formelles Merkmal: [[explizite Verknüpfung]].",
+      "Formelles Merkmal: [[kontrollierte Distanz]].",
+      "Merkmale des informellen Registers:",
+      "Informelles Merkmal: [[du]].",
+      "Informelles Merkmal: [[Ellipsen]].",
+      "Informelles Merkmal: [[Partikeln]].",
+      "Informelles Merkmal: kürzere Einheiten und stärkere Kontextabhängigkeit.",
       "Fachlich: definierte Begriffe, präzise Nominalgruppen und evidenzbezogene Modalität.",
     ],
     usage: [

@@ -80,7 +80,13 @@ export const c2Explanations = defineExplanations({
     formation: [
       "Koordinationsellipse: Anna liest Romane und Paul Gedichte.",
       "Antwortellipse: Kommst du? - Später.",
-      "Substitution: derjenige, das tun, so, dort, dabei, es.",
+      "Substitutionsmittel:",
+      "Substitution durch [[derjenige]].",
+      "Substitution durch [[das tun]].",
+      "Substitution durch [[so]].",
+      "Substitution durch [[dort]].",
+      "Substitution durch [[dabei]].",
+      "Substitution durch [[es]].",
     ],
     usage: [
       "Gesprochene Interaktion ökonomisch halten.",
@@ -128,7 +134,11 @@ export const c2Explanations = defineExplanations({
     formation: [
       "Referenten wiederholen oder präziser benennen, wenn Pronomen mehrere Kandidaten haben.",
       "Attribute direkt beim Bezugswort platzieren.",
-      "Skopus durch Position und explizite Konnektoren markieren: nur, nicht, auch, fast.",
+      "Skopusmarkierende Konnektoren:",
+      "Skopusmarker: [[nur]].",
+      "Skopusmarker: [[nicht]].",
+      "Skopusmarker: [[auch]].",
+      "Skopusmarker: [[fast]].",
     ],
     usage: [
       "Fachliche, rechtliche und organisatorische Aussagen eindeutig machen.",
@@ -222,8 +232,17 @@ export const c2Explanations = defineExplanations({
     overview:
       "Pragmatische Feinsteuerung passt eine Äußerung an Beziehung, Gesichtswahrung, Gesprächsziel und gemeinsamen Wissensstand an. Grammatik wirkt dabei mit Partikeln, Modus, Person und Satztyp.",
     formation: [
-      "Abschwächung: vielleicht, etwas, könnte, würde, wohl.",
-      "Verstärkung: unbedingt, tatsächlich, doch, ja.",
+      "Abschwächende Ausdrücke:",
+      "Abschwächung: [[vielleicht]].",
+      "Abschwächung: [[etwas]].",
+      "Abschwächung: [[könnte]].",
+      "Abschwächung: [[würde]].",
+      "Abschwächung: [[wohl]].",
+      "Verstärkende Ausdrücke:",
+      "Verstärkung: [[unbedingt]].",
+      "Verstärkung: [[tatsächlich]].",
+      "Verstärkung: [[doch]].",
+      "Verstärkung: [[ja]].",
       "Indirekter Sprechakt: Könnten Sie das Fenster schließen?",
     ],
     usage: [
@@ -252,7 +271,12 @@ export const c2Explanations = defineExplanations({
     ],
     usage: [
       "Längere mündliche oder schriftliche Beiträge verständlich planen.",
-      "Behauptung, Begründung, Beleg, Einwand und Schlussfolgerung unterscheiden.",
+      "Argumentative Bausteine unterscheiden:",
+      "Baustein: [[Behauptung]].",
+      "Baustein: [[Begründung]].",
+      "Baustein: [[Beleg]].",
+      "Baustein: [[Einwand]].",
+      "Baustein: [[Schlussfolgerung]].",
       "Themenwechsel ankündigen und Rückbezüge explizit machen.",
     ],
     wordOrder: [
@@ -271,7 +295,11 @@ export const c2Explanations = defineExplanations({
       "Selbstreparatur korrigiert während des Sprechens Form, Wortwahl oder Aussage, ohne den Gesprächsfaden zu verlieren. Sie ist ein Zeichen fortgeschrittener Sprachkontrolle, nicht des Scheiterns.",
     formation: [
       "Abbruch und Neustart: Ich war - ich bin gestern nach Bonn gefahren.",
-      "Explizite Korrekturmarker: besser gesagt, genauer, ich meine, vielmehr.",
+      "Explizite Korrekturmarker:",
+      "Korrekturmarker: [[besser gesagt]].",
+      "Korrekturmarker: [[genauer]].",
+      "Korrekturmarker: [[ich meine]].",
+      "Korrekturmarker: [[vielmehr]].",
       "Lokale Reparatur nur des fehlerhaften Segments statt vollständiger Wiederholung.",
     ],
     usage: [
@@ -294,7 +322,12 @@ export const c2Explanations = defineExplanations({
     overview:
       "Interferenz entsteht, wenn Muster einer anderen Sprache unpassend auf Deutsch übertragen werden. Kontrolle bedeutet, persönliche Risikobereiche zu erkennen und deutsche Form-Funktions-Pakete zu automatisieren.",
     formation: [
-      "Kontrastfelder erfassen: Verbposition, Artikel/Genus, Kasus, Präposition, Tempus und falsche Freunde.",
+      "Kontrastfelder zwischen Sprachen:",
+      "Kontrastfeld: [[Verbposition]].",
+      "Kontrastfeld: [[Artikel/Genus]].",
+      "Kontrastfeld: [[Kasus]].",
+      "Kontrastfeld: [[Präposition]].",
+      "Kontrastfeld: [[Tempus]] und [[falsche Freunde]].",
       "Fehler nicht nur korrigieren, sondern als Auslöser → falsches Muster → deutsches Zielmuster dokumentieren.",
       "Minimalpaare und Chunks trainieren: warten auf, helfen + Dativ, seit + Präsens.",
     ],
@@ -320,7 +353,11 @@ export const c2Explanations = defineExplanations({
     formation: [
       "Abruf in Chunks: Konnektor + Satzmuster, Verb + Rektion, Nomen + Artikel/Plural.",
       "Planung in Sinneinheiten statt Wort-für-Wort-Übersetzung.",
-      "Zyklus: produzieren, gezielt prüfen, lokal reparieren, erneut übertragen.",
+      "Zyklus der automatischen Produktion:",
+      "Schritt 1: [[produzieren]].",
+      "Schritt 2: [[gezielt prüfen]].",
+      "Schritt 3: [[lokal reparieren]].",
+      "Schritt 4: [[erneut übertragen]].",
     ],
     usage: [
       "Spontane längere Beiträge mit stabiler Grammatik halten.",

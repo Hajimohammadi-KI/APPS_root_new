@@ -1,4 +1,5 @@
 node_modules/
+.bun-install-cache/
 .next/
 dist/
 coverage/
@@ -12,4 +13,7 @@ DeutschFlow-Setup.exe
 DeutschFlow-Setup.exe.sha256
 apps/web/public/downloads/DeutschFlow-Setup.exe
 apps/web/public/downloads/DeutschFlow-Setup.exe.sha256
+apps/web/public/downloads/DeutschFlow-Setup-v*.exe
+apps/web/public/downloads/DeutschFlow-Setup-v*.exe.sha256
+apps/web/public/downloads/DeutschFlow-Setup*.payload.zip
 *.log

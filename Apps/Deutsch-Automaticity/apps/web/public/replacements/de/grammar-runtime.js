@@ -97,6 +97,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       exampleLocked:
         "Die deutschen Beispiele bleiben bis nach deinem eigenen Versuch verborgen.",
       wrongLanguage: "Die Antwort muss auf Deutsch geschrieben werden.",
+      feedbackTitle: "Überprüfung deiner Antwort",
+      nearlyCorrect: "Fast richtig. Nur wenige Stellen brauchen eine Korrektur.",
     },
     English: {
       closedEyebrow: "Closed task · objectively checkable",
@@ -135,6 +137,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       exampleLocked:
         "The German examples stay hidden until after your own attempt.",
       wrongLanguage: "The answer must be written in German.",
+      feedbackTitle: "Review of your answer",
+      nearlyCorrect: "Almost correct. Only a few parts need correction.",
     },
     فارسی: {
       closedEyebrow: "تمرین بسته · دارای پاسخ عینی",
@@ -172,6 +176,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       exampleLocked:
         "مثال‌های آلمانی تا پس از تلاش خودت پنهان می‌مانند.",
       wrongLanguage: "پاسخ باید به آلمانی نوشته شود.",
+      feedbackTitle: "بررسی پاسخ شما",
+      nearlyCorrect: "جملهٔ شما تقریباً درست است. فقط چند بخش نیاز به اصلاح دارد.",
     },
   };
 
@@ -340,22 +346,33 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         ],
       };
     }
-    if (
-      /\bin meine straße\b/iu.test(answer) &&
-      /\b(gibt es|es gibt)\b/iu.test(answer) &&
-      /\b(supermarkt|spermarket)\b/iu.test(answer)
-    ) {
+    const hasLocationCaseError = /\bin meine (straße|strasse)\b/iu.test(answer);
+    const hasSupermarket = /\b(supermarkt|spermarket)\b/iu.test(answer);
+    if (hasLocationCaseError && /\b(gibt es|es gibt)\b/iu.test(answer) && hasSupermarket) {
+      const points = [
+        {
+          type: "case",
+          message: localizedMessage({
+            Deutsch: "In meine Straße ❌ → In meiner Straße ✅. Bei einem festen Ort steht „in“ mit dem Dativ.",
+            English: "In meine Straße ❌ → In meiner Straße ✅. A fixed location uses „in“ with the dative.",
+            فارسی: "In meine Straße ❌ → In meiner Straße ✅. مکان ثابت: in + Dativ.",
+          }),
+        },
+      ];
+      if (/\b(gibt es|es gibt) (ein|eine) (supermarkt|spermarket)\b/iu.test(answer)) {
+        points.push({
+          type: "case",
+          message: localizedMessage({
+            Deutsch: "„eine Supermarkt“ ❌ → „einen Supermarkt“ ✅. Supermarkt ist maskulin und steht nach „es gibt“ im Akkusativ.",
+            English: "“eine Supermarkt” ❌ → “einen Supermarkt” ✅. Supermarkt is masculine and takes the accusative after “es gibt”.",
+            فارسی: "«eine Supermarkt» ❌ → «einen Supermarkt» ✅. Supermarkt مذکر است و پس از «es gibt» در Akkusativ می‌آید.",
+          }),
+        });
+      }
       return {
         status: "nearly_correct",
         points: [
-          {
-            type: "case",
-            message: localizedMessage({
-              Deutsch: "In meine Straße ❌ → In meiner Straße ✅. Bei einem festen Ort steht „in“ mit dem Dativ.",
-              English: "In meine Straße ❌ → In meiner Straße ✅. A fixed location uses „in“ with the dative.",
-              فارسی: "In meine Straße ❌ → In meiner Straße ✅. مکان ثابت: in + Dativ.",
-            }),
-          },
+          ...points,
           {
             type: "meaning",
             message: localizedMessage({
@@ -1057,7 +1074,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
               message: `${copy.dimensions}: ${localizedDimensions(metadata)}`,
             },
           ];
-      feedback.innerHTML = `${renderFeedbackPoints(points)}${
+      feedback.innerHTML = `<strong>${escapeHtml(copy.feedbackTitle)}</strong>${renderFeedbackPoints(points)}${
         localIssue?.corrected
           ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(localIssue.corrected)}</p>`
           : ""

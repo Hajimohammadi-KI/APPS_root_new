@@ -34,6 +34,23 @@ interface PwaContextValue {
   promptInstall(): Promise<InstallPromptResult>;
 }
 
+const APP_CACHE_PREFIX = "deutschflow-";
+const CURRENT_APP_CACHE = "deutschflow-v24-feedback-1";
+
+async function clearObsoleteAppCaches(): Promise<void> {
+  if (!("caches" in window)) return;
+  const cacheNames = await window.caches.keys();
+  await Promise.all(
+    cacheNames
+      .filter(
+        (cacheName) =>
+          cacheName.startsWith(APP_CACHE_PREFIX) &&
+          cacheName !== CURRENT_APP_CACHE,
+      )
+      .map((cacheName) => window.caches.delete(cacheName)),
+  );
+}
+
 const PwaContext = createContext<PwaContextValue | undefined>(undefined);
 
 function detectPlatform(): InstallPlatform {
@@ -119,6 +136,7 @@ export function PwaProvider({
 
     async function registerWorker() {
       try {
+        await clearObsoleteAppCaches();
         await navigator.serviceWorker.register("/sw.js", {
           scope: "/",
           updateViaCache: "none",

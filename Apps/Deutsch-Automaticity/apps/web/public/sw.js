@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "deutschflow-v23-local-icon-1";
+const CACHE = "deutschflow-v24-feedback-1";
 const CORE = [
   "/",
   "/audio",

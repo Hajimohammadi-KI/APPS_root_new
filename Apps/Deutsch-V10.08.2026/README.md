@@ -103,10 +103,10 @@ sign-in and consent flow explicitly enables synchronization.
 
 ## Plans and decisions
 
-- `docs/ROADMAP-V10.08.2026.md`
-- `docs/LEGACY-INVENTORY-V10.08.2026.md`
-- `plans/001-production-roadmap.md`
-- `docs/adr/0001-platform-stack.md`
-- `docs/architecture/supabase-sync.md`
-- `docs/product/beta-scope.md`
-- `docs/product/grammar-material-sources.md`
+- `doc/duplicate-markdown/Apps/Deutsch-V10.08.2026/docs/ROADMAP-V10.08.2026.md`
+- `doc/duplicate-markdown/Apps/Deutsch-V10.08.2026/docs/LEGACY-INVENTORY-V10.08.2026.md`
+- `doc/duplicate-markdown/Apps/Deutsch-V10.08.2026/plans/001-production-roadmap.md`
+- `doc/duplicate-markdown/Apps/Deutsch-V10.08.2026/docs/adr/0001-platform-stack.md`
+- `doc/duplicate-markdown/Apps/Deutsch-V10.08.2026/docs/architecture/supabase-sync.md`
+- `doc/duplicate-markdown/Apps/Deutsch-V10.08.2026/docs/product/beta-scope.md`
+- `doc/duplicate-markdown/Apps/Deutsch-V10.08.2026/docs/product/grammar-material-sources.md`

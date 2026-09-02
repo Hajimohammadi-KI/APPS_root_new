@@ -10,8 +10,11 @@ authenticated multi-user synchronization to Neon; local-first legacy operation
 does not depend on it. Cross-platform distribution is now prepared and built:
 the stable HTTPS PWA has signed Android APK/AAB output, a Windows MSIX bundle,
 and an iOS Xcode project with store metadata, privacy/support URLs,
-screenshots, and Android Digital Asset Links. See `docs/LEGACY-PARITY.md` for
-the screen-by-screen evidence and `distribution/README.md` for release handoff.
+screenshots, and Android Digital Asset Links. See
+`doc/duplicate-markdown/Apps/English/English-07082026/docs/LEGACY-PARITY.md` for
+the screen-by-screen evidence and
+`doc/duplicate-markdown/Apps/English/English-07082026/distribution/README.md`
+for release handoff.
 
 ## Product baseline
 
@@ -92,7 +95,8 @@ implicit subjects were added explicitly, producing 112 searchable units:
 
 Every unit contains at least five controlled exercises, followed by original
 production in Grammar Lab. The full methodology, source links, and
-level-by-level additions are in `docs/CEFR-CURRICULUM.md`.
+level-by-level additions are in
+`doc/duplicate-markdown/Apps/English/English-07082026/docs/CEFR-CURRICULUM.md`.
 
 ## Delivery phases
 
@@ -142,7 +146,8 @@ stored in the repository.
 ## Supplemental automaticity requirements
 
 The implemented daily learning contract is documented in
-`docs/AUTOMATICITY-METHODOLOGY.md`. The single **Today’s Practice** route now
+`doc/duplicate-markdown/Apps/English/English-07082026/docs/AUTOMATICITY-METHODOLOGY.md`.
+The single **Today’s Practice** route now
 combines daily training and automaticity evidence around the selected Grammar
 Lab lesson instead of maintaining separate routes or a fixed demo topic.
 

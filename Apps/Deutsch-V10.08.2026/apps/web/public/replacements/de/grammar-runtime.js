@@ -83,24 +83,36 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
   const deriveGoal = (unit) =>
     `Ich kann ${unit.title} in verständlichen, eigenen Sätzen passend verwenden.`;
 
+  // Content may wrap a substring in [[...]] to mark it as a highlighted
+  // pattern (e.g. a plural ending). escapeHtml runs first, so this only
+  // ever wraps already-escaped, non-executable text.
+  const withMarkers = (escaped) =>
+    escaped.replace(
+      /\[\[([^\]]+)\]\]/g,
+      '<strong class="pattern-marker">$1</strong>',
+    );
+
+  const joinAsLines = (items) =>
+    items.map((item) => withMarkers(escapeHtml(item))).join("<br>");
+
   const renderRule = (unit) => {
     const explanation = unit.explanation || {};
     const cards = [
-      ["Bedeutung", explanation.overview || unit.rule],
-      ["Form bilden", (explanation.formation || []).join(" ")],
-      ["Verwendung", (explanation.usage || []).join(" ")],
-      ["Satzstellung", (explanation.wordOrder || []).join(" ")],
-      ["Transfer", explanation.memoryTip || unit.transferTest],
+      ["Bedeutung", escapeHtml(explanation.overview || unit.rule)],
+      ["Form bilden", joinAsLines(explanation.formation || [unit.rule])],
+      ["Verwendung", joinAsLines(explanation.usage || [unit.rule])],
+      ["Satzstellung", joinAsLines(explanation.wordOrder || [unit.rule])],
+      ["Transfer", escapeHtml(explanation.memoryTip || unit.transferTest)],
     ];
     $("#ruleBody").innerHTML = `
       <p class="rule-intro">${escapeHtml(unit.rule)}</p>
       <div class="pattern-grid">
         ${cards
           .map(
-            ([title, text], index) => `
+            ([title, html], index) => `
               <article class="pattern-card">
                 <div class="pattern-title"><span class="mini-icon">${index + 1}</span>${escapeHtml(title)}</div>
-                <p>${escapeHtml(text || unit.rule)}</p>
+                <p>${html || escapeHtml(unit.rule)}</p>
               </article>`,
           )
           .join("")}

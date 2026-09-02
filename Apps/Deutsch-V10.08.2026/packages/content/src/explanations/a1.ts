@@ -170,7 +170,11 @@ export const a1Explanations = defineExplanations({
     overview:
       "Deutsch bildet den Plural mit mehreren Endungen und manchmal mit Umlaut. Es gibt keine einzige Regel, deshalb gehört die Pluralform zum Lernpaket jedes Nomens.",
     formation: [
-      "Häufige Muster: -e (Tage), -er (Kinder), -(e)n (Frauen), -s (Autos) oder keine Endung (Lehrer).",
+      "Häufige Pluralendungen im Deutschen:",
+      "Endung [[-e]] zeigt sich in Tage.",
+      "Endung [[-er]] zeigt sich in Kinder.",
+      "Endung [[-(e)n]] zeigt sich in Frauen.",
+      "Endung [[-s]] zeigt sich in Autos, oder keine Endung wie in Lehrer.",
       "Umlaut kann zusätzlich auftreten: der Apfel → die Äpfel; das Buch → die Bücher.",
       "Alle Pluralnomen haben im Nominativ den Artikel die.",
     ],

@@ -8,6 +8,12 @@ interface GrammarSpec {
   readonly rule: string;
   readonly example: string;
   readonly contrast: string;
+  /**
+   * Overrides the generic exercise template below. Needed when `example` is
+   * not a plain sentence (e.g. a dash-joined pattern), since the generic
+   * exercises assume `example` can stand in for a sentence answer.
+   */
+  readonly exercises?: readonly (readonly [string, string])[];
 }
 
 const specs: readonly GrammarSpec[] = [
@@ -471,6 +477,28 @@ const specs: readonly GrammarSpec[] = [
     example: "Die These überzeugt – trotz offener Detailfragen – im Kern.",
     contrast:
       "Rhythmus unterstützt Bedeutung; dekorative Variation ohne Funktion stört.",
+    exercises: [
+      [
+        "Schreibe das Modell ohne Hilfe genau nach: Die These überzeugt – trotz offener Detailfragen – im Kern.",
+        "Die These überzeugt – trotz offener Detailfragen – im Kern.",
+      ],
+      [
+        "Schreibe einen weiteren Satz mit demselben Rhythmus (Hauptaussage – Einschub – Kernaussage): Der Plan funktioniert – trotz hoher Kosten – langfristig.",
+        "Der Plan funktioniert – trotz hoher Kosten – langfristig.",
+      ],
+      [
+        "Benenne den eingeschobenen Nachtrag im Modell: Die These überzeugt – trotz offener Detailfragen – im Kern.",
+        "trotz offener Detailfragen",
+      ],
+      [
+        "Erkläre die Regel: Syntaktischer Rhythmus",
+        "Variiere Satzlänge, Vorfeld, Klammer und Nachtrag so, dass komplexe Inhalte hör- und lesbar gegliedert werden.",
+      ],
+      [
+        "Erkläre den Unterschied zwischen funktionalem und dekorativem Rhythmus.",
+        "Rhythmus unterstützt Bedeutung; dekorative Variation ohne Funktion stört.",
+      ],
+    ],
   },
   {
     level: "C2",
@@ -512,7 +540,7 @@ function buildUnit(spec: GrammarSpec, index: number): GrammarUnit {
     },
     examples: [spec.example, spec.contrast],
     commonError: spec.contrast,
-    exercises: [
+    exercises: spec.exercises ?? [
       [
         `Ergänze oder korrigiere ein passendes Beispiel für „${topic}“.`,
         answer,

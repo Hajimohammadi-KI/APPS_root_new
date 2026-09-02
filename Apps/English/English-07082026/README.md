@@ -70,14 +70,14 @@ controls, dashboard content, theme tokens, and screenshots.
 - `apps/api/database`: optional Neon PostgreSQL connected-mode schema.
 - `docs/ROADMAP.md`: inventory, architecture decisions, delivery phases, and
   the twelve supplemental automaticity requirements from `Langauge.md`.
-- `docs/CEFR-CURRICULUM.md`: internet-source methodology, level counts, and
+- `doc/duplicate-markdown/Apps/English/English-07082026/docs/CEFR-CURRICULUM.md`: internet-source methodology, level counts, and
   the complete list of added grammar subjects.
-- `docs/INTEGRATED-SKILLS-CURRICULUM.md`: the original A1-C2 four-skills
+- `doc/duplicate-markdown/Apps/English/English-07082026/docs/INTEGRATED-SKILLS-CURRICULUM.md`: the original A1-C2 four-skills
   automaticity ladder, evidence gates, accessibility contract, and content
   provenance.
-- `docs/AUTOMATICITY-METHODOLOGY.md`: the daily lesson-to-automatic-speech
+- `doc/duplicate-markdown/Apps/English/English-07082026/docs/AUTOMATICITY-METHODOLOGY.md`: the daily lesson-to-automatic-speech
   method, CEFR adaptation, motivation rules, and accessibility safeguards.
-- `docs/LEGACY-PARITY.md`: screen-by-screen source-to-software migration
+- `doc/duplicate-markdown/Apps/English/English-07082026/docs/LEGACY-PARITY.md`: screen-by-screen source-to-software migration
   contract and automated evidence.
 - `tests/e2e`: real browser journeys.
 
@@ -101,7 +101,7 @@ an iOS Xcode project from the same hosted PWA:
 bun run package:stores
 ```
 
-See `distribution/README.md` for direct sharing, store submission, signing-key
+See `doc/duplicate-markdown/Apps/English/English-07082026/distribution/README.md` for direct sharing, store submission, signing-key
 handling, and the macOS/Xcode handoff required by Apple.
 
 ### One-click Windows setup

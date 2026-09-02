@@ -322,12 +322,24 @@
         "zwei Bücher"
       ],
       [
-        "Schreibe den Modellsatz: das Buch – die Bücher; die Frau – die Frauen",
+        "Schreibe das Muster genau nach: das Buch – die Bücher; die Frau – die Frauen",
         "das Buch – die Bücher; die Frau – die Frauen"
       ],
       [
         "Erkläre die Regel: Pluralformen",
         "Pluralformen müssen meist mit dem Nomen gelernt werden."
+      ],
+      [
+        "Bilde den Plural und schreibe ihn: das Kind → ___",
+        "die Kinder"
+      ],
+      [
+        "Bilde den Plural und schreibe ihn: der Apfel → ___",
+        "die Äpfel"
+      ],
+      [
+        "Setze die fehlende Form ein und schreibe den ganzen Satz: Auf dem Tisch liegen drei ___.",
+        "Auf dem Tisch liegen drei Bücher."
       ]
     ],
     "links": [
@@ -3492,16 +3504,28 @@
     "commonError": "lokal richtige Sätze ohne globalen Zusammenhang.",
     "exercises": [
       [
-        "Korrigiere den Satz: lokal richtige Sätze ohne globalen Zusammenhang.",
+        "Behebe den Fehler: lokal richtige Sätze ohne globalen Zusammenhang.",
         "These → Begründung → Einwand → Abwägung → Schluss"
       ],
       [
-        "Schreibe den Modellsatz: These → Begründung → Einwand → Abwägung → Schluss",
+        "Schreibe das Muster genau nach: These → Begründung → Einwand → Abwägung → Schluss",
         "These → Begründung → Einwand → Abwägung → Schluss"
       ],
       [
         "Erkläre die Regel: Kohärenz langer Beiträge",
         "Argumente über mehrere Absätze oder längere mündliche Beiträge konsistent entwickeln."
+      ],
+      [
+        "Nenne den fehlenden Schritt: These → Begründung → ___ → Abwägung → Schluss",
+        "Einwand"
+      ],
+      [
+        "Nenne den fehlenden Schritt: These → ___ → Einwand → Abwägung → Schluss",
+        "Begründung"
+      ],
+      [
+        "Ordne die Schritte in der richtigen Reihenfolge: Schluss, These, Abwägung, Einwand, Begründung",
+        "These → Begründung → Einwand → Abwägung → Schluss"
       ]
     ],
     "links": [

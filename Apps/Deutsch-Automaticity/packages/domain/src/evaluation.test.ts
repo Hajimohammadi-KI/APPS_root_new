@@ -1,6 +1,8 @@
 import { describe, expect, it } from "bun:test";
 
 import {
+  analyzeClosedAnswer,
+  detectAnswerLanguage,
   evaluateAnswer,
   getTaskIssues,
   targetEvidencePresent,
@@ -13,6 +15,46 @@ const perfekt = {
 } as const;
 
 describe("legacy-compatible evaluator", () => {
+  it("detects Persian before attempting German grammar evaluation", () => {
+    expect(detectAnswerLanguage("یه سوپرمارکت سر خیابون ما هست")).toBe("fa");
+    const result = analyzeClosedAnswer(
+      "یه سوپرمارکت سر خیابون ما هست",
+      "In meiner Straße gibt es einen Supermarkt.",
+    );
+
+    expect(result.status).toBe("wrong_language");
+    expect(result.issues[0]?.category).toBe("wrong_output_language");
+  });
+
+  it("isolates the Dativ error in the es gibt example", () => {
+    const result = analyzeClosedAnswer(
+      "In meine Straße gibt es einen Supermarkt.",
+      "In meiner Straße gibt es einen Supermarkt.",
+    );
+
+    expect(result.status).toBe("nearly_correct");
+    expect(result.corrected).toBe("In meiner Straße gibt es einen Supermarkt.");
+    expect(result.issues).toHaveLength(1);
+    expect(result.issues[0]).toMatchObject({
+      category: "wrong_case",
+      userText: "In meine Straße",
+      correctedText: "In meiner Straße",
+      hint: "die Straße → in meiner Straße",
+    });
+  });
+
+  it("accepts canonical and valid reordered answers", () => {
+    const expected = "In meiner Straße gibt es einen Supermarkt.";
+    expect(analyzeClosedAnswer(expected, expected).correct).toBe(true);
+    expect(
+      analyzeClosedAnswer(
+        "Es gibt einen Supermarkt in meiner Straße.",
+        expected,
+        ["Es gibt einen Supermarkt in meiner Straße."],
+      ).correct,
+    ).toBe(true);
+  });
+
   it("akzeptiert eine kurze direkte Perfekt-Antwort ohne kopierte Aufgabenwörter", () => {
     const report = evaluateAnswer(
       "Ich habe heute gearbeitet.",

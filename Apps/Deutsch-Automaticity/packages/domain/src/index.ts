@@ -20,12 +20,17 @@ export {
 } from "./review-scheduler";
 export {
   applyLanguageToolMatches,
+  analyzeClosedAnswer,
   classifyError,
+  detectAnswerLanguage,
   evaluateAnswer,
   getTaskIssues,
   offlineCorrect,
   targetEvidencePresent,
   type EvaluationIssue,
+  type FeedbackCategory,
+  type FeedbackStatus,
+  type ClosedAnswerAnalysis,
   type EvaluationKind,
   type EvaluationNextAction,
   type EvaluationReport,

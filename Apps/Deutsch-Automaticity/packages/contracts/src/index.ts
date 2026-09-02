@@ -48,6 +48,32 @@ export const evaluationKindSchema = z.enum([
   "why",
 ]);
 
+export const feedbackStatusSchema = z.enum([
+  "correct",
+  "nearly_correct",
+  "wrong_language",
+  "incomplete",
+  "needs_revision",
+]);
+
+export const feedbackCategorySchema = z.enum([
+  "wrong_output_language",
+  "missing_word",
+  "wrong_article",
+  "wrong_case",
+  "wrong_noun_ending",
+  "wrong_plural_form",
+  "wrong_verb_conjugation",
+  "wrong_tense",
+  "wrong_word_order",
+  "wrong_preposition",
+  "wrong_adjective_ending",
+  "incomplete_sentence",
+  "spelling_or_typo",
+  "vocabulary_or_meaning",
+  "register_or_style",
+]);
+
 export const grammarTargetSchema = z.object({
   title: z.string().min(1).max(300),
   rule: z.string().min(1).max(5_000),
@@ -102,6 +128,11 @@ export const evaluationIssueSchema = z.object({
     "other",
   ]),
   severity: z.enum(["minor", "major", "critical"]),
+  category: feedbackCategorySchema.optional(),
+  userText: z.string().optional(),
+  correctedText: z.string().optional(),
+  explanation: z.string().optional(),
+  hint: z.string().optional(),
 });
 
 export const evaluationResponseSchema = z.object({
@@ -119,12 +150,18 @@ export const evaluationResponseSchema = z.object({
   relevant: z.boolean(),
   accuracyScore: z.number().min(0).max(100),
   nextAction: z.enum(["repeat", "repair", "transfer", "schedule_review"]),
+  status: feedbackStatusSchema.optional(),
+  answerLanguage: z.enum(["de", "fa", "en", "other"]).optional(),
+  correctParts: z.array(z.string()).optional(),
+  nextActionText: z.string().optional(),
 });
 
 export type CefrLevel = z.infer<typeof cefrLevelSchema>;
 export type HealthResponse = z.infer<typeof healthResponseSchema>;
 export type BootstrapResponse = z.infer<typeof bootstrapResponseSchema>;
 export type EvaluationKind = z.infer<typeof evaluationKindSchema>;
+export type FeedbackStatus = z.infer<typeof feedbackStatusSchema>;
+export type FeedbackCategory = z.infer<typeof feedbackCategorySchema>;
 export type GrammarTarget = z.infer<typeof grammarTargetSchema>;
 export type EvaluationRequest = z.infer<typeof evaluationRequestSchema>;
 export type EvaluationResponse = z.infer<typeof evaluationResponseSchema>;

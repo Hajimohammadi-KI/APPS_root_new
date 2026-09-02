@@ -96,6 +96,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       acceptedAlternative: "Diese deutsche Form ist ebenfalls richtig.",
       exampleLocked:
         "Die deutschen Beispiele bleiben bis nach deinem eigenen Versuch verborgen.",
+      wrongLanguage: "Die Antwort muss auf Deutsch geschrieben werden.",
     },
     English: {
       closedEyebrow: "Closed task · objectively checkable",
@@ -133,6 +134,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       acceptedAlternative: "This German form is also correct.",
       exampleLocked:
         "The German examples stay hidden until after your own attempt.",
+      wrongLanguage: "The answer must be written in German.",
     },
     فارسی: {
       closedEyebrow: "تمرین بسته · دارای پاسخ عینی",
@@ -169,12 +171,14 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       acceptedAlternative: "این صورت آلمانی نیز درست است.",
       exampleLocked:
         "مثال‌های آلمانی تا پس از تلاش خودت پنهان می‌مانند.",
+      wrongLanguage: "پاسخ باید به آلمانی نوشته شود.",
     },
   };
 
   const dimensionLabels = {
     Deutsch: {
       meaning: "Bedeutung",
+      form: "Form",
       form: "Form",
       word_order: "Wortstellung",
       use: "Verwendung",
@@ -227,9 +231,11 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       model: "Beispiel nach dem Versuch",
       answer: "Deine Antwort",
       expected: "Passende Lösung",
+      wrong_language: "Ausgabesprache",
     },
     English: {
       meaning: "Meaning",
+      form: "Form",
       target_grammar: "Target grammar",
       case: "Case",
       preposition: "Preposition and case",
@@ -243,9 +249,11 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       model: "Example after your attempt",
       answer: "Your answer",
       expected: "Suitable solution",
+      wrong_language: "Output language",
     },
     فارسی: {
       meaning: "معنا",
+      form: "شکل واژه",
       target_grammar: "گرامر هدف",
       case: "حالت دستوری",
       preposition: "حرف اضافه و حالت دستوری",
@@ -259,6 +267,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       model: "مثال پس از تلاش تو",
       answer: "پاسخ تو",
       expected: "پاسخ مناسب",
+      wrong_language: "زبان پاسخ",
     },
   };
 
@@ -276,6 +285,11 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
   const localizedMessage = (messages) =>
     messages?.[explanationLanguage] || messages?.Deutsch || "";
   const containsPersian = (value) => /[\u0600-\u06ff]/u.test(String(value ?? ""));
+  const isPrimarilyGerman = (value) => {
+    const text = String(value ?? "").trim();
+    if (!text || containsPersian(text)) return false;
+    return /[A-Za-zÄÖÜäöüß]/u.test(text);
+  };
   const exerciseMetadata = (exercise) =>
     exercise?.[2] && typeof exercise[2] === "object" ? exercise[2] : null;
   const isOpenProduction = (exercise) =>
@@ -296,6 +310,102 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     return (metadata?.feedbackDimensions || [])
       .map((dimension) => labels[dimension] || dimension)
       .join(", ");
+  };
+
+  const localClosedFeedback = (answer, expected) => {
+    const copy = activeCopy();
+    if (!isPrimarilyGerman(answer)) {
+      return {
+        status: "wrong_language",
+        points: [
+          {
+            type: "wrong_language",
+            message: `${copy.wrongLanguage} ${
+              explanationLanguage === "فارسی"
+                ? "شما معنی جمله را به فارسی نوشته‌اید. لطفاً همان معنی را به آلمانی بنویسید."
+                : explanationLanguage === "English"
+                  ? "You entered the meaning instead of a German sentence."
+                  : "Du hast die Bedeutung statt eines deutschen Satzes eingegeben."
+            }`,
+          },
+          {
+            type: "meaning",
+            message:
+              explanationLanguage === "فارسی"
+                ? "راهنما: In meiner Straße gibt es ... einen Supermarkt"
+                : explanationLanguage === "English"
+                  ? "Hint: In meiner Straße gibt es ... einen Supermarkt"
+                  : "Hinweis: In meiner Straße gibt es ... einen Supermarkt",
+          },
+        ],
+      };
+    }
+    if (
+      /\bin meine straße\b/iu.test(answer) &&
+      /\b(gibt es|es gibt)\b/iu.test(answer) &&
+      /\b(supermarkt|spermarket)\b/iu.test(answer)
+    ) {
+      return {
+        status: "nearly_correct",
+        points: [
+          {
+            type: "case",
+            message: localizedMessage({
+              Deutsch: "In meine Straße ❌ → In meiner Straße ✅. Bei einem festen Ort steht „in“ mit dem Dativ.",
+              English: "In meine Straße ❌ → In meiner Straße ✅. A fixed location uses „in“ with the dative.",
+              فارسی: "In meine Straße ❌ → In meiner Straße ✅. مکان ثابت: in + Dativ.",
+            }),
+          },
+          {
+            type: "meaning",
+            message: localizedMessage({
+              Deutsch: "Richtig: „gibt es“ und „einen Supermarkt“.",
+              English: "Correct: “gibt es” and “einen Supermarkt”.",
+              فارسی: "بخش‌های درست: «gibt es» و «einen Supermarkt». ",
+            }),
+          },
+        ],
+        corrected: expected,
+      };
+    }
+    const answerWords = answer.replace(/[.!?]+$/gu, "").split(/\s+/u);
+    const expectedWords = expected.replace(/[.!?]+$/gu, "").split(/\s+/u);
+    const differenceIndex = expectedWords.findIndex(
+      (word, index) =>
+        normalize(word) !== normalize(answerWords[index] || ""),
+    );
+    if (differenceIndex >= 0) {
+      const userWord = answerWords[differenceIndex] || "(fehlt)";
+      const expectedWord = expectedWords[differenceIndex] || "(entfernen)";
+      return {
+        status: "nearly_correct",
+        points: [
+          {
+            type: "form",
+            message: localizedMessage({
+              Deutsch: `Prüfe diese Stelle: „${userWord}“ → „${expectedWord}“.`,
+              English: `Check this part: “${userWord}” → “${expectedWord}”.`,
+              فارسی: `این بخش را اصلاح کن: «${userWord}» → «${expectedWord}».`,
+            }),
+          },
+        ],
+        corrected: expected,
+      };
+    }
+    return {
+      status: "needs_revision",
+      points: [
+        {
+          type: "meaning",
+          message: localizedMessage({
+            Deutsch: "Die deutsche Antwort passt noch nicht vollständig zur verlangten Bedeutung.",
+            English: "The German answer does not yet fully match the required meaning.",
+            فارسی: "پاسخ آلمانی هنوز کاملاً با معنای خواسته‌شده مطابقت ندارد.",
+          }),
+        },
+      ],
+      corrected: expected,
+    };
   };
   const learnerAllowsOnlineAI = () =>
     readJson(learnerStateKey, {})?.learner?.allowOnlineAI === true;
@@ -793,6 +903,13 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       return;
     }
 
+    const languageFeedback = localClosedFeedback(answer, expected);
+    if (languageFeedback?.status === "wrong_language") {
+      feedback.className = "feedback show bad";
+      feedback.innerHTML = renderFeedbackPoints(languageFeedback.points);
+      return;
+    }
+
     if (open) {
       const minimumSentences = Math.max(1, metadata?.minimumSentences || 1);
       if (countSentences(answer) < minimumSentences || countWords(answer) < 4) {
@@ -927,9 +1044,9 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       feedback.innerHTML = `<strong>Die Regel zum Vergleich:</strong> ${escapeHtml(expected)}<br><span>Es gibt hier keine einzig richtige Formulierung – vergleiche nur Bedeutung und Vollständigkeit.</span>`;
     } else if (!correct) {
       const localIssue =
-        unit.title === "es gibt mit Akkusativ"
-          ? localEsGibtFeedback(answer)
-          : null;
+        (unit.title === "es gibt mit Akkusativ"
+          ? localClosedFeedback(answer, expected) || localEsGibtFeedback(answer)
+          : null);
       const points = localIssue?.points?.length
         ? localIssue.points
         : [
@@ -950,13 +1067,35 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const completed = markExerciseComplete(unit);
     if (!recitation) {
       const usedAlternative = normalize(answer) !== normalize(expected);
+      const correctRulePoints =
+        unit.title === "es gibt mit Akkusativ"
+          ? [
+              {
+                type: "case",
+                message: localizedMessage({
+                  Deutsch: "In meiner Straße: fester Ort → in + Dativ.",
+                  English: "In meiner Straße: fixed location → in + dative.",
+                  فارسی: "In meiner Straße: مکان ثابت → in + Dativ.",
+                }),
+              },
+              {
+                type: "target_grammar",
+                message: localizedMessage({
+                  Deutsch: "Einen Supermarkt: es gibt verlangt den Akkusativ.",
+                  English: "Einen Supermarkt: es gibt requires the accusative.",
+                  فارسی: "Einen Supermarkt: پس از es gibt حالت Akkusativ می‌آید.",
+                }),
+              },
+            ]
+          : [];
       feedback.innerHTML = `<strong>${escapeHtml(copy.correct)}</strong>${
         usedAlternative
           ? renderFeedbackPoints([
               { type: "meaning", message: copy.acceptedAlternative },
             ])
           : ""
-      }<span>${completed}/${unit.exercises.length}</span>`;
+      }${renderFeedbackPoints(correctRulePoints)}
+      <span>${completed}/${unit.exercises.length}</span>`;
     }
   };
 

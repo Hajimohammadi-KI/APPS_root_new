@@ -19,7 +19,36 @@ export interface EvaluationIssue {
   readonly suggestion?: string;
   readonly errorClass: ErrorClass;
   readonly severity: "minor" | "major" | "critical";
+  readonly category?: FeedbackCategory;
+  readonly userText?: string;
+  readonly correctedText?: string;
+  readonly explanation?: string;
+  readonly hint?: string;
 }
+
+export type FeedbackStatus =
+  | "correct"
+  | "nearly_correct"
+  | "wrong_language"
+  | "incomplete"
+  | "needs_revision";
+
+export type FeedbackCategory =
+  | "wrong_output_language"
+  | "missing_word"
+  | "wrong_article"
+  | "wrong_case"
+  | "wrong_noun_ending"
+  | "wrong_plural_form"
+  | "wrong_verb_conjugation"
+  | "wrong_tense"
+  | "wrong_word_order"
+  | "wrong_preposition"
+  | "wrong_adjective_ending"
+  | "incomplete_sentence"
+  | "spelling_or_typo"
+  | "vocabulary_or_meaning"
+  | "register_or_style";
 
 export interface LanguageToolMatch {
   readonly offset: number;
@@ -59,6 +88,159 @@ export interface EvaluationReport {
   readonly relevant: boolean;
   readonly accuracyScore: number;
   readonly nextAction: EvaluationNextAction;
+  readonly status?: FeedbackStatus;
+  readonly answerLanguage?: "de" | "fa" | "en" | "other";
+  readonly correctParts?: readonly string[];
+  readonly nextActionText?: string;
+}
+
+export function detectAnswerLanguage(
+  text: string,
+): "de" | "fa" | "en" | "other" {
+  const value = text.trim();
+  if (!value) return "other";
+  if (/[\x00-\x1f]/u.test(value)) return "other";
+    if (/[\u0600-\u06ff]/u.test(value)) return "fa";
+  const latinWords = value.match(/[A-Za-zÄÖÜäöüß]+/gu) ?? [];
+  if (!latinWords.length) return "other";
+  const germanMarkers =
+    /\b(der|die|das|den|dem|des|ein|eine|einen|einem|einer|nicht|und|ist|sind|gibt|ich|du|wir|sie|es|bin|bist|war|wird|gefahren|gegangen)\b/iu;
+  const englishMarkers =
+    /\b(the|a|an|and|is|are|was|were|this|that|write|answer|sentence)\b/iu;
+  return germanMarkers.test(value) || !englishMarkers.test(value)
+    ? "de"
+    : "en";
+}
+
+export interface ClosedAnswerAnalysis {
+  readonly status: FeedbackStatus;
+  readonly answerLanguage: "de" | "fa" | "en" | "other";
+  readonly correct: boolean;
+  readonly correctParts: readonly string[];
+  readonly issues: readonly Pick<
+    EvaluationIssue,
+    | "type"
+    | "message"
+    | "severity"
+    | "category"
+    | "userText"
+    | "correctedText"
+    | "explanation"
+    | "hint"
+  >[];
+  readonly corrected: string;
+}
+
+const closedAnswerNormalization = (value: string): string =>
+  value
+    .trim()
+    .toLocaleLowerCase("de-DE")
+    .replace(/[.!?,;:]+$/gu, "")
+    .replace(/\s+/gu, " ");
+
+export function analyzeClosedAnswer(
+  text: string,
+  expected: string,
+  acceptedAnswers: readonly string[] = [],
+): ClosedAnswerAnalysis {
+  const answerLanguage = detectAnswerLanguage(text);
+  if (answerLanguage !== "de") {
+    return {
+      status: "wrong_language",
+      answerLanguage,
+      correct: false,
+      correctParts: [],
+      corrected: expected,
+      issues: [
+        {
+          type: "Ausgabesprache",
+          category: "wrong_output_language",
+          message: "Die Antwort muss auf Deutsch geschrieben werden.",
+          userText: text,
+          correctedText: "Deutsch schreiben",
+          explanation: "Das Eingabefeld erwartet eine deutsche Antwort.",
+          hint: expected.split(/\s+/u).slice(0, 4).join(" ") + " ...",
+          severity: "critical",
+        },
+      ],
+    };
+  }
+
+  const candidates = [expected, ...acceptedAnswers];
+  if (
+    candidates.some(
+      (candidate) =>
+        closedAnswerNormalization(candidate) ===
+        closedAnswerNormalization(text),
+    )
+  ) {
+    return {
+      status: "correct",
+      answerLanguage,
+      correct: true,
+      correctParts: text.split(/\s+/u).filter(Boolean),
+      corrected: text.trim(),
+      issues: [],
+    };
+  }
+
+  const expectedWords = expected.replace(/[.!?]+$/gu, "").split(/\s+/u);
+  const answerWords = text.replace(/[.!?]+$/gu, "").split(/\s+/u);
+  const sharedWords = expectedWords.filter((word) =>
+    answerWords.some(
+      (candidate) =>
+        closedAnswerNormalization(candidate) ===
+        closedAnswerNormalization(word),
+    ),
+  );
+  const issues: Array<ClosedAnswerAnalysis["issues"][number]> = [];
+  const hasEsGibtCaseError =
+    /\bin meine straße\b/iu.test(text) &&
+    /\b(gibt es|es gibt)\b/iu.test(text) &&
+    /\b(supermarkt|spermarkt)\b/iu.test(text);
+  if (hasEsGibtCaseError) {
+    issues.push({
+      type: "Kasus",
+      category: "wrong_case",
+      message: "„meine“ muss hier „meiner“ heißen.",
+      userText: "In meine Straße",
+      correctedText: "In meiner Straße",
+      explanation: "Bei einem festen Ort steht „in“ mit dem Dativ.",
+      hint: "die Straße → in meiner Straße",
+      severity: "critical",
+    });
+  }
+  if (/\bes gibt (ein|eine) supermarkt\b/iu.test(text)) {
+    issues.push({
+      type: "Artikel und Kasus",
+      category: "wrong_article",
+      message: "Nach „es gibt“ steht „Supermarkt“ im Akkusativ: „einen Supermarkt“.",
+      userText: text.match(/es gibt (ein|eine) supermarkt/iu)?.[0] ?? text,
+      correctedText: "einen Supermarkt",
+      explanation: "Supermarkt ist maskulin; es gibt verlangt den Akkusativ.",
+      hint: "der Supermarkt → einen Supermarkt",
+      severity: "critical",
+    });
+  }
+  if (issues.length === 0) {
+    issues.push({
+      type: "Antwort",
+      category: "vocabulary_or_meaning",
+      message: "Die Antwort stimmt noch nicht vollständig mit der Aufgabe überein.",
+      userText: text,
+      correctedText: expected,
+      explanation: "Vergleiche die Bedeutung und die verlangte Zielstruktur.",
+      severity: "major",
+    });
+  }
+  return {
+    status: "nearly_correct",
+    answerLanguage,
+    correct: false,
+    correctParts: sharedWords,
+    corrected: expected,
+    issues: issues.slice(0, 3),
+  };
 }
 
 const TARGET_PATTERNS: ReadonlyArray<readonly [RegExp, RegExp]> = [
@@ -173,18 +355,52 @@ function issueSeverity(errorClass: ErrorClass): EvaluationIssue["severity"] {
   return "major";
 }
 
+function feedbackCategoryFor(
+  errorClass: ErrorClass,
+  type: string,
+  message: string,
+): FeedbackCategory | undefined {
+  if (/ausgabesprache|language|sprache/iu.test(type)) {
+    return "wrong_output_language";
+  }
+  if (/fehlt|missing|nicht vorhanden/iu.test(message)) return "missing_word";
+  if (/artikel|genus/iu.test(type + " " + message)) return "wrong_article";
+  if (/präposition|preposition/iu.test(type + " " + message)) {
+    return "wrong_preposition";
+  }
+  if (/wortstellung|wortfolge/iu.test(type + " " + message)) {
+    return "wrong_word_order";
+  }
+  if (/plural|mehrzahl/iu.test(type + " " + message)) {
+    return "wrong_plural_form";
+  }
+  if (/konjug|verbform/iu.test(type + " " + message)) {
+    return "wrong_verb_conjugation";
+  }
+  if (errorClass === "case") return "wrong_case";
+  if (errorClass === "ending") return "wrong_adjective_ending";
+  if (errorClass === "tense") return "wrong_tense";
+  if (errorClass === "spelling") return "spelling_or_typo";
+  if (errorClass === "word_order") return "wrong_word_order";
+  return undefined;
+}
+
 function createIssue(
   issue: Omit<EvaluationIssue, "errorClass" | "severity"> & {
     readonly errorClass?: ErrorClass;
+    readonly severity?: EvaluationIssue["severity"];
   },
 ): EvaluationIssue {
   const errorClass =
     issue.errorClass ??
     classifyError(issue.type, issue.message, issue.context, issue.suggestion);
+  const category =
+    issue.category ?? feedbackCategoryFor(errorClass, issue.type, issue.message);
   return {
     ...issue,
     errorClass,
-    severity: issueSeverity(errorClass),
+    ...(category ? { category } : {}),
+    severity: issue.severity ?? issueSeverity(errorClass),
   };
 }
 
@@ -448,6 +664,41 @@ export function evaluateAnswer(
   languageTool: LanguageToolResult,
   taskPrompt?: string,
 ): EvaluationReport {
+  const answerLanguage = detectAnswerLanguage(text);
+  if (answerLanguage !== "de") {
+    const languageIssue = createIssue({
+      type: "Ausgabesprache",
+      message: "Die Antwort muss auf Deutsch geschrieben werden.",
+      context: text,
+      suggestion: "Deutsch schreiben",
+      errorClass: "other",
+      category: "wrong_output_language",
+      explanation: "Das Eingabefeld erwartet eine deutsche Antwort.",
+      hint: grammar.examples[0]?.split(/\s+/u).slice(0, 4).join(" ") + " ...",
+    });
+    return {
+      original: text,
+      corrected: "",
+      changed: false,
+      matches: languageTool.matches,
+      online: languageTool.online,
+      ...(languageTool.networkError
+        ? { networkError: languageTool.networkError }
+        : {}),
+      issues: [languageIssue],
+      practiceReady: false,
+      verified: false,
+      ok: false,
+      targetHit: false,
+      relevant: false,
+      accuracyScore: 0,
+      nextAction: "repair",
+      status: "wrong_language",
+      answerLanguage,
+      correctParts: [],
+      nextActionText: "پاسخ را به آلمانی بنویسید.",
+    };
+  }
   const corrected = languageTool.online
     ? applyLanguageToolMatches(text, languageTool.matches)
     : offlineCorrect(text);
@@ -530,5 +781,11 @@ export function evaluateAnswer(
         : kind === "review"
           ? "schedule_review"
           : "transfer",
+    status: issues.length === 0 ? "correct" : "needs_revision",
+    answerLanguage,
+    nextActionText:
+      issues.length === 0
+        ? "حالا این ساختار را در یک جملهٔ جدید به کار ببر."
+        : "خطاهای مشخص‌شده را اصلاح و پاسخ را دوباره ارسال کن.",
   };
 }

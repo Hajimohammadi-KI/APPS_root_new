@@ -92,17 +92,31 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       '<strong class="pattern-marker">$1</strong>',
     );
 
+  // Splits prose into individual sentences so each renders as its own
+  // bullet, the same way list-style content already does.
+  const splitSentences = (text) =>
+    String(text ?? "")
+      .split(/(?<=[.!?])\s+(?=[A-ZÄÖÜ])/)
+      .map((sentence) => sentence.trim())
+      .filter(Boolean);
+
+  const toBulletList = (lines) =>
+    `<ul class="pattern-list">${lines.map((line) => `<li>${line}</li>`).join("")}</ul>`;
+
   const joinAsLines = (items) =>
-    items.map((item) => withMarkers(escapeHtml(item))).join("<br>");
+    toBulletList(items.map((item) => withMarkers(escapeHtml(item))));
+
+  const sentencesAsLines = (text) =>
+    toBulletList(splitSentences(text).map((sentence) => withMarkers(escapeHtml(sentence))));
 
   const renderRule = (unit) => {
     const explanation = unit.explanation || {};
     const cards = [
-      ["Bedeutung", escapeHtml(explanation.overview || unit.rule)],
+      ["Bedeutung", sentencesAsLines(explanation.overview || unit.rule)],
       ["Form bilden", joinAsLines(explanation.formation || [unit.rule])],
       ["Verwendung", joinAsLines(explanation.usage || [unit.rule])],
       ["Satzstellung", joinAsLines(explanation.wordOrder || [unit.rule])],
-      ["Transfer", escapeHtml(explanation.memoryTip || unit.transferTest)],
+      ["Transfer", sentencesAsLines(explanation.memoryTip || unit.transferTest)],
     ];
     $("#ruleBody").innerHTML = `
       <p class="rule-intro">${escapeHtml(unit.rule)}</p>
@@ -112,7 +126,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
             ([title, html], index) => `
               <article class="pattern-card">
                 <div class="pattern-title"><span class="mini-icon">${index + 1}</span>${escapeHtml(title)}</div>
-                <p>${html || escapeHtml(unit.rule)}</p>
+                ${html}
               </article>`,
           )
           .join("")}

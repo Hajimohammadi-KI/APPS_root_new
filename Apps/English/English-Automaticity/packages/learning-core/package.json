@@ -21,7 +21,7 @@
     "test": "bun test",
     "test:adherence-core": "bun test src/adherence/adherence.test.ts",
     "test:content-quality": "bun test src/content-quality.test.ts",
-    "typecheck": "bunx -p typescript@5.9.2 tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "ts-fsrs": "5.4.1"

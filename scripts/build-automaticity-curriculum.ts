@@ -62,6 +62,8 @@ for(const [language,units,project] of [["en",en,"Apps/English/English-Automatici
         spoken.itemFamily=written.itemFamily;tasks.push(spoken);
       }
     }
+    const stageOrder:Stage[]=["notice","retrieve","vary","produce","repair","transfer","retain"];
+    tasks.sort((a,b)=>stageOrder.indexOf(a.stage)-stageOrder.indexOf(b.stage)||a.modality.localeCompare(b.modality)||a.id.localeCompare(b.id,undefined,{numeric:true}));
     const result={id:mapping.id,language,title:unit.title,level:unit.level,familyIds:mapping.familyIds,prerequisites:mapping.prerequisites,lessonAlias:alias,rule:unit.rule,examples:[...unit.examples],commonError:unit.commonError,review:mapping.review,sources:unit.links.filter(link=>/^https?:\/\//.test(link[1])).map(link=>({title:link[0],url:link[1]})),tasks};
     pack.units.push(result);
     for(const stage of ["notice","retrieve","vary","produce","repair","transfer","retain"] as const)for(const modality of ["writing","speaking"] as const){

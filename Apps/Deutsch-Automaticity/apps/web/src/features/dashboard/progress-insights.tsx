@@ -51,9 +51,9 @@ export function ProgressInsights({
 }: Readonly<ProgressInsightsProps>) {
   const competencyData = [
     { name: "Coverage", value: Math.round(coverage), fill: "#2563eb" },
-    { name: "Mastery", value: Math.round(mastery), fill: "#7c3aed" },
+    { name: "Bisheriger Übungswert", value: Math.round(mastery), fill: "#7c3aed" },
     {
-      name: "Automaticity",
+      name: "Bisherige Abrufschätzung",
       value: Math.round(automaticity),
       fill: "#d97706",
     },
@@ -80,10 +80,10 @@ export function ProgressInsights({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="size-5 text-violet-700" />
-              Kompetenzprofil
+              Bisheriges Übungsprofil
             </CardTitle>
             <CardDescription>
-              Gesehen, sicher beherrscht und ohne Hilfe automatisiert.
+              Historische Übungsschätzungen. Sie belegen keine Beherrschung oder Automatisierung.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -91,7 +91,7 @@ export function ProgressInsights({
               <div
                 className="relative mx-auto h-64 w-full max-w-72"
                 role="img"
-                aria-label={`Kompetenzprofil: Coverage ${Math.round(coverage)} Prozent, Mastery ${Math.round(mastery)} Prozent, Automaticity ${Math.round(automaticity)} Prozent`}
+                aria-label={`Bisheriges Übungsprofil: Abdeckung ${Math.round(coverage)} Prozent, Übungswert ${Math.round(mastery)} Prozent, Abrufschätzung ${Math.round(automaticity)} Prozent`}
               >
                 <ResponsiveContainer width="100%" height="100%">
                   <RadialBarChart

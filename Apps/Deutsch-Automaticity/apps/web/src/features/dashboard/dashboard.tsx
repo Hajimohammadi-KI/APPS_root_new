@@ -1,4 +1,5 @@
 "use client";
+import { AutomaticityEvidenceSummary } from "@/features/progress/automaticity-evidence-summary";
 
 import Link from "next/link";
 import {
@@ -7,7 +8,6 @@ import {
   BookOpen,
   CalendarDays,
   ChevronRight,
-  Flame,
   MessageCircle,
   Search,
   Sparkles,
@@ -118,7 +118,7 @@ export function Dashboard() {
     (record) => record.status === "automatic",
   ).length;
   const speakingAttempts = state.attempts.filter(
-    (attempt) => attempt.mode === "speaking",
+    (attempt) => attempt.mode === "speaking" && attempt.verified === true,
   );
   const speakingAccuracy = speakingAttempts.length
     ? Math.round(
@@ -127,7 +127,7 @@ export function Dashboard() {
           0,
         ) / speakingAttempts.length,
       )
-    : 0;
+    : null;
 
   const courses = [
     {
@@ -216,11 +216,11 @@ export function Dashboard() {
               </div>
               <div>
                 <strong>{automatic}</strong>
-                <span>automatische Themen</span>
+                <span>bisherige Übungsschwellen erreicht</span>
               </div>
               <div>
-                <strong>{speakingAccuracy}%</strong>
-                <span>Sprechgenauigkeit</span>
+                <strong>{speakingAccuracy === null ? "N/A" : `${speakingAccuracy}%`}</strong>
+                <span>geprüfte Transkriptgenauigkeit</span>
               </div>
             </div>
             <div
@@ -270,7 +270,7 @@ export function Dashboard() {
             <article className="home-v2-progress-card">
               <div className="home-v2-card-head">
                 <div>
-                  <p>Aktuelles Niveau · {level}</p>
+                  <p>Gewähltes Übungsniveau · {level}</p>
                   <h2>Dein Lernfortschritt</h2>
                 </div>
                 <TrendingUp />
@@ -280,7 +280,7 @@ export function Dashboard() {
                 value={progressDimensions.coverage}
               />
               <ProgressRow label="Heutige Übung" value={todayProgress} />
-              <ProgressRow label="Sprechgenauigkeit" value={speakingAccuracy} />
+              {speakingAccuracy === null ? <p>Transkriptgenauigkeit noch nicht geprüft.</p> : <ProgressRow label="Geprüfte Transkriptgenauigkeit" value={speakingAccuracy} />}
               {/* Automatische Übungssignale dürfen nicht wie ein Lehrkrafturteil aussehen. */}
               <div className="home-v2-evidence-legend" role="note">
                 <span><strong>Automatische Übungssignale</strong> Aktivität, Genauigkeit und App-Prüfungen.</span>
@@ -288,41 +288,7 @@ export function Dashboard() {
               </div>
             </article>
 
-            <article className="home-v2-focus-card">
-              <div className="home-v2-card-head">
-                <div>
-                  <p>Lernnachweise</p>
-                  <h2>Dein Fokuswert</h2>
-                </div>
-                <Flame />
-              </div>
-              <div className="home-v2-score">
-                <strong>
-                  {Math.round(
-                    (todayProgress +
-                      progressDimensions.mastery +
-                      speakingAccuracy) /
-                      3,
-                  )}
-                  %
-                </strong>
-                <span>ausgewogener Fortschritt</span>
-              </div>
-              <dl>
-                <div>
-                  <dt>Übung</dt>
-                  <dd>{todayProgress}%</dd>
-                </div>
-                <div>
-                  <dt>Beherrschung</dt>
-                  <dd>{progressDimensions.mastery}%</dd>
-                </div>
-                <div>
-                  <dt>Sprechen</dt>
-                  <dd>{speakingAccuracy}%</dd>
-                </div>
-              </dl>
-            </article>
+            <AutomaticityEvidenceSummary />
           </section>
         </div>
 

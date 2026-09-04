@@ -6,7 +6,6 @@ import {
   BookOpen,
   CalendarDays,
   ChevronRight,
-  Flame,
   MessageCircle,
   Search,
   Sparkles,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { grammarUnits } from "@grammar/content";
 import { currentDailyPlan, useAppStore } from "@/features/store/app-store";
+import { AutomaticityEvidenceSummary } from "@/features/components/automaticity-evidence-summary";
 
 const dayNames = ["M", "T", "W", "T", "F", "S", "S"];
 
@@ -31,7 +31,7 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
   const name = state.learner.displayName.trim() || "Learner";
   const level = state.learner.selfDeclaredLevel ?? "A1";
   const levelUnits = grammarUnits.filter((unit) => unit.level === level);
-  const practiced = levelUnits.filter((unit) => state.mastery[unit.title]?.status !== "new").length;
+  const practiced = levelUnits.filter((unit) => (state.mastery[unit.title]?.status ?? "new") !== "new").length;
   const finished = levelUnits.filter((unit) => ["stable", "automatic"].includes(state.mastery[unit.title]?.status ?? "new")).length;
   const progress = levelUnits.length ? Math.round((finished / levelUnits.length) * 100) : 0;
   const todayProgress = Math.round((new Set(plan.completed).size / 3) * 100);
@@ -58,9 +58,9 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
       ? { screen: "daily", reason: `${remainingDailySteps} practice step${remainingDailySteps === 1 ? " remains" : "s remain"} in today’s saved plan.` }
       : { screen: "integrated-skills", reason: "Today’s core plan is complete; continue the exact Integrated Skills path saved on this device." };
   const automatic = Object.values(state.mastery).filter((item) => item.status === "automatic").length;
-  const speakingAverage = state.sessions.length
-    ? Math.min(100, Math.round(state.sessions.reduce((total, session) => total + Math.min(100, session.seconds), 0) / state.sessions.length))
-    : 0;
+  const averageRecordingSeconds = state.sessions.length
+    ? Math.round(state.sessions.reduce((total, session) => total + session.seconds, 0) / state.sessions.length)
+    : null;
 
   const courses = [
     { title: "Expand Your English Vocabulary", detail: `${level} · ${dueReviews} reviews due`, tone: "rose", screen: "flashcards", icon: BookOpen },
@@ -101,8 +101,8 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
             </div>
             <div className="home-v2-chart-summary">
               <div><strong>+{todayProgress}%</strong><span>today’s mission</span></div>
-              <div><strong>{automatic}</strong><span>automatic topics</span></div>
-              <div><strong>{speakingAverage}%</strong><span>speaking rhythm</span></div>
+              <div><strong>{automatic}</strong><span>legacy practice thresholds reached</span></div>
+              <div><strong>{averageRecordingSeconds === null ? "N/A" : `${averageRecordingSeconds}s`}</strong><span>average recording length</span></div>
             </div>
             <div className={`home-v2-chart-wrap ${week.every((value) => value === 0) ? "is-empty" : ""}`} aria-label="Seven-day learning activity chart">
               <svg viewBox="0 0 100 90" preserveAspectRatio="none" role="img">
@@ -122,26 +122,18 @@ export function DashboardV2Screen({ navigate }: { navigate: (screen: string) => 
 
           <section className="home-v2-lower-grid">
             <article className="home-v2-progress-card">
-              <div className="home-v2-card-head"><div><p>Current level · {level}</p><h2>Student progress</h2></div><TrendingUp /></div>
-              <ProgressRow label="Finished lessons" value={progress} />
+              <div className="home-v2-card-head"><div><p>Selected practice level · {level}</p><h2>Practice activity</h2></div><TrendingUp /></div>
+              <ProgressRow label="Legacy practice thresholds" value={progress} />
               <ProgressRow label="Today’s practice" value={todayProgress} />
-              <ProgressRow label="Speaking evidence" value={Math.min(100, state.sessions.length * 10)} />
+              <p>{state.sessions.length} speaking sessions saved. Recording count does not measure speaking ability.</p>
               {/* Keep machine-derived practice signals visibly separate from human judgement. */}
               <div className="home-v2-evidence-legend" role="note">
-                <span><strong>Automated practice signals</strong> Activity, accuracy, and app-checked evidence.</span>
+                <span><strong>Practice signals</strong> Activity and historical app checks.</span>
                 <span><strong>Teacher-verified mastery</strong> Not recorded on this device.</span>
               </div>
             </article>
 
-            <article className="home-v2-focus-card">
-              <div className="home-v2-card-head"><div><p>Learning evidence</p><h2>Your focus score</h2></div><Flame /></div>
-              <div className="home-v2-score"><strong>{Math.round((todayProgress + speakingAverage + progress) / 3)}%</strong><span>balanced progress</span></div>
-              <dl>
-                <div><dt>Practice</dt><dd>{todayProgress}%</dd></div>
-                <div><dt>Mastery</dt><dd>{progress}%</dd></div>
-                <div><dt>Speaking</dt><dd>{speakingAverage}%</dd></div>
-              </dl>
-            </article>
+            <AutomaticityEvidenceSummary />
           </section>
         </div>
 

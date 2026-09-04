@@ -31,6 +31,7 @@ const files = [
   "src/automaticity/index.ts",
   "src/automaticity/browser-entry.ts",
   "src/automaticity/automaticity.test.ts",
+  "src/automaticity/selection.test.ts",
   "src/content-quality.ts",
   "src/content-quality.test.ts",
   "src/measurement.ts",

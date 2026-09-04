@@ -461,8 +461,8 @@ export function buildAttemptVerticalSlice(
   const review = input.reviewEvidence;
   const elapsed = review ? Date.parse(input.occurredAt) - Date.parse(review.previousPractisedAt) : NaN;
   const hasPriorResponse = !!review?.previousResponseId?.trim() && review.previousResponseId !== responseId;
-  const delayedRecall = independent && verificationStatus === "verified" && hasPriorResponse && Number.isFinite(elapsed) && elapsed >= 86_400_000;
-  const novelTransfer = independent && verificationStatus === "verified" && input.mode === "transfer" && hasPriorResponse &&
+  const delayedRecall = independent && realProduction && input.targetHit && verificationStatus === "verified" && hasPriorResponse && Number.isFinite(elapsed) && elapsed >= 86_400_000;
+  const novelTransfer = independent && realProduction && input.targetHit && verificationStatus === "verified" && input.mode === "transfer" && hasPriorResponse && Number.isFinite(elapsed) && elapsed >= 0 &&
     !!review?.taskId && !!review.previousTaskId && review.taskId !== review.previousTaskId &&
     !!review.contextId && !!review.previousContextId && review.contextId !== review.previousContextId;
   const masteryEligible =
@@ -606,7 +606,7 @@ export function readLearningEvidenceLedger(
     // not become independently qualified evidence when read by current code.
     return {
       ...value,
-      evidence: value.evidence.map(row => row.qualification ? row : {
+      evidence: value.evidence.map(row => row.qualification?.independent === true ? row : {
         ...row,
         masteryEligible: false,
         gates: { ...row.gates, delayedRecall: false, novelTransfer: false },

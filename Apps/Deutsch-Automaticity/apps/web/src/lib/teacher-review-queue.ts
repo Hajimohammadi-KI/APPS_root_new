@@ -52,7 +52,9 @@ export function buildTeacherReviewQueue(
       evidenceType: "Verzögerter Abruf",
       confidence: `${review.stabilityScore}% Stabilität · automatisches Signal`,
       correctionNeed:
-        review.original && review.corrected && review.original !== review.corrected
+        review.original &&
+        review.corrected &&
+        review.original !== review.corrected
           ? `${review.original} → ${review.corrected}`
           : "Keine neue Korrektur; Abruf-Nachweis prüfen.",
       recommendedNextStep:
@@ -64,6 +66,9 @@ export function buildTeacherReviewQueue(
     }));
 
   return [...errorItems, ...reviewItems]
-    .sort((left, right) => Number(left.priority !== "now") - Number(right.priority !== "now"))
+    .sort(
+      (left, right) =>
+        Number(left.priority !== "now") - Number(right.priority !== "now"),
+    )
     .slice(0, 8);
 }

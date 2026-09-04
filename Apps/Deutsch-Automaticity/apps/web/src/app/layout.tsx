@@ -57,11 +57,13 @@ export default function RootLayout({
     // learning aids opt into RTL only on their own scoped containers.
     <html lang="de" dir="ltr">
       <body>
-        <LearningRecoveryBoundary><Providers>
-          <AppShell>{children}</AppShell>
-          <DeepLSelectionTranslator />
-          <GuardedNudge />
-        </Providers></LearningRecoveryBoundary>
+        <LearningRecoveryBoundary>
+          <Providers>
+            <AppShell>{children}</AppShell>
+            <DeepLSelectionTranslator />
+            <GuardedNudge />
+          </Providers>
+        </LearningRecoveryBoundary>
       </body>
     </html>
   );

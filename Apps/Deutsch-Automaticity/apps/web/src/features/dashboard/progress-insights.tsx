@@ -51,7 +51,11 @@ export function ProgressInsights({
 }: Readonly<ProgressInsightsProps>) {
   const competencyData = [
     { name: "Coverage", value: Math.round(coverage), fill: "#2563eb" },
-    { name: "Bisheriger Übungswert", value: Math.round(mastery), fill: "#7c3aed" },
+    {
+      name: "Bisheriger Übungswert",
+      value: Math.round(mastery),
+      fill: "#7c3aed",
+    },
     {
       name: "Bisherige Abrufschätzung",
       value: Math.round(automaticity),
@@ -83,7 +87,8 @@ export function ProgressInsights({
               Bisheriges Übungsprofil
             </CardTitle>
             <CardDescription>
-              Historische Übungsschätzungen. Sie belegen keine Beherrschung oder Automatisierung.
+              Historische Übungsschätzungen. Sie belegen keine Beherrschung oder
+              Automatisierung.
             </CardDescription>
           </CardHeader>
           <CardContent>

@@ -1,7 +1,11 @@
 "use client";
 
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
-import { captureCompleteBackup, validateCompleteBackup, restoreCompleteBackup } from "@automaticity/learning-core/automaticity";
+import {
+  captureCompleteBackup,
+  validateCompleteBackup,
+  restoreCompleteBackup,
+} from "@automaticity/learning-core/automaticity";
 import {
   Download,
   Eye,
@@ -185,37 +189,77 @@ export function SettingsScreen() {
     );
   }
 
-
   async function exportData() {
     setExportStatus("");
     try {
-      const backup = await captureCompleteBackup({storage: localStorage, indexedDB}, "de", new Date().toISOString(), [["GrammarAutomaticityV11_de", JSON.stringify(state)]]);
-      const url = URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)], {type:"application/json"}));
-      const anchor = document.createElement("a"); anchor.href=url;
-      anchor.download=`DeutschFlow-Lerndaten-${new Date().toISOString().slice(0,10)}.json`;
-      anchor.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
-      setExportStatus("Vollständige Sicherung mit Entwürfen, Nachweisen und Aufnahmen heruntergeladen.");
-    } catch(error) {setExportStatus(error instanceof Error ? error.message : "Die Sicherung ist fehlgeschlagen.");}
+      const backup = await captureCompleteBackup(
+        { storage: localStorage, indexedDB },
+        "de",
+        new Date().toISOString(),
+        [["GrammarAutomaticityV11_de", JSON.stringify(state)]],
+      );
+      const url = URL.createObjectURL(
+        new Blob([JSON.stringify(backup, null, 2)], {
+          type: "application/json",
+        }),
+      );
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `DeutschFlow-Lerndaten-${new Date().toISOString().slice(0, 10)}.json`;
+      anchor.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setExportStatus(
+        "Vollständige Sicherung mit Entwürfen, Nachweisen und Aufnahmen heruntergeladen.",
+      );
+    } catch (error) {
+      setExportStatus(
+        error instanceof Error
+          ? error.message
+          : "Die Sicherung ist fehlgeschlagen.",
+      );
+    }
   }
 
-
   async function importData(event: ChangeEvent<HTMLInputElement>) {
-    const input=event.currentTarget, file=input.files?.[0]; if(!file)return;
+    const input = event.currentTarget,
+      file = input.files?.[0];
+    if (!file) return;
     setImportStatus("");
     try {
       const parsed: unknown = JSON.parse(await file.text());
       const legacy = parseLearningDataExport<typeof state>(parsed, "de");
-      const persistence = {storage: localStorage, indexedDB};
+      const persistence = { storage: localStorage, indexedDB };
       const backup = legacy
-        ? await captureCompleteBackup(persistence, "de", legacy.exportedAt, [["GrammarAutomaticityV11_de", JSON.stringify(legacy.learnerState)], ["automaticity:learning-evidence:v1", JSON.stringify(legacy.learningEvidence)]])
+        ? await captureCompleteBackup(persistence, "de", legacy.exportedAt, [
+            ["GrammarAutomaticityV11_de", JSON.stringify(legacy.learnerState)],
+            [
+              "automaticity:learning-evidence:v1",
+              JSON.stringify(legacy.learningEvidence),
+            ],
+          ])
         : await validateCompleteBackup(parsed, "de");
-      const message = "Schließe vor der Wiederherstellung andere App-Tabs. Lokale Lerndaten durch diese Sicherung ersetzen? Eine Wiederherstellungskopie schützt bei Unterbrechungen. Die Datei bleibt auf diesem Gerät.";
-      const legacyNote = legacy ? " Diese ältere Sicherung enthält keine Aufnahmen. Vorhandene Aufnahmen auf diesem Gerät bleiben erhalten." : "";
-      if(!window.confirm(message + legacyNote)) {setImportStatus("Wiederherstellung abgebrochen. Deine Daten bleiben erhalten.");return;}
+      const message =
+        "Schließe vor der Wiederherstellung andere App-Tabs. Lokale Lerndaten durch diese Sicherung ersetzen? Eine Wiederherstellungskopie schützt bei Unterbrechungen. Die Datei bleibt auf diesem Gerät.";
+      const legacyNote = legacy
+        ? " Diese ältere Sicherung enthält keine Aufnahmen. Vorhandene Aufnahmen auf diesem Gerät bleiben erhalten."
+        : "";
+      if (!window.confirm(message + legacyNote)) {
+        setImportStatus(
+          "Wiederherstellung abgebrochen. Deine Daten bleiben erhalten.",
+        );
+        return;
+      }
       await restoreCompleteBackup(persistence, backup, "de");
       window.location.reload();
-    } catch(error) {setImportStatus(error instanceof Error ? error.message : "Wiederherstellung fehlgeschlagen. Öffne die App erneut, um eine unterbrochene Wiederherstellung zurückzusetzen.");}
-    finally {input.value="";}
+    } catch (error) {
+      setImportStatus(
+        error instanceof Error
+          ? error.message
+          : "Wiederherstellung fehlgeschlagen. Öffne die App erneut, um eine unterbrochene Wiederherstellung zurückzusetzen.",
+      );
+    } finally {
+      input.value = "";
+    }
   }
 
   return (

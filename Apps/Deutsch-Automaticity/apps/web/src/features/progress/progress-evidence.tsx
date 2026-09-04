@@ -49,7 +49,10 @@ export function ProgressEvidence() {
     (state.learningLevel
       ? grammarUnits.find((unit) => unit.level === state.learningLevel)
       : undefined);
-  const masteryRows = Object.entries(state.mastery).map(([topic, record]) => ({ ...record, topic }));
+  const masteryRows = Object.entries(state.mastery).map(([topic, record]) => ({
+    ...record,
+    topic,
+  }));
   const automaticTopics = masteryRows.filter(
     (mastery) => mastery.status === "automatic",
   ).length;
@@ -59,14 +62,24 @@ export function ProgressEvidence() {
   const focusMastery = todayUnit ? state.mastery[todayUnit.title] : undefined;
   const weakSpeaking = masteryRows.filter(
     (mastery) =>
-      state.attempts.some(attempt => attempt.topic === mastery.topic && attempt.mode === "speaking" && attempt.verified === true) &&
+      state.attempts.some(
+        (attempt) =>
+          attempt.topic === mastery.topic &&
+          attempt.mode === "speaking" &&
+          attempt.verified === true,
+      ) &&
       mastery.status !== "new" &&
       mastery.scores.speaking < 80 &&
       mastery.scores.writing >= mastery.scores.speaking,
   ).length;
   const weakWriting = masteryRows.filter(
     (mastery) =>
-      state.attempts.some(attempt => attempt.topic === mastery.topic && attempt.mode === "writing" && attempt.verified === true) &&
+      state.attempts.some(
+        (attempt) =>
+          attempt.topic === mastery.topic &&
+          attempt.mode === "writing" &&
+          attempt.verified === true,
+      ) &&
       mastery.status !== "new" &&
       mastery.scores.writing < 80 &&
       mastery.scores.speaking > mastery.scores.writing,
@@ -195,8 +208,14 @@ export function ProgressEvidence() {
         </p>
         {/* Diese Legende verhindert, dass App-Scores als Lehrkrafturteil gelesen werden. */}
         <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2" role="note">
-          <p className="rounded-xl border border-sky-200 bg-sky-50 p-3"><strong>Automatische Übungssignale:</strong> Aktivität, App-Prüfungen und berechnete Stabilität.</p>
-          <p className="rounded-xl border border-violet-200 bg-violet-50 p-3"><strong>Durch Lehrkraft bestätigte Beherrschung:</strong> auf diesem Gerät nicht erfasst.</p>
+          <p className="rounded-xl border border-sky-200 bg-sky-50 p-3">
+            <strong>Automatische Übungssignale:</strong> Aktivität,
+            App-Prüfungen und berechnete Stabilität.
+          </p>
+          <p className="rounded-xl border border-violet-200 bg-violet-50 p-3">
+            <strong>Durch Lehrkraft bestätigte Beherrschung:</strong> auf diesem
+            Gerät nicht erfasst.
+          </p>
         </div>
       </header>
 

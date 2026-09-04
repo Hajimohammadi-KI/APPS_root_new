@@ -461,7 +461,9 @@ describe("lesson output caller integrity", () => {
           expect(bundle.evidence.verification.status).toBe(
             valid ? "verified" : "unverified",
           );
-          expect(bundle.evidence.masteryEligible).toBe(valid);
+          // Provider validation establishes a checked response. This legacy
+          // caller supplies no independent-attempt provenance.
+          expect(bundle.evidence.masteryEligible).toBe(false);
         } finally {
           globalThis.fetch = originalFetch;
         }

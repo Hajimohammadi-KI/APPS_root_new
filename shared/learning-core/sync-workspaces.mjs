@@ -32,6 +32,8 @@ const files = [
   "src/automaticity/browser-entry.ts",
   "src/automaticity/automaticity.test.ts",
   "src/automaticity/selection.test.ts",
+  "src/automaticity/qualification.ts",
+  "src/automaticity/qualification.test.ts",
   "src/content-quality.ts",
   "src/content-quality.test.ts",
   "src/measurement.ts",
@@ -72,7 +74,15 @@ const files = [
   "browser/practice-en.html",
   "browser/practice-de.html",
 ];
-const browserBundles = ["adherence-shadow.js", "forced-output-booster.js", "automaticity-v2.js", "practice.js", "practice.css", "practice-en.html", "practice-de.html"];
+const browserBundles = [
+  "adherence-shadow.js",
+  "forced-output-booster.js",
+  "automaticity-v2.js",
+  "practice.js",
+  "practice.css",
+  "practice-en.html",
+  "practice-de.html",
+];
 const checkOnly = process.argv.includes("--check");
 
 function digest(path) {

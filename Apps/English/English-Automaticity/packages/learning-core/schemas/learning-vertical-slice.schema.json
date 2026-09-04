@@ -148,11 +148,22 @@
         "masteryEligible": { "type": "boolean" },
         "qualification": {
           "type": "object",
-          "required": ["independent", "previousResponseId", "previousPractisedAt", "taskId", "previousTaskId", "contextId", "previousContextId"],
+          "required": [
+            "independent",
+            "previousResponseId",
+            "previousPractisedAt",
+            "taskId",
+            "previousTaskId",
+            "contextId",
+            "previousContextId"
+          ],
           "properties": {
             "independent": { "type": "boolean" },
             "previousResponseId": { "type": ["string", "null"] },
-            "previousPractisedAt": { "type": ["string", "null"], "format": "date-time" },
+            "previousPractisedAt": {
+              "type": ["string", "null"],
+              "format": "date-time"
+            },
             "taskId": { "type": ["string", "null"] },
             "previousTaskId": { "type": ["string", "null"] },
             "contextId": { "type": ["string", "null"] },

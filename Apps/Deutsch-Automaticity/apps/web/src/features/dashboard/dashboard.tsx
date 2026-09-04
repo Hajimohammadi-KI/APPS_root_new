@@ -181,7 +181,10 @@ export function Dashboard() {
         </div>
       </header>
 
-      <section className="home-v2-continue" aria-labelledby="continue-plan-title">
+      <section
+        className="home-v2-continue"
+        aria-labelledby="continue-plan-title"
+      >
         <div>
           <p>Empfohlener nächster Schritt</p>
           <h2 id="continue-plan-title">Meinen Plan fortsetzen</h2>
@@ -219,7 +222,9 @@ export function Dashboard() {
                 <span>bisherige Übungsschwellen erreicht</span>
               </div>
               <div>
-                <strong>{speakingAccuracy === null ? "N/A" : `${speakingAccuracy}%`}</strong>
+                <strong>
+                  {speakingAccuracy === null ? "N/A" : `${speakingAccuracy}%`}
+                </strong>
                 <span>geprüfte Transkriptgenauigkeit</span>
               </div>
             </div>
@@ -280,11 +285,24 @@ export function Dashboard() {
                 value={progressDimensions.coverage}
               />
               <ProgressRow label="Heutige Übung" value={todayProgress} />
-              {speakingAccuracy === null ? <p>Transkriptgenauigkeit noch nicht geprüft.</p> : <ProgressRow label="Geprüfte Transkriptgenauigkeit" value={speakingAccuracy} />}
+              {speakingAccuracy === null ? (
+                <p>Transkriptgenauigkeit noch nicht geprüft.</p>
+              ) : (
+                <ProgressRow
+                  label="Geprüfte Transkriptgenauigkeit"
+                  value={speakingAccuracy}
+                />
+              )}
               {/* Automatische Übungssignale dürfen nicht wie ein Lehrkrafturteil aussehen. */}
               <div className="home-v2-evidence-legend" role="note">
-                <span><strong>Automatische Übungssignale</strong> Aktivität, Genauigkeit und App-Prüfungen.</span>
-                <span><strong>Durch Lehrkraft bestätigte Beherrschung</strong> Auf diesem Gerät nicht erfasst.</span>
+                <span>
+                  <strong>Automatische Übungssignale</strong> Aktivität,
+                  Genauigkeit und App-Prüfungen.
+                </span>
+                <span>
+                  <strong>Durch Lehrkraft bestätigte Beherrschung</strong> Auf
+                  diesem Gerät nicht erfasst.
+                </span>
               </div>
             </article>
 

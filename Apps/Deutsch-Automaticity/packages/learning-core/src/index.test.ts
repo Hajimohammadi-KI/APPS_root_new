@@ -18,27 +18,153 @@ import {
 
 describe("shared automaticity vertical slice", () => {
   test("due-review flags cannot manufacture delay or transfer", () => {
-    const bundle = buildAttemptVerticalSlice({attemptId:"due-flag",occurredAt:"2026-09-05T10:00:00.000Z",language:"en",contentVersion:"1",topic:"Conditionals",mode:"transfer",inputText:"If I have time, I will call.",correctedText:"If I have time, I will call.",targetHit:true,accuracyScore:100,attemptVerified:true,assessedBy:"online",sessionMinutes:15,fromDueReview:true});
+    const bundle = buildAttemptVerticalSlice({
+      attemptId: "due-flag",
+      occurredAt: "2026-09-05T10:00:00.000Z",
+      language: "en",
+      contentVersion: "1",
+      topic: "Conditionals",
+      mode: "transfer",
+      inputText: "If I have time, I will call.",
+      correctedText: "If I have time, I will call.",
+      targetHit: true,
+      accuracyScore: 100,
+      attemptVerified: true,
+      assessedBy: "online",
+      sessionMinutes: 15,
+      fromDueReview: true,
+    });
     expect(bundle.evidence.masteryEligible).toBe(false);
     expect(bundle.evidence.gates.delayedRecall).toBe(false);
     expect(bundle.evidence.gates.novelTransfer).toBe(false);
   });
   test("novel transfer needs a prior real context and cannot precede its source", () => {
-    const input={attemptId:"context",occurredAt:"2026-09-05T10:00:00.000Z",language:"en" as const,contentVersion:"1",topic:"Conditionals",mode:"transfer" as const,inputText:"If I have time, I will call.",correctedText:"If I have time, I will call.",targetHit:true,accuracyScore:100,attemptVerified:true,assessedBy:"online" as const,sessionMinutes:15 as const,independence:{unaided:true,firstAttempt:true,exampleExposed:false,solutionExposed:false},reviewEvidence:{previousResponseId:"prior:response",previousPractisedAt:"2026-09-05T09:59:00.000Z",taskId:"new",previousTaskId:"old",contextId:"home",previousContextId:"home"}};
-    const same=buildAttemptVerticalSlice(input);expect(same.evidence.gates.novelTransfer).toBe(false);expect(same.evidence.gates.delayedRecall).toBe(false);
-    const future=buildAttemptVerticalSlice({...input,reviewEvidence:{...input.reviewEvidence,previousPractisedAt:"2026-09-06T09:00:00.000Z",previousContextId:"work"}});expect(future.evidence.gates.novelTransfer).toBe(false);
+    const input = {
+      attemptId: "context",
+      occurredAt: "2026-09-05T10:00:00.000Z",
+      language: "en" as const,
+      contentVersion: "1",
+      topic: "Conditionals",
+      mode: "transfer" as const,
+      inputText: "If I have time, I will call.",
+      correctedText: "If I have time, I will call.",
+      targetHit: true,
+      accuracyScore: 100,
+      attemptVerified: true,
+      assessedBy: "online" as const,
+      sessionMinutes: 15 as const,
+      independence: {
+        unaided: true,
+        firstAttempt: true,
+        exampleExposed: false,
+        solutionExposed: false,
+      },
+      reviewEvidence: {
+        previousResponseId: "prior:response",
+        previousPractisedAt: "2026-09-05T09:59:00.000Z",
+        taskId: "new",
+        previousTaskId: "old",
+        contextId: "home",
+        previousContextId: "home",
+      },
+    };
+    const same = buildAttemptVerticalSlice(input);
+    expect(same.evidence.gates.novelTransfer).toBe(false);
+    expect(same.evidence.gates.delayedRecall).toBe(false);
+    const future = buildAttemptVerticalSlice({
+      ...input,
+      reviewEvidence: {
+        ...input.reviewEvidence,
+        previousPractisedAt: "2026-09-06T09:00:00.000Z",
+        previousContextId: "work",
+      },
+    });
+    expect(future.evidence.gates.novelTransfer).toBe(false);
   });
   test("corrupt legacy evidence is preserved instead of overwritten on append", () => {
-    const values=new Map([["automaticity:learning-evidence:v1","{partially-saved"]]);const storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value);}};
-    const bundle=buildAttemptVerticalSlice({attemptId:"new",occurredAt:"2026-09-05T10:00:00.000Z",language:"en",contentVersion:"1",topic:"Present",mode:"writing",inputText:"I work.",correctedText:"I work.",targetHit:true,accuracyScore:100,attemptVerified:true,assessedBy:"online",sessionMinutes:15});
-    expect(()=>appendLearningEvidenceBundleToStorage(storage,bundle)).toThrow();expect(values.get("automaticity:learning-evidence:v1")).toBe("{partially-saved");
+    const values = new Map([
+      ["automaticity:learning-evidence:v1", "{partially-saved"],
+    ]);
+    const storage = {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        values.set(key, value);
+      },
+    };
+    const bundle = buildAttemptVerticalSlice({
+      attemptId: "new",
+      occurredAt: "2026-09-05T10:00:00.000Z",
+      language: "en",
+      contentVersion: "1",
+      topic: "Present",
+      mode: "writing",
+      inputText: "I work.",
+      correctedText: "I work.",
+      targetHit: true,
+      accuracyScore: 100,
+      attemptVerified: true,
+      assessedBy: "online",
+      sessionMinutes: 15,
+    });
+    expect(() =>
+      appendLearningEvidenceBundleToStorage(storage, bundle),
+    ).toThrow();
+    expect(values.get("automaticity:learning-evidence:v1")).toBe(
+      "{partially-saved",
+    );
   });
   test("legacy completion is retained as raw bytes but cannot become qualified mastery", () => {
-    const bundle=buildAttemptVerticalSlice({attemptId:"old",occurredAt:"2026-09-05T10:00:00.000Z",language:"en",contentVersion:"1",topic:"Present",mode:"writing",inputText:"I work.",correctedText:"I work.",targetHit:true,accuracyScore:100,attemptVerified:true,assessedBy:"online",sessionMinutes:15});
-    const ledger=mergeLearningEvidenceBundle(emptyLearningEvidenceLedger(),bundle);const {qualification: _qualification,...unqualified}=bundle.evidence;
-    const raw=JSON.stringify({...ledger,evidence:[{...unqualified,masteryEligible:true,gates:{...unqualified.gates,delayedRecall:true,novelTransfer:true}}]});const values=new Map([["automaticity:learning-evidence:v1",raw]]);const storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value);}};
-    expect(readLearningEvidenceLedger(storage).evidence[0]?.masteryEligible).toBe(false);expect(values.get("automaticity:learning-evidence:v1")).toBe(raw);
-    appendLearningEvidenceBundleToStorage(storage,bundle);expect(values.get("automaticity:learning-evidence:v1:before-evidence-qualification-v2")).toBe(raw);
+    const bundle = buildAttemptVerticalSlice({
+      attemptId: "old",
+      occurredAt: "2026-09-05T10:00:00.000Z",
+      language: "en",
+      contentVersion: "1",
+      topic: "Present",
+      mode: "writing",
+      inputText: "I work.",
+      correctedText: "I work.",
+      targetHit: true,
+      accuracyScore: 100,
+      attemptVerified: true,
+      assessedBy: "online",
+      sessionMinutes: 15,
+    });
+    const ledger = mergeLearningEvidenceBundle(
+      emptyLearningEvidenceLedger(),
+      bundle,
+    );
+    const { qualification: _qualification, ...unqualified } = bundle.evidence;
+    const raw = JSON.stringify({
+      ...ledger,
+      evidence: [
+        {
+          ...unqualified,
+          masteryEligible: true,
+          gates: {
+            ...unqualified.gates,
+            delayedRecall: true,
+            novelTransfer: true,
+          },
+        },
+      ],
+    });
+    const values = new Map([["automaticity:learning-evidence:v1", raw]]);
+    const storage = {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        values.set(key, value);
+      },
+    };
+    expect(
+      readLearningEvidenceLedger(storage).evidence[0]?.masteryEligible,
+    ).toBe(false);
+    expect(values.get("automaticity:learning-evidence:v1")).toBe(raw);
+    appendLearningEvidenceBundleToStorage(storage, bundle);
+    expect(
+      values.get(
+        "automaticity:learning-evidence:v1:before-evidence-qualification-v2",
+      ),
+    ).toBe(raw);
   });
   test.each([
     [15, 15],
@@ -191,10 +317,19 @@ describe("shared automaticity vertical slice", () => {
       assessedBy: "online",
       sessionMinutes: 15,
       fromDueReview: true,
-      independence: { unaided: true, firstAttempt: true, exampleExposed: false, solutionExposed: false },
+      independence: {
+        unaided: true,
+        firstAttempt: true,
+        exampleExposed: false,
+        solutionExposed: false,
+      },
       reviewEvidence: {
-        previousResponseId: "earlier:response", previousPractisedAt: "2026-08-19T08:00:00.000Z",
-        taskId: "new-task", previousTaskId: "old-task", contextId: "new-context", previousContextId: "old-context",
+        previousResponseId: "earlier:response",
+        previousPractisedAt: "2026-08-19T08:00:00.000Z",
+        taskId: "new-task",
+        previousTaskId: "old-task",
+        contextId: "new-context",
+        previousContextId: "old-context",
       },
     });
     const ledger = mergeLearningEvidenceBundle(

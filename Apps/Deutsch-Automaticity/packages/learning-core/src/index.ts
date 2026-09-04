@@ -455,18 +455,47 @@ export function buildAttemptVerticalSlice(
           }
         : null,
   };
-  const independent = input.independence?.unaided === true &&
-    input.independence.firstAttempt && !input.independence.exampleExposed &&
-    !input.independence.solutionExposed && input.mode !== "repair";
+  const independent =
+    input.independence?.unaided === true &&
+    input.independence.firstAttempt &&
+    !input.independence.exampleExposed &&
+    !input.independence.solutionExposed &&
+    input.mode !== "repair";
   const review = input.reviewEvidence;
-  const elapsed = review ? Date.parse(input.occurredAt) - Date.parse(review.previousPractisedAt) : NaN;
-  const hasPriorResponse = !!review?.previousResponseId?.trim() && review.previousResponseId !== responseId;
-  const delayedRecall = independent && realProduction && input.targetHit && verificationStatus === "verified" && hasPriorResponse && Number.isFinite(elapsed) && elapsed >= 86_400_000;
-  const novelTransfer = independent && realProduction && input.targetHit && verificationStatus === "verified" && input.mode === "transfer" && hasPriorResponse && Number.isFinite(elapsed) && elapsed >= 0 &&
-    !!review?.taskId && !!review.previousTaskId && review.taskId !== review.previousTaskId &&
-    !!review.contextId && !!review.previousContextId && review.contextId !== review.previousContextId;
+  const elapsed = review
+    ? Date.parse(input.occurredAt) - Date.parse(review.previousPractisedAt)
+    : NaN;
+  const hasPriorResponse =
+    !!review?.previousResponseId?.trim() &&
+    review.previousResponseId !== responseId;
+  const delayedRecall =
+    independent &&
+    realProduction &&
+    input.targetHit &&
+    verificationStatus === "verified" &&
+    hasPriorResponse &&
+    Number.isFinite(elapsed) &&
+    elapsed >= 86_400_000;
+  const novelTransfer =
+    independent &&
+    realProduction &&
+    input.targetHit &&
+    verificationStatus === "verified" &&
+    input.mode === "transfer" &&
+    hasPriorResponse &&
+    Number.isFinite(elapsed) &&
+    elapsed >= 0 &&
+    !!review?.taskId &&
+    !!review.previousTaskId &&
+    review.taskId !== review.previousTaskId &&
+    !!review.contextId &&
+    !!review.previousContextId &&
+    review.contextId !== review.previousContextId;
   const masteryEligible =
-    verificationStatus === "verified" && realProduction && input.targetHit && independent;
+    verificationStatus === "verified" &&
+    realProduction &&
+    input.targetHit &&
+    independent;
   const evidence: EvidenceRecord = {
     schemaVersion: LEARNING_SCHEMA_VERSION,
     id: evidenceId,
@@ -568,7 +597,9 @@ export function emptyLearningEvidenceLedger(): LearningEvidenceLedger {
   };
 }
 
-function isLearningEvidenceLedger(value: unknown): value is LearningEvidenceLedger {
+function isLearningEvidenceLedger(
+  value: unknown,
+): value is LearningEvidenceLedger {
   if (!value || typeof value !== "object") return false;
   const row = value as Record<string, unknown>;
   return (
@@ -578,15 +609,30 @@ function isLearningEvidenceLedger(value: unknown): value is LearningEvidenceLedg
     Array.isArray(row.responses) &&
     Array.isArray(row.evidence) &&
     Array.isArray(row.events) &&
-    [row.contentUnits, row.dailyPlans, row.responses, row.evidence, row.events].every(
-      records => (records as unknown[]).every(record => !!record && typeof record === "object" &&
-        typeof (record as Record<string, unknown>).id === "string"),
+    [
+      row.contentUnits,
+      row.dailyPlans,
+      row.responses,
+      row.evidence,
+      row.events,
+    ].every((records) =>
+      (records as unknown[]).every(
+        (record) =>
+          !!record &&
+          typeof record === "object" &&
+          typeof (record as Record<string, unknown>).id === "string",
+      ),
     ) &&
-    (row.evidence as unknown[]).every(record => {
+    (row.evidence as unknown[]).every((record) => {
       const evidence = record as Record<string, unknown>;
-      return !!evidence.gates && typeof evidence.gates === "object" &&
-        !!evidence.verification && typeof evidence.verification === "object" &&
-        !!evidence.metrics && typeof evidence.metrics === "object";
+      return (
+        !!evidence.gates &&
+        typeof evidence.gates === "object" &&
+        !!evidence.verification &&
+        typeof evidence.verification === "object" &&
+        !!evidence.metrics &&
+        typeof evidence.metrics === "object"
+      );
     })
   );
 }
@@ -606,11 +652,19 @@ export function readLearningEvidenceLedger(
     // not become independently qualified evidence when read by current code.
     return {
       ...value,
-      evidence: value.evidence.map(row => row.qualification?.independent === true ? row : {
-        ...row,
-        masteryEligible: false,
-        gates: { ...row.gates, delayedRecall: false, novelTransfer: false },
-      }),
+      evidence: value.evidence.map((row) =>
+        row.qualification?.independent === true
+          ? row
+          : {
+              ...row,
+              masteryEligible: false,
+              gates: {
+                ...row.gates,
+                delayedRecall: false,
+                novelTransfer: false,
+              },
+            },
+      ),
     };
   } catch {
     return emptyLearningEvidenceLedger();
@@ -673,13 +727,25 @@ export function appendLearningEvidenceBundleToStorage(
   const original = storage.getItem(key);
   if (original !== null) {
     let parsed: unknown;
-    try { parsed = JSON.parse(original); } catch { throw new Error("Stored evidence is unreadable; export a recovery copy before adding new evidence."); }
-    if (!isLearningEvidenceLedger(parsed)) throw new Error("Stored evidence has an unsupported shape; original data was kept.");
+    try {
+      parsed = JSON.parse(original);
+    } catch {
+      throw new Error(
+        "Stored evidence is unreadable; export a recovery copy before adding new evidence.",
+      );
+    }
+    if (!isLearningEvidenceLedger(parsed))
+      throw new Error(
+        "Stored evidence has an unsupported shape; original data was kept.",
+      );
   }
   const recoveryKey = `${key}:before-evidence-qualification-v2`;
   if (original !== null && storage.getItem(recoveryKey) === null) {
     storage.setItem(recoveryKey, original);
-    if (storage.getItem(recoveryKey) !== original) throw new Error("Original evidence could not be preserved; the append was cancelled.");
+    if (storage.getItem(recoveryKey) !== original)
+      throw new Error(
+        "Original evidence could not be preserved; the append was cancelled.",
+      );
   }
   const next = mergeLearningEvidenceBundle(
     readLearningEvidenceLedger(storage, key),
@@ -751,7 +817,11 @@ export function mergeLearningEvidenceBundle(
   }
   return {
     schemaVersion: LEARNING_SCHEMA_VERSION,
-    contentUnits: upsertById(current.contentUnits, bundle.contentUnit, Infinity),
+    contentUnits: upsertById(
+      current.contentUnits,
+      bundle.contentUnit,
+      Infinity,
+    ),
     dailyPlans: upsertById(current.dailyPlans, bundle.dailyPlan, Infinity),
     responses: upsertById(current.responses, bundle.response, limit),
     evidence: upsertById(current.evidence, bundle.evidence, limit),

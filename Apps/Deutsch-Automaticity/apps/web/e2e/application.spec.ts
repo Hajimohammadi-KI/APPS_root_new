@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
-async function expectDailyCardsToContainLongLabels(page: import("@playwright/test").Page) {
+async function expectDailyCardsToContainLongLabels(
+  page: import("@playwright/test").Page,
+) {
   // Realistic long German labels verify that responsive wrapping protects the
   // title, status, time, and action rather than merely hiding overflow.
   await page.locator(".activity").evaluateAll((cards) => {
@@ -8,18 +10,26 @@ async function expectDailyCardsToContainLongLabels(page: import("@playwright/tes
       const title = card.querySelector(".act-head b");
       const status = card.querySelector(".tag");
       const action = card.querySelector(".open");
-      if (title) title.textContent = "Überprüfen, korrigieren und vollständigen Lernnachweis speichern";
-      if (status) status.textContent = "Noch nicht begonnen — Rückmeldung erforderlich";
+      if (title)
+        title.textContent =
+          "Überprüfen, korrigieren und vollständigen Lernnachweis speichern";
+      if (status)
+        status.textContent = "Noch nicht begonnen — Rückmeldung erforderlich";
       if (action) action.textContent = "Vollständige Übung öffnen";
     });
   });
   const overflow = await page.locator(".activity").evaluateAll((cards) =>
     cards.flatMap((card, index) => {
       const cardBox = card.getBoundingClientRect();
-      return Array.from(card.querySelectorAll(".act-head b, .tag, .Minuten, .open")).flatMap((element) => {
+      return Array.from(
+        card.querySelectorAll(".act-head b, .tag, .Minuten, .open"),
+      ).flatMap((element) => {
         const box = element.getBoundingClientRect();
         const node = element as HTMLElement;
-        return box.left < cardBox.left - 1 || box.right > cardBox.right + 1 || node.scrollWidth > node.clientWidth + 1 || node.scrollHeight > node.clientHeight + 1
+        return box.left < cardBox.left - 1 ||
+          box.right > cardBox.right + 1 ||
+          node.scrollWidth > node.clientWidth + 1 ||
+          node.scrollHeight > node.clientHeight + 1
           ? [`Karte ${index + 1}: ${element.className || element.tagName}`]
           : [];
       });
@@ -104,8 +114,12 @@ test("dashboard exposes the automaticity journey, full inventory, and live state
   await expect(
     page.getByRole("heading", { name: "Lernweg auswählen" }),
   ).toBeVisible();
-  await expect(page.getByText("Automatische Übungssignale", { exact: true })).toBeVisible();
-  await expect(page.getByText("Durch Lehrkraft bestätigte Beherrschung", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Automatische Übungssignale", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Durch Lehrkraft bestätigte Beherrschung", { exact: true }),
+  ).toBeVisible();
   // A fresh learner gets exactly one explained continuation action; saved
   // reviews or completed daily work can change its destination later.
   const continuePlan = page.getByRole("link", {
@@ -130,7 +144,11 @@ test("dashboard exposes the automaticity journey, full inventory, and live state
 
   await page.goto("/fortschritt");
   await expect(page.getByText(/Automatische Übungssignale:/)).toBeVisible();
-  await expect(page.getByRole("note").filter({ hasText: "Durch Lehrkraft bestätigte Beherrschung:" })).toContainText("nicht erfasst");
+  await expect(
+    page
+      .getByRole("note")
+      .filter({ hasText: "Durch Lehrkraft bestätigte Beherrschung:" }),
+  ).toContainText("nicht erfasst");
 });
 
 test("grammar lab exposes all 144 CEFR units and working search", async ({
@@ -189,18 +207,14 @@ test("grammar lab separates exact recall from honest multilingual open productio
     .fill("Es gibt ein Supermarkt in meiner Straße.");
   await page.locator("#checkBtn").click();
   await expect(page.locator("#feedback li")).toHaveCount(1);
-  await expect(page.locator("#feedback")).toContainText(
-    "«ein» → «einen»",
-  );
+  await expect(page.locator("#feedback")).toContainText("«ein» → «einen»");
   await expect(page.locator("#feedback")).toContainText(
     "Es gibt einen Supermarkt in meiner Straße.",
   );
 
   await page.locator('[data-language="Deutsch"]').click();
   await page.getByText("Erklärungssprache (HONOVR)").click();
-  await page
-    .locator("#answerInput")
-    .fill("Es gibt eine Spermarket im Strasse");
+  await page.locator("#answerInput").fill("Es gibt eine Spermarket im Strasse");
   await page.locator("#checkBtn").click();
   await expect(page.locator("#feedback li")).toHaveCount(3);
   await expect(page.locator("#feedback")).toContainText(
@@ -236,7 +250,9 @@ test("grammar lab separates exact recall from honest multilingual open productio
   await expect(page.locator("#feedback")).toContainText(
     "Schreibe zuerst auf Persisch",
   );
-  await page.locator("#intentInput").fill("در شهر من پارک‌های زیادی وجود دارد.");
+  await page
+    .locator("#intentInput")
+    .fill("در شهر من پارک‌های زیادی وجود دارد.");
   await page.locator("#checkBtn").click();
   await expect(page.locator("#feedback")).toContainText("Selbstcheck");
   await expect(page.locator("#feedback")).toContainText(
@@ -316,7 +332,9 @@ test("approved connected AI evaluates a different valid open answer instead of a
   for (let index = 0; index < 4; index += 1) {
     await page.locator("#nextBtn").click();
   }
-  await page.locator("#intentInput").fill("در شهر من پارک‌های زیادی وجود دارد.");
+  await page
+    .locator("#intentInput")
+    .fill("در شهر من پارک‌های زیادی وجود دارد.");
   await page
     .locator("#answerInput")
     .fill("In meiner Stadt gibt es viele Parks.");
@@ -641,113 +659,175 @@ test("daily path scales and persists the workload", async ({ page }) => {
   );
 });
 
-test("teacher review queue turns saved evidence into a next action", async ({ page }) => {
+test("teacher review queue turns saved evidence into a next action", async ({
+  page,
+}) => {
   await page.addInitScript(() => {
     localStorage.setItem(
       "GrammarAutomaticityV11_de",
       JSON.stringify({
         learner: { displayName: "Elahe" },
-        errors: [{
-          id: "error-teacher-test",
-          date: new Date().toISOString(),
-          topic: "Perfekt",
-          original: "Ich habe gegangen.",
-          corrected: "Ich bin gegangen.",
-          errorClass: "auxiliary",
-          explanation: "Bewegungsverben verwenden sein.",
-          occurrenceCount: 2,
-          lastSeenAt: Date.now(),
-          repairStatus: "new",
-          nextRepairAt: 0,
-          successfulRepairs: 0,
-          critical: true,
-        }],
+        errors: [
+          {
+            id: "error-teacher-test",
+            date: new Date().toISOString(),
+            topic: "Perfekt",
+            original: "Ich habe gegangen.",
+            corrected: "Ich bin gegangen.",
+            errorClass: "auxiliary",
+            explanation: "Bewegungsverben verwenden sein.",
+            occurrenceCount: 2,
+            lastSeenAt: Date.now(),
+            repairStatus: "new",
+            nextRepairAt: 0,
+            successfulRepairs: 0,
+            critical: true,
+          },
+        ],
         reviews: [],
       }),
     );
   });
   await page.goto("/lehrkraft");
 
-  await expect(page.getByRole("heading", { name: "Auf Lernnachweise reagieren" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Auf Lernnachweise reagieren" }),
+  ).toBeVisible();
   await expect(page.getByText("1 zu prüfen", { exact: true })).toBeVisible();
   const queueItem = page.getByRole("listitem");
   await expect(queueItem.getByText("Elahe", { exact: true })).toBeVisible();
-  await expect(queueItem.getByText("Korrektur-Nachweis", { exact: true })).toBeVisible();
+  await expect(
+    queueItem.getByText("Korrektur-Nachweis", { exact: true }),
+  ).toBeVisible();
   await expect(queueItem.getByText(/automatisches Signal/i)).toBeVisible();
-  await expect(queueItem.getByText("Ich habe gegangen. → Ich bin gegangen.", { exact: true })).toBeVisible();
-  await expect(queueItem.getByRole("link", { name: "Nachweis öffnen und handeln" })).toHaveAttribute("href", "/fehler");
+  await expect(
+    queueItem.getByText("Ich habe gegangen. → Ich bin gegangen.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(
+    queueItem.getByRole("link", { name: "Nachweis öffnen und handeln" }),
+  ).toHaveAttribute("href", "/fehler");
 });
 
-test("teacher composes a reviewed local assignment with plain instructions", async ({ page }) => {
+test("teacher composes a reviewed local assignment with plain instructions", async ({
+  page,
+}) => {
   await page.goto("/lehrkraft");
   await page.getByLabel("GER-Niveau").first().selectOption("B1");
   await page.getByLabel("Fertigkeit").selectOption("speaking");
   await page.getByLabel("Thema").selectOption({ label: "Eine Frist klären" });
-  await expect(page.getByText("Können wir die ursprüngliche Nachricht prüfen?", { exact: false })).toBeVisible();
-  await page.getByLabel("Klare Anweisung für Lernende").fill(
-    "Nimm vier Sätze auf. Nenne die Frist, bitte um Bestätigung und prüfe vor dem Speichern die Verbformen.",
-  );
-  const saveAssignment = page.getByRole("button", { name: "Aufgabe zur Prüfung speichern" });
+  await expect(
+    page.getByText("Können wir die ursprüngliche Nachricht prüfen?", {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await page
+    .getByLabel("Klare Anweisung für Lernende")
+    .fill(
+      "Nimm vier Sätze auf. Nenne die Frist, bitte um Bestätigung und prüfe vor dem Speichern die Verbformen.",
+    );
+  const saveAssignment = page.getByRole("button", {
+    name: "Aufgabe zur Prüfung speichern",
+  });
   await expect(saveAssignment).toBeDisabled();
-  await page.getByLabel("Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.").check();
+  await page
+    .getByLabel(
+      "Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.",
+    )
+    .check();
   await saveAssignment.click();
 
-  await expect(page.getByText("Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Aufgabe · Eine Frist klären" })).toBeVisible();
+  await expect(
+    page.getByText(
+      "Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Aufgabe · Eine Frist klären" }),
+  ).toBeVisible();
 });
 
-test("teacher reviews evidence and prepares one focused repair assignment within ten minutes", async ({ page }) => {
+test("teacher reviews evidence and prepares one focused repair assignment within ten minutes", async ({
+  page,
+}) => {
   const startedAt = Date.now();
   await page.addInitScript(() => {
     localStorage.setItem(
       "GrammarAutomaticityV11_de",
       JSON.stringify({
         learner: { displayName: "Elahe" },
-        errors: [{
-          id: "error-focused-workflow",
-          date: new Date().toISOString(),
-          topic: "Perfekt",
-          original: "Ich habe gegangen.",
-          corrected: "Ich bin gegangen.",
-          errorClass: "auxiliary",
-          explanation: "Bewegungsverben verwenden sein.",
-          occurrenceCount: 2,
-          lastSeenAt: Date.now(),
-          repairStatus: "new",
-          nextRepairAt: 0,
-          successfulRepairs: 0,
-          critical: true,
-        }],
+        errors: [
+          {
+            id: "error-focused-workflow",
+            date: new Date().toISOString(),
+            topic: "Perfekt",
+            original: "Ich habe gegangen.",
+            corrected: "Ich bin gegangen.",
+            errorClass: "auxiliary",
+            explanation: "Bewegungsverben verwenden sein.",
+            occurrenceCount: 2,
+            lastSeenAt: Date.now(),
+            repairStatus: "new",
+            nextRepairAt: 0,
+            successfulRepairs: 0,
+            critical: true,
+          },
+        ],
         reviews: [],
       }),
     );
   });
   await page.goto("/lehrkraft");
-  await expect(page.getByText("Ich habe gegangen. → Ich bin gegangen.", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("Ich habe gegangen. → Ich bin gegangen.", { exact: true }),
+  ).toBeVisible();
   await page.getByLabel("GER-Niveau").first().selectOption("B1");
   await page.getByLabel("Fertigkeit").selectOption("speaking");
   await page.getByLabel("Thema").selectOption({ label: "Eine Frist klären" });
-  await page.getByLabel("Klare Anweisung für Lernende").fill(
-    "Repariere das Verb und nimm danach vier Sätze über eine abgeschlossene Erfahrung auf.",
-  );
-  await page.getByLabel("Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.").check();
-  await page.getByRole("button", { name: "Aufgabe zur Prüfung speichern" }).click();
-  await expect(page.getByText("Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.")).toBeVisible();
+  await page
+    .getByLabel("Klare Anweisung für Lernende")
+    .fill(
+      "Repariere das Verb und nimm danach vier Sätze über eine abgeschlossene Erfahrung auf.",
+    );
+  await page
+    .getByLabel(
+      "Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.",
+    )
+    .check();
+  await page
+    .getByRole("button", { name: "Aufgabe zur Prüfung speichern" })
+    .click();
+  await expect(
+    page.getByText(
+      "Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.",
+    ),
+  ).toBeVisible();
 
   // Der automatisierte Ablauf prüft die Zehn-Minuten-Grenze; eine echte
   // Lehrerbeobachtung bleibt ein eigener Nachweis im Produktfahrplan.
   expect(Date.now() - startedAt).toBeLessThan(10 * 60 * 1000);
 });
 
-test("settings explain local backups and restore a validated file with keyboard access", async ({ page }) => {
+test("settings explain local backups and restore a validated file with keyboard access", async ({
+  page,
+}) => {
   await page.goto("/einstellungen");
-  await expect(page.getByText("1. Kopie exportieren", { exact: true })).toBeVisible();
-  await expect(page.getByText(/nicht in einen Cloud-Dienst hoch/i)).toBeVisible();
-  await expect(page.getByText("3. Zum Wiederherstellen importieren", { exact: true })).toBeVisible();
+  await expect(
+    page.getByText("1. Kopie exportieren", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(/nicht in einen Cloud-Dienst hoch/i),
+  ).toBeVisible();
+  await expect(
+    page.getByText("3. Zum Wiederherstellen importieren", { exact: true }),
+  ).toBeVisible();
   for (const width of [320, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     expect(
-      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
     ).toBe(true);
   }
 
@@ -761,7 +841,10 @@ test("settings explain local backups and restore a validated file with keyboard 
     language: "de",
     learnerState: {
       ...currentState,
-      learner: { ...(currentState.learner || {}), displayName: "Wiederhergestellt" },
+      learner: {
+        ...(currentState.learner || {}),
+        displayName: "Wiederhergestellt",
+      },
     },
     learningEvidence: {
       schemaVersion: "1.0.0",
@@ -773,7 +856,9 @@ test("settings explain local backups and restore a validated file with keyboard 
     },
   };
   page.on("dialog", (dialog) => dialog.accept());
-  const importButton = page.getByRole("button", { name: "Sicherung importieren" });
+  const importButton = page.getByRole("button", {
+    name: "Sicherung importieren",
+  });
   await importButton.focus();
   await expect(importButton).toBeFocused();
   const chooserPromise = page.waitForEvent("filechooser");
@@ -786,17 +871,21 @@ test("settings explain local backups and restore a validated file with keyboard 
   });
 
   await expect(page.getByRole("status")).toContainText("wiederhergestellt");
-  await expect.poll(() =>
-    page.evaluate(() => {
-      const state = JSON.parse(
-        localStorage.getItem("GrammarAutomaticityV11_de") || "{}",
-      );
-      return state.learner?.displayName;
-    }),
-  ).toBe("Wiederhergestellt");
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const state = JSON.parse(
+          localStorage.getItem("GrammarAutomaticityV11_de") || "{}",
+        );
+        return state.learner?.displayName;
+      }),
+    )
+    .toBe("Wiederhergestellt");
 });
 
-test("daily cards contain long labels at all roadmap widths", async ({ page }) => {
+test("daily cards contain long labels at all roadmap widths", async ({
+  page,
+}) => {
   for (const width of [320, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/heute");

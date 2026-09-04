@@ -49,14 +49,16 @@ const publicationLabels: Record<TeacherContentStatus, string> = {
   published: "Veröffentlicht",
 };
 
-type AssignmentSkill = "grammar" | "reading" | "writing" | "speaking" | "integrated";
-const assignmentKinds: Record<AssignmentSkill, readonly TeacherContentKind[]> = {
-  grammar: ["verb", "exercise"],
-  reading: ["example"],
-  writing: ["exercise"],
-  speaking: ["conversation"],
-  integrated: ["verb", "example", "exercise", "conversation"],
-};
+type AssignmentSkill =
+  "grammar" | "reading" | "writing" | "speaking" | "integrated";
+const assignmentKinds: Record<AssignmentSkill, readonly TeacherContentKind[]> =
+  {
+    grammar: ["verb", "exercise"],
+    reading: ["example"],
+    writing: ["exercise"],
+    speaking: ["conversation"],
+    integrated: ["verb", "example", "exercise", "conversation"],
+  };
 
 export default function LehrkraftPage() {
   const { state, hydrated } = useLearnerState();
@@ -65,10 +67,13 @@ export default function LehrkraftPage() {
   const [draft, setDraft] = React.useState<TeacherContentItem>(empty);
   const [audio, setAudio] = React.useState<Blob | null>(null);
   const [message, setMessage] = React.useState("");
-  const [assignmentLevel, setAssignmentLevel] = React.useState<TeacherContentItem["level"]>("A1");
-  const [assignmentSkill, setAssignmentSkill] = React.useState<AssignmentSkill>("grammar");
+  const [assignmentLevel, setAssignmentLevel] =
+    React.useState<TeacherContentItem["level"]>("A1");
+  const [assignmentSkill, setAssignmentSkill] =
+    React.useState<AssignmentSkill>("grammar");
   const [assignmentSourceId, setAssignmentSourceId] = React.useState("");
-  const [assignmentInstructions, setAssignmentInstructions] = React.useState("");
+  const [assignmentInstructions, setAssignmentInstructions] =
+    React.useState("");
   const [assignmentReviewed, setAssignmentReviewed] = React.useState(false);
   const [assignmentMessage, setAssignmentMessage] = React.useState("");
   const importInputRef = React.useRef<HTMLInputElement>(null);
@@ -77,12 +82,17 @@ export default function LehrkraftPage() {
     [hydrated, queueNow, state],
   );
   const assignmentSources = React.useMemo(
-    () => originalGermanStarterContent.filter(
-      (item) => item.level === assignmentLevel && assignmentKinds[assignmentSkill].includes(item.kind),
-    ),
+    () =>
+      originalGermanStarterContent.filter(
+        (item) =>
+          item.level === assignmentLevel &&
+          assignmentKinds[assignmentSkill].includes(item.kind),
+      ),
     [assignmentLevel, assignmentSkill],
   );
-  const assignmentSource = assignmentSources.find((item) => item.id === assignmentSourceId) ?? assignmentSources[0];
+  const assignmentSource =
+    assignmentSources.find((item) => item.id === assignmentSourceId) ??
+    assignmentSources[0];
   const refresh = React.useCallback(
     async () => setItems(await listTeacherContent()),
     [],
@@ -165,7 +175,12 @@ export default function LehrkraftPage() {
     await refresh();
   }
   async function saveAssignment() {
-    if (!assignmentSource || !assignmentInstructions.trim() || !assignmentReviewed) return;
+    if (
+      !assignmentSource ||
+      !assignmentInstructions.trim() ||
+      !assignmentReviewed
+    )
+      return;
     // Aufgaben verwenden nur eigene App-Startinhalte und bleiben lokal;
     // lizenziertes Begleitmaterial wird nicht in die Bibliothek kopiert.
     const assignment: TeacherContentItem = {
@@ -178,8 +193,13 @@ export default function LehrkraftPage() {
       status: "review",
       updatedAt: new Date().toISOString(),
     };
-    await saveTeacherContent({ ...assignment, contextKey: ensureTeacherContextKey(assignment) });
-    setAssignmentMessage("Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.");
+    await saveTeacherContent({
+      ...assignment,
+      contextKey: ensureTeacherContextKey(assignment),
+    });
+    setAssignmentMessage(
+      "Aufgabe lokal mit dem Arbeitsstand Zur Prüfung gespeichert.",
+    );
     setAssignmentInstructions("");
     setAssignmentReviewed(false);
     await refresh();
@@ -198,7 +218,10 @@ export default function LehrkraftPage() {
           verwendet.
         </p>
       </header>
-      <section className="teacher-review-queue" aria-labelledby="teacher-review-title">
+      <section
+        className="teacher-review-queue"
+        aria-labelledby="teacher-review-title"
+      >
         <div className="teacher-review-heading">
           <div>
             <span className="teacher-kicker">PRÜFWARTESCHLANGE</span>
@@ -216,7 +239,9 @@ export default function LehrkraftPage() {
               <li key={item.id}>
                 <header>
                   <div>
-                    <span className={`teacher-review-priority teacher-review-priority-${item.priority}`}>
+                    <span
+                      className={`teacher-review-priority teacher-review-priority-${item.priority}`}
+                    >
                       {item.priority === "now" ? "Jetzt prüfen" : "Geplant"}
                     </span>
                     <h3>{item.task}</h3>
@@ -224,13 +249,30 @@ export default function LehrkraftPage() {
                   <ClipboardCheck aria-hidden />
                 </header>
                 <dl>
-                  <div><dt>Lernende Person</dt><dd>{item.learner}</dd></div>
-                  <div><dt>Nachweisart</dt><dd>{item.evidenceType}</dd></div>
-                  <div><dt>Vertrauen</dt><dd>{item.confidence}</dd></div>
-                  <div><dt>Korrekturbedarf</dt><dd>{item.correctionNeed}</dd></div>
-                  <div><dt>Empfohlener nächster Schritt</dt><dd>{item.recommendedNextStep}</dd></div>
+                  <div>
+                    <dt>Lernende Person</dt>
+                    <dd>{item.learner}</dd>
+                  </div>
+                  <div>
+                    <dt>Nachweisart</dt>
+                    <dd>{item.evidenceType}</dd>
+                  </div>
+                  <div>
+                    <dt>Vertrauen</dt>
+                    <dd>{item.confidence}</dd>
+                  </div>
+                  <div>
+                    <dt>Korrekturbedarf</dt>
+                    <dd>{item.correctionNeed}</dd>
+                  </div>
+                  <div>
+                    <dt>Empfohlener nächster Schritt</dt>
+                    <dd>{item.recommendedNextStep}</dd>
+                  </div>
                 </dl>
-                <a className="teacher-review-action" href={item.href}>Nachweis öffnen und handeln</a>
+                <a className="teacher-review-action" href={item.href}>
+                  Nachweis öffnen und handeln
+                </a>
               </li>
             ))}
           </ul>
@@ -242,21 +284,112 @@ export default function LehrkraftPage() {
           </div>
         )}
       </section>
-      <section className="teacher-assignment" aria-labelledby="assignment-title">
+      <section
+        className="teacher-assignment"
+        aria-labelledby="assignment-title"
+      >
         <div className="teacher-assignment-heading">
-          <div><span className="teacher-kicker">AUFGABENPLANER</span><h2 id="assignment-title">Eine fokussierte Lernaufgabe vorbereiten</h2></div>
+          <div>
+            <span className="teacher-kicker">AUFGABENPLANER</span>
+            <h2 id="assignment-title">
+              Eine fokussierte Lernaufgabe vorbereiten
+            </h2>
+          </div>
           <span>Lokal und kostenlos</span>
         </div>
         <div className="teacher-assignment-grid">
-          <label>GER-Niveau<select value={assignmentLevel} onChange={(event) => { setAssignmentLevel(event.target.value as TeacherContentItem["level"]); setAssignmentSourceId(""); setAssignmentReviewed(false); }}>{["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => <option key={level}>{level}</option>)}</select></label>
-          <label>Fertigkeit<select value={assignmentSkill} onChange={(event) => { setAssignmentSkill(event.target.value as AssignmentSkill); setAssignmentSourceId(""); setAssignmentReviewed(false); }}><option value="grammar">Grammatik</option><option value="reading">Lesen</option><option value="writing">Schreiben</option><option value="speaking">Sprechen</option><option value="integrated">Integrierte Fertigkeiten</option></select></label>
-          <label>Thema<select value={assignmentSource?.id ?? ""} onChange={(event) => { setAssignmentSourceId(event.target.value); setAssignmentReviewed(false); }}>{assignmentSources.map((source) => <option key={source.id} value={source.id}>{source.title}</option>)}</select></label>
+          <label>
+            GER-Niveau
+            <select
+              value={assignmentLevel}
+              onChange={(event) => {
+                setAssignmentLevel(
+                  event.target.value as TeacherContentItem["level"],
+                );
+                setAssignmentSourceId("");
+                setAssignmentReviewed(false);
+              }}
+            >
+              {["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => (
+                <option key={level}>{level}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Fertigkeit
+            <select
+              value={assignmentSkill}
+              onChange={(event) => {
+                setAssignmentSkill(event.target.value as AssignmentSkill);
+                setAssignmentSourceId("");
+                setAssignmentReviewed(false);
+              }}
+            >
+              <option value="grammar">Grammatik</option>
+              <option value="reading">Lesen</option>
+              <option value="writing">Schreiben</option>
+              <option value="speaking">Sprechen</option>
+              <option value="integrated">Integrierte Fertigkeiten</option>
+            </select>
+          </label>
+          <label>
+            Thema
+            <select
+              value={assignmentSource?.id ?? ""}
+              onChange={(event) => {
+                setAssignmentSourceId(event.target.value);
+                setAssignmentReviewed(false);
+              }}
+            >
+              {assignmentSources.map((source) => (
+                <option key={source.id} value={source.id}>
+                  {source.title}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
-        {assignmentSource ? <article className="teacher-assignment-source"><span>Eigener App-Ausgangstext zur Prüfung</span><h3>{assignmentSource.title}</h3><p>{assignmentSource.body}</p></article> : null}
-        <label className="teacher-assignment-instructions">Klare Anweisung für Lernende<textarea rows={4} value={assignmentInstructions} onChange={(event) => setAssignmentInstructions(event.target.value)} placeholder="Sage, was produziert werden soll, wie viel genügt und was vor dem Speichern geprüft wird." /></label>
-        <label className="teacher-assignment-check"><input type="checkbox" checked={assignmentReviewed} onChange={(event) => setAssignmentReviewed(event.target.checked)} /> Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.</label>
-        {assignmentMessage ? <p className="teacher-message" role="status">{assignmentMessage}</p> : null}
-        <button className="teacher-primary-button" disabled={!assignmentSource || !assignmentInstructions.trim() || !assignmentReviewed} onClick={() => void saveAssignment()} type="button"><Save aria-hidden /> Aufgabe zur Prüfung speichern</button>
+        {assignmentSource ? (
+          <article className="teacher-assignment-source">
+            <span>Eigener App-Ausgangstext zur Prüfung</span>
+            <h3>{assignmentSource.title}</h3>
+            <p>{assignmentSource.body}</p>
+          </article>
+        ) : null}
+        <label className="teacher-assignment-instructions">
+          Klare Anweisung für Lernende
+          <textarea
+            rows={4}
+            value={assignmentInstructions}
+            onChange={(event) => setAssignmentInstructions(event.target.value)}
+            placeholder="Sage, was produziert werden soll, wie viel genügt und was vor dem Speichern geprüft wird."
+          />
+        </label>
+        <label className="teacher-assignment-check">
+          <input
+            type="checkbox"
+            checked={assignmentReviewed}
+            onChange={(event) => setAssignmentReviewed(event.target.checked)}
+          />{" "}
+          Ich habe den eigenen App-Inhalt und die Lernanweisung geprüft.
+        </label>
+        {assignmentMessage ? (
+          <p className="teacher-message" role="status">
+            {assignmentMessage}
+          </p>
+        ) : null}
+        <button
+          className="teacher-primary-button"
+          disabled={
+            !assignmentSource ||
+            !assignmentInstructions.trim() ||
+            !assignmentReviewed
+          }
+          onClick={() => void saveAssignment()}
+          type="button"
+        >
+          <Save aria-hidden /> Aufgabe zur Prüfung speichern
+        </button>
       </section>
       <div className="teacher-layout">
         <section className="teacher-editor">

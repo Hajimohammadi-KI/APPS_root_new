@@ -64,13 +64,17 @@ test("PDF settings dialog supports Escape, focus containment, and focus restorat
 });
 
 test("narrow layouts do not require horizontal scrolling for essential controls", async () => {
-  const [englishFoundation, settingsResponsive] = await Promise.all([
+  const [englishFoundation, germanResponsive, settingsResponsive] = await Promise.all([
     source("Apps/English/English-Automaticity/apps/web/app/styles/00-foundation.css"),
+    source("Apps/Deutsch-Automaticity/apps/web/src/app/styles/90-responsive.css"),
     source("Apps/Apps-For-Integeration/Einstellungen-APP/app/styles/90-responsive.css"),
   ]);
 
   // Fixed minimum page widths and one-line filter rails both fail reflow at 320 CSS pixels.
   assert.match(englishFoundation, /body\s*\{[\s\S]*?min-width:\s*0;/, "English body must shrink below 320 physical pixels at zoom");
+  // German dashboard headings and actions must stack before long localized words become clipped.
+  assert.match(germanResponsive, /@media \(max-width: 560px\)[\s\S]*?\.home-v2\s*\{[\s\S]*?padding-inline:\s*14px;/, "German dashboard needs a narrow-screen content gutter");
+  assert.match(germanResponsive, /\.home-v2-heading,[\s\S]*?\.home-v2-card-head\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0, 1fr\);/, "German dashboard headings must stack at narrow widths");
   assert.match(settingsResponsive, /\.werkzeug \.settings-category-bar\s*\{[\s\S]*?flex-wrap:\s*wrap;/, "Settings filters must wrap");
   assert.match(settingsResponsive, /\.settings-category-bar > \*\s*\{[\s\S]*?white-space:\s*normal;/, "Long filter labels must wrap");
 });

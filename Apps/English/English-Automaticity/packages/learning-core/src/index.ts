@@ -131,6 +131,15 @@ export interface EvidenceRecord {
     readonly repairCompleted: boolean;
   };
   readonly masteryEligible: boolean;
+  readonly qualification?: {
+    readonly independent: boolean;
+    readonly previousResponseId: string | null;
+    readonly previousPractisedAt: string | null;
+    readonly taskId: string | null;
+    readonly previousTaskId: string | null;
+    readonly contextId: string | null;
+    readonly previousContextId: string | null;
+  };
   readonly automaticityClaim: "insufficient-longitudinal-evidence";
 }
 
@@ -229,6 +238,20 @@ export interface AttemptVerticalSliceInput {
   readonly fromDueReview?: boolean;
   readonly sourceId?: string;
   readonly provenance?: ContentUnit["provenance"];
+  readonly independence?: {
+    readonly unaided: boolean;
+    readonly firstAttempt: boolean;
+    readonly exampleExposed: boolean;
+    readonly solutionExposed: boolean;
+  };
+  readonly reviewEvidence?: {
+    readonly previousResponseId: string;
+    readonly previousPractisedAt: string;
+    readonly taskId: string;
+    readonly previousTaskId: string;
+    readonly contextId: string;
+    readonly previousContextId: string;
+  };
 }
 
 export interface EvidenceInvalidationInput {
@@ -432,8 +455,18 @@ export function buildAttemptVerticalSlice(
           }
         : null,
   };
+  const independent = input.independence?.unaided === true &&
+    input.independence.firstAttempt && !input.independence.exampleExposed &&
+    !input.independence.solutionExposed && input.mode !== "repair";
+  const review = input.reviewEvidence;
+  const elapsed = review ? Date.parse(input.occurredAt) - Date.parse(review.previousPractisedAt) : NaN;
+  const hasPriorResponse = !!review?.previousResponseId?.trim() && review.previousResponseId !== responseId;
+  const delayedRecall = independent && verificationStatus === "verified" && hasPriorResponse && Number.isFinite(elapsed) && elapsed >= 86_400_000;
+  const novelTransfer = independent && verificationStatus === "verified" && input.mode === "transfer" && hasPriorResponse &&
+    !!review?.taskId && !!review.previousTaskId && review.taskId !== review.previousTaskId &&
+    !!review.contextId && !!review.previousContextId && review.contextId !== review.previousContextId;
   const masteryEligible =
-    verificationStatus === "verified" && realProduction && input.targetHit;
+    verificationStatus === "verified" && realProduction && input.targetHit && independent;
   const evidence: EvidenceRecord = {
     schemaVersion: LEARNING_SCHEMA_VERSION,
     id: evidenceId,
@@ -456,11 +489,20 @@ export function buildAttemptVerticalSlice(
       realProduction,
       targetDemonstrated: input.targetHit,
       providerChecked,
-      delayedRecall: input.fromDueReview === true,
-      novelTransfer: input.mode === "transfer" && input.fromDueReview === true,
+      delayedRecall,
+      novelTransfer,
       repairCompleted: input.mode === "repair" && input.targetHit,
     },
     masteryEligible,
+    qualification: {
+      independent,
+      previousResponseId: review?.previousResponseId ?? null,
+      previousPractisedAt: review?.previousPractisedAt ?? null,
+      taskId: review?.taskId ?? null,
+      previousTaskId: review?.previousTaskId ?? null,
+      contextId: review?.contextId ?? null,
+      previousContextId: review?.previousContextId ?? null,
+    },
     // A single route attempt is evidence, never proof of automaticity.
     automaticityClaim: "insufficient-longitudinal-evidence",
   };
@@ -493,7 +535,7 @@ export function buildAttemptVerticalSlice(
     },
   ];
 
-  if (input.fromDueReview === true) {
+  if (delayedRecall) {
     events.push({
       schemaVersion: LEARNING_SCHEMA_VERSION,
       id: `${input.attemptId}:delayed-recall-recorded`,
@@ -502,7 +544,7 @@ export function buildAttemptVerticalSlice(
       payload: { evidenceId, responseId, contentUnitId },
     });
   }
-  if (input.mode === "transfer" && input.fromDueReview === true) {
+  if (novelTransfer) {
     events.push({
       schemaVersion: LEARNING_SCHEMA_VERSION,
       id: `${input.attemptId}:novel-transfer-recorded`,
@@ -535,7 +577,17 @@ function isLearningEvidenceLedger(value: unknown): value is LearningEvidenceLedg
     Array.isArray(row.dailyPlans) &&
     Array.isArray(row.responses) &&
     Array.isArray(row.evidence) &&
-    Array.isArray(row.events)
+    Array.isArray(row.events) &&
+    [row.contentUnits, row.dailyPlans, row.responses, row.evidence, row.events].every(
+      records => (records as unknown[]).every(record => !!record && typeof record === "object" &&
+        typeof (record as Record<string, unknown>).id === "string"),
+    ) &&
+    (row.evidence as unknown[]).every(record => {
+      const evidence = record as Record<string, unknown>;
+      return !!evidence.gates && typeof evidence.gates === "object" &&
+        !!evidence.verification && typeof evidence.verification === "object" &&
+        !!evidence.metrics && typeof evidence.metrics === "object";
+    })
   );
 }
 
@@ -550,7 +602,16 @@ export function readLearningEvidenceLedger(
     if (!isLearningEvidenceLedger(value)) {
       return emptyLearningEvidenceLedger();
     }
-    return value;
+    // Historical route flags are retained in the original stored JSON, but do
+    // not become independently qualified evidence when read by current code.
+    return {
+      ...value,
+      evidence: value.evidence.map(row => row.qualification ? row : {
+        ...row,
+        masteryEligible: false,
+        gates: { ...row.gates, delayedRecall: false, novelTransfer: false },
+      }),
+    };
   } catch {
     return emptyLearningEvidenceLedger();
   }
@@ -609,6 +670,17 @@ export function appendLearningEvidenceBundleToStorage(
   bundle: LearningEvidenceBundle,
   key = LEARNING_EVIDENCE_STORAGE_KEY,
 ): LearningEvidenceLedger {
+  const original = storage.getItem(key);
+  if (original !== null) {
+    let parsed: unknown;
+    try { parsed = JSON.parse(original); } catch { throw new Error("Stored evidence is unreadable; export a recovery copy before adding new evidence."); }
+    if (!isLearningEvidenceLedger(parsed)) throw new Error("Stored evidence has an unsupported shape; original data was kept.");
+  }
+  const recoveryKey = `${key}:before-evidence-qualification-v2`;
+  if (original !== null && storage.getItem(recoveryKey) === null) {
+    storage.setItem(recoveryKey, original);
+    if (storage.getItem(recoveryKey) !== original) throw new Error("Original evidence could not be preserved; the append was cancelled.");
+  }
   const next = mergeLearningEvidenceBundle(
     readLearningEvidenceLedger(storage, key),
     bundle,
@@ -641,7 +713,7 @@ export function appendEvidenceInvalidationToStorage(
   };
   const next: LearningEvidenceLedger = {
     ...current,
-    events: upsertById(current.events, event, 2_000),
+    events: upsertById(current.events, event, Infinity),
   };
   storage.setItem(key, JSON.stringify(next));
   return next;
@@ -671,16 +743,16 @@ function upsertById<T extends { readonly id: string }>(
 export function mergeLearningEvidenceBundle(
   current: LearningEvidenceLedger,
   bundle: LearningEvidenceBundle,
-  limit = 2_000,
+  limit = Infinity,
 ): LearningEvidenceLedger {
   let events = current.events;
   for (const event of bundle.events) {
-    events = upsertById(events, event, limit);
+    events = upsertById(events, event, Infinity);
   }
   return {
     schemaVersion: LEARNING_SCHEMA_VERSION,
-    contentUnits: upsertById(current.contentUnits, bundle.contentUnit, 500),
-    dailyPlans: upsertById(current.dailyPlans, bundle.dailyPlan, 365),
+    contentUnits: upsertById(current.contentUnits, bundle.contentUnit, Infinity),
+    dailyPlans: upsertById(current.dailyPlans, bundle.dailyPlan, Infinity),
     responses: upsertById(current.responses, bundle.response, limit),
     evidence: upsertById(current.evidence, bundle.evidence, limit),
     events,

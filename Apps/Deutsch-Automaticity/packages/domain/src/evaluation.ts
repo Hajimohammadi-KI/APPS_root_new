@@ -30,6 +30,7 @@ export type FeedbackStatus =
   | "correct"
   | "nearly_correct"
   | "wrong_language"
+  | "language_uncertain"
   | "incomplete"
   | "needs_revision";
 
@@ -86,7 +87,7 @@ export interface EvaluationReport {
   readonly ok: boolean;
   readonly targetHit: boolean;
   readonly relevant: boolean;
-  readonly accuracyScore: number;
+  readonly accuracyScore: number | null;
   readonly nextAction: EvaluationNextAction;
   readonly status?: FeedbackStatus;
   readonly answerLanguage?: "de" | "fa" | "en" | "other";
@@ -97,25 +98,45 @@ export interface EvaluationReport {
 export function detectAnswerLanguage(
   text: string,
 ): "de" | "fa" | "en" | "other" {
-  const value = text.trim();
+  const value = text.normalize("NFC").trim();
   if (!value) return "other";
-  if (/[\x00-\x1f]/u.test(value)) return "other";
-    if (/[\u0600-\u06ff]/u.test(value)) return "fa";
-  const latinWords = value.match(/[A-Za-zÄÖÜäöüß]+/gu) ?? [];
-  if (!latinWords.length) return "other";
-  const germanMarkers =
-    /\b(der|die|das|den|dem|des|ein|eine|einen|einem|einer|nicht|und|ist|sind|gibt|ich|du|wir|sie|es|bin|bist|war|wird|gefahren|gegangen)\b/iu;
-  const englishMarkers =
-    /\b(the|a|an|and|is|are|was|were|this|that|write|answer|sentence)\b/iu;
-  return germanMarkers.test(value) || !englishMarkers.test(value)
-    ? "de"
-    : "en";
+  if (/[\x00-\x08\x0b\x0c\x0e-\x1f]/u.test(value)) return "other";
+  if (/[\u0600-\u06ff]/u.test(value)) {
+    return /[A-Za-zÄÖÜäöüß]/u.test(value) ? "other" : "fa";
+  }
+  const words = value.toLocaleLowerCase("de-DE").match(/\p{L}+/gu) ?? [];
+  if (!words.length || words.some((word) => /[^\p{Script=Latin}]/u.test(word)))
+    return "other";
+  // Sparse lexical clues, not language proof. Shared/unknown words and mixed
+  // evidence must remain inconclusive; an authored closed answer is checked separately.
+  const german = new Set(
+    "ich du wir ihr sie mich dich sich euch ihnen mein meine meinen meiner meinem dein deine sein seine unser unsere nicht kein keine keinen ist sind bist habe hast haben habt wird werden wurde wurden würde wäre hätte könnte könnten muss müssen soll sollen kann können weil dass obwohl damit deshalb daher gibt bitte danke nein für über ohne zwischen zum zur beim gefahren gegangen".split(
+      " ",
+    ),
+  );
+  const shared = new Set(
+    "der die das den dem des ein eine einen einem einer und mit nach aus im es er war hat bin".split(
+      " ",
+    ),
+  );
+  const english = new Set(
+    "the and is are were this that these those you your my we they he she have has had hello friend please with from not our their write answer sentence".split(
+      " ",
+    ),
+  );
+  const germanHits = words.filter((word) => german.has(word)).length;
+  const sharedHits = new Set(words.filter((word) => shared.has(word))).size;
+  const englishHits = words.filter((word) => english.has(word)).length;
+  if (englishHits && (germanHits || sharedHits >= 2)) return "other";
+  if (englishHits) return "en";
+  if (germanHits || sharedHits >= 2) return "de";
+  return "other";
 }
 
 export interface ClosedAnswerAnalysis {
   readonly status: FeedbackStatus;
   readonly answerLanguage: "de" | "fa" | "en" | "other";
-  readonly correct: boolean;
+  readonly correct: boolean | null;
   readonly correctParts: readonly string[];
   readonly issues: readonly Pick<
     EvaluationIssue,
@@ -133,9 +154,9 @@ export interface ClosedAnswerAnalysis {
 
 const closedAnswerNormalization = (value: string): string =>
   value
+    .normalize("NFC")
     .trim()
-    .toLocaleLowerCase("de-DE")
-    .replace(/[.!?,;:]+$/gu, "")
+    .replace(/(?<!\.)\.$/u, "")
     .replace(/\s+/gu, " ");
 
 export function analyzeClosedAnswer(
@@ -143,7 +164,41 @@ export function analyzeClosedAnswer(
   expected: string,
   acceptedAnswers: readonly string[] = [],
 ): ClosedAnswerAnalysis {
-  const answerLanguage = detectAnswerLanguage(text);
+  const candidates = [expected, ...acceptedAnswers].filter((candidate) =>
+    candidate.trim(),
+  );
+  const canonicalMatch = candidates.some(
+    (candidate) =>
+      closedAnswerNormalization(candidate) === closedAnswerNormalization(text),
+  );
+  // A known answer/alternative also disambiguates isolated German forms.
+  const knownOrthography = candidates.some(
+    (candidate) =>
+      closedAnswerNormalization(candidate).toLocaleLowerCase("de-DE") ===
+      closedAnswerNormalization(text).toLocaleLowerCase("de-DE"),
+  );
+  const answerLanguage =
+    canonicalMatch || knownOrthography ? "de" : detectAnswerLanguage(text);
+  if (answerLanguage === "other") {
+    return {
+      status: "language_uncertain",
+      answerLanguage,
+      correct: null,
+      correctParts: [],
+      corrected: text,
+      issues: [
+        {
+          type: "Sprache unklar",
+          severity: "minor",
+          message:
+            "Die Sprache lässt sich hier nicht sicher erkennen. Die Antwort wurde noch nicht bewertet.",
+          userText: text,
+          explanation:
+            "Kurze oder gemischte Antworten sind für diese lokale Prüfung nicht eindeutig.",
+        },
+      ],
+    };
+  }
   if (answerLanguage !== "de") {
     return {
       status: "wrong_language",
@@ -166,14 +221,7 @@ export function analyzeClosedAnswer(
     };
   }
 
-  const candidates = [expected, ...acceptedAnswers];
-  if (
-    candidates.some(
-      (candidate) =>
-        closedAnswerNormalization(candidate) ===
-        closedAnswerNormalization(text),
-    )
-  ) {
+  if (canonicalMatch) {
     return {
       status: "correct",
       answerLanguage,
@@ -217,7 +265,8 @@ export function analyzeClosedAnswer(
       message: "„der Mann“ muss hier „den Mann“ heißen.",
       userText: "der Mann",
       correctedText: "den Mann",
-      explanation: "„Mann“ ist das direkte Objekt von „sehen“ und steht im Akkusativ.",
+      explanation:
+        "„Mann“ ist das direkte Objekt von „sehen“ und steht im Akkusativ.",
       hint: "der → den im Akkusativ",
       severity: "critical",
     });
@@ -226,10 +275,12 @@ export function analyzeClosedAnswer(
     issues.push({
       type: "Valenz und Kasus",
       category: "wrong_case",
-      message: "Bei „geben“ ist die Person der Empfänger im Dativ und die Sache das direkte Objekt im Akkusativ.",
+      message:
+        "Bei „geben“ ist die Person der Empfänger im Dativ und die Sache das direkte Objekt im Akkusativ.",
       userText: "der Mann dem Buch",
       correctedText: "dem Mann das Buch",
-      explanation: "Das Verb „geben“ folgt dem Muster „jemandem etwas geben“: dem Mann = Dativ, das Buch = Akkusativ.",
+      explanation:
+        "Das Verb „geben“ folgt dem Muster „jemandem etwas geben“: dem Mann = Dativ, das Buch = Akkusativ.",
       hint: "der Mann → dem Mann; dem Buch → das Buch",
       severity: "critical",
     });
@@ -238,7 +289,8 @@ export function analyzeClosedAnswer(
     issues.push({
       type: "Artikel und Kasus",
       category: "wrong_article",
-      message: "Nach „es gibt“ steht „Supermarkt“ im Akkusativ: „einen Supermarkt“.",
+      message:
+        "Nach „es gibt“ steht „Supermarkt“ im Akkusativ: „einen Supermarkt“.",
       userText: text.match(/es gibt (ein|eine) supermarkt/iu)?.[0] ?? text,
       correctedText: "einen Supermarkt",
       explanation: "Supermarkt ist maskulin; es gibt verlangt den Akkusativ.",
@@ -250,7 +302,8 @@ export function analyzeClosedAnswer(
     issues.push({
       type: "Antwort",
       category: "vocabulary_or_meaning",
-      message: "Die Antwort stimmt noch nicht vollständig mit der Aufgabe überein.",
+      message:
+        "Die Antwort stimmt noch nicht vollständig mit der Aufgabe überein.",
       userText: text,
       correctedText: expected,
       explanation: "Vergleiche die Bedeutung und die verlangte Zielstruktur.",
@@ -419,7 +472,8 @@ function createIssue(
     issue.errorClass ??
     classifyError(issue.type, issue.message, issue.context, issue.suggestion);
   const category =
-    issue.category ?? feedbackCategoryFor(errorClass, issue.type, issue.message);
+    issue.category ??
+    feedbackCategoryFor(errorClass, issue.type, issue.message);
   return {
     ...issue,
     errorClass,
@@ -689,6 +743,42 @@ export function evaluateAnswer(
   taskPrompt?: string,
 ): EvaluationReport {
   const answerLanguage = detectAnswerLanguage(text);
+  if (answerLanguage === "other") {
+    return {
+      original: text,
+      corrected: text,
+      changed: false,
+      matches: [],
+      online: languageTool.online,
+      ...(languageTool.networkError
+        ? { networkError: languageTool.networkError }
+        : {}),
+      issues: [
+        {
+          type: "Sprache unklar",
+          message:
+            "Die Sprache lässt sich hier nicht sicher erkennen. Die Antwort wurde noch nicht bewertet.",
+          context: text,
+          errorClass: "other",
+          severity: "minor",
+          explanation:
+            "Kurze oder gemischte Antworten sind für diese lokale Prüfung nicht eindeutig.",
+        },
+      ],
+      practiceReady: false,
+      verified: false,
+      ok: false,
+      targetHit: false,
+      relevant: false,
+      accuracyScore: null,
+      nextAction: "repeat",
+      status: "language_uncertain",
+      answerLanguage,
+      correctParts: [],
+      nextActionText:
+        "Bitte ergänze etwas Kontext oder lass die Antwort prüfen.",
+    };
+  }
   if (answerLanguage !== "de") {
     const languageIssue = createIssue({
       type: "Ausgabesprache",

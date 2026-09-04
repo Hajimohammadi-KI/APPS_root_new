@@ -51,6 +51,35 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       .replace(/[.!?,;:]+$/g, "")
       .replace(/\s+/g, " ");
 
+  // Search remains case-insensitive; assessed German answers do not.
+  const normalizeAnswer = (value) =>
+    String(value ?? "")
+      .normalize("NFC")
+      .trim()
+      .replace(/(?<!\.)\.$/u, "")
+      .replace(/\s+/gu, " ");
+
+  const detectAnswerLanguage = (text) => {
+    const value = String(text ?? "").normalize("NFC").trim();
+    if (!value || /[\x00-\x08\x0b\x0c\x0e-\x1f]/u.test(value)) return "other";
+    if (/[\u0600-\u06ff]/u.test(value)) {
+      return /[A-Za-zÄÖÜäöüß]/u.test(value) ? "other" : "fa";
+    }
+    const words = value.toLocaleLowerCase("de-DE").match(/\p{L}+/gu) ?? [];
+    if (!words.length || words.some((word) => /[^\p{Script=Latin}]/u.test(word))) return "other";
+    // Sparse lexical clues, not language proof. Keep unknown/mixed input unassessed.
+    const german = new Set("ich du wir ihr sie mich dich sich euch ihnen mein meine meinen meiner meinem dein deine sein seine unser unsere nicht kein keine keinen ist sind bist habe hast haben habt wird werden wurde wurden würde wäre hätte könnte könnten muss müssen soll sollen kann können weil dass obwohl damit deshalb daher gibt bitte danke nein für über ohne zwischen zum zur beim gefahren gegangen".split(" "));
+    const shared = new Set("der die das den dem des ein eine einen einem einer und mit nach aus im es er war hat bin".split(" "));
+    const english = new Set("the and is are were this that these those you your my we they he she have has had hello friend please with from not our their write answer sentence".split(" "));
+    const germanHits = words.filter((word) => german.has(word)).length;
+    const sharedHits = new Set(words.filter((word) => shared.has(word))).size;
+    const englishHits = words.filter((word) => english.has(word)).length;
+    if (englishHits && (germanHits || sharedHits >= 2)) return "other";
+    if (englishHits) return "en";
+    if (germanHits || sharedHits >= 2) return "de";
+    return "other";
+  };
+
   const readJson = (key, fallback) => {
     try {
       return JSON.parse(localStorage.getItem(key) || "") || fallback;
@@ -299,11 +328,6 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
   const localizedMessage = (messages) =>
     messages?.[explanationLanguage] || messages?.Deutsch || "";
   const containsPersian = (value) => /[\u0600-\u06ff]/u.test(String(value ?? ""));
-  const isPrimarilyGerman = (value) => {
-    const text = String(value ?? "").trim();
-    if (!text || containsPersian(text)) return false;
-    return /[A-Za-zÄÖÜäöüß]/u.test(text);
-  };
   const exerciseMetadata = (exercise) =>
     exercise?.[2] && typeof exercise[2] === "object" ? exercise[2] : null;
   const isOpenProduction = (exercise) =>
@@ -358,34 +382,30 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     localStorage.setItem(key, JSON.stringify(next.slice(-200)));
   };
 
+  const answerLanguageFeedback = (answer, candidates = []) => {
+    // Known closed forms can disambiguate short answers; models for open tasks cannot.
+    const knownForm = candidates.some((candidate) =>
+      normalizeAnswer(candidate).toLocaleLowerCase("de-DE") === normalizeAnswer(answer).toLocaleLowerCase("de-DE"),
+    );
+    const language = knownForm ? "de" : detectAnswerLanguage(answer);
+    if (language === "de") return null;
+    const uncertain = language === "other";
+    return {
+      status: uncertain ? "language_uncertain" : "wrong_language",
+      points: [{
+        type: uncertain ? "check" : "wrong_language",
+        message: uncertain
+          ? localizedMessage({
+              Deutsch: "Die Sprache lässt sich hier nicht sicher erkennen. Die Antwort wurde noch nicht bewertet. Bitte ergänze etwas Kontext oder lass sie prüfen.",
+              English: "The language is unclear, so this answer is not assessed. Add some context or have it reviewed.",
+              فارسی: "زبان پاسخ روشن نیست و هنوز ارزیابی نشده است. کمی زمینه اضافه کن یا پاسخ را برای بررسی ارائه بده.",
+            })
+          : activeCopy().wrongLanguage,
+      }],
+    };
+  };
+
   const localClosedFeedback = (answer, expected) => {
-    const copy = activeCopy();
-    if (!isPrimarilyGerman(answer)) {
-      return {
-        status: "wrong_language",
-        points: [
-          {
-            type: "wrong_language",
-            message: `${copy.wrongLanguage} ${
-              explanationLanguage === "فارسی"
-                ? "شما معنی جمله را به فارسی نوشته‌اید. لطفاً همان معنی را به آلمانی بنویسید."
-                : explanationLanguage === "English"
-                  ? "You entered the meaning instead of a German sentence."
-                  : "Du hast die Bedeutung statt eines deutschen Satzes eingegeben."
-            }`,
-          },
-          {
-            type: "meaning",
-            message:
-              explanationLanguage === "فارسی"
-                ? "راهنما: In meiner Straße gibt es ... einen Supermarkt"
-                : explanationLanguage === "English"
-                  ? "Hint: In meiner Straße gibt es ... einen Supermarkt"
-                  : "Hinweis: In meiner Straße gibt es ... einen Supermarkt",
-          },
-        ],
-      };
-    }
     const hasLocationCaseError = /\bin meine (straße|strasse)\b/iu.test(answer);
     const hasSupermarket = /\b(supermarkt|spermarket)\b/iu.test(answer);
     if (hasLocationCaseError && /\b(gibt es|es gibt)\b/iu.test(answer) && hasSupermarket) {
@@ -469,7 +489,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const expectedWords = expected.replace(/[.!?]+$/gu, "").split(/\s+/u);
     const differenceIndex = expectedWords.findIndex(
       (word, index) =>
-        normalize(word) !== normalize(answerWords[index] || ""),
+        normalizeAnswer(word) !== normalizeAnswer(answerWords[index] || ""),
     );
     if (differenceIndex >= 0) {
       const userWord = answerWords[differenceIndex] || "(fehlt)";
@@ -1000,9 +1020,10 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       return;
     }
 
-    const languageFeedback = localClosedFeedback(answer, expected);
-    if (languageFeedback?.status === "wrong_language") {
-      feedback.className = "feedback show bad";
+    const acceptedAnswers = open ? [] : [expected, ...(Array.isArray(metadata?.acceptedAnswers) ? metadata.acceptedAnswers : [])];
+    const languageFeedback = answerLanguageFeedback(answer, acceptedAnswers);
+    if (languageFeedback) {
+      feedback.className = languageFeedback.status === "language_uncertain" ? "feedback show" : "feedback show bad";
       feedback.innerHTML = renderFeedbackPoints(languageFeedback.points);
       return;
     }
@@ -1105,7 +1126,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       feedback.className = `feedback show ${accepted ? "good" : "bad"}`;
       feedback.innerHTML = `<strong>${escapeHtml(accepted ? copy.aiCorrect : copy.aiRevision)}</strong>${renderFeedbackPoints(evaluation.feedbackPoints)}${
         evaluation.correctedGerman &&
-        normalize(evaluation.correctedGerman) !== normalize(answer)
+        normalizeAnswer(evaluation.correctedGerman) !== normalizeAnswer(answer)
           ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(evaluation.correctedGerman)}</p>`
           : ""
       }<small>${escapeHtml(source)} · ${escapeHtml(copy.dimensions)}: ${escapeHtml(localizedDimensions(metadata))}</small>`;
@@ -1121,16 +1142,10 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     }
 
     const recitation = isRecitationExercise(unit, exercise);
-    const acceptedAnswers = [
-      expected,
-      ...(Array.isArray(metadata?.acceptedAnswers)
-        ? metadata.acceptedAnswers
-        : []),
-    ];
     const correct = recitation
       ? answer.trim().length > 0
       : acceptedAnswers.some(
-          (acceptedAnswer) => normalize(answer) === normalize(acceptedAnswer),
+          (acceptedAnswer) => normalizeAnswer(answer) === normalizeAnswer(acceptedAnswer),
         );
     feedback.className = `feedback show ${correct ? "good" : "bad"}`;
     if (recitation) {
@@ -1169,7 +1184,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     }
     const completed = markExerciseComplete(unit);
     if (!recitation) {
-      const usedAlternative = normalize(answer) !== normalize(expected);
+      const usedAlternative = normalizeAnswer(answer) !== normalizeAnswer(expected);
       const correctRulePoints =
         unit.title === "es gibt mit Akkusativ"
           ? [

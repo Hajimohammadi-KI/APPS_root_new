@@ -14,6 +14,90 @@ const perfekt = {
   examples: ["Ich bin nach Berlin gefahren."],
 } as const;
 
+describe("answer language and orthography boundaries", () => {
+  it.each([
+    "Hello my friend",
+    "Bonjour tout le monde",
+    "Hola amigo",
+    "Alex",
+    "Hotel",
+    "quux blorp",
+    "A hat costs money.",
+  ])("does not assume arbitrary Latin input is German: %s", (text) =>
+    expect(detectAnswerLanguage(text)).not.toBe("de"),
+  );
+
+  it.each([
+    "Ich arbeite mit einer erfahrenen Kollegin.",
+    "Gestern hat er das Fenster geöffnet.",
+    "Obwohl es regnet, gehen wir spazieren.",
+    "Der Bericht muss geprüft werden.",
+    "Könnten Sie mir bitte helfen?",
+  ])("recognises German evidence across constructions: %s", (text) => {
+    expect(detectAnswerLanguage(text)).toBe("de");
+  });
+
+  it("keeps mixed and unknown language unassessed even if the provider reports no errors", () => {
+    for (const text of [
+      "Hotel",
+      "Bonjour tout le monde",
+      "Ich have the book.",
+      "A hat costs money.",
+    ]) {
+      const report = evaluateAnswer(text, perfekt, "free", {
+        matches: [],
+        online: true,
+      });
+      expect(report).toMatchObject({
+        status: "language_uncertain",
+        answerLanguage: "other",
+        accuracyScore: null,
+        verified: false,
+        ok: false,
+        targetHit: false,
+      });
+      expect(
+        report.issues.some(
+          (issue) => issue.category === "wrong_output_language",
+        ),
+      ).toBe(false);
+    }
+  });
+
+  it("uses authored closed alternatives to assess short ambiguous forms", () => {
+    for (const answer of ["Hotel", "Danke", "geöffnet", "Berlin"]) {
+      expect(analyzeClosedAnswer(answer, answer)).toMatchObject({
+        correct: true,
+        status: "correct",
+      });
+    }
+    expect(analyzeClosedAnswer("Morgen", "Heute", ["Morgen"]).correct).toBe(
+      true,
+    );
+    expect(analyzeClosedAnswer("Hotel", "Bahnhof")).toMatchObject({
+      correct: null,
+      status: "language_uncertain",
+    });
+  });
+
+  it.each([
+    ["Ich lese ein buch.", "Ich lese ein Buch."],
+    ["Wir helfen ihnen.", "Wir helfen Ihnen."],
+    ["das Lernen macht Spaß.", "Das Lernen macht Spaß."],
+    ["Sie kommt?", "Sie kommt."],
+    ["Ich weiß dass er kommt.", "Ich weiß, dass er kommt."],
+  ])("preserves meaningful orthography: %s", (answer, expected) => {
+    expect(analyzeClosedAnswer(answer, expected).correct).toBe(false);
+  });
+
+  it("allows whitespace, canonical Unicode and an optional final full stop", () => {
+    expect(
+      analyzeClosedAnswer("  Die  Tu\u0308r ist offen  ", "Die Tür ist offen.")
+        .correct,
+    ).toBe(true);
+  });
+});
+
 describe("legacy-compatible evaluator", () => {
   it("detects Persian before attempting German grammar evaluation", () => {
     expect(detectAnswerLanguage("یه سوپرمارکت سر خیابون ما هست")).toBe("fa");

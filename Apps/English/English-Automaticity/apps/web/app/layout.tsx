@@ -1,3 +1,4 @@
+import { LearningRecoveryBoundary } from "@/features/components/learning-recovery-boundary";
 import type { Metadata, Viewport } from "next";
 import { AppStoreProvider } from "@/features/store/app-store";
 import { ContextualHoverHelp } from "@/features/components/contextual-hover-help";
@@ -54,13 +55,13 @@ export default function RootLayout({
     // learning aids opt into RTL only on their own scoped containers.
     <html lang="en" dir="ltr">
       <body>
-        <AppStoreProvider>
+        <LearningRecoveryBoundary><AppStoreProvider>
           {children}
           <GlobalReadingRuler />
           <ContextualHoverHelp />
           <DeepLSelectionTranslator />
           <GuardedNudge />
-        </AppStoreProvider>
+        </AppStoreProvider></LearningRecoveryBoundary>
       </body>
     </html>
   );

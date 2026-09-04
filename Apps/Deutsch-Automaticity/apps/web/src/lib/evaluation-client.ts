@@ -19,7 +19,7 @@ function applySpellingAccommodation(
   result: EvaluationResponse,
   request: EvaluationRequest,
 ): EvaluationResponse {
-  if (request.spellingAffectsMastery) {
+  if (request.spellingAffectsMastery || result.accuracyScore === null) {
     return result;
   }
   const spellingIssues = result.issues.filter(

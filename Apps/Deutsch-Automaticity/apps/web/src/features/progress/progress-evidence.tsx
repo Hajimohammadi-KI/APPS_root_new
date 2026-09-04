@@ -1,4 +1,5 @@
 "use client";
+import { AutomaticityEvidenceSummary } from "./automaticity-evidence-summary";
 
 import {
   AlertTriangle,
@@ -48,7 +49,7 @@ export function ProgressEvidence() {
     (state.learningLevel
       ? grammarUnits.find((unit) => unit.level === state.learningLevel)
       : undefined);
-  const masteryRows = Object.values(state.mastery);
+  const masteryRows = Object.entries(state.mastery).map(([topic, record]) => ({ ...record, topic }));
   const automaticTopics = masteryRows.filter(
     (mastery) => mastery.status === "automatic",
   ).length;
@@ -58,12 +59,14 @@ export function ProgressEvidence() {
   const focusMastery = todayUnit ? state.mastery[todayUnit.title] : undefined;
   const weakSpeaking = masteryRows.filter(
     (mastery) =>
+      state.attempts.some(attempt => attempt.topic === mastery.topic && attempt.mode === "speaking" && attempt.verified === true) &&
       mastery.status !== "new" &&
       mastery.scores.speaking < 80 &&
       mastery.scores.writing >= mastery.scores.speaking,
   ).length;
   const weakWriting = masteryRows.filter(
     (mastery) =>
+      state.attempts.some(attempt => attempt.topic === mastery.topic && attempt.mode === "writing" && attempt.verified === true) &&
       mastery.status !== "new" &&
       mastery.scores.writing < 80 &&
       mastery.scores.speaking > mastery.scores.writing,
@@ -110,7 +113,7 @@ export function ProgressEvidence() {
     const minimumSamples = Math.max(6, Math.ceil(levelTitles.length * 0.5));
     const requirements = [
       {
-        label: `Automatisierte Themen ${automaticCount}/${levelTitles.length}`,
+        label: `Themen über der bisherigen Übungsschwelle ${automaticCount}/${levelTitles.length}`,
         done: automaticCount === levelTitles.length,
       },
       {
@@ -118,19 +121,19 @@ export function ProgressEvidence() {
         done: activeCriticalErrors === 0,
       },
       {
-        label: `Sprech-Nachweise ${successful.filter((attempt) => attempt.mode === "speaking").length}/${minimumSamples}`,
+        label: `Geprüfte Sprechübungen ${successful.filter((attempt) => attempt.mode === "speaking").length}/${minimumSamples}`,
         done:
           successful.filter((attempt) => attempt.mode === "speaking").length >=
           minimumSamples,
       },
       {
-        label: `Schreib-Nachweise ${successful.filter((attempt) => attempt.mode === "writing").length}/${minimumSamples}`,
+        label: `Geprüfte Schreibübungen ${successful.filter((attempt) => attempt.mode === "writing").length}/${minimumSamples}`,
         done:
           successful.filter((attempt) => attempt.mode === "writing").length >=
           minimumSamples,
       },
       {
-        label: `Transfer-Nachweise ${successful.filter((attempt) => attempt.mode === "transfer").length}/${minimumSamples}`,
+        label: `Geprüfte Transferübungen ${successful.filter((attempt) => attempt.mode === "transfer").length}/${minimumSamples}`,
         done:
           successful.filter((attempt) => attempt.mode === "transfer").length >=
           minimumSamples,
@@ -168,8 +171,8 @@ export function ProgressEvidence() {
     {
       key: "automaticity",
       unlocked: automaticTopics >= 5,
-      title: "Automatisierungs-Aufbau",
-      hint: "5 Themen automatisieren",
+      title: "Übungsaufbau",
+      hint: "5 bisherige Übungsschwellen erreichen",
     },
     {
       key: "reviews",
@@ -197,27 +200,28 @@ export function ProgressEvidence() {
         </div>
       </header>
 
+      <AutomaticityEvidenceSummary />
       <LearningAccordion
         eyebrow="Persönlicher Lernstand"
         group="progress-evidence"
         icon={Gauge}
         summary="Automatisierung, fällige Wiederholungen sowie Sprech- und Schreibwerte"
-        title="Status und Kompetenznachweise"
+        title="Bisherige Übungswerte"
         tone="violet"
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <CompactMetric
             icon={<CheckCircle2 />}
-            label="Automatisiert"
+            label="Bisherige Übungsschwelle erreicht"
             value={hydrated ? String(automaticTopics) : "–"}
-            hint="Alle Nachweise erfüllt"
+            hint="Historischer App-Wert, kein Beherrschungsnachweis"
             tone="sky"
           />
           <CompactMetric
             icon={<AlertTriangle />}
-            label="Instabil"
+            label="Weitere Übung vorgesehen"
             value={hydrated ? String(unstableTopics) : "–"}
-            hint="Noch nicht automatisch"
+            hint="Beherrschung unabhängig davon ungeprüft"
             tone="amber"
           />
           <CompactMetric
@@ -250,7 +254,7 @@ export function ProgressEvidence() {
         group="progress-evidence"
         icon={LockKeyhole}
         summary="Wiederkehrende Fehler und Bedingungen für das nächste Niveau"
-        title="Fehler und Level-Freigabe"
+        title="Fehler und Übungsplan für das Niveau"
         tone="amber"
       >
         <div className="grid gap-5 lg:grid-cols-2">
@@ -287,7 +291,7 @@ export function ProgressEvidence() {
             <section aria-labelledby="level-gate-heading">
               <div className="flex items-center justify-between gap-3">
                 <h2 id="level-gate-heading" className="text-sm font-bold">
-                  Level-Freigabe
+                  Übungsplan für das Niveau
                 </h2>
                 <Badge variant={activeGate.ready ? "secondary" : "outline"}>
                   {activeGate.level}

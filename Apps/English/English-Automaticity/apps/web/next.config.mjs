@@ -10,6 +10,7 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        { source: "/practice", destination: "/learning-core/practice-en.html" },
         { source: "/daily", destination: "/replacements/en/daily.html" },
         { source: "/grammar", destination: "/replacements/en/grammar.html" },
       ],

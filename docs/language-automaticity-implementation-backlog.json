@@ -1,0 +1,1718 @@
+{
+  "schemaVersion": 1,
+  "createdOn": "2026-09-04",
+  "workspace": "D:\\APPS_root_new",
+  "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
+  "status": "in_progress",
+  "updatedOn": "2026-09-04",
+  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+  "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
+  "statusDefinitions": {
+    "planned": "Work specified; not executed.",
+    "in_progress": "Execution started; evidence incomplete.",
+    "implemented": "Artifacts/code exist; required verification is incomplete.",
+    "verified": "Ticket-specific acceptance evidence recorded; not a global effectiveness claim.",
+    "blocked": "A concrete external or technical blocker is recorded.",
+    "deferred": "Conditional work is deliberately postponed with a reason."
+  },
+  "ownerNote": "Roles are requirements, not assignments to named people. Human review and learner participation are not assumed completed or booked.",
+  "touchpoints": {
+    "root": {
+      "path": ".",
+      "purpose": "Workspace, runtime manifest and task evidence"
+    },
+    "release": {
+      "path": "scripts",
+      "purpose": "Readiness and isolated installer lifecycle"
+    },
+    "core": {
+      "path": "shared/learning-core",
+      "purpose": "Canonical shared contracts, evidence, scheduling and mirror sync"
+    },
+    "en_content": {
+      "path": "Apps/English/English-Automaticity/packages/content/src",
+      "purpose": "English curriculum, taxonomy, task authoring"
+    },
+    "de_content": {
+      "path": "Apps/Deutsch-Automaticity/packages/content/src",
+      "purpose": "German curriculum and exercise completion"
+    },
+    "en_assessment": {
+      "path": "Apps/English/English-Automaticity/apps/api/src/assessment",
+      "purpose": "English upstream assessment contract and service"
+    },
+    "en_client": {
+      "path": "Apps/English/English-Automaticity/apps/web/lib",
+      "purpose": "English assessment, audio and planning adapters"
+    },
+    "de_domain": {
+      "path": "Apps/Deutsch-Automaticity/packages/domain/src",
+      "purpose": "German pure evaluation, mastery and scheduling"
+    },
+    "de_contracts": {
+      "path": "Apps/Deutsch-Automaticity/packages/contracts",
+      "purpose": "German versioned API contracts"
+    },
+    "en_static": {
+      "path": "Apps/English/English-Automaticity/apps/web/public/replacements/en",
+      "purpose": "Active English Daily and Grammar runtime"
+    },
+    "de_static": {
+      "path": "Apps/Deutsch-Automaticity/apps/web/public/replacements/de",
+      "purpose": "Active German Daily and Grammar runtime"
+    },
+    "en_features": {
+      "path": "Apps/English/English-Automaticity/apps/web/features",
+      "purpose": "English state, Studio, progress and review"
+    },
+    "de_features": {
+      "path": "Apps/Deutsch-Automaticity/apps/web/src/features",
+      "purpose": "German state, Studio, progress and review"
+    },
+    "en_scripts": {
+      "path": "Apps/English/English-Automaticity/scripts",
+      "purpose": "English generated curriculum, payload and installer"
+    },
+    "de_scripts": {
+      "path": "Apps/Deutsch-Automaticity/scripts",
+      "purpose": "German generated curriculum, payload and installer"
+    },
+    "en_tests": {
+      "path": "Apps/English/English-Automaticity/tests/e2e",
+      "purpose": "English browser journeys"
+    },
+    "de_tests": {
+      "path": "Apps/Deutsch-Automaticity/tests/e2e",
+      "purpose": "German browser journeys"
+    },
+    "research": {
+      "path": "research/cefr-classification",
+      "purpose": "Existing CEFR research; separate from grammar feedback"
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Strategy, reviewed scope, reports and protocols"
+    }
+  },
+  "phases": [
+    {
+      "id": "baseline",
+      "title": "Establish the current baseline",
+      "priority": "P0",
+      "exit": "Canonical routes and storage mapped; preservation fixtures and defect reproductions saved."
+    },
+    {
+      "id": "integrity",
+      "title": "Fix incorrect assessment and evidence",
+      "priority": "P0",
+      "exit": "Known false-success, answer-exposure and verification-conflict cases cannot award independent credit."
+    },
+    {
+      "id": "evidence",
+      "title": "Build the shared evidence foundation",
+      "priority": "P0",
+      "exit": "One versioned record and reducer serve both apps without losing historical data."
+    },
+    {
+      "id": "curriculum",
+      "title": "Map the complete grammar scope",
+      "priority": "P1",
+      "exit": "All current lessons and all 21 families mapped; every missing required cell creates work."
+    },
+    {
+      "id": "loop",
+      "title": "Connect complete learning cycles",
+      "priority": "P1",
+      "exit": "Representative speaking and writing cycles work on actual static and React routes."
+    },
+    {
+      "id": "daily",
+      "title": "Make daily practice usable and personal",
+      "priority": "P1",
+      "exit": "The learner can start, repair, resume and review with clear reasons and honest progress."
+    },
+    {
+      "id": "models",
+      "title": "Evaluate and integrate suitable model assistance",
+      "priority": "P1",
+      "exit": "Task-specific benchmarks determine supported families; unsupported functions abstain."
+    },
+    {
+      "id": "expansion",
+      "title": "Complete all grammar families",
+      "priority": "P1",
+      "exit": "Every required curriculum cell has reviewed content, an appropriate assessment path and verified learner-route evidence."
+    },
+    {
+      "id": "pilot",
+      "title": "Measure independent learner performance",
+      "priority": "P1",
+      "exit": "Dated baseline, transfer and delayed outcomes reported separately by language and mode."
+    },
+    {
+      "id": "scheduling",
+      "title": "Evaluate adaptive review scheduling",
+      "priority": "P2",
+      "exit": "A prospective comparison supports activation or documents retention of the baseline."
+    },
+    {
+      "id": "release",
+      "title": "Verify each delivered increment",
+      "priority": "P0",
+      "exit": "Exact build and installer receipts demonstrate functional routes and data preservation."
+    },
+    {
+      "id": "research",
+      "title": "Consider reinforcement learning only with sufficient evidence",
+      "priority": "P3",
+      "exit": "A recorded decision either opens a bounded experiment or defers it without blocking the core product."
+    }
+  ],
+  "families": [
+    {
+      "id": "G01",
+      "name": "Basic clause structure",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W01",
+      "status": "planned"
+    },
+    {
+      "id": "G02",
+      "name": "Nouns and reference",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W01",
+      "status": "planned"
+    },
+    {
+      "id": "G03",
+      "name": "Determiners",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W01",
+      "status": "planned"
+    },
+    {
+      "id": "G04",
+      "name": "Pronouns",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W01",
+      "status": "planned"
+    },
+    {
+      "id": "G05",
+      "name": "Adjectives and adverbs",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W01",
+      "status": "planned"
+    },
+    {
+      "id": "G06",
+      "name": "Present and past",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W02",
+      "status": "planned"
+    },
+    {
+      "id": "G07",
+      "name": "Future and temporal relations",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W02",
+      "status": "planned"
+    },
+    {
+      "id": "G08",
+      "name": "Verb patterns and valency",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W02",
+      "status": "planned"
+    },
+    {
+      "id": "G09",
+      "name": "Nonfinite constructions",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W02",
+      "status": "planned"
+    },
+    {
+      "id": "G10",
+      "name": "Modality",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W02",
+      "status": "planned"
+    },
+    {
+      "id": "G11",
+      "name": "Voice and causation",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W03",
+      "status": "planned"
+    },
+    {
+      "id": "G12",
+      "name": "Negation and questions",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W03",
+      "status": "planned"
+    },
+    {
+      "id": "G13",
+      "name": "Prepositions",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W01",
+      "status": "planned"
+    },
+    {
+      "id": "G14",
+      "name": "Clause linking",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W03",
+      "status": "planned"
+    },
+    {
+      "id": "G15",
+      "name": "Relative clauses",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W03",
+      "status": "planned"
+    },
+    {
+      "id": "G16",
+      "name": "Conditionals and hypothetical meaning",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W03",
+      "status": "planned"
+    },
+    {
+      "id": "G17",
+      "name": "Reported language",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W04",
+      "status": "planned"
+    },
+    {
+      "id": "G18",
+      "name": "Information structure",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W04",
+      "status": "planned"
+    },
+    {
+      "id": "G19",
+      "name": "Cohesion and register",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W04",
+      "status": "planned"
+    },
+    {
+      "id": "G20",
+      "name": "Advanced integration",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W04",
+      "status": "planned"
+    },
+    {
+      "id": "G21",
+      "name": "Orthography supporting grammar",
+      "languages": [
+        "en",
+        "de"
+      ],
+      "wave": "W04",
+      "status": "planned"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "B01",
+      "phase": "baseline",
+      "title": "Map active routes and current runtime",
+      "status": "in_progress",
+      "progressNote": "Captured source and installed versions, process paths, storage keys and active-route implementations. The restored source runtime passed all 10 HTTP probes, and eight selected post-change browser regressions passed. Launcher-target resolution and a verified pre-change browser baseline remain incomplete; post-change evidence does not retroactively close those B01 requirements.",
+      "priority": "P0",
+      "dependsOn": [],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "root",
+        "release",
+        "en_static",
+        "de_static",
+        "en_features",
+        "de_features"
+      ],
+      "deliverable": "Dated route/storage/version map and English/German HTTP/browser baseline.",
+      "acceptance": [
+        "Identify source, installed copy, launcher, web/API endpoints and the implementation behind each learner route.",
+        "Preserve the initial Git state; report current failures independently of earlier reports.",
+        "Do not expand this work into the thesis or unrelated sibling apps."
+      ],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+        "scripts/capture-language-baseline.ts",
+        "artifacts/language-automaticity/baseline-2026-09-04T20-49-37-290Z.json",
+        "scripts/browser-language-integrity-check.mjs",
+        "artifacts/language-automaticity/baseline-2026-09-04T21-06-31-192Z.json",
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json"
+      ],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "B02",
+      "phase": "baseline",
+      "title": "Prepare preservation and restore fixtures",
+      "status": "in_progress",
+      "progressNote": "Implemented isolated desktop profile, extraction and staging-cache paths. Both isolated installer lifecycles passed with the synthetic file marker preserved. The reports explicitly mark browser-data restore as not run; full browser or IndexedDB export/restore, real legacy records, due reviews and playable-audio recovery remain pending.",
+      "priority": "P0",
+      "dependsOn": [
+        "B01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_features",
+        "de_features",
+        "en_client",
+        "release"
+      ],
+      "deliverable": "Local export fixtures covering attempts, due reviews, settings, drafts and playable audio.",
+      "acceptance": [
+        "Include legacy, partial, duplicate and current records; use isolated profiles.",
+        "Record baseline counts, identifiers and audio hashes without exposing personal content in reports.",
+        "Demonstrate a recovery path before any schema migration."
+      ],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+        "scripts/verify-language-installer-cycle.ps1",
+        "Apps/English/English-Automaticity/distribution/windows-desktop/main.cjs",
+        "Apps/Deutsch-Automaticity/distribution/windows-desktop/main.cjs",
+        "Apps/English/English-Automaticity/scripts/windows-installer.test.ts",
+        "Apps/Deutsch-Automaticity/scripts/windows-installer.test.ts",
+        "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json",
+        "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json"
+      ],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "B03",
+      "phase": "baseline",
+      "title": "Reproduce consequential defects",
+      "status": "in_progress",
+      "progressNote": "Added reproductions and focused regressions for malformed English assessments, German language uncertainty, capitalization, accepted alternatives and the German weil evaluation bypass. Caller-verification conflicts also receive focused coverage, and all eight selected browser regressions passed. The complete ledger for answer exposure, offline completion and unsupported shared delay/novelty flags across all affected routes remains pending.",
+      "priority": "P0",
+      "dependsOn": [
+        "B01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_assessment",
+        "en_client",
+        "de_domain",
+        "en_static",
+        "de_static",
+        "core"
+      ],
+      "deliverable": "Focused regression ledger with expected verdicts and route evidence.",
+      "acceptance": [
+        "Cover malformed upstream data, language uncertainty, valid alternatives, answer exposure and offline completion.",
+        "Reproduce English verification conflicts and shared transfer/delay flags that lack actual evidence.",
+        "Record each failure before its fix; a non-reproduction requires revised evidence rather than automatic closure."
+      ],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+        "Apps/English/English-Automaticity/apps/api/test/assessment.service.test.ts",
+        "Apps/English/English-Automaticity/apps/web/lib/assessment.test.ts",
+        "Apps/Deutsch-Automaticity/packages/domain/src/evaluation.test.ts",
+        "Apps/Deutsch-Automaticity/packages/domain/src/grammar-runtime-evaluation.test.ts",
+        "Apps/Deutsch-Automaticity/apps/web/src/features/automaticity/automaticity-language.test.ts",
+        "artifacts/language-automaticity/de-check-2026-09-04.log",
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json"
+      ],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "F01",
+      "phase": "integrity",
+      "title": "Validate English upstream assessments",
+      "status": "implemented",
+      "progressNote": "Provider and client validation reject malformed payloads, invalid edit spans, overlapping edits and inconsistent fields; the inspected caller boundary preserves unverified outcomes. Focused checks, selected browser regressions and the isolated English 27.3.22-to-27.3.23 installer lifecycle passed. B03 and comprehensive caller acceptance remain incomplete, so this ticket remains implemented rather than verified; no all-caller or full-curriculum qualification is claimed.",
+      "priority": "P0",
+      "dependsOn": [
+        "B03"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_assessment",
+        "en_client"
+      ],
+      "deliverable": "Strict upstream validation and explicit unassessed results.",
+      "acceptance": [
+        "A valid empty matches array is accepted; missing/null/non-array matches and invalid JSON are not.",
+        "Validate edit bounds, replacement types and overlapping edits; timeout never becomes a clean answer.",
+        "Malformed assessments cannot raise progress through any caller."
+      ],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+        "Apps/English/English-Automaticity/apps/api/src/assessment/assessment.contract.ts",
+        "Apps/English/English-Automaticity/apps/api/src/assessment/assessment.service.ts",
+        "Apps/English/English-Automaticity/apps/api/test/assessment.service.test.ts",
+        "Apps/English/English-Automaticity/apps/web/lib/assessment.ts",
+        "Apps/English/English-Automaticity/apps/web/lib/assessment.test.ts",
+        "artifacts/language-automaticity/en-check-final-2026-09-04.log",
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
+        "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json"
+      ],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "F02",
+      "phase": "integrity",
+      "title": "Fix German language and orthography handling",
+      "status": "implemented",
+      "progressNote": "Domain and static grading preserve capitalization and relevant punctuation, accept authored short-answer alternatives and leave inconclusive language unassessed with null accuracy. The Automaticity weil shortcut checks language first; words shared with English, such as hat, are not decisive German evidence. Focused tests, consumer typechecks, selected browser regressions and the isolated German 20.8.28-to-20.8.29 installer lifecycle passed. B03 and comprehensive acceptance remain incomplete, so the ticket stays implemented. The detector remains heuristic; neither all-grammar assessment nor validated language identification is claimed.",
+      "priority": "P0",
+      "dependsOn": [
+        "B03"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "de_domain",
+        "de_static"
+      ],
+      "deliverable": "Guarded language classification and task-specific normalisation.",
+      "acceptance": [
+        "Known English/French/Spanish negatives do not default to German; ambiguous short text can abstain.",
+        "Valid German with few marker words is not falsely rejected.",
+        "German capitalization and relevant endings remain assessable; only declared harmless normalisation is allowed."
+      ],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+        "Apps/Deutsch-Automaticity/packages/domain/src/evaluation.ts",
+        "Apps/Deutsch-Automaticity/packages/domain/src/evaluation.test.ts",
+        "Apps/Deutsch-Automaticity/packages/contracts/src/index.ts",
+        "Apps/Deutsch-Automaticity/apps/web/public/replacements/de/grammar-runtime.js",
+        "Apps/Deutsch-Automaticity/packages/domain/src/grammar-runtime-evaluation.test.ts",
+        "Apps/Deutsch-Automaticity/apps/web/src/features/automaticity/automaticity-language.test.ts",
+        "artifacts/language-automaticity/de-check-2026-09-04.log",
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
+        "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json"
+      ],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "F03",
+      "phase": "integrity",
+      "title": "Separate practice completion from independent success",
+      "status": "planned",
+      "priority": "P0",
+      "dependsOn": [
+        "B03",
+        "E01",
+        "C03"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_static",
+        "de_static",
+        "en_features",
+        "de_features"
+      ],
+      "deliverable": "Exposure-aware examples, hints, repairs and completion flags.",
+      "acceptance": [
+        "Viewed model answers and copied repairs cannot qualify as independent retrieval.",
+        "Offline open work and nonempty rule explanations can be saved without assessed mastery.",
+        "Hide assessed solutions until deliberate reveal; preserve useful teaching examples on the teaching stage."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "F04",
+      "phase": "integrity",
+      "title": "Remove conflicting verification paths",
+      "status": "in_progress",
+      "progressNote": "Fixed the inspected English Automaticity caller boundary so app state and its evidence bundle retain the assessment verification result instead of forcing deterministic verification; the selected browser regression passed. Shared reducer consistency, actual elapsed-delay and novelty evidence, answer exposure, duplicate/re-recording handling and overturned-verdict propagation remain pending under E01/E02 and the remaining F04 work.",
+      "priority": "P0",
+      "dependsOn": [
+        "B03",
+        "E01",
+        "E02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_client",
+        "en_features",
+        "de_domain",
+        "de_features"
+      ],
+      "deliverable": "A single assessment result supplies both application state and evidence.",
+      "acceptance": [
+        "The same attempt cannot be unverified in one store and verified in another.",
+        "Transfer mode alone supplies no novelty; a due flag supplies no actual elapsed delay.",
+        "Repeated submission, re-recording and overturned verdicts produce consistent derived progress."
+      ],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+        "Apps/English/English-Automaticity/apps/web/features/screens/automaticity-screen.tsx",
+        "Apps/English/English-Automaticity/apps/web/lib/automaticity-analysis.ts",
+        "Apps/English/English-Automaticity/apps/web/lib/automaticity-analysis.test.ts",
+        "artifacts/language-automaticity/en-check-final-2026-09-04.log",
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json"
+      ],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "E01",
+      "phase": "evidence",
+      "title": "Define versioned construction, task and assessment contracts",
+      "status": "planned",
+      "priority": "P0",
+      "dependsOn": [
+        "B03",
+        "C01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "de_contracts",
+        "en_content",
+        "de_content"
+      ],
+      "deliverable": "Shared schema version and typed English/German adapters.",
+      "acceptance": [
+        "Include stable IDs, task/rubric versions, opportunities, exposure, assistance, first attempt, transfer condition and timing provenance.",
+        "Include assessment IDs, supersession/invalidation, original and edited transcript identities, and review provenance.",
+        "Validate pass, needs_repair, target_not_observed and not_assessed without model-defined mastery."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "E02",
+      "phase": "evidence",
+      "title": "Implement idempotent evidence reduction",
+      "status": "planned",
+      "priority": "P0",
+      "dependsOn": [
+        "E01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "de_domain"
+      ],
+      "deliverable": "Deterministic event reducer and modality-specific summaries.",
+      "acceptance": [
+        "Deduplicate event IDs and include eligible failures in declared windows.",
+        "Invalidate superseded judgments and recompute repair/progress/scheduling inputs while retaining history.",
+        "Untested, missing audio and missing timing remain unknown or unassessed; never synthesize proof."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "E03",
+      "phase": "evidence",
+      "title": "Migrate legacy and static-route state safely",
+      "status": "planned",
+      "priority": "P0",
+      "dependsOn": [
+        "B02",
+        "E01",
+        "E02",
+        "C02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_features",
+        "de_features",
+        "en_static",
+        "de_static",
+        "en_client"
+      ],
+      "deliverable": "Versioned migration, aliases, export/restore and rollback.",
+      "acceptance": [
+        "All original lesson associations, answers, dates, reviews and audio remain readable.",
+        "Repeated migration is idempotent; missing historical evidence remains marked insufficient.",
+        "Interrupted/corrupt migration restores the saved pre-migration state; language backups cannot cross-import."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "E04",
+      "phase": "evidence",
+      "title": "Distribute shared code to every runtime",
+      "status": "planned",
+      "priority": "P0",
+      "dependsOn": [
+        "E01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_scripts",
+        "de_scripts"
+      ],
+      "deliverable": "Updated sync file list, schemas and static-browser entry bundle.",
+      "acceptance": [
+        "Canonical source changes propagate to both package mirrors and relevant public bundles.",
+        "The sync --check fails on a deliberately stale or missing copy.",
+        "Identical Node and browser input produces the same assessment/evidence interpretation."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "C01",
+      "phase": "curriculum",
+      "title": "Define the grammar-construction inventory",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "B01"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content",
+        "docs"
+      ],
+      "deliverable": "Stable language-specific construction IDs across all 21 strategy families.",
+      "acceptance": [
+        "Specify form, meaning, use, contrasts, prerequisites and valid alternatives.",
+        "Separate hard prerequisites from instructional suggestions; reject prerequisite cycles.",
+        "Reviewer role/date and source mappings are recorded; model-authored drafts are not labelled human-reviewed."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "C02",
+      "phase": "curriculum",
+      "title": "Map every existing lesson and identify missing constructions",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C01"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content"
+      ],
+      "deliverable": "English/German crosswalk and explicit missing-coverage backlog.",
+      "acceptance": [
+        "Account for all 112 English and 144 German starting units, allowing verified inventory changes and additions.",
+        "Preserve old IDs/titles as aliases; support many-to-many mappings.",
+        "Check every family against reviewed references; equal level counts do not prove completeness."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "C03",
+      "phase": "curriculum",
+      "title": "Define appropriate task types and separate exposed material",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C01"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content",
+        "core"
+      ],
+      "deliverable": "Typed task families and teaching/practice/calibration/final-test partition rules.",
+      "acceptance": [
+        "Differentiate comprehension, recall, correction, transformation, constrained/free production and interaction.",
+        "Acceptable transformations preserve meaning and grammatical possibility.",
+        "Track template/scenario families and exposure; final evaluation material cannot enter generated practice."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "C04",
+      "phase": "curriculum",
+      "title": "Build an executable coverage gate",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C02",
+        "C03",
+        "E01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_content",
+        "de_content",
+        "en_scripts",
+        "de_scripts"
+      ],
+      "deliverable": "Generated coverage matrix and actionable missing-cell report.",
+      "acceptance": [
+        "Track required construction x mode x learning-stage x evaluator coverage with evidence references.",
+        "N/A needs a linguistic reason; unavailable implementation or evaluator is a gap, not N/A.",
+        "Retain original lessons as a migration minimum and replace obsolete exact exercise-count assertions."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "L01",
+      "phase": "loop",
+      "title": "Implement representative construction validators and tasks",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "F01",
+        "F02",
+        "E01",
+        "C03"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content",
+        "en_client",
+        "de_domain"
+      ],
+      "deliverable": "Reviewed bilingual packs for inflection, valency, temporal meaning, clause order, modality/voice and discourse.",
+      "acceptance": [
+        "Correct alternatives pass; wrong-role keywords and grammatical irrelevant text do not.",
+        "Unsupported judgments abstain or enter the explicit human-review path.",
+        "Each pack covers retrieval, applicable variation, speaking, writing, repair and transfer."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "L02",
+      "phase": "loop",
+      "title": "Make audio and response timing trustworthy",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "E01",
+        "B02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_client",
+        "en_features",
+        "de_features"
+      ],
+      "deliverable": "Playable audio, transcript provenance and valid response-timing capture.",
+      "acceptance": [
+        "Typed or edited transcripts cannot establish original spoken success.",
+        "Silence, corrupt audio and uncertain ASR leave affected dimensions unassessed; network time is excluded.",
+        "Untimed/accessibility modes retain accuracy evidence without fluency claims; no universal eight-second pass gate."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "L03",
+      "phase": "loop",
+      "title": "Integrate actual Daily and Grammar routes",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "F03",
+        "F04",
+        "E03",
+        "E04",
+        "L01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_static",
+        "de_static",
+        "en_scripts",
+        "de_scripts"
+      ],
+      "deliverable": "Shared assessment/evidence on /daily, /grammar, /heute and /grammatik.",
+      "acceptance": [
+        "Start, respond, reveal a hint, repair, navigate back and reload without losing the draft or evidence.",
+        "Generated catalogs match their canonical source and contain new task metadata.",
+        "Static fallback code cannot bypass or disagree with the common contract."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "L04",
+      "phase": "loop",
+      "title": "Integrate Studio, Errors, Reviews, Progress and teacher review",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "F04",
+        "E03",
+        "E04",
+        "L01",
+        "L02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_features",
+        "de_features",
+        "en_client",
+        "de_domain"
+      ],
+      "deliverable": "All remaining learning surfaces read and write the same evidence.",
+      "acceptance": [
+        "Both static and React routes agree on the same attempt and next repair.",
+        "Human review can accept a valid alternative, overturn a verdict and recompute progress.",
+        "Delayed-review eligibility requires elapsed time and unexposed task/context evidence."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "L05",
+      "phase": "loop",
+      "title": "Verify the representative end-to-end learning cycle",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "L03",
+        "L04",
+        "L02",
+        "C04"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_tests",
+        "de_tests",
+        "core"
+      ],
+      "deliverable": "Browser receipts for both languages and both productive modes.",
+      "acceptance": [
+        "Demonstrate production -> feedback -> learner repair -> new-context transfer -> later review.",
+        "Use a test clock for scheduling logic but do not claim a simulated delay proves learning.",
+        "Record this milestone as architecture verified, full curriculum incomplete."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "U01",
+      "phase": "daily",
+      "title": "Implement transparent personal task selection",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "E02",
+        "C02",
+        "L05"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_client",
+        "de_domain"
+      ],
+      "deliverable": "Rule-based selection using eligible evidence, prerequisites, reviews and coverage.",
+      "acceptance": [
+        "Prioritise consequential repair and due recall without monopolising the queue.",
+        "Reduce new work when reviews accumulate; keep language histories separate.",
+        "Record a learner override and explain the selected task in plain language."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "U02",
+      "phase": "daily",
+      "title": "Deliver one clear daily card with reliable resume",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "U01",
+        "L03",
+        "L04"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_static",
+        "de_static",
+        "en_features",
+        "de_features"
+      ],
+      "deliverable": "Daily card with target, reason, action, session budget and next step.",
+      "acceptance": [
+        "Keyboard/touch users can start and finish the next action without visiting technical settings.",
+        "Back/Forward, refresh, interruptions and reopening retain the chosen task and draft.",
+        "One or two daily focuses do not hide or cap the full grammar curriculum."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "U03",
+      "phase": "daily",
+      "title": "Replace unsupported progress and CEFR claims",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "E02",
+        "L04",
+        "L02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_features",
+        "de_features",
+        "de_domain"
+      ],
+      "deliverable": "Dated construction-by-mode progress with counts and uncertainty.",
+      "acceptance": [
+        "Show support use, independent accuracy, transfer, retention and timing separately.",
+        "A grammar completion total never generates a global CEFR certificate.",
+        "Old evidence remains visible with its limitations; no silent deletion or invented upgrade."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "U04",
+      "phase": "daily",
+      "title": "Verify offline recovery, consent and accessibility",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "U02",
+        "U03",
+        "L02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_static",
+        "de_static",
+        "en_features",
+        "de_features",
+        "core"
+      ],
+      "deliverable": "Verified recoverable offline and accessible learning flow.",
+      "acceptance": [
+        "Mic refusal, provider failure and storage quota errors preserve the attempt and explain the next action.",
+        "Cloud assessment consent, stored history and training reuse are separate; no raw answers/audio enter aggregate analytics.",
+        "Check keyboard, mobile/tablet reflow, reading order, local Persian RTL guidance and untimed mode; report any unavailable screen-reader/device test."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "M01",
+      "phase": "models",
+      "title": "Create reviewed English and German assessment benchmarks",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C03",
+        "E01",
+        "L01"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "docs",
+        "en_content",
+        "de_content"
+      ],
+      "deliverable": "Versioned grammar-specific development, calibration and untouched final-test manifests, starting with the representative pilot scope and expanding to all families.",
+      "acceptance": [
+        "Review correct alternatives, errors, ambiguity, irrelevance and ASR corruption for each released scope; initial pilot scope can close independently of the full 21-family expansion.",
+        "Separate sources/learners/template families where applicable; adjudicate consequential disagreement.",
+        "Record licensing and human review; predeclare error limits and coverage requirements before final testing.",
+        "Every expansion records construction IDs, content versions and benchmark version; full-scope benchmark coverage must be refreshed before W05."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "M02",
+      "phase": "models",
+      "title": "Compare rules, LanguageTool and pretrained candidates",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "M01",
+        "F01",
+        "F02"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_client",
+        "de_domain",
+        "research"
+      ],
+      "deliverable": "Scope-versioned task comparison of the baseline, feasible local candidate and optional hosted candidate.",
+      "acceptance": [
+        "Report false corrections, missed errors, meaning preservation, target detection, abstention, latency and operating cost per language/family.",
+        "Choose thresholds on calibration data; freeze them before final tests.",
+        "Existing CEFR text classifiers and external threshold searches are not treated as validated grammar judges.",
+        "Report evaluated construction IDs and content/benchmark versions; repeat evaluation for new or materially changed families before their approval."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "M03",
+      "phase": "models",
+      "title": "Decide which assessment functions are supported",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "M02"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "docs",
+        "core"
+      ],
+      "deliverable": "Versioned deployment decision and supported-family/mode matrix for the currently evaluated release scope.",
+      "acceptance": [
+        "A rejected candidate leaves the baseline operational and records the reason.",
+        "Every required cell in the evaluated scope names an available automatic or human assessment path; later families cannot inherit an earlier scope's approval.",
+        "No supported label relies on model-generated benchmark answers that the same model self-certified.",
+        "Initial scope approval can support the pilot; full-scope approval with current M01/M02 evidence is required at W05."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "M04",
+      "phase": "models",
+      "title": "Integrate a qualified Transformer through the shared contract",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "M03",
+        "L04",
+        "U04"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "en_assessment",
+        "en_client",
+        "de_domain",
+        "de_contracts"
+      ],
+      "deliverable": "Optional model adapter with version pinning, structured outputs and fallback.",
+      "acceptance": [
+        "Model proposals cannot directly mutate mastery or scheduling.",
+        "Validate output structure and evidence spans; preserve minimal correction separately from stylistic rewriting.",
+        "Provider unavailable/changed model triggers unassessed or validated fallback; rerun relevant benchmarks after changes."
+      ],
+      "evidence": [],
+      "required": false,
+      "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release."
+    },
+    {
+      "id": "W01",
+      "phase": "expansion",
+      "title": "Complete foundation and reference families",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C04",
+        "L05"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content",
+        "en_scripts",
+        "de_scripts"
+      ],
+      "deliverable": "Both languages complete families G01,G02,G03,G04,G05,G13.",
+      "acceptance": [
+        "Apply the common family completion checklist at every relevant level.",
+        "Preserve prior lesson identities; add reviewed omitted constructions.",
+        "Generate catalog parity and browser evidence for completed cells."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null,
+      "families": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G13"
+      ]
+    },
+    {
+      "id": "W02",
+      "phase": "expansion",
+      "title": "Complete temporal and verb-system families",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C04",
+        "L05"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content",
+        "en_client",
+        "de_domain"
+      ],
+      "deliverable": "Both languages complete families G06,G07,G08,G09,G10.",
+      "acceptance": [
+        "Review valency, auxiliaries, aspect/time meaning, modal meaning and lawful transformations.",
+        "Respect cross-family prerequisites without forcing every learner through a linear wave order.",
+        "Apply the common family completion checklist."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null,
+      "families": [
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10"
+      ]
+    },
+    {
+      "id": "W03",
+      "phase": "expansion",
+      "title": "Complete complex proposition families",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C04",
+        "L05"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content",
+        "en_client",
+        "de_domain"
+      ],
+      "deliverable": "Both languages complete families G11,G12,G14,G15,G16.",
+      "acceptance": [
+        "Review negation scope, questions, voice, role assignment, linking, relative reference and hypothetical meaning.",
+        "Validate required foundation/verb subskills before integrated task release.",
+        "Apply the common family completion checklist."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null,
+      "families": [
+        "G11",
+        "G12",
+        "G14",
+        "G15",
+        "G16"
+      ]
+    },
+    {
+      "id": "W04",
+      "phase": "expansion",
+      "title": "Complete discourse, advanced integration and orthography",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C04",
+        "L05"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "en_content",
+        "de_content",
+        "en_client",
+        "de_domain"
+      ],
+      "deliverable": "Both languages complete families G17,G18,G19,G20,G21.",
+      "acceptance": [
+        "Assess reported meaning, information structure, cohesion and register in suitable discourse tasks.",
+        "Apply orthography from the first relevant task; this wave does not postpone capitalization correctness.",
+        "Apply the common family completion checklist; written-only cells need justified N/A for speech."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null,
+      "families": [
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G21"
+      ]
+    },
+    {
+      "id": "W05",
+      "phase": "expansion",
+      "title": "Close the full-curriculum coverage gate",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "W01",
+        "W02",
+        "W03",
+        "W04",
+        "M03",
+        "U04"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "core",
+        "en_content",
+        "de_content",
+        "en_scripts",
+        "de_scripts",
+        "en_tests",
+        "de_tests"
+      ],
+      "deliverable": "Signed-off coverage report for every in-scope construction in both languages.",
+      "acceptance": [
+        "All initial lessons mapped and every reviewed addition included; zero unexplained required missing cells.",
+        "Each assessed cell has reviewed tasks, valid alternatives, evaluator availability, route evidence and generated-content parity.",
+        "Split the report into automatic, human-reviewed and unassessed coverage; unassessed required cells prevent full assessed-coverage completion.",
+        "A representative slice or count parity cannot close this task.",
+        "Require refreshed full-scope M01-M03 evidence matching the final construction/content versions, not only a previously completed representative benchmark."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "P01",
+      "phase": "pilot",
+      "title": "Prepare personal baseline and evaluation protocol",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "C03",
+        "M01"
+      ],
+      "ownerRole": "Learner + language reviewer",
+      "touchpoints": [
+        "docs"
+      ],
+      "deliverable": "Dated unaided speaking/writing baseline and matched new follow-up prompts.",
+      "acceptance": [
+        "Keep English and German separate; do not assign an unvalidated overall CEFR level.",
+        "Collect comparable baseline samples before the target practice intervention and log other tutoring/practice.",
+        "Choose outcomes and eligibility windows in advance; never expose final probes during practice."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "P02",
+      "phase": "pilot",
+      "title": "Run daily learning on the verified pilot release",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "P01",
+        "R02"
+      ],
+      "ownerRole": "Learner",
+      "touchpoints": [
+        "docs"
+      ],
+      "deliverable": "Prospective dated practice and assistance evidence on reviewed target packs.",
+      "acceptance": [
+        "Save learner-authored responses/audio only under the chosen storage/consent settings.",
+        "No scripted browser session substitutes for learner participation.",
+        "Pilot can start before W05; accurately label the available curriculum scope."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "P03",
+      "phase": "pilot",
+      "title": "Measure transfer and delayed retention",
+      "status": "planned",
+      "priority": "P1",
+      "dependsOn": [
+        "P02"
+      ],
+      "ownerRole": "Learner + language reviewer",
+      "touchpoints": [
+        "docs"
+      ],
+      "deliverable": "Language/mode-specific outcome report with dated independent probes.",
+      "acceptance": [
+        "Measure unfamiliar-context performance and actual 24-hour/7-day delays, with a later 30-day check where applicable.",
+        "Report opportunity and attempt denominators, assistance, errors, valid timing and uncertainty.",
+        "Separate workflow completion, technical success, personal improvement trend and causal claims; no results without real samples."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "S01",
+      "phase": "scheduling",
+      "title": "Make prospective FSRS history evidence-eligible",
+      "status": "planned",
+      "priority": "P2",
+      "dependsOn": [
+        "E02",
+        "L04",
+        "U01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_features",
+        "de_features"
+      ],
+      "deliverable": "Validated review-event mapping with repeated-item memory separate from transfer.",
+      "acceptance": [
+        "Only eligible timestamped review outcomes feed the experiment.",
+        "Do not invent ratings or reconstruct missing history from aggregate progress.",
+        "FSRS remains shadow-only and changing due dates stays disabled."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "S02",
+      "phase": "scheduling",
+      "title": "Qualify FSRS in shadow, then compare candidate review dates",
+      "status": "planned",
+      "priority": "P2",
+      "dependsOn": [
+        "S01",
+        "P03"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "core",
+        "docs"
+      ],
+      "deliverable": "Two-stage evaluation: shadow qualification followed, if justified, by a bounded learner comparison of actual candidate dates and an activation decision.",
+      "acceptance": [
+        "Stage A uses eligible shadow data to assess recall calibration and simulated workload only; it cannot establish the learning effect of changed intervals.",
+        "Stage B requires a predeclared comparison, learner opt-in, qualified eligible targets, delivered-code verification under R01, rollback controls and actual candidate due dates for the bounded pilot; broad activation remains disabled.",
+        "Compare real delayed accuracy and workload with uncertainty, missing follow-ups and intervening practice; insufficient evidence leads to deferral.",
+        "Define benefit/non-inferiority criteria before Stage B; prediction accuracy alone cannot certify spontaneous grammar competence."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null
+    },
+    {
+      "id": "S03",
+      "phase": "scheduling",
+      "title": "Activate a qualified scheduler reversibly",
+      "status": "planned",
+      "priority": "P2",
+      "dependsOn": [
+        "S02",
+        "R03"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "core",
+        "en_features",
+        "de_features"
+      ],
+      "deliverable": "Optional staged scheduler activation with replayable state and rollback.",
+      "acceptance": [
+        "Activate only after benefit/non-inferiority criteria are met.",
+        "Retain baseline schedule snapshot and preserve due-review obligations and learner overrides.",
+        "Run the release checklist for this increment as well."
+      ],
+      "evidence": [],
+      "required": false,
+      "condition": "S02 supplies sufficient favourable evidence; otherwise leave shadow-only."
+    },
+    {
+      "id": "R01",
+      "phase": "release",
+      "title": "Prepare the repeatable release and preservation checklist",
+      "status": "in_progress",
+      "progressNote": "Both isolated lifecycles passed previous-version install, upgrade, startup, update, payload repair and uninstall: English 27.3.22-to-27.3.23 and German 20.8.28-to-20.8.29. Their reports retain artifact hashes and synthetic-marker preservation limits. All eight selected browser regressions and 10 restored-source HTTP probes passed. Aggregate full-repository gates, normal-profile coverage and full export/restore/audio preservation remain incomplete under B01/B02 and R01; isolated lifecycle success is not full release qualification.",
+      "priority": "P0",
+      "dependsOn": [
+        "B01",
+        "B02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "release",
+        "en_scripts",
+        "de_scripts",
+        "en_tests",
+        "de_tests"
+      ],
+      "deliverable": "Exact command map, isolated lifecycle fixture and evidence receipt template.",
+      "acceptance": [
+        "Identify packaging metadata and payload inputs for both apps.",
+        "Use isolated install/data roots; include actual old-version to new-version migration, not only reinstalling one version.",
+        "Record source revision plus worktree diff, app version, artifact hashes, browser routes and preserved-data comparisons."
+      ],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+        "scripts/verify-language-installer-cycle.ps1",
+        "scripts/browser-language-integrity-check.mjs",
+        "Apps/English/English-Automaticity/distribution/windows-modern/language-release-config.json",
+        "Apps/Deutsch-Automaticity/distribution/windows-modern/language-release-config.json",
+        "Apps/English/English-Automaticity/scripts/windows-installer.test.ts",
+        "Apps/Deutsch-Automaticity/scripts/windows-installer.test.ts",
+        "artifacts/language-automaticity/en-package-27.3.23-final.log",
+        "artifacts/language-automaticity/de-package-20.8.29-final.log",
+        "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json",
+        "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json",
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
+        "artifacts/language-automaticity/baseline-2026-09-04T21-06-31-192Z.json"
+      ],
+      "required": true,
+      "condition": null,
+      "recurring": true
+    },
+    {
+      "id": "R02",
+      "phase": "release",
+      "title": "Deliver and verify the first learning-loop release",
+      "status": "planned",
+      "priority": "P0",
+      "dependsOn": [
+        "L05",
+        "U04",
+        "R01"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "release",
+        "en_scripts",
+        "de_scripts",
+        "en_tests",
+        "de_tests"
+      ],
+      "deliverable": "Exact English/German pilot installers and route/preservation receipts.",
+      "acceptance": [
+        "Run focused regressions, required app checks, builds and actual-route browser journeys.",
+        "Rebuild Install/Update/Repair payloads; verify isolated install/start/update/repair/export/restore with playable audio.",
+        "Record only measured outcomes; blocked policy/signing/device gates remain explicit and cannot become success.",
+        "If Transformer assistance is included, verify M04 and current scope-matched M01-M03 approval before delivery."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null,
+      "conditionalDependencies": [
+        {
+          "task": "M04",
+          "when": "The pilot release includes a selected Transformer adapter."
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "phase": "release",
+      "title": "Deliver the full-curriculum release",
+      "status": "planned",
+      "priority": "P0",
+      "dependsOn": [
+        "W05",
+        "U04",
+        "R01",
+        "R02"
+      ],
+      "ownerRole": "Implementation",
+      "touchpoints": [
+        "release",
+        "en_scripts",
+        "de_scripts",
+        "en_tests",
+        "de_tests"
+      ],
+      "deliverable": "Exact release versions with complete coverage and lifecycle evidence.",
+      "acceptance": [
+        "Repeat the release checklist for final content and shared-bundle changes.",
+        "Include M04 verification if a Transformer was selected; no old installer payload may omit the new schema/content.",
+        "Report technical release, curriculum coverage and learner-effectiveness status separately."
+      ],
+      "evidence": [],
+      "required": true,
+      "condition": null,
+      "conditionalDependencies": [
+        {
+          "task": "M04",
+          "when": "A Transformer adapter is selected for this release."
+        }
+      ]
+    },
+    {
+      "id": "X01",
+      "phase": "research",
+      "title": "Assess readiness for a contextual-bandit experiment",
+      "status": "planned",
+      "priority": "P3",
+      "dependsOn": [
+        "P03",
+        "S02",
+        "M03"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "core",
+        "docs"
+      ],
+      "deliverable": "Conditional research decision with adequate-data and evaluation-design assessment.",
+      "acceptance": [
+        "Require trustworthy delayed reward data, eligible action choices and a justified sample/uncertainty plan.",
+        "Do not assume one learner can supply enough data; default to keeping the useful rule-based policy.",
+        "This decision does not delay the core full-curriculum release."
+      ],
+      "evidence": [],
+      "required": false,
+      "condition": "Only after measured learning and scheduling evidence justify considering RL."
+    },
+    {
+      "id": "X02",
+      "phase": "research",
+      "title": "Compare a bounded practice-selection policy",
+      "status": "planned",
+      "priority": "P3",
+      "dependsOn": [
+        "X01",
+        "R03"
+      ],
+      "ownerRole": "Implementation + learner + language reviewer",
+      "touchpoints": [
+        "core",
+        "docs"
+      ],
+      "deliverable": "Optional contextual-bandit experiment with immutable final test and fallback.",
+      "acceptance": [
+        "Log context, chosen action, probability, policy version and linked delayed outcome.",
+        "Keep policy-development probes separate from final evaluation; do not reward clicks, copied answers or speed alone.",
+        "Constrain exploration to pedagogically eligible options and apply preregistered benefit/non-inferiority criteria."
+      ],
+      "evidence": [],
+      "required": false,
+      "condition": "X01 finds sufficient data and a sound design; learner participation is available."
+    },
+    {
+      "id": "X03",
+      "phase": "research",
+      "title": "Decide whether sequential RL adds value",
+      "status": "planned",
+      "priority": "P3",
+      "dependsOn": [
+        "X02"
+      ],
+      "ownerRole": "Implementation + language reviewer",
+      "touchpoints": [
+        "docs"
+      ],
+      "deliverable": "Optional evidence-based decision, including an explicit defer outcome.",
+      "acceptance": [
+        "Require measurable benefit beyond the rule policy/bandit and sufficient longitudinal evidence.",
+        "Simulator results do not count as learner gains.",
+        "No training-from-scratch or full-RL project starts merely to satisfy a technology preference."
+      ],
+      "evidence": [],
+      "required": false,
+      "condition": "A completed X02 experiment exposes a justified sequential decision problem."
+    }
+  ]
+}

@@ -48,20 +48,18 @@ export interface Evaluation {
   };
   links: GrammarResource[];
   accuracyScore: number;
-  correctionReview:
-    | {
-        learnerSentence: string;
-        correctedSentence: string;
-        mistakeType:
-          | "tense"
-          | "verb form"
-          | "singular/plural"
-          | "word order"
-          | "preposition"
-          | "meaning/use";
-        explanation: string;
-      }
-    | null;
+  correctionReview: {
+    learnerSentence: string;
+    correctedSentence: string;
+    mistakeType:
+      | "tense"
+      | "verb form"
+      | "singular/plural"
+      | "word order"
+      | "preposition"
+      | "meaning/use";
+    explanation: string;
+  } | null;
   conversationFeedback: {
     pronunciation: string[];
     wordChoice: string[];
@@ -91,6 +89,135 @@ export interface EvaluationOptions {
   requiredTargetUses?: number;
   taskPrompt?: string;
   inputMode?: "written" | "spoken";
+}
+
+interface CheckedAssessmentResponse {
+  original: string;
+  corrected: string;
+  changed: boolean;
+  online: true;
+  matches: LanguageToolMatch[];
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function validSpan(
+  offset: unknown,
+  length: unknown,
+  textLength: number,
+): boolean {
+  return (
+    typeof offset === "number" &&
+    Number.isSafeInteger(offset) &&
+    offset >= 0 &&
+    offset <= textLength &&
+    typeof length === "number" &&
+    Number.isSafeInteger(length) &&
+    length >= 0 &&
+    length <= textLength - offset
+  );
+}
+
+function validMatch(
+  value: unknown,
+  sourceLength: number,
+): value is LanguageToolMatch {
+  if (
+    !isRecord(value) ||
+    typeof value.message !== "string" ||
+    !validSpan(value.offset, value.length, sourceLength) ||
+    !Array.isArray(value.replacements) ||
+    !value.replacements.every(
+      (replacement) =>
+        isRecord(replacement) && typeof replacement.value === "string",
+    )
+  )
+    return false;
+  if (
+    value.shortMessage !== undefined &&
+    typeof value.shortMessage !== "string"
+  )
+    return false;
+  if (
+    value.context !== undefined &&
+    (!isRecord(value.context) ||
+      typeof value.context.text !== "string" ||
+      !validSpan(
+        value.context.offset,
+        value.context.length,
+        value.context.text.length,
+      ))
+  )
+    return false;
+  if (value.rule !== undefined) {
+    if (!isRecord(value.rule) || typeof value.rule.id !== "string")
+      return false;
+    const category = value.rule.category;
+    if (
+      category !== undefined &&
+      (!isRecord(category) ||
+        (category.id !== undefined && typeof category.id !== "string") ||
+        (category.name !== undefined && typeof category.name !== "string"))
+    )
+      return false;
+  }
+  return true;
+}
+
+function parseAssessmentResponse(
+  payload: unknown,
+  text: string,
+): CheckedAssessmentResponse {
+  const invalid = () => new Error("Invalid assessment API response.");
+  if (
+    !isRecord(payload) ||
+    payload.original !== text ||
+    typeof payload.corrected !== "string" ||
+    typeof payload.changed !== "boolean" ||
+    payload.online !== true ||
+    !Array.isArray(payload.matches) ||
+    !payload.matches.every((match): match is LanguageToolMatch =>
+      validMatch(match, text.length),
+    )
+  )
+    throw invalid();
+  const matches = payload.matches;
+  const edits = matches
+    .filter((match) => match.replacements.length > 0)
+    .toSorted((left, right) => left.offset - right.offset);
+  let previous: LanguageToolMatch | undefined;
+  for (const current of edits) {
+    if (
+      previous &&
+      (current.offset === previous.offset ||
+        current.offset < previous.offset + previous.length)
+    )
+      throw invalid();
+    previous = current;
+  }
+  const corrected = edits.toReversed().reduce((value, match) => {
+    const replacement = match.replacements[0];
+    if (!replacement) throw invalid();
+    return (
+      value.slice(0, match.offset) +
+      replacement.value +
+      value.slice(match.offset + match.length)
+    );
+  }, text);
+  if (
+    payload.corrected !== corrected ||
+    payload.changed !== (corrected !== text)
+  )
+    throw invalid();
+  return {
+    original: text,
+    corrected,
+    changed: payload.changed,
+    online: true,
+    matches,
+  };
 }
 
 const OFFLINE_RULES: Array<[RegExp, string]> = [
@@ -275,7 +402,10 @@ function quotedList(items: string[]) {
   if (items.length === 0) return "";
   if (items.length === 1) return `"${items[0]}"`;
   if (items.length === 2) return `"${items[0]}" and "${items[1]}"`;
-  return `${items.slice(0, -1).map((item) => `"${item}"`).join(", ")}, and "${items.at(-1)}"`;
+  return `${items
+    .slice(0, -1)
+    .map((item) => `"${item}"`)
+    .join(", ")}, and "${items.at(-1)}"`;
 }
 
 function buildConversationFeedback(
@@ -408,8 +538,15 @@ function buildConversationFeedback(
 
 function mapMistakeType(
   issue: LanguageToolMatch | undefined,
-): "tense" | "verb form" | "singular/plural" | "word order" | "preposition" | "meaning/use" {
-  const raw = `${issue?.rule?.id ?? ""} ${issue?.rule?.category?.name ?? ""} ${issue?.message ?? ""}`.toLowerCase();
+):
+  | "tense"
+  | "verb form"
+  | "singular/plural"
+  | "word order"
+  | "preposition"
+  | "meaning/use" {
+  const raw =
+    `${issue?.rule?.id ?? ""} ${issue?.rule?.category?.name ?? ""} ${issue?.message ?? ""}`.toLowerCase();
   if (/word order|position|syntax/.test(raw)) return "word order";
   if (/tense|time|past|present|future/.test(raw)) return "tense";
   if (/verb|conjugation|participle|auxiliary/.test(raw)) return "verb form";
@@ -520,6 +657,8 @@ export async function evaluateResponse(
     error?: string;
   };
 
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15_000);
   try {
     if (!settings.onlineFeedback) {
       throw new Error("Optional online feedback is disabled.");
@@ -528,10 +667,11 @@ export async function evaluateResponse(
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ text, language: "en-US" }),
+      signal: controller.signal,
     });
     if (!response.ok)
       throw new Error(`Assessment API returned ${response.status}`);
-    correction = (await response.json()) as typeof correction;
+    correction = parseAssessmentResponse(await response.json(), text);
   } catch (error) {
     const corrected = offlineCorrect(text);
     correction = {
@@ -547,6 +687,8 @@ export async function evaluateResponse(
             : "Offline feedback active. Enable optional online feedback for a stronger grammar check."
           : "Offline feedback active.",
     };
+  } finally {
+    clearTimeout(timeout);
   }
 
   const localAssessment = localGrammarAssessment(text, options.grammar);
@@ -640,7 +782,7 @@ export async function evaluateResponse(
   const checkReasons = {
     online: correction.online
       ? "LanguageTool returned a response. This confirms that the service is available; it does not by itself prove that the sentence is correct."
-      : correction.error ?? "The online language service was not available.",
+      : (correction.error ?? "The online language service was not available."),
     spelling:
       spelling.length > 0
         ? spelling.map((issue) => issue.message).join(" ")

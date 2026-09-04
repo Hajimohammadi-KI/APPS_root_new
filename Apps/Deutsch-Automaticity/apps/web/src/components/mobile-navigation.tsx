@@ -41,6 +41,7 @@ export function MobileNavigation() {
           </SheetDescription>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto px-3 py-4">
+          <a href="/practice" className="mb-3 block rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white">Eigenständig Grammatik üben</a>
           <AppNavigation
             ariaLabel="Tägliche Praxis"
             items={coreNavigation}

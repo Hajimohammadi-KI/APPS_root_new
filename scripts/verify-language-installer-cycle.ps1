@@ -6,6 +6,12 @@ param(
   [Parameter(Mandatory = $true)]
   [string]$SetupPath,
 
+  # Optional previous artifact exercises a real version upgrade without
+  # launching the previous executable or using the normal learner profile.
+  [string]$PreviousSetupPath,
+
+  [string]$ExpectedVersion,
+
   # Conservative cold-start ceiling. The verified 1 September root cause was
   # not extraction time: Electron inherited ELECTRON_RUN_AS_NODE by presence
   # and exited with code 134 before serving HTTP. Removing that environment
@@ -22,11 +28,12 @@ $ErrorActionPreference = 'Stop'
 function Invoke-SetupAction {
   param(
     [Parameter(Mandatory = $true)]
-    [string]$Action
+    [string]$Action,
+    [string]$Executable = $script:ResolvedSetupPath
   )
 
   $process = Start-Process `
-    -FilePath $script:ResolvedSetupPath `
+    -FilePath $Executable `
     -ArgumentList "--silent-$Action" `
     -Wait `
     -PassThru `
@@ -126,21 +133,22 @@ function Stop-IsolatedProductProcesses {
     [string]$InstallRoot
   )
 
-  $escapedRoot = [Regex]::Escape([IO.Path]::GetFullPath($InstallRoot))
-  Get-CimInstance Win32_Process | Where-Object {
-    -not [string]::IsNullOrWhiteSpace($_.ExecutablePath) -and
-    $_.ExecutablePath -match "^$escapedRoot"
+  $resolvedRoot = [IO.Path]::GetFullPath($InstallRoot).TrimEnd('\') + '\'
+  Get-Process | Where-Object {
+    $executablePath = $_.Path
+    -not [string]::IsNullOrWhiteSpace($executablePath) -and
+    $executablePath.StartsWith($resolvedRoot, [StringComparison]::OrdinalIgnoreCase)
   } | ForEach-Object {
     # Only processes whose executable lives inside this unique evidence root
     # are stopped; existing user installations remain outside the target.
-    Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+    Stop-Process -Id $_.Id -Force -ErrorAction SilentlyContinue
   }
 }
 
 $profiles = @{
   English = @{
     Prefix = 'ENGLISH_GRAMMAR'
-    Version = '27.3.22'
+    Configuration = 'Apps\English\English-Automaticity\distribution\windows-modern\setup.config.json'
     MainExecutable = 'English Grammar Automaticity.exe'
     WebUrl = 'http://127.0.0.1:3202/'
     ApiUrl = 'http://127.0.0.1:4201/api/health'
@@ -153,7 +161,7 @@ $profiles = @{
   }
   German = @{
     Prefix = 'DEUTSCHFLOW'
-    Version = '20.8.28'
+    Configuration = 'Apps\Deutsch-Automaticity\distribution\windows-modern\setup.config.json'
     MainExecutable = 'DeutschFlow.exe'
     WebUrl = 'http://127.0.0.1:3210/'
     ApiUrl = 'http://127.0.0.1:4210/api/v1/health'
@@ -177,6 +185,32 @@ if (-not (Test-Path -LiteralPath $payloadPath -PathType Leaf)) {
 }
 
 $workspaceRoot = Split-Path -Parent $PSScriptRoot
+$sourceConfiguration = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $workspaceRoot $profile.Configuration) | ConvertFrom-Json
+$releaseVersion = if ([string]::IsNullOrWhiteSpace($ExpectedVersion)) { [string]$sourceConfiguration.version } else { $ExpectedVersion }
+
+# Busy canonical ports can otherwise make an old source server look like a
+# successfully started isolated install. Check before any installation action.
+foreach ($endpoint in @([Uri]$profile.WebUrl, [Uri]$profile.ApiUrl)) {
+  $client = [Net.Sockets.TcpClient]::new()
+  $occupied = $false
+  try {
+    $connect = $client.ConnectAsync($endpoint.Host, $endpoint.Port)
+    if ($connect.Wait(750)) { $occupied = $client.Connected }
+  } catch {
+    $occupied = $false
+  } finally {
+    $client.Dispose()
+  }
+  if ($occupied) { throw "Port $($endpoint.Port) is occupied. Stop only the verified app server before isolated lifecycle verification." }
+}
+$resolvedPreviousSetup = $null
+if (-not [string]::IsNullOrWhiteSpace($PreviousSetupPath)) {
+  $resolvedPreviousSetup = [IO.Path]::GetFullPath($PreviousSetupPath)
+  if (-not (Test-Path -LiteralPath $resolvedPreviousSetup -PathType Leaf) -or
+      -not (Test-Path -LiteralPath ([IO.Path]::ChangeExtension($resolvedPreviousSetup, '.payload.zip')) -PathType Leaf)) {
+    throw 'Previous setup and its companion payload must both exist.'
+  }
+}
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $evidenceRoot = Join-Path $workspaceRoot "artifacts\installer-cycle\$Product-$stamp-$([Guid]::NewGuid().ToString('N').Substring(0, 8))"
 $installRoot = Join-Path $evidenceRoot 'install'
@@ -194,10 +228,15 @@ $prefix = [string]$profile.Prefix
 [Environment]::SetEnvironmentVariable("${prefix}_USER_DATA_ROOT", $dataRoot, 'Process')
 [Environment]::SetEnvironmentVariable("${prefix}_NO_SHORTCUTS", '1', 'Process')
 [Environment]::SetEnvironmentVariable("${prefix}_NO_LAUNCH", '1', 'Process')
+[Environment]::SetEnvironmentVariable("${prefix}_DISABLE_UPDATE_CHECK", '1', 'Process')
 
 $report = [ordered]@{
   product = $Product
-  version = [string]$profile.Version
+  version = $releaseVersion
+  previousSetupPath = $resolvedPreviousSetup
+  previousVersion = $null
+  previousInstall = 'not-run'
+  upgrade = 'not-run'
   setupPath = $script:ResolvedSetupPath
   setupSha256 = (Get-FileHash -LiteralPath $script:ResolvedSetupPath -Algorithm SHA256).Hash
   payloadSha256 = (Get-FileHash -LiteralPath $payloadPath -Algorithm SHA256).Hash
@@ -214,19 +253,36 @@ $report = [ordered]@{
   startupStderrPath = $null
   update = 'not-run'
   repair = 'not-run'
+  repairedPayloadFiles = @()
   uninstall = 'not-run'
   learnerDataPreserved = $false
+  preservationScope = 'Synthetic file marker in the isolated data directory; browser/IndexedDB restore is a separate check.'
+  browserDataRestore = 'not-run'
   error = $null
 }
 
 try {
+  if ($resolvedPreviousSetup) {
+    Invoke-SetupAction -Action 'install' -Executable $resolvedPreviousSetup
+    $previousVersionPath = Join-Path $installRoot 'version.txt'
+    if (-not (Test-Path -LiteralPath $previousVersionPath -PathType Leaf)) { throw 'Previous install has no version marker.' }
+    $report.previousVersion = (Get-Content -Raw -LiteralPath $previousVersionPath).Trim()
+    if ($report.previousVersion -eq $releaseVersion) { throw 'Previous artifact must have a different version for the upgrade check.' }
+    $report.previousInstall = 'verified'
+    Invoke-SetupAction -Action 'update'
+    if ((Get-Content -Raw -LiteralPath $previousVersionPath).Trim() -ne $releaseVersion) { throw 'Upgrade did not write the expected version.' }
+    if ((Get-FileHash -LiteralPath $learnerDataPath -Algorithm SHA256).Hash -ne $learnerDataHash) { throw 'Upgrade changed the preservation marker.' }
+    $report.upgrade = 'verified'
+    Invoke-SetupAction -Action 'uninstall'
+    if (Test-Path -LiteralPath $installRoot) { throw 'Upgrade test left the isolated installation root behind.' }
+  }
   Invoke-SetupAction -Action 'install'
   $mainExecutable = Join-Path $installRoot ([string]$profile.MainExecutable)
   $versionPath = Join-Path $installRoot 'version.txt'
   if (-not (Test-Path -LiteralPath $mainExecutable -PathType Leaf)) {
     throw "Installed executable is missing: $mainExecutable"
   }
-  if ((Get-Content -Raw -LiteralPath $versionPath).Trim() -ne [string]$profile.Version) {
+  if ((Get-Content -Raw -LiteralPath $versionPath).Trim() -ne $releaseVersion) {
     throw 'Fresh-install version marker does not match the expected version.'
   }
   $report.install = 'verified'
@@ -301,16 +357,31 @@ try {
   }
 
   Invoke-SetupAction -Action 'update'
-  if ((Get-Content -Raw -LiteralPath $versionPath).Trim() -ne [string]$profile.Version) {
+  if ((Get-Content -Raw -LiteralPath $versionPath).Trim() -ne $releaseVersion) {
     throw 'Update version marker does not match the expected version.'
   }
   $report.update = 'verified'
 
+  $repairHashes = @{}
+  foreach ($relativePayload in @('resources\local-app\api\main.js', 'resources\local-app\web.sha256')) {
+    $repairPath = [IO.Path]::GetFullPath((Join-Path $installRoot $relativePayload))
+    $installPrefix = [IO.Path]::GetFullPath($installRoot).TrimEnd('\') + '\'
+    if (-not $repairPath.StartsWith($installPrefix, [StringComparison]::OrdinalIgnoreCase)) { throw 'Repair fixture escaped its isolated installation.' }
+    if (-not (Test-Path -LiteralPath $repairPath -PathType Leaf)) { throw "Repair fixture is missing: $relativePayload" }
+    $repairHashes[$relativePayload] = (Get-FileHash -LiteralPath $repairPath -Algorithm SHA256).Hash
+    [IO.File]::WriteAllText($repairPath, 'corrupted-for-repair-check', [Text.UTF8Encoding]::new($false))
+  }
   [IO.File]::WriteAllText($versionPath, 'corrupted-for-repair-check', [Text.UTF8Encoding]::new($false))
   Invoke-SetupAction -Action 'repair'
-  if ((Get-Content -Raw -LiteralPath $versionPath).Trim() -ne [string]$profile.Version) {
+  if ((Get-Content -Raw -LiteralPath $versionPath).Trim() -ne $releaseVersion) {
     throw 'Repair did not restore the version marker.'
   }
+  foreach ($relativePayload in $repairHashes.Keys) {
+    if ((Get-FileHash -LiteralPath (Join-Path $installRoot $relativePayload) -Algorithm SHA256).Hash -ne $repairHashes[$relativePayload]) {
+      throw "Repair did not restore the payload hash: $relativePayload"
+    }
+  }
+  $report.repairedPayloadFiles = @($repairHashes.Keys | Sort-Object)
   $report.repair = 'verified'
 
   Invoke-SetupAction -Action 'uninstall'

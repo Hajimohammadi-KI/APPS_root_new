@@ -94,6 +94,7 @@ export function AppShell({
         Zum Hauptinhalt springen
       </a>
       <aside className="german-app-sidebar fixed inset-y-0 left-0 z-30 hidden border-r bg-sidebar/95 backdrop-blur xl:flex xl:flex-col">
+        <a href="/practice" className="m-3 rounded-xl bg-blue-700 px-4 py-3 text-sm font-semibold text-white">Eigenständig Grammatik üben</a>
         <div className="px-2">
           <Brand />
         </div>

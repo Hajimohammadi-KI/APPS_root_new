@@ -1,6 +1,7 @@
 "use client";
 
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { captureCompleteBackup, validateCompleteBackup, restoreCompleteBackup } from "@automaticity/learning-core/automaticity";
 import {
   Download,
   Eye,
@@ -13,7 +14,6 @@ import {
 } from "lucide-react";
 
 import {
-  buildLearningDataExport,
   buildPrivacySafeMeasurementExport,
   captureMeasurementBaseline,
   deleteLocalMeasurementData,
@@ -26,7 +26,6 @@ import {
   readMeasurementConsent,
   revokeMeasurementConsent,
   validatePrivacySafeMeasurementExport,
-  writeLearningEvidenceLedger,
   type MeasurementBaseline,
   type MeasurementConsent,
 } from "@automaticity/learning-core";
@@ -58,7 +57,7 @@ const MEASUREMENT_APP_VERSION = "20.8.23";
 const MEASUREMENT_FILE_NAME = "automaticity-messdaten-de.json";
 
 export function SettingsScreen() {
-  const { state, hydrated, importState, updateLearnerProfile, updateSettings } =
+  const { state, hydrated, updateLearnerProfile, updateSettings } =
     useLearnerState();
   const [exportStatus, setExportStatus] = useState("");
   const [importStatus, setImportStatus] = useState("");
@@ -186,71 +185,37 @@ export function SettingsScreen() {
     );
   }
 
-  function exportData() {
-    // Export the normalized evidence ledger alongside the legacy learner state.
-    // Otherwise versioned responses, evidence, and events are silently omitted.
-    const exportEnvelope = buildLearningDataExport({
-      language: "de",
-      exportedAt: new Date().toISOString(),
-      learnerState: state,
-      storage: window.localStorage,
-    });
-    const blob = new Blob([JSON.stringify(exportEnvelope, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = `DeutschFlow-Lerndaten-${new Date().toISOString().slice(0, 10)}.json`;
-    anchor.click();
-    URL.revokeObjectURL(url);
-    setExportStatus("Die lokale Sicherungsdatei wurde heruntergeladen.");
+
+  async function exportData() {
+    setExportStatus("");
+    try {
+      const backup = await captureCompleteBackup({storage: localStorage, indexedDB}, "de", new Date().toISOString(), [["GrammarAutomaticityV11_de", JSON.stringify(state)]]);
+      const url = URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)], {type:"application/json"}));
+      const anchor = document.createElement("a"); anchor.href=url;
+      anchor.download=`DeutschFlow-Lerndaten-${new Date().toISOString().slice(0,10)}.json`;
+      anchor.click(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setExportStatus("Vollständige Sicherung mit Entwürfen, Nachweisen und Aufnahmen heruntergeladen.");
+    } catch(error) {setExportStatus(error instanceof Error ? error.message : "Die Sicherung ist fehlgeschlagen.");}
   }
 
+
   async function importData(event: ChangeEvent<HTMLInputElement>) {
-    const input = event.currentTarget;
-    const file = input.files?.[0];
-    if (!file) return;
+    const input=event.currentTarget, file=input.files?.[0]; if(!file)return;
     setImportStatus("");
     try {
-      const backup = parseLearningDataExport<typeof state>(
-        JSON.parse(await file.text()),
-        "de",
-      );
-      if (!backup) {
-        setImportStatus(
-          "Diese Datei ist keine Deutsch-Automaticity-Sicherung. Es wurde nichts geändert.",
-        );
-        return;
-      }
-      if (
-        !window.confirm(
-          "Diese Sicherung wiederherstellen? Der aktuell auf diesem Gerät gespeicherte Lernfortschritt wird ersetzt. Die Datei wird nicht hochgeladen.",
-        )
-      ) {
-        setImportStatus(
-          "Wiederherstellung abgebrochen. Dein aktueller Fortschritt bleibt erhalten.",
-        );
-        return;
-      }
-      // Erst nach Formatprüfung und Bestätigung werden Fortschritt und Nachweise
-      // gemeinsam ersetzt; eine falsche JSON-Datei kann nichts still löschen.
-      writeLearningEvidenceLedger(
-        window.localStorage,
-        backup.learningEvidence,
-      );
-      importState(backup.learnerState);
-      setImportStatus(
-        `Sicherung vom ${new Date(backup.exportedAt).toLocaleDateString("de-DE")} auf diesem Gerät wiederhergestellt.`,
-      );
-    } catch {
-      setImportStatus(
-        "Die Sicherung konnte nicht gelesen werden. Es wurde nichts geändert; bitte exportiere eine neue Sicherung.",
-      );
-    } finally {
-      // Erlaubt nach Abbruch auch die erneute Auswahl derselben Datei.
-      input.value = "";
-    }
+      const parsed: unknown = JSON.parse(await file.text());
+      const legacy = parseLearningDataExport<typeof state>(parsed, "de");
+      const persistence = {storage: localStorage, indexedDB};
+      const backup = legacy
+        ? await captureCompleteBackup(persistence, "de", legacy.exportedAt, [["GrammarAutomaticityV11_de", JSON.stringify(legacy.learnerState)], ["automaticity:learning-evidence:v1", JSON.stringify(legacy.learningEvidence)]])
+        : await validateCompleteBackup(parsed, "de");
+      const message = "Schließe vor der Wiederherstellung andere App-Tabs. Lokale Lerndaten durch diese Sicherung ersetzen? Eine Wiederherstellungskopie schützt bei Unterbrechungen. Die Datei bleibt auf diesem Gerät.";
+      const legacyNote = legacy ? " Diese ältere Sicherung enthält keine Aufnahmen. Vorhandene Aufnahmen auf diesem Gerät bleiben erhalten." : "";
+      if(!window.confirm(message + legacyNote)) {setImportStatus("Wiederherstellung abgebrochen. Deine Daten bleiben erhalten.");return;}
+      await restoreCompleteBackup(persistence, backup, "de");
+      window.location.reload();
+    } catch(error) {setImportStatus(error instanceof Error ? error.message : "Wiederherstellung fehlgeschlagen. Öffne die App erneut, um eine unterbrochene Wiederherstellung zurückzusetzen.");}
+    finally {input.value="";}
   }
 
   return (

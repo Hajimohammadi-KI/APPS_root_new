@@ -485,6 +485,7 @@ export function AppShell() {
 				/>
 			) : null}
 			<main className="app-main" id="main-content" tabIndex={-1}>
+        <a href="/practice" className="mb-4 inline-block rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white">Practise grammar with your own responses</a>
 				<header className="app-topbar">
 					<div className="flex min-w-0 items-center gap-3">
 						<Button

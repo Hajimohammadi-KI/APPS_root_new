@@ -17,10 +17,13 @@ const WEB_PORT = 3210;
 const API_PORT = 4210;
 const APP_URL = `http://127.0.0.1:${WEB_PORT}/`;
 const APP_ORIGIN = new URL(APP_URL).origin;
-const DESKTOP_VERSION = "20.8.28";
+const DESKTOP_VERSION = "20.8.29";
 const DESKTOP_USER_AGENT_TOKEN = `DeutschFlowDesktop/${DESKTOP_VERSION}`;
 const ALLOWED_PERMISSIONS = new Set(["media", "notifications"]);
 const USER_DATA_DIRECTORY = "DeutschFlow";
+const configuredUserDataRoot =
+  process.env.DEUTSCHFLOW_USER_DATA_ROOT?.trim() ||
+  process.env.DEUTSCHFLOW_DATA_ROOT?.trim();
 const UPDATE_CHECK_SCRIPT = path.join(
   process.resourcesPath,
   "update",
@@ -85,7 +88,12 @@ function checkForUpdatesInBackground() {
   child.unref();
 }
 
-app.setPath("userData", path.join(app.getPath("appData"), USER_DATA_DIRECTORY));
+app.setPath(
+  "userData",
+  configuredUserDataRoot
+    ? path.resolve(configuredUserDataRoot)
+    : path.join(app.getPath("appData"), USER_DATA_DIRECTORY),
+);
 
 function isAppUrl(value) {
   try {
@@ -385,10 +393,11 @@ async function ensureWebRuntime(localRoot) {
   }
 
   const expectedHash = fs.readFileSync(hashPath, "utf8").trim();
-  const localAppData =
-    process.env.LOCALAPPDATA ||
-    path.join(app.getPath("home"), "AppData", "Local");
-  const runtimeRoot = path.join(localAppData, "DFG");
+  const runtimeCacheBase = configuredUserDataRoot
+    ? path.resolve(configuredUserDataRoot)
+    : process.env.LOCALAPPDATA ||
+      path.join(app.getPath("home"), "AppData", "Local");
+  const runtimeRoot = path.join(runtimeCacheBase, "DFG");
   const markerPath = path.join(runtimeRoot, ".payload-sha256");
   const webEntry = path.join(runtimeRoot, "apps", "web", "server.js");
   if (
@@ -399,7 +408,7 @@ async function ensureWebRuntime(localRoot) {
     return runtimeRoot;
   }
 
-  const stagingRoot = path.join(localAppData, `DFG-tmp-${process.pid}`);
+  const stagingRoot = path.join(runtimeCacheBase, `DFG-tmp-${process.pid}`);
   fs.rmSync(stagingRoot, { recursive: true, force: true });
   fs.mkdirSync(stagingRoot, { recursive: true });
   try {

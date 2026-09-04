@@ -30,34 +30,51 @@ function CorrectedText({
 
 export function AssessmentSummary({ result }: { result: EvaluationResult }) {
   const issues = [...result.spelling, ...result.grammarIssues];
+  const accepted = result.masteryEligible && result.pass;
+  const status = !result.online ? "unassessed" : accepted ? "pass" : "fail";
   return (
     <section
       className={cn(
         "mt-3 rounded-xl border border-l-[5px] bg-white p-4",
-        result.pass
-          ? "border-emerald-300 border-l-emerald-600 bg-emerald-50/60"
-          : "border-red-200 border-l-red-700 bg-red-50/60",
+        !result.online
+          ? "border-amber-200 border-l-amber-600 bg-amber-50/60"
+          : accepted
+            ? "border-emerald-300 border-l-emerald-600 bg-emerald-50/60"
+            : "border-red-200 border-l-red-700 bg-red-50/60",
       )}
-      data-assessment={result.pass ? "pass" : "fail"}
+      data-assessment={status}
     >
       <h4 className="mb-3 font-black">
-        {result.pass ? "✓ Answer accepted" : "✗ Answer not accepted"}
+        {!result.online
+          ? "Answer not assessed"
+          : accepted
+            ? "✓ Answer accepted"
+            : "✗ Answer not accepted"}
       </h4>
       <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
         <Check ok={result.online} text="Online evaluation" />
-        <Check ok={result.spelling.length === 0} text="Spelling" />
-        <Check ok={result.grammarIssues.length === 0} text="Grammar" />
+        <Check
+          ok={result.online ? result.spelling.length === 0 : null}
+          text="Spelling"
+        />
+        <Check
+          ok={result.online ? result.grammarIssues.length === 0 : null}
+          text="Grammar"
+        />
         <Check
           ok={result.targetUses >= result.required}
           text={`Target structure (${result.targetUses}/${result.required})`}
         />
-        <Check ok={result.complete} text="Complete and relevant" />
+        <Check
+          ok={result.complete && result.relevant}
+          text="Complete and relevant"
+        />
       </div>
 
       {result.online ? null : (
         <p className="mt-3 rounded-lg bg-red-100 p-3 text-sm font-bold text-red-900">
-          Evaluation was interrupted. This task remains locked. Check API and
-          internet connection, then try again.
+          A reliable language assessment is unavailable. You can keep
+          practising; this answer does not count as verified progress.
         </p>
       )}
 
@@ -85,7 +102,7 @@ export function AssessmentSummary({ result }: { result: EvaluationResult }) {
       ) : null}
 
       <div className="mt-4 rounded-lg border border-slate-200 bg-white/80 p-3 text-sm leading-6">
-        <b>Corrected answer:</b>{" "}
+        <b>{result.online ? "Corrected answer:" : "Practice text:"}</b>{" "}
         <CorrectedText
           corrected={result.corrected}
           original={result.original}
@@ -131,10 +148,10 @@ export function AssessmentSummary({ result }: { result: EvaluationResult }) {
   );
 }
 
-function Check({ ok, text }: { ok: boolean; text: string }) {
+function Check({ ok, text }: { ok: boolean | null; text: string }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white/85 px-3 py-2 text-xs font-bold">
-      {ok ? "✓" : "✗"} {text}
+      {ok === null ? "Not assessed:" : ok ? "✓" : "✗"} {text}
     </div>
   );
 }

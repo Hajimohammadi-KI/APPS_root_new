@@ -21,11 +21,13 @@ const APP_ORIGIN = new URL(APP_URL).origin;
 const READER_PORT = 4332;
 const READER_URL = `http://127.0.0.1:${READER_PORT}/`;
 const READER_ORIGIN = new URL(READER_URL).origin;
-const DESKTOP_VERSION = "27.3.22";
+const DESKTOP_VERSION = "27.3.23";
 const DESKTOP_USER_AGENT_TOKEN = `EnglishGrammarAutomaticityDesktop/${DESKTOP_VERSION}`;
 const ALLOWED_PERMISSIONS = new Set(["media", "notifications"]);
 const USER_DATA_DIRECTORY = "English Grammar Automaticity";
-const configuredUserDataRoot = process.env.ENGLISH_GRAMMAR_USER_DATA_ROOT?.trim();
+const configuredUserDataRoot =
+  process.env.ENGLISH_GRAMMAR_USER_DATA_ROOT?.trim() ||
+  process.env.ENGLISH_GRAMMAR_DATA_ROOT?.trim();
 const PDF_CHANNEL = "desktop:choose-pdf";
 const CALENDAR_RESOURCES_PATH =
   process.env.STUDY_CALENDAR_RESOURCE_ROOT || process.resourcesPath;
@@ -95,7 +97,9 @@ function checkForUpdatesInBackground() {
 
 app.setPath(
   "userData",
-  configuredUserDataRoot || path.join(app.getPath("appData"), USER_DATA_DIRECTORY),
+  configuredUserDataRoot
+    ? path.resolve(configuredUserDataRoot)
+    : path.join(app.getPath("appData"), USER_DATA_DIRECTORY),
 );
 app.setAppUserModelId("app.englishgrammar.automaticity.desktop");
 
@@ -256,10 +260,11 @@ async function ensureWebRuntime(localRoot) {
   }
 
   const expectedHash = fs.readFileSync(hashPath, "utf8").trim();
-  const localAppData =
-    process.env.LOCALAPPDATA ||
-    path.join(app.getPath("home"), "AppData", "Local");
-  const runtimeRoot = path.join(localAppData, "EGA");
+  const runtimeCacheBase = configuredUserDataRoot
+    ? path.resolve(configuredUserDataRoot)
+    : process.env.LOCALAPPDATA ||
+      path.join(app.getPath("home"), "AppData", "Local");
+  const runtimeRoot = path.join(runtimeCacheBase, "EGA");
   const markerPath = path.join(runtimeRoot, ".payload-sha256");
   const webEntry = path.join(runtimeRoot, "apps", "web", "server.js");
   if (
@@ -270,10 +275,7 @@ async function ensureWebRuntime(localRoot) {
     return runtimeRoot;
   }
 
-  const stagingRoot = path.join(
-    localAppData,
-    `EGA-tmp-${process.pid}`,
-  );
+  const stagingRoot = path.join(runtimeCacheBase, `EGA-tmp-${process.pid}`);
   fs.rmSync(stagingRoot, { recursive: true, force: true });
   fs.mkdirSync(stagingRoot, { recursive: true });
   try {

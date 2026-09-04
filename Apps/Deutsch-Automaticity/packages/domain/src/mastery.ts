@@ -301,5 +301,5 @@ export const masteryStatusLabels: Readonly<Record<MasteryStatus, string>> = {
   learning: "Im Aufbau",
   usable: "Anwendbar",
   stable: "Stabil",
-  automatic: "Automatisiert",
+  automatic: "Übungsschwelle erreicht",
 };

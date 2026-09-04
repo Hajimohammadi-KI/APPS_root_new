@@ -14,6 +14,7 @@ import {
 import { grammarUnits } from "@grammar/content";
 import type { EvaluationResponse } from "@grammar/contracts";
 import {
+  analyzeClosedAnswer,
   getTodayKey,
   reviewModeLabels,
   REVIEW_INTERVAL_DAYS,
@@ -145,10 +146,16 @@ export function ReviewCenter() {
         spellingAffectsMastery: state.settings.spellingAffectsMastery,
       });
       setReport(result);
+      const closed = analyzeClosedAnswer(answer, selected.corrected);
+      if (result.accuracyScore === null && closed.correct !== true) {
+        setMessage(
+          result.issues[0]?.message ??
+            "Die Antwort wurde noch nicht bewertet. Das Wiederholungsintervall bleibt unverändert.",
+        );
+        return;
+      }
       speak(result.corrected);
-      const exact =
-        answer.trim().toLocaleLowerCase("de") ===
-        selected.corrected.trim().toLocaleLowerCase("de");
+      const exact = closed.correct === true;
       const mode: MasteryMode =
         selected.reviewMode === "repair"
           ? "repair"
@@ -207,9 +214,11 @@ export function ReviewCenter() {
         );
       } else {
         const confidence =
-          result.accuracyScore >= 95 && (!timedActive || secondsLeft >= 3)
+          (result.accuracyScore ?? 100) >= 95 &&
+          (!timedActive || secondsLeft >= 3)
             ? "easy"
-            : result.accuracyScore < 85 || (timedActive && secondsLeft <= 0)
+            : (result.accuracyScore ?? 100) < 85 ||
+                (timedActive && secondsLeft <= 0)
               ? "hard"
               : "good";
         completeReview(selected.id, true, confidence);

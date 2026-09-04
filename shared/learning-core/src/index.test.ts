@@ -146,7 +146,7 @@ describe("shared automaticity vertical slice", () => {
       audioReferenceId: "audio-60-seconds",
     });
 
-    expect(timedAttempt.evidence.masteryEligible).toBe(true);
+    expect(timedAttempt.evidence.masteryEligible).toBe(false);
     expect(timedAttempt.evidence.automaticityClaim).toBe(
       "insufficient-longitudinal-evidence",
     );
@@ -168,6 +168,11 @@ describe("shared automaticity vertical slice", () => {
       assessedBy: "online",
       sessionMinutes: 15,
       fromDueReview: true,
+      independence: { unaided: true, firstAttempt: true, exampleExposed: false, solutionExposed: false },
+      reviewEvidence: {
+        previousResponseId: "earlier:response", previousPractisedAt: "2026-08-19T08:00:00.000Z",
+        taskId: "new-task", previousTaskId: "old-task", contextId: "new-context", previousContextId: "old-context",
+      },
     });
     const ledger = mergeLearningEvidenceBundle(
       emptyLearningEvidenceLedger(),
@@ -268,7 +273,7 @@ describe("shared automaticity vertical slice", () => {
       selectedLevel: "B1",
     });
     expect(exported.learningEvidence.responses).toHaveLength(1);
-    expect(exported.learningEvidence.evidence[0]?.masteryEligible).toBe(true);
+    expect(exported.learningEvidence.evidence[0]?.masteryEligible).toBe(false);
     expect(exported.learningEvidence.contentUnits[0]?.version).toBe("27.3.13");
     expect(exported.learningEvidence.events.map((event) => event.type)).toEqual(
       ["learning.response.submitted.v1", "learning.evidence.recorded.v1"],

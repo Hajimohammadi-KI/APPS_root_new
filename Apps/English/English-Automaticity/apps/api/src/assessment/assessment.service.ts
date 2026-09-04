@@ -8,16 +8,13 @@ import type {
   AssessmentResponse,
   LanguageToolMatch,
 } from "./assessment.contract";
-
-interface LanguageToolResponse {
-  matches?: LanguageToolMatch[];
-}
+import { parseLanguageToolResponse } from "./assessment.contract";
 
 export function applyCorrections(
   text: string,
   matches: LanguageToolMatch[],
 ): string {
-  return matches
+  return parseLanguageToolResponse({ matches }, text)
     .filter((match) => match.replacements[0]?.value !== undefined)
     .toSorted((a, b) => b.offset - a.offset)
     .reduce((corrected, match) => {
@@ -34,8 +31,7 @@ export function applyCorrections(
 @Injectable()
 export class AssessmentService {
   private readonly endpoint =
-    process.env.LANGUAGETOOL_URL ??
-    "https://api.languagetool.org/v2/check";
+    process.env.LANGUAGETOOL_URL ?? "https://api.languagetool.org/v2/check";
 
   async assess(input: AssessmentRequest): Promise<AssessmentResponse> {
     const controller = new AbortController();
@@ -58,8 +54,15 @@ export class AssessmentService {
         );
       }
 
-      const payload = (await response.json()) as LanguageToolResponse;
-      const matches = Array.isArray(payload.matches) ? payload.matches : [];
+      let matches: LanguageToolMatch[];
+      try {
+        matches = parseLanguageToolResponse(await response.json(), input.text);
+      } catch (error) {
+        if (controller.signal.aborted) throw error;
+        throw new BadGatewayException(
+          "LanguageTool returned an invalid assessment response.",
+        );
+      }
       const corrected = applyCorrections(input.text, matches);
 
       return {

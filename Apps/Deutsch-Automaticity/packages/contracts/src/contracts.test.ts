@@ -1,8 +1,42 @@
 import { describe, expect, it } from "bun:test";
 
-import { bootstrapResponseSchema, healthResponseSchema } from "./index";
+import {
+  bootstrapResponseSchema,
+  healthResponseSchema,
+  evaluationResponseSchema,
+} from "./index";
 
 describe("API contracts", () => {
+  it("preserves an unassessed language result without a fabricated grammar score", () => {
+    const report = {
+      original: "Hotel",
+      corrected: "Hotel",
+      changed: false,
+      matches: [],
+      online: true,
+      issues: [],
+      practiceReady: false,
+      verified: false,
+      ok: false,
+      targetHit: false,
+      relevant: false,
+      accuracyScore: null,
+      nextAction: "repeat",
+      status: "language_uncertain",
+      answerLanguage: "other",
+    };
+    expect(evaluationResponseSchema.parse(report).accuracyScore).toBeNull();
+    expect(
+      evaluationResponseSchema.safeParse({ ...report, accuracyScore: 0 })
+        .success,
+    ).toBe(false);
+    expect(
+      evaluationResponseSchema.safeParse({ ...report, verified: true }).success,
+    ).toBe(false);
+    expect(
+      evaluationResponseSchema.safeParse({ ...report, ok: true }).success,
+    ).toBe(false);
+  });
   it("rejects an unhealthy health payload", () => {
     expect(() =>
       healthResponseSchema.parse({

@@ -1,5 +1,6 @@
 "use client";
 
+import { AutomaticityEvidenceSummary } from "./automaticity-evidence-summary";
 import { Activity, Target } from "lucide-react";
 import {
   Area,
@@ -51,9 +52,9 @@ export function ProgressInsights({
 }: Readonly<ProgressInsightsProps>) {
   const competencyData = [
     { name: "Coverage", value: Math.round(coverage), fill: "#2563eb" },
-    { name: "Mastery", value: Math.round(mastery), fill: "#7c3aed" },
+    { name: "Legacy mastery estimate", value: Math.round(mastery), fill: "#7c3aed" },
     {
-      name: "Automaticity",
+      name: "Legacy fluency estimate",
       value: Math.round(automaticity),
       fill: "#d97706",
     },
@@ -67,7 +68,7 @@ export function ProgressInsights({
     <section aria-labelledby="learning-insights-title" className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="section-kicker">Measurable learning progress</p>
+          <p className="section-kicker">Learning activity and evidence</p>
           <h2 id="learning-insights-title" className="section-title">
             Your learning insights
           </h2>
@@ -75,15 +76,16 @@ export function ProgressInsights({
         <Badge variant="secondary">Level {level}</Badge>
       </div>
 
+      <AutomaticityEvidenceSummary />
       <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
         <Card className="overflow-hidden border-violet-200/80 bg-gradient-to-br from-white via-violet-50/45 to-blue-50/70 shadow-[0_18px_50px_-30px_rgba(76,29,149,0.5)]">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Target className="size-5 text-violet-700" />
-              Competency profile
+              Legacy practice profile
             </CardTitle>
             <CardDescription>
-              Content seen, securely learned, and used without help.
+              Historical practice estimates. They do not establish mastery or automaticity.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -91,7 +93,7 @@ export function ProgressInsights({
               <div
                 className="relative mx-auto h-64 w-full max-w-72"
                 role="img"
-                aria-label={`Competency profile: Coverage ${Math.round(coverage)} percent, Mastery ${Math.round(mastery)} percent, Automaticity ${Math.round(automaticity)} percent`}
+                aria-label={`Legacy practice profile: Coverage ${Math.round(coverage)} percent, Mastery ${Math.round(mastery)} percent, Automaticity ${Math.round(automaticity)} percent`}
               >
                 <ResponsiveContainer width="100%" height="100%">
                   <RadialBarChart
@@ -117,7 +119,7 @@ export function ProgressInsights({
                     {overall}%
                   </strong>
                   <span className="text-xs font-semibold text-slate-500">
-                    Overall profile
+                    Practice estimate
                   </span>
                 </div>
               </div>

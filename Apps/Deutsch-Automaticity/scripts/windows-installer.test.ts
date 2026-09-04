@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { resolve, win32 } from "node:path";
+import { runInNewContext } from "node:vm";
 
 const projectRoot = resolve(import.meta.dir, "..");
 const setupSource = readFileSync(
@@ -22,7 +23,10 @@ const desktopPackage = JSON.parse(
   build: { extraResources: Array<{ from: string }>; win: { icon: string } };
 };
 const buildScript = readFileSync(
-  resolve(projectRoot, "distribution/windows-modern/build-modern-installer.ps1"),
+  resolve(
+    projectRoot,
+    "distribution/windows-modern/build-modern-installer.ps1",
+  ),
   "utf8",
 );
 const desktopMain = readFileSync(
@@ -41,6 +45,166 @@ const updaterSource = readFileSync(
 );
 
 describe("Windows installation roadmap", () => {
+  function desktopHarness(
+    environment: Record<string, string>,
+    fileSystem: Record<string, unknown> = {},
+    spawnProcess: (...args: unknown[]) => unknown = () => {
+      throw new Error("Profile configuration must not start a process");
+    },
+  ) {
+    const configuredPaths: Array<{ name: string; value: string }> = [];
+    const startupOrder: string[] = [];
+    const app = {
+      getPath: (name: string) => {
+        expect(name).toBe("appData");
+        return "C:\\Users\\Fixture\\AppData\\Roaming";
+      },
+      setPath: (name: string, value: string) => {
+        configuredPaths.push({ name, value });
+        startupOrder.push("profile");
+      },
+      requestSingleInstanceLock: () => {
+        startupOrder.push("lock");
+        return true;
+      },
+      whenReady: () => ({ then: () => undefined }),
+      setAppUserModelId: () => undefined,
+      on: () => undefined,
+    };
+
+    // Execute the real startup configuration without launching Electron,
+    // services, or callbacks, or accessing an actual learner profile.
+    const ensureWebRuntime = runInNewContext(
+      `${desktopMain}\nensureWebRuntime;`,
+      {
+        require: (id: string) => {
+          if (id === "electron") return { app };
+          if (id === "node:path") return win32;
+          if (id === "node:fs") return fileSystem;
+          if (id === "node:http") return {};
+          if (id === "node:child_process") {
+            return { spawn: spawnProcess };
+          }
+          throw new Error(`Unexpected module during profile setup: ${id}`);
+        },
+        process: {
+          env: environment,
+          resourcesPath: "C:\\Fixture\\resources",
+          pid: 2468,
+        },
+        URL,
+        Buffer,
+      },
+    ) as (localRoot: string) => Promise<string>;
+    expect(startupOrder).toEqual(["profile", "lock"]);
+    expect(configuredPaths).toHaveLength(1);
+    expect(configuredPaths[0]?.name).toBe("userData");
+    return { profile: configuredPaths[0]?.value, ensureWebRuntime };
+  }
+
+  function configuredDesktopProfile(environment: Record<string, string>) {
+    return desktopHarness(environment).profile;
+  }
+
+  test("preserves the existing desktop profile when no override is configured", () => {
+    const expected = "C:\\Users\\Fixture\\AppData\\Roaming\\DeutschFlow";
+    expect(configuredDesktopProfile({})).toBe(expected);
+    expect(
+      configuredDesktopProfile({
+        DEUTSCHFLOW_USER_DATA_ROOT: "   ",
+        DEUTSCHFLOW_DATA_ROOT: "\t",
+      }),
+    ).toBe(expected);
+  });
+
+  test("isolates the desktop profile under the explicit resolved user-data root", () => {
+    expect(
+      configuredDesktopProfile({
+        DEUTSCHFLOW_USER_DATA_ROOT:
+          " D:\\Fixture\\installer-cycle\\temporary\\..\\data ",
+      }),
+    ).toBe("D:\\Fixture\\installer-cycle\\data");
+  });
+
+  test("uses the installer data-root alias when the desktop override is blank", () => {
+    expect(
+      configuredDesktopProfile({
+        DEUTSCHFLOW_USER_DATA_ROOT: " ",
+        DEUTSCHFLOW_DATA_ROOT: " D:\\Fixture\\installer-cycle\\data ",
+      }),
+    ).toBe("D:\\Fixture\\installer-cycle\\data");
+  });
+
+  test("gives the desktop-specific root precedence over the installer alias", () => {
+    expect(
+      configuredDesktopProfile({
+        DEUTSCHFLOW_USER_DATA_ROOT: "D:\\Fixture\\desktop-data",
+        DEUTSCHFLOW_DATA_ROOT: "D:\\Fixture\\installer-data",
+      }),
+    ).toBe("D:\\Fixture\\desktop-data");
+  });
+
+  test("isolates runtime extraction and replacement while preserving the default cache", async () => {
+    for (const [overrides, expectedBase] of [
+      [{}, "C:\\Users\\Fixture\\AppData\\Local"],
+      [
+        {
+          DEUTSCHFLOW_USER_DATA_ROOT: " D:\\Fixture\\data ",
+          DEUTSCHFLOW_DATA_ROOT: "D:\\OtherFixture\\data",
+        },
+        "D:\\Fixture\\data",
+      ],
+      [{ DEUTSCHFLOW_DATA_ROOT: "D:\\Fixture\\alias" }, "D:\\Fixture\\alias"],
+    ] as Array<[Record<string, string>, string]>) {
+      const removed: string[] = [];
+      const created: string[] = [];
+      const written: string[] = [];
+      const renamed: Array<[string, string]> = [];
+      const extractionCommands: string[] = [];
+      const runtime = desktopHarness(
+        {
+          LOCALAPPDATA: "C:\\Users\\Fixture\\AppData\\Local",
+          ...overrides,
+        },
+        {
+          existsSync: (file: string) =>
+            /web\.(zip|sha256)$/.test(file) ||
+            (file.includes("DFG-tmp-2468") && file.endsWith("server.js")),
+          readFileSync: () => "fixture-payload-hash",
+          rmSync: (file: string) => removed.push(file),
+          mkdirSync: (file: string) => created.push(file),
+          writeFileSync: (file: string) => written.push(file),
+          renameSync: (from: string, to: string) => renamed.push([from, to]),
+        },
+        (_executable, args) => {
+          const commandArgs = args as string[];
+          extractionCommands.push(
+            Buffer.from(commandArgs.at(-1)!, "base64").toString("utf16le"),
+          );
+          return {
+            stderr: { setEncoding: () => undefined, on: () => undefined },
+            once: (event: string, callback: (code: number) => void) => {
+              if (event === "exit") callback(0);
+            },
+          };
+        },
+      );
+      const expectedRuntime = win32.join(expectedBase, "DFG");
+      const expectedStaging = win32.join(expectedBase, "DFG-tmp-2468");
+      expect(
+        await runtime.ensureWebRuntime("C:\\Fixture\\resources\\local-app"),
+      ).toBe(expectedRuntime);
+      expect(removed).toEqual([expectedStaging, expectedRuntime]);
+      expect(created).toEqual([expectedStaging]);
+      expect(written).toEqual([win32.join(expectedStaging, ".payload-sha256")]);
+      expect(renamed).toEqual([[expectedStaging, expectedRuntime]]);
+      expect(extractionCommands).toHaveLength(1);
+      expect(extractionCommands[0]).toContain(
+        `-DestinationPath '${expectedStaging}' -Force`,
+      );
+    }
+  });
+
   test("offers the same four lifecycle actions as the tracker", () => {
     for (const operation of ["Install", "Update", "Repair", "Uninstall"]) {
       expect(setupSource).toContain(`SetupOperation.${operation}`);
@@ -105,11 +269,7 @@ describe("Windows installation roadmap", () => {
       expect(
         existsSync(
           // electron-builder resolves extraResources from the desktop package directory.
-          resolve(
-            projectRoot,
-            "distribution/windows-desktop",
-            resource.from,
-          ),
+          resolve(projectRoot, "distribution/windows-desktop", resource.from),
         ),
       ).toBe(true);
     }
@@ -121,9 +281,7 @@ describe("Windows installation roadmap", () => {
       ),
     );
     // The PNG signature prevents an LFS recovery notice from reaching electron-builder.
-    expect([...icon.subarray(0, 8)]).toEqual([
-      137, 80, 78, 71, 13, 10, 26, 10,
-    ]);
+    expect([...icon.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
   });
 
   test("builds without a legacy LFS compatibility launcher", () => {

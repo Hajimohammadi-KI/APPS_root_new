@@ -333,6 +333,7 @@
   </style>
 </head>
 <body>
+<aside aria-label="Independent practice" style="background:#eef4ff;border-bottom:1px solid #bfcee8;padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;color:#173d7a;font:500 15px/1.5 system-ui"><span>Build recall with your own answers, saved drafts, and recordings.</span><a href="/practice" style="background:#2258c0;border-radius:9px;padding:10px 16px;color:white;text-decoration:none">Start independent practice</a></aside>
   <!-- Inline SVG symbol library -->
   <svg aria-hidden="true" width="0" height="0" style="position:absolute;overflow:hidden">
     <symbol id="i-book" viewBox="0 0 24 24"><path d="M3 5.5A3.5 3.5 0 0 1 6.5 2H11v17H6.5A3.5 3.5 0 0 0 3 22V5.5Z"/><path d="M21 5.5A3.5 3.5 0 0 0 17.5 2H13v17h4.5A3.5 3.5 0 0 1 21 22V5.5Z"/></symbol>
@@ -697,9 +698,11 @@
       // Recall task behavior.
       const tasksForTopic = () => {
         const unit = grammarUnit();
-        return unit.exercises.map(([prompt, expected], index) => ({
+        return unit.exercises.map(([prompt, expected, metadata], index) => ({
           prompt,
           answer: expected,
+          acceptedAnswers: [expected, ...(metadata?.acceptedAnswers || [])],
+          open: metadata?.answerRole === 'inspiration' || !/_{2,}|…|\.\.\.|^(correct|complete|choose|change|transform)\b/i.test(prompt),
           hint: index === 0 ? unit.commonError : unit.rule
         }));
       };
@@ -721,7 +724,7 @@
         $('#dailyCompleteTitle').textContent=`Today's ${dailyContext.activity===5?'writing':'grammar'} practice is complete`;
         $('#dailyCompleteDialog').showModal();
       };
-      const normalize = text => text.toLowerCase().trim().replace(/[.!?]+$/, '').replace(/\s+/g, ' ');
+      const normalize = text => text.normalize('NFC').trim().replace(/(?<!\.)\.$/, '').replace(/\s+/g, ' ');
       const currentTask = () => tasksForTopic()[taskIndex];
       const isRecitationTask = (task) => Boolean(grammarUnit().recallTest) && task.answer === grammarUnit().recallTest;
       const currentExerciseKey = () => topicKey(progress.activeLevel, progress.activeTopic, taskIndex);
@@ -754,30 +757,31 @@
       };
       $('#checkBtn').addEventListener('click', () => {
         const task = currentTask();
-        if (isRecitationTask(task)) {
+        if (isRecitationTask(task) || task.open) {
           if (!answer.value.trim()) {
             feedback.className = 'feedback show bad';
             feedback.textContent = 'Write your own explanation first, then compare.';
             return;
           }
-          feedback.className = 'feedback show good';
-          feedback.innerHTML = `<strong>The rule to compare against:</strong> ${task.answer}<br><span>There is no single correct wording here — compare meaning and completeness only.</span>`;
+          feedback.className = 'feedback show';
+          feedback.textContent = `Practice saved without a correctness score. One model to compare: ${task.answer}. A different answer can be correct. Use independent practice to keep your original response and request review.`;
           repairBox.classList.remove('show');
           completeCurrent();
           finishDailyActivity();
           return;
         }
         const value = normalize(answer.value);
-        const isCorrect = value === normalize(task.answer);
-        feedback.className = `feedback show ${isCorrect ? 'good' : 'bad'}`;
+        if (!value) { feedback.className = 'feedback show'; feedback.textContent = 'Write your own response first.'; return; }
+        const isCorrect = task.acceptedAnswers.some(expected => value === normalize(expected));
+        feedback.className = `feedback show ${isCorrect ? 'good' : ''}`;
         if (isCorrect) {
-          feedback.textContent = 'Correct — well recalled.';
+          feedback.textContent = 'This matches a stored form. Guided practice completed; the examples on this page mean it is not evidence of independent recall.';
           repairBox.classList.remove('show');
           completeCurrent();
           finishDailyActivity();
         } else {
           const correct = task.answer;
-          feedback.textContent = `Not yet. The correct answer is: ${correct} Read it, then type it yourself below.`;
+          feedback.textContent = `Your answer differs from the stored forms, so it has no correctness score. Compare with this model: ${correct}. You can practise the model below.`;
           repairBox.classList.add('show');
           repairInput.focus();
           lastMistake=`${task.prompt} — ${answer.value || '(no answer)'}`;
@@ -792,7 +796,7 @@
       $('#repairBtn').addEventListener('click', () => {
         if (normalize(repairInput.value) === normalize(currentTask().answer)) {
           feedback.className = 'feedback show good';
-          feedback.textContent = 'Correction completed — you produced the correct form yourself.';
+          feedback.textContent = 'Model-copying practice completed. This repair does not establish independent recall.';
           repairBox.classList.remove('show');
           completeCurrent();
           finishDailyActivity();

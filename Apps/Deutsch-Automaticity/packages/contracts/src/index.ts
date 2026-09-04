@@ -52,6 +52,7 @@ export const feedbackStatusSchema = z.enum([
   "correct",
   "nearly_correct",
   "wrong_language",
+  "language_uncertain",
   "incomplete",
   "needs_revision",
 ]);
@@ -135,26 +136,46 @@ export const evaluationIssueSchema = z.object({
   hint: z.string().optional(),
 });
 
-export const evaluationResponseSchema = z.object({
-  original: z.string(),
-  corrected: z.string(),
-  changed: z.boolean(),
-  matches: z.array(languageToolMatchSchema),
-  online: z.boolean(),
-  networkError: z.string().optional(),
-  issues: z.array(evaluationIssueSchema),
-  practiceReady: z.boolean(),
-  verified: z.boolean(),
-  ok: z.boolean(),
-  targetHit: z.boolean(),
-  relevant: z.boolean(),
-  accuracyScore: z.number().min(0).max(100),
-  nextAction: z.enum(["repeat", "repair", "transfer", "schedule_review"]),
-  status: feedbackStatusSchema.optional(),
-  answerLanguage: z.enum(["de", "fa", "en", "other"]).optional(),
-  correctParts: z.array(z.string()).optional(),
-  nextActionText: z.string().optional(),
-});
+export const evaluationResponseSchema = z
+  .object({
+    original: z.string(),
+    corrected: z.string(),
+    changed: z.boolean(),
+    matches: z.array(languageToolMatchSchema),
+    online: z.boolean(),
+    networkError: z.string().optional(),
+    issues: z.array(evaluationIssueSchema),
+    practiceReady: z.boolean(),
+    verified: z.boolean(),
+    ok: z.boolean(),
+    targetHit: z.boolean(),
+    relevant: z.boolean(),
+    accuracyScore: z.number().min(0).max(100).nullable(),
+    nextAction: z.enum(["repeat", "repair", "transfer", "schedule_review"]),
+    status: feedbackStatusSchema.optional(),
+    answerLanguage: z.enum(["de", "fa", "en", "other"]).optional(),
+    correctParts: z.array(z.string()).optional(),
+    nextActionText: z.string().optional(),
+  })
+  .superRefine((report, context) => {
+    if (report.accuracyScore === null && (report.verified || report.ok)) {
+      context.addIssue({
+        code: "custom",
+        path: ["accuracyScore"],
+        message: "Unassessed answers cannot be verified or successful.",
+      });
+    }
+    if (
+      report.status === "language_uncertain" &&
+      report.accuracyScore !== null
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["accuracyScore"],
+        message: "Uncertain language has no grammar accuracy score.",
+      });
+    }
+  });
 
 export type CefrLevel = z.infer<typeof cefrLevelSchema>;
 export type HealthResponse = z.infer<typeof healthResponseSchema>;

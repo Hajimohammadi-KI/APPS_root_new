@@ -34,11 +34,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useAppStore, recalculateMastery } from "@/features/store/app-store";
 import {
-  analyzePresentPerfect,
   practiceAnswerMatches,
   type AutomaticityAnalysis,
 } from "@/lib/automaticity-analysis";
-import { evaluateResponse } from "@/lib/assessment";
+import {
+  assessLessonOutput,
+  type LessonOutputAssessment,
+} from "@/lib/lesson-output-assessment";
 import { putAudio } from "@/lib/audio-db";
 import { makeId, todayKey } from "@/lib/utils";
 
@@ -159,7 +161,7 @@ function Axis({ label, value }: { label: string; value: number }) {
   );
 }
 
-function Feedback({ analysis }: { analysis: AutomaticityAnalysis }) {
+function Feedback({ analysis }: { analysis: LessonOutputAssessment }) {
   return (
     <div className="space-y-3 rounded-2xl border border-violet-200 bg-violet-50 p-4">
       <div className="grid grid-cols-3 gap-2 text-center text-sm">
@@ -172,8 +174,10 @@ function Feedback({ analysis }: { analysis: AutomaticityAnalysis }) {
           uses
         </div>
         <div>
-          <strong className="block text-lg">{analysis.score}%</strong>practice
-          score
+          <strong className="block text-lg">
+            {analysis.verified ? `${analysis.score}%` : "Unassessed"}
+          </strong>
+          {analysis.verified ? "practice score" : "assessment unavailable"}
         </div>
       </div>
       {analysis.issues.length ? (
@@ -192,8 +196,10 @@ function Feedback({ analysis }: { analysis: AutomaticityAnalysis }) {
         </ul>
       ) : (
         <p className="flex items-center gap-2 text-sm font-bold text-violet-900">
-          <Check className="size-4" /> The offline pattern check found no target
-          error.
+          <Check className="size-4" />{" "}
+          {analysis.verified
+            ? "The language check found no listed issue."
+            : "Draft saved. Local practice checks do not verify this answer."}
         </p>
       )}
     </div>
@@ -233,14 +239,16 @@ export function AutomaticityScreen({
   const [journal, setJournal] = React.useState("");
   const [transcript, setTranscript] = React.useState("");
   const [journalAnalysis, setJournalAnalysis] =
-    React.useState<AutomaticityAnalysis | null>(null);
+    React.useState<LessonOutputAssessment | null>(null);
   const [delayedTransfer, setDelayedTransfer] = React.useState("");
   const [delayedTransferAnalysis, setDelayedTransferAnalysis] =
-    React.useState<AutomaticityAnalysis | null>(null);
+    React.useState<LessonOutputAssessment | null>(null);
   const [speechAnalysis, setSpeechAnalysis] =
-    React.useState<AutomaticityAnalysis | null>(null);
+    React.useState<LessonOutputAssessment | null>(null);
   const [activeStep, setActiveStep] = React.useState<number>(
-    focusedStep ?? [0, 1, 2].find((step) => !plan.completed.includes(step)) ?? 0,
+    focusedStep ??
+      [0, 1, 2].find((step) => !plan.completed.includes(step)) ??
+      0,
   );
   const [recording, setRecording] = React.useState(false);
   const [seconds, setSeconds] = React.useState(0);
@@ -354,9 +362,7 @@ export function AutomaticityScreen({
               ? "other"
               : "tense";
         const existing = draft.errors.find(
-          (row) =>
-            row.grammarTitle === topic &&
-            row.errorClass === errorClass,
+          (row) => row.grammarTitle === topic && row.errorClass === errorClass,
         );
         if (existing) {
           existing.occurrenceCount += 1;
@@ -401,54 +407,8 @@ export function AutomaticityScreen({
   async function analyzeLessonOutput(
     text: string,
     minimumSentences: number,
-  ): Promise<AutomaticityAnalysis> {
-    if (topic.toLocaleLowerCase("en") === "present perfect") {
-      return analyzePresentPerfect(text);
-    }
-    const evaluation = await evaluateResponse(
-      text,
-      {
-        grammar,
-        minWords: minimumSentences * 4,
-        minSentences: minimumSentences,
-        requiredTargetUses: 1,
-        taskPrompt: `Use ${topic} in original sentences connected to your life.`,
-      },
-      state.settings,
-    );
-    const issues: AutomaticityAnalysis["issues"] = evaluation.matches.map(
-      (match) => ({
-        code: "language_error",
-        message: match.message,
-        original: match.context?.text ?? evaluation.original,
-        corrected:
-          match.replacements[0]?.value ?? evaluation.corrected,
-      }),
-    );
-    if (evaluation.targetUses < evaluation.required) {
-      issues.push({
-        code: "missing_target",
-        message: `Use the lesson pattern from ${topic} at least once.`,
-        original: text,
-        corrected: grammar.examples[0] ?? grammar.testAnswer,
-      });
-    }
-    if (!evaluation.complete) {
-      issues.push({
-        code: "unfinished_sentence",
-        message: `Write at least ${minimumSentences} complete sentences.`,
-        original: text,
-        corrected: grammar.testAnswer,
-      });
-    }
-    return {
-      sentenceCount: evaluation.sentences,
-      wordCount: evaluation.words,
-      targetUses: evaluation.targetUses,
-      score: evaluation.accuracyScore,
-      targetHit: evaluation.pass,
-      issues,
-    };
+  ): Promise<LessonOutputAssessment> {
+    return assessLessonOutput(text, grammar, minimumSentences, state.settings);
   }
 
   async function saveWriting() {
@@ -460,13 +420,13 @@ export function AutomaticityScreen({
       grammarTitle: topic,
       mode: "writing",
       inputText: journal,
-      correctedText: journal,
+      correctedText: analysis.corrected,
       targetHit: analysis.targetHit,
       accuracyScore: analysis.score,
       fluencyScore: 0,
       latencyMs: null,
-      passed: analysis.targetHit,
-      verified: false,
+      passed: analysis.masteryEligible,
+      verified: analysis.verified,
     });
     appendLearningEvidenceBundleToStorage(
       window.localStorage,
@@ -481,21 +441,30 @@ export function AutomaticityScreen({
         prompt: `Write four original sentences using ${topic}.`,
         mode: "writing",
         inputText: journal,
-        correctedText: journal,
+        correctedText: analysis.corrected,
         targetHit: analysis.targetHit,
         accuracyScore: analysis.score,
-        attemptVerified: true,
-        assessedBy: "deterministic",
+        attemptVerified: analysis.verified,
+        assessedBy: analysis.verified ? "online" : "offline",
         sessionMinutes: normalizeDailySessionMinutes(missionMinutes),
         sourceId: "english-authored-grammar-curriculum-v27",
       }),
     );
     addIssuesToErrorWorkshop(analysis, journal);
-    if (analysis.targetHit) writePlan(`${key}:writing`, "done");
+    writePlan(
+      `${key}:writing`,
+      !analysis.verified
+        ? "unassessed"
+        : analysis.masteryEligible
+          ? "done"
+          : "needs_repair",
+    );
     setMessage(
-      analysis.targetHit
-        ? `Journal saved. You have created real ${topic} output.`
-        : `Draft saved. Use the feedback to produce complete, accurate ${topic} sentences.`,
+      !analysis.verified
+        ? "Draft saved. Assessment is unavailable; this attempt does not count as verified progress."
+        : analysis.masteryEligible
+          ? `Journal saved. You have created real ${topic} output.`
+          : `Draft saved. Use the feedback to produce complete, accurate ${topic} sentences.`,
     );
   }
 
@@ -521,11 +490,11 @@ export function AutomaticityScreen({
         prompt: `Recall ${topic} after a delay and transfer it to a new context.`,
         mode: "transfer",
         inputText: delayedTransfer,
-        correctedText: delayedTransfer,
+        correctedText: analysis.corrected,
         targetHit: analysis.targetHit,
         accuracyScore: analysis.score,
-        attemptVerified: true,
-        assessedBy: "deterministic",
+        attemptVerified: analysis.verified,
+        assessedBy: analysis.verified ? "online" : "offline",
         sessionMinutes: normalizeDailySessionMinutes(missionMinutes),
         fromDueReview: true,
         sourceId: "english-authored-grammar-curriculum-v27",
@@ -535,14 +504,20 @@ export function AutomaticityScreen({
       grammarTitle: topic,
       mode: "transfer",
       inputText: delayedTransfer,
-      correctedText: delayedTransfer,
+      correctedText: analysis.corrected,
       targetHit: analysis.targetHit,
       accuracyScore: analysis.score,
       fluencyScore: 0,
       latencyMs: null,
-      passed: analysis.targetHit,
-      verified: false,
+      passed: analysis.masteryEligible,
+      verified: analysis.verified,
     });
+    if (!analysis.verified) {
+      setMessage(
+        "Transfer draft saved without verified credit. The review remains due because assessment is unavailable.",
+      );
+      return;
+    }
     const confidence =
       analysis.score >= 95 ? "easy" : analysis.score >= 80 ? "good" : "hard";
     const nextSuccessStreak = analysis.targetHit
@@ -677,7 +652,7 @@ export function AutomaticityScreen({
         topic: `${topic} transfer`,
         grammarTitle: topic,
         transcript,
-        corrected: transcript,
+        corrected: analysis.corrected,
         seconds,
         targetUses: analysis.targetUses,
       });
@@ -686,7 +661,7 @@ export function AutomaticityScreen({
       grammarTitle: topic,
       mode: "speaking",
       inputText: transcript,
-      correctedText: transcript,
+      correctedText: analysis.corrected,
       targetHit: analysis.targetHit && seconds >= 45,
       accuracyScore: analysis.score,
       fluencyScore: Math.min(
@@ -694,13 +669,19 @@ export function AutomaticityScreen({
         Math.round((analysis.wordCount / Math.max(1, seconds) / 2) * 100),
       ),
       latencyMs: null,
-      passed: analysis.targetHit && seconds >= 45,
+      passed:
+        analysis.masteryEligible &&
+        seconds >= 45 &&
+        Boolean(audioRef.current?.size),
       verified: false,
     });
     addIssuesToErrorWorkshop(analysis, transcript);
-    if (analysis.targetHit && (seconds >= 45 || !audioRef.current)) {
-      writePlan(`${key}:speaking`, "done");
-    }
+    writePlan(
+      `${key}:speaking`,
+      analysis.masteryEligible && seconds >= 45 && audioRef.current?.size
+        ? "done"
+        : "unassessed",
+    );
     if (state.settings.saveAudio && audioRef.current) {
       await putAudio({
         id: makeId("automaticity-audio"),
@@ -709,410 +690,449 @@ export function AutomaticityScreen({
         grammarTitle: topic,
         topic: `${topic} transfer`,
         transcript,
-        corrected: transcript,
+        corrected: analysis.corrected,
         repetitionStatus: "new",
       });
     }
     setMessage(
-      "Speaking evidence saved locally. Repeat once after reviewing the feedback.",
+      analysis.verified
+        ? "Speaking practice saved locally. The language check assesses the transcript; speaking mastery remains unverified."
+        : "Speaking practice saved locally without verified credit. Transcript assessment is unavailable.",
     );
   }
 
   return (
     <div className="page-stack">
-      {!embedded ? <div className="page-heading automaticity-hero">
-        <div>
-          <Badge>Today · {missionMinutes} minutes</Badge>
-          <h1>Automaticity Mission</h1>
-          <p>
-            Activate, use accurately, automate aloud, and transfer into free
-            speech. The mission ends with saved evidence, not a simple click.
-          </p>
+      {!embedded ? (
+        <div className="page-heading automaticity-hero">
+          <div>
+            <Badge>Today · {missionMinutes} minutes</Badge>
+            <h1>Automaticity Mission</h1>
+            <p>
+              Activate, use accurately, automate aloud, and transfer into free
+              speech. The mission ends with saved evidence, not a simple click.
+            </p>
+          </div>
+          <Button
+            className="automaticity-hero-action"
+            size="lg"
+            onClick={() =>
+              document
+                .getElementById("mission")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
+          >
+            <Play className="size-4" /> Start evidence practice
+          </Button>
         </div>
-        <Button
-          className="automaticity-hero-action"
-          size="lg"
-          onClick={() =>
-            document
-              .getElementById("mission")
-              ?.scrollIntoView({ behavior: "smooth" })
-          }
-        >
-          <Play className="size-4" /> Start evidence practice
-        </Button>
-      </div> : focusedStep === undefined ? (
+      ) : focusedStep === undefined ? (
         <Card className="border-violet-300 bg-violet-50/70">
           <CardHeader>
-            <CardTitle>Steps {stepOffset + 1}–{stepOffset + 3} · Build usable evidence</CardTitle>
-            <CardDescription>Finish controlled practice, connected writing, and recorded free speaking. Each result is analysed and saved.</CardDescription>
+            <CardTitle>
+              Steps {stepOffset + 1}–{stepOffset + 3} · Build usable evidence
+            </CardTitle>
+            <CardDescription>
+              Finish controlled practice, connected writing, and recorded free
+              speaking. Each result is analysed and saved.
+            </CardDescription>
           </CardHeader>
         </Card>
       ) : null}
 
-      {!embedded ? <Card className="border-violet-200 bg-violet-50/70" id="mission">
-        <CardContent className="space-y-4 pt-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <strong>{topic}</strong>
-              <p className="text-sm text-muted-foreground">
-                {grammar.level} · {grammar.rule}
-              </p>
+      {!embedded ? (
+        <Card className="border-violet-200 bg-violet-50/70" id="mission">
+          <CardContent className="space-y-4 pt-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <strong>{topic}</strong>
+                <p className="text-sm text-muted-foreground">
+                  {grammar.level} · {grammar.rule}
+                </p>
+              </div>
+              <Badge variant={progress === 100 ? "success" : "default"}>
+                {progress}% complete
+              </Badge>
             </div>
-            <Badge variant={progress === 100 ? "success" : "default"}>
-              {progress}% complete
-            </Badge>
-          </div>
-          <div className="h-3 overflow-hidden rounded-full bg-white ring-1 ring-violet-200">
-            <div
-              className="h-full bg-violet-700 transition-[width]"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p
-            aria-live="polite"
-            className="rounded-xl bg-white px-4 py-3 text-sm font-bold text-violet-950"
-          >
-            {message}
-          </p>
-        </CardContent>
-      </Card> : null}
-
-      {!embedded ? <div className="grid gap-4 lg:grid-cols-3">
-        {[
-          [
-            BookOpenCheck,
-            "1. Activate & use accurately",
-            "3 min · three controlled transformations",
-            completion[0],
-          ],
-          [
-            PenLine,
-            "2. Automate & write",
-            "4 min · six sentences with four target forms",
-            completion[1],
-          ],
-          [
-            Mic,
-            "3. Speak freely & transfer",
-            "5 min · shadowing and 60 seconds without a script",
-            completion[2],
-          ],
-        ].map(([Icon, title, detail, done]) => {
-          const StepIcon = Icon as typeof BookOpenCheck;
-          return (
-            <button
-              aria-pressed={activeStep === Number(String(title).slice(0, 1)) - 1}
-              className="text-left"
-              key={String(title)}
-              onClick={() => setActiveStep(Number(String(title).slice(0, 1)) - 1)}
-              type="button"
-            ><Card
-              className={done ? "border-violet-500" : ""}
-            >
-              <CardContent className="flex gap-3 pt-5">
-                <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-800">
-                  {done ? <Check /> : <StepIcon />}
-                </span>
-                <div>
-                  <strong>{String(title)}</strong>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {String(detail)}
-                  </p>
-                </div>
-              </CardContent>
-            </Card></button>
-          );
-        })}
-      </div> : null}
-
-      {!embedded ? <Card className="border-violet-200">
-        <CardHeader>
-          <CardTitle>Mission quality gate</CardTitle>
-          <CardDescription>
-            Completed does not automatically mean mastered. Automaticity needs
-            three separate kinds of evidence.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl bg-violet-50 p-4 text-sm">
-            <strong>Accurate</strong>
-            <p className="mt-1 text-muted-foreground">
-              Use the target form correctly in your own sentences.
-            </p>
-          </div>
-          <div className="rounded-2xl bg-violet-50 p-4 text-sm">
-            <strong>Spontaneous</strong>
-            <p className="mt-1 text-muted-foreground">
-              Speak for at least 60 seconds without reading.
-            </p>
-          </div>
-          <div className="rounded-2xl bg-violet-50 p-4 text-sm">
-            <strong>Retained</strong>
-            <p className="mt-1 text-muted-foreground">
-              Recall the same form again in a later review.
-            </p>
-          </div>
-        </CardContent>
-      </Card> : null}
-
-      {!embedded && dueReview ? <Card className="border-emerald-200" id="delayed-transfer">
-        <CardHeader>
-          <CardTitle>Delayed recall and novel transfer</CardTitle>
-          <CardDescription>
-            Recall {topic} without copying your earlier answer, then use it in
-            a genuinely new situation. These are saved as two separate events.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Textarea
-            aria-label={`Delayed ${topic} transfer`}
-            onChange={(event) => setDelayedTransfer(event.target.value)}
-            placeholder="Write a new context from your life…"
-            value={delayedTransfer}
-          />
-          <Button onClick={() => void saveDelayedTransfer()}>
-            <RotateCcw className="size-4" /> Save delayed transfer
-          </Button>
-          {delayedTransferAnalysis ? (
-            <Feedback analysis={delayedTransferAnalysis} />
-          ) : null}
-        </CardContent>
-      </Card> : null}
-
-      {(focusedStep ?? activeStep) === 0 ? <Card id={`daily-activity-${stepOffset + 1}`}>
-        <CardHeader>
-          <CardTitle>{stepOffset + 1}. Lesson and controlled practice</CardTitle>
-          <CardDescription>
-            Recognition is only the first part. Every item leads to your own
-            output.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="rounded-2xl bg-violet-50 p-4">
-              <strong>Rule and form</strong>
-              <p className="mt-2">{grammar.rule}</p>
-            </div>
-            <div className="rounded-2xl bg-amber-50 p-4">
-              <strong>Examples and contrast</strong>
-              <p className="mt-2">{grammar.examples.join(" · ")}</p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Avoid: {grammar.commonError}
-              </p>
-            </div>
-          </div>
-          {exercises.map((item, index) => (
-            <label className="block space-y-2" key={item.prompt}>
-              <span className="text-sm font-bold">{item.prompt}</span>
-              <input
-                className="min-h-11 w-full rounded-xl border bg-background px-3"
-                onChange={(event) =>
-                  setAnswers((rows) =>
-                    rows.map((row, rowIndex) =>
-                      rowIndex === index ? event.target.value : row,
-                    ),
-                  )
-                }
-                value={answers[index]}
+            <div className="h-3 overflow-hidden rounded-full bg-white ring-1 ring-violet-200">
+              <div
+                className="h-full bg-violet-700 transition-[width]"
+                style={{ width: `${progress}%` }}
               />
-              {checkedAnswers.length ? (
-                <span
-                  className={
-                    checkedAnswers[index]
-                      ? "text-sm font-bold text-violet-800"
-                      : "text-sm font-bold text-red-800"
-                  }
-                >
-                  {checkedAnswers[index]
-                    ? "Correct"
-                    : `Model: ${item.expected}`}
-                </span>
-              ) : null}
-            </label>
-          ))}
-          <Button onClick={checkPractice}>Check all three</Button>
-        </CardContent>
-      </Card> : null}
-
-      {(focusedStep ?? activeStep) === 1 ? <Card id={`daily-activity-${stepOffset + 2}`}>
-        <CardHeader>
-          <CardTitle>{stepOffset + 2}. {topic} daily writing</CardTitle>
-          <CardDescription>
-            Write four or more connected sentences from your own life. Use the
-            lesson pattern accurately, then review the feedback.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Textarea
-            aria-label={`${topic} journal`}
-            onChange={(event) => setJournal(event.target.value)}
-            placeholder={grammar.examples[0] ?? "Write your own example…"}
-            value={journal}
-          />
-          <Button onClick={saveWriting}>
-            <PenLine className="size-4" /> Analyse and save writing
-          </Button>
-          {journalAnalysis ? <Feedback analysis={journalAnalysis} /> : null}
-        </CardContent>
-      </Card> : null}
-
-      {(focusedStep ?? activeStep) === 2 ? <Card id={`daily-activity-${stepOffset + 3}`}>
-        <CardHeader>
-          <CardTitle>{stepOffset + 3}. Five-stage shadowing and free speaking</CardTitle>
-          <CardDescription>
-            Listen, copy the rhythm, then retell the idea for 45–60 seconds
-            without reading.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="rounded-2xl bg-violet-950 p-5 text-violet-50">
-            <p className="leading-7">{modelText}</p>
-            <Button
-              className="mt-4 bg-white text-violet-950 hover:bg-violet-100"
-              onClick={() => speak(modelText)}
+            </div>
+            <p
+              aria-live="polite"
+              className="rounded-xl bg-white px-4 py-3 text-sm font-bold text-violet-950"
             >
-              <Volume2 className="size-4" /> Play model
-            </Button>
-          </div>
-          <div className="grid gap-2 md:grid-cols-5">
-            {shadowingStages.map((stage, index) => (
+              {message}
+            </p>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {!embedded ? (
+        <div className="grid gap-4 lg:grid-cols-3">
+          {[
+            [
+              BookOpenCheck,
+              "1. Activate & use accurately",
+              "3 min · three controlled transformations",
+              completion[0],
+            ],
+            [
+              PenLine,
+              "2. Automate & write",
+              "4 min · six sentences with four target forms",
+              completion[1],
+            ],
+            [
+              Mic,
+              "3. Speak freely & transfer",
+              "5 min · shadowing and 60 seconds without a script",
+              completion[2],
+            ],
+          ].map(([Icon, title, detail, done]) => {
+            const StepIcon = Icon as typeof BookOpenCheck;
+            return (
               <button
-                className={`min-h-24 rounded-2xl border p-3 text-left text-sm font-bold ${shadowing[index] ? "border-violet-700 bg-violet-100 text-violet-950" : "bg-background"}`}
-                key={stage}
+                aria-pressed={
+                  activeStep === Number(String(title).slice(0, 1)) - 1
+                }
+                className="text-left"
+                key={String(title)}
                 onClick={() =>
-                  writePlan(
-                    `${key}:shadow:${index}`,
-                    shadowing[index] ? "" : "done",
-                  )
+                  setActiveStep(Number(String(title).slice(0, 1)) - 1)
                 }
                 type="button"
               >
-                <span className="mb-2 block text-xs text-muted-foreground">
-                  Stage {index + 1}
-                </span>
-                {shadowing[index] ? (
-                  <Check className="mb-1 size-4" />
-                ) : (
-                  <Headphones className="mb-1 size-4" />
-                )}
-                {stage}
+                <Card className={done ? "border-violet-500" : ""}>
+                  <CardContent className="flex gap-3 pt-5">
+                    <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-violet-100 text-violet-800">
+                      {done ? <Check /> : <StepIcon />}
+                    </span>
+                    <div>
+                      <strong>{String(title)}</strong>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {String(detail)}
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
               </button>
-            ))}
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button disabled={recording} onClick={startRecording}>
-              <Mic className="size-4" /> Record
-            </Button>
-            <Button
-              disabled={!recording}
-              onClick={stopRecording}
-              variant="outline"
-            >
-              <Square className="size-4" /> Stop
-            </Button>
-            <Badge variant="secondary">{seconds}s</Badge>
-          </div>
-          <Textarea
-            aria-label="Speaking transcript"
-            onChange={(event) => setTranscript(event.target.value)}
-            placeholder="Your live or typed transcript…"
-            value={transcript}
-          />
-          <Button onClick={saveSpeaking}>Analyse and save speaking</Button>
-          {speechAnalysis ? <Feedback analysis={speechAnalysis} /> : null}
-        </CardContent>
-      </Card> : null}
+            );
+          })}
+        </div>
+      ) : null}
 
-      {focusedStep === undefined ? <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
+      {!embedded ? (
+        <Card className="border-violet-200">
           <CardHeader>
-            <CardTitle>Transparent mastery</CardTitle>
+            <CardTitle>Mission quality gate</CardTitle>
             <CardDescription>
-              Practice evidence is visible now. Only externally checked attempts
-              raise verified mastery.
+              Completed does not automatically mean mastered. Automaticity needs
+              three separate kinds of evidence.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl bg-violet-50 p-4 text-sm">
+              <strong>Accurate</strong>
+              <p className="mt-1 text-muted-foreground">
+                Use the target form correctly in your own sentences.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-violet-50 p-4 text-sm">
+              <strong>Spontaneous</strong>
+              <p className="mt-1 text-muted-foreground">
+                Speak for at least 60 seconds without reading.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-violet-50 p-4 text-sm">
+              <strong>Retained</strong>
+              <p className="mt-1 text-muted-foreground">
+                Recall the same form again in a later review.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {!embedded && dueReview ? (
+        <Card className="border-emerald-200" id="delayed-transfer">
+          <CardHeader>
+            <CardTitle>Delayed recall and novel transfer</CardTitle>
+            <CardDescription>
+              Recall {topic} without copying your earlier answer, then use it in
+              a genuinely new situation. These are saved as two separate events.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Axis
-              label="Recognition practice"
-              value={
-                checkedAnswers.length
-                  ? Math.round(
-                      (checkedAnswers.filter(Boolean).length / 3) * 100,
-                    )
-                  : (verifiedMastery?.recognitionScore ?? 0)
-              }
+            <Textarea
+              aria-label={`Delayed ${topic} transfer`}
+              onChange={(event) => setDelayedTransfer(event.target.value)}
+              placeholder="Write a new context from your life…"
+              value={delayedTransfer}
             />
-            <Axis
-              label="Writing practice"
-              value={
-                journalAnalysis?.score ?? verifiedMastery?.writingScore ?? 0
-              }
-            />
-            <Axis
-              label="Speaking practice"
-              value={
-                speechAnalysis?.score ?? verifiedMastery?.speakingScore ?? 0
-              }
-            />
-            <div className="flex gap-2">
-              <Badge>Offline practice</Badge>
-              <Badge variant="secondary">
-                Verified mastery: {verifiedMastery?.automaticityScore ?? 0}%
-              </Badge>
-            </div>
-            {/* External app checks are evidence signals, not a teacher decision. */}
-            <p className="rounded-xl border border-violet-200 bg-violet-50 p-3 text-sm" role="note">
-              <strong>Teacher-verified mastery:</strong> not recorded. The score
-              above is externally app-checked evidence and remains labelled
-              separately from human verification.
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>My grammar pattern plan</CardTitle>
-            <CardDescription>
-              Generated from today’s journal and speaking errors.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ol className="space-y-3 text-sm">
-              <li className="rounded-xl bg-violet-50 p-3">
-                <b>1. Repair:</b> correct five similar sentences.
-              </li>
-              <li className="rounded-xl bg-violet-50 p-3">
-                <b>2. Transfer:</b> create five new examples from your life.
-              </li>
-              <li className="rounded-xl bg-violet-50 p-3">
-                <b>3. Automate:</b> repeat one shadowing passage and retell it.
-              </li>
-            </ol>
-            <Button
-              className="mt-4"
-              onClick={() => {
-                setCheckedAnswers([]);
-                setJournalAnalysis(null);
-                setSpeechAnalysis(null);
-                setMessage(
-                  "Review reset. Your saved evidence remains available.",
-                );
-              }}
-              variant="outline"
-            >
-              <RotateCcw className="size-4" /> Start another review
+            <Button onClick={() => void saveDelayedTransfer()}>
+              <RotateCcw className="size-4" /> Save delayed transfer
             </Button>
-            {(journalAnalysis?.issues.length ?? 0) +
-              (speechAnalysis?.issues.length ?? 0) >
-            0 ? (
-              <p className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-sm">
-                <CircleAlert className="mt-0.5 size-4 shrink-0" /> Detected
-                errors were also added to Error Workshop for spaced repair.
-              </p>
+            {delayedTransferAnalysis ? (
+              <Feedback analysis={delayedTransferAnalysis} />
             ) : null}
           </CardContent>
         </Card>
-      </div> : null}
+      ) : null}
+
+      {(focusedStep ?? activeStep) === 0 ? (
+        <Card id={`daily-activity-${stepOffset + 1}`}>
+          <CardHeader>
+            <CardTitle>
+              {stepOffset + 1}. Lesson and controlled practice
+            </CardTitle>
+            <CardDescription>
+              Recognition is only the first part. Every item leads to your own
+              output.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="rounded-2xl bg-violet-50 p-4">
+                <strong>Rule and form</strong>
+                <p className="mt-2">{grammar.rule}</p>
+              </div>
+              <div className="rounded-2xl bg-amber-50 p-4">
+                <strong>Examples and contrast</strong>
+                <p className="mt-2">{grammar.examples.join(" · ")}</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Avoid: {grammar.commonError}
+                </p>
+              </div>
+            </div>
+            {exercises.map((item, index) => (
+              <label className="block space-y-2" key={item.prompt}>
+                <span className="text-sm font-bold">{item.prompt}</span>
+                <input
+                  className="min-h-11 w-full rounded-xl border bg-background px-3"
+                  onChange={(event) =>
+                    setAnswers((rows) =>
+                      rows.map((row, rowIndex) =>
+                        rowIndex === index ? event.target.value : row,
+                      ),
+                    )
+                  }
+                  value={answers[index]}
+                />
+                {checkedAnswers.length ? (
+                  <span
+                    className={
+                      checkedAnswers[index]
+                        ? "text-sm font-bold text-violet-800"
+                        : "text-sm font-bold text-red-800"
+                    }
+                  >
+                    {checkedAnswers[index]
+                      ? "Correct"
+                      : `Model: ${item.expected}`}
+                  </span>
+                ) : null}
+              </label>
+            ))}
+            <Button onClick={checkPractice}>Check all three</Button>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {(focusedStep ?? activeStep) === 1 ? (
+        <Card id={`daily-activity-${stepOffset + 2}`}>
+          <CardHeader>
+            <CardTitle>
+              {stepOffset + 2}. {topic} daily writing
+            </CardTitle>
+            <CardDescription>
+              Write four or more connected sentences from your own life. Use the
+              lesson pattern accurately, then review the feedback.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Textarea
+              aria-label={`${topic} journal`}
+              onChange={(event) => setJournal(event.target.value)}
+              placeholder={grammar.examples[0] ?? "Write your own example…"}
+              value={journal}
+            />
+            <Button onClick={saveWriting}>
+              <PenLine className="size-4" /> Analyse and save writing
+            </Button>
+            {journalAnalysis ? <Feedback analysis={journalAnalysis} /> : null}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {(focusedStep ?? activeStep) === 2 ? (
+        <Card id={`daily-activity-${stepOffset + 3}`}>
+          <CardHeader>
+            <CardTitle>
+              {stepOffset + 3}. Five-stage shadowing and free speaking
+            </CardTitle>
+            <CardDescription>
+              Listen, copy the rhythm, then retell the idea for 45–60 seconds
+              without reading.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="rounded-2xl bg-violet-950 p-5 text-violet-50">
+              <p className="leading-7">{modelText}</p>
+              <Button
+                className="mt-4 bg-white text-violet-950 hover:bg-violet-100"
+                onClick={() => speak(modelText)}
+              >
+                <Volume2 className="size-4" /> Play model
+              </Button>
+            </div>
+            <div className="grid gap-2 md:grid-cols-5">
+              {shadowingStages.map((stage, index) => (
+                <button
+                  className={`min-h-24 rounded-2xl border p-3 text-left text-sm font-bold ${shadowing[index] ? "border-violet-700 bg-violet-100 text-violet-950" : "bg-background"}`}
+                  key={stage}
+                  onClick={() =>
+                    writePlan(
+                      `${key}:shadow:${index}`,
+                      shadowing[index] ? "" : "done",
+                    )
+                  }
+                  type="button"
+                >
+                  <span className="mb-2 block text-xs text-muted-foreground">
+                    Stage {index + 1}
+                  </span>
+                  {shadowing[index] ? (
+                    <Check className="mb-1 size-4" />
+                  ) : (
+                    <Headphones className="mb-1 size-4" />
+                  )}
+                  {stage}
+                </button>
+              ))}
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button disabled={recording} onClick={startRecording}>
+                <Mic className="size-4" /> Record
+              </Button>
+              <Button
+                disabled={!recording}
+                onClick={stopRecording}
+                variant="outline"
+              >
+                <Square className="size-4" /> Stop
+              </Button>
+              <Badge variant="secondary">{seconds}s</Badge>
+            </div>
+            <Textarea
+              aria-label="Speaking transcript"
+              onChange={(event) => setTranscript(event.target.value)}
+              placeholder="Your live or typed transcript…"
+              value={transcript}
+            />
+            <Button onClick={saveSpeaking}>Analyse and save speaking</Button>
+            {speechAnalysis ? <Feedback analysis={speechAnalysis} /> : null}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {focusedStep === undefined ? (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Transparent mastery</CardTitle>
+              <CardDescription>
+                Practice evidence is visible now. Only externally checked
+                attempts raise verified mastery.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Axis
+                label="Recognition practice"
+                value={
+                  checkedAnswers.length
+                    ? Math.round(
+                        (checkedAnswers.filter(Boolean).length / 3) * 100,
+                      )
+                    : (verifiedMastery?.recognitionScore ?? 0)
+                }
+              />
+              <Axis
+                label="Writing practice"
+                value={
+                  journalAnalysis?.score ?? verifiedMastery?.writingScore ?? 0
+                }
+              />
+              <Axis
+                label="Speaking practice"
+                value={
+                  speechAnalysis?.score ?? verifiedMastery?.speakingScore ?? 0
+                }
+              />
+              <div className="flex gap-2">
+                <Badge>Offline practice</Badge>
+                <Badge variant="secondary">
+                  Verified mastery: {verifiedMastery?.automaticityScore ?? 0}%
+                </Badge>
+              </div>
+              {/* External app checks are evidence signals, not a teacher decision. */}
+              <p
+                className="rounded-xl border border-violet-200 bg-violet-50 p-3 text-sm"
+                role="note"
+              >
+                <strong>Teacher-verified mastery:</strong> not recorded. The
+                score above is externally app-checked evidence and remains
+                labelled separately from human verification.
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>My grammar pattern plan</CardTitle>
+              <CardDescription>
+                Generated from today’s journal and speaking errors.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ol className="space-y-3 text-sm">
+                <li className="rounded-xl bg-violet-50 p-3">
+                  <b>1. Repair:</b> correct five similar sentences.
+                </li>
+                <li className="rounded-xl bg-violet-50 p-3">
+                  <b>2. Transfer:</b> create five new examples from your life.
+                </li>
+                <li className="rounded-xl bg-violet-50 p-3">
+                  <b>3. Automate:</b> repeat one shadowing passage and retell
+                  it.
+                </li>
+              </ol>
+              <Button
+                className="mt-4"
+                onClick={() => {
+                  setCheckedAnswers([]);
+                  setJournalAnalysis(null);
+                  setSpeechAnalysis(null);
+                  setMessage(
+                    "Review reset. Your saved evidence remains available.",
+                  );
+                }}
+                variant="outline"
+              >
+                <RotateCcw className="size-4" /> Start another review
+              </Button>
+              {(journalAnalysis?.issues.length ?? 0) +
+                (speechAnalysis?.issues.length ?? 0) >
+              0 ? (
+                <p className="mt-3 flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-sm">
+                  <CircleAlert className="mt-0.5 size-4 shrink-0" /> Detected
+                  errors were also added to Error Workshop for spaced repair.
+                </p>
+              ) : null}
+            </CardContent>
+          </Card>
+        </div>
+      ) : null}
     </div>
   );
 }

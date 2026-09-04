@@ -7,12 +7,15 @@
     ".": "./src/index.ts",
     "./adherence": "./src/adherence/index.ts",
     "./fsrs-shadow": "./src/fsrs-shadow/index.ts",
+    "./automaticity": "./src/automaticity/index.ts",
     "./schema": "./schemas/learning-vertical-slice.schema.json",
     "./measurement-schema": "./schemas/measurement-contract.schema.json",
     "./mediation-schema": "./schemas/mediation-content-pilot.schema.json"
   },
   "scripts": {
     "build:browser": "bun build src/adherence/browser-entry.ts --target=browser --format=iife --global-name=AutomaticityAdherenceShadow --outfile=browser/adherence-shadow.js --minify && bun build src/booster/browser-entry.ts --target=browser --format=iife --global-name=AutomaticityForcedOutputBooster --outfile=browser/forced-output-booster.js --minify",
+    "build:automaticity": "bun build src/automaticity/browser-entry.ts --target=browser --format=iife --global-name=AutomaticityV2 --outfile=browser/automaticity-v2.js --minify",
+    "test:automaticity": "bun test src/automaticity/automaticity.test.ts",
     "test:booster": "bun test src/booster/booster.test.ts",
     "test:fsrs-shadow": "bun test src/fsrs-shadow",
     "test": "bun test",

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { captureCompleteBackup, validateCompleteBackup, restoreCompleteBackup } from "@automaticity/learning-core/automaticity";
 import Link from "next/link";
 import {
 	Download,
@@ -13,7 +14,6 @@ import {
 	Wand2,
 } from "lucide-react";
 import {
-	buildLearningDataExport,
 	buildPrivacySafeMeasurementExport,
 	captureMeasurementBaseline,
 	deleteLocalMeasurementData,
@@ -26,7 +26,6 @@ import {
 	readMeasurementConsent,
 	revokeMeasurementConsent,
 	validatePrivacySafeMeasurementExport,
-	writeLearningEvidenceLedger,
 	type MeasurementBaseline,
 	type MeasurementConsent,
 } from "@automaticity/learning-core";
@@ -63,7 +62,7 @@ const MEASUREMENT_APP_VERSION = "27.3.13";
 const MEASUREMENT_FILE_NAME = "automaticity-measurement-en.json";
 
 export function SettingsScreen() {
-	const { state, mutate, replaceState } = useAppStore();
+	const { state, mutate } = useAppStore();
 	const { settings } = state;
 	const [exportStatus, setExportStatus] = React.useState("");
 	const [importStatus, setImportStatus] = React.useState("");
@@ -180,51 +179,22 @@ export function SettingsScreen() {
 		);
 	}
 
-	async function exportData() {
-		setExporting(true);
-		setExportStatus("");
-		// Keep the legacy learner state and normalized evidence ledger together.
-		// A backup that omits responses/evidence/events is not a truthful export.
-		const contents = JSON.stringify(
-			buildLearningDataExport({
-				language: "en",
-				exportedAt: new Date().toISOString(),
-				learnerState: state,
-				storage: window.localStorage,
-			}),
-			null,
-			2,
-		);
 
-		try {
-			const savedDirectory = supportsBackupDirectoryPicker()
-				? await getBackupDirectory()
-				: null;
-			if (savedDirectory) {
-				await writeBackupToDirectory(savedDirectory, contents);
-				setExportStatus(`Backup saved to "${savedDirectory.name}".`);
-			} else {
-				downloadBackup(contents);
-				setExportStatus(`Backup downloaded as "${BACKUP_FILE_NAME}".`);
-			}
-		} catch (error) {
-			if (
-				error instanceof DOMException &&
-				(error.name === "AbortError" || error.name === "SecurityError")
-			) {
-				downloadBackup(contents);
-				setExportStatus(
-					"Folder access was unavailable, so the backup was downloaded instead.",
-				);
-			} else {
-				setExportStatus(
-					error instanceof Error ? error.message : "Backup export failed.",
-				);
-			}
-		} finally {
-			setExporting(false);
-		}
-	}
+  async function exportData() {
+    setExporting(true); setExportStatus("");
+    let contents: string | null = null;
+    try {
+      const backup = await captureCompleteBackup({storage: localStorage, indexedDB}, "en", new Date().toISOString(), [["grammar-automaticity:v27", JSON.stringify(state)]]);
+      contents = JSON.stringify(backup, null, 2);
+      const directory = supportsBackupDirectoryPicker() ? await getBackupDirectory() : null;
+      if (directory) { await writeBackupToDirectory(directory, contents); setExportStatus(`Complete backup saved to "${directory.name}".`); }
+      else { downloadBackup(contents); setExportStatus(`Complete backup downloaded as "${BACKUP_FILE_NAME}".`); }
+    } catch (error) {
+      if (contents !== null && error instanceof DOMException && ["AbortError", "SecurityError"].includes(error.name)) {
+        downloadBackup(contents); setExportStatus("Folder access was unavailable. The complete backup was downloaded instead.");
+      } else setExportStatus(error instanceof Error ? error.message : "Backup export failed.");
+    } finally { setExporting(false); }
+  }
 
 	async function selectFolderAndExport() {
 		try {
@@ -235,49 +205,25 @@ export function SettingsScreen() {
 		await exportData();
 	}
 
-	async function importData(event: React.ChangeEvent<HTMLInputElement>) {
-		const input = event.currentTarget;
-		const file = input.files?.[0];
-		if (!file) return;
-		setImportStatus("");
-		try {
-			const backup = parseLearningDataExport<typeof state>(
-				JSON.parse(await file.text()),
-				"en",
-			);
-			if (!backup) {
-				setImportStatus(
-					"This file is not an English Automaticity backup. Nothing was changed.",
-				);
-				return;
-			}
-			if (
-				!window.confirm(
-					"Restore this backup? It will replace the learning progress currently stored on this device. The file is not uploaded.",
-				)
-			) {
-				setImportStatus("Restore cancelled. Your current progress was kept.");
-				return;
-			}
-			// Restore both halves of the versioned backup only after validation and
-			// confirmation, so a wrong JSON file cannot silently erase local work.
-			writeLearningEvidenceLedger(
-				window.localStorage,
-				backup.learningEvidence,
-			);
-			replaceState(backup.learnerState);
-			setImportStatus(
-				`Backup from ${new Date(backup.exportedAt).toLocaleDateString()} restored on this device.`,
-			);
-		} catch {
-			setImportStatus(
-				"This backup could not be read. Nothing was changed; try exporting a new backup.",
-			);
-		} finally {
-			// Reset the picker so the same file can be selected again after a cancel.
-			input.value = "";
-		}
-	}
+
+  async function importData(event: React.ChangeEvent<HTMLInputElement>) {
+    const input=event.currentTarget, file=input.files?.[0]; if(!file)return;
+    setImportStatus("");
+    try {
+      const parsed: unknown = JSON.parse(await file.text());
+      const legacy = parseLearningDataExport<typeof state>(parsed, "en");
+      const persistence = {storage: localStorage, indexedDB};
+      const backup = legacy
+        ? await captureCompleteBackup(persistence, "en", legacy.exportedAt, [["grammar-automaticity:v27", JSON.stringify(legacy.learnerState)], ["automaticity:learning-evidence:v1", JSON.stringify(legacy.learningEvidence)]])
+        : await validateCompleteBackup(parsed, "en");
+      const message = "Close other app tabs before restoring. Replace local learning data with this backup? A recovery copy protects against interruption. The file stays on this device.";
+      const legacyNote = legacy ? " This older backup contains no recordings. Existing recordings on this device will be kept." : "";
+      if(!window.confirm(message + legacyNote)) {setImportStatus("Restore cancelled. Your current data was kept.");return;}
+      await restoreCompleteBackup(persistence, backup, "en");
+      window.location.reload();
+    } catch(error) {setImportStatus(error instanceof Error ? error.message : "Restore failed. Reopen the app to recover an interrupted restore.");}
+    finally {input.value="";}
+  }
 
 	return (
 		<div className="page-stack settings-screen">

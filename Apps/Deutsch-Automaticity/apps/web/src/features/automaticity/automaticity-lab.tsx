@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { grammarUnits } from "@grammar/content";
+import { detectAnswerLanguage } from "@grammar/domain";
 import {
   appendLearningEvidenceBundleToStorage,
   buildAttemptVerticalSlice,
@@ -263,7 +264,13 @@ export function AutomaticityLab({
   async function analyzeLessonOutput(
     text: string,
     minimumSentences: number,
-  ): Promise<AutomatikAnalysis> {
+  ): Promise<AutomatikAnalysis | null> {
+    if (detectAnswerLanguage(text) !== "de") {
+      setMessage(
+        "Die Sprache ist für diese Prüfung nicht eindeutig Deutsch. Die Antwort wurde noch nicht bewertet.",
+      );
+      return null;
+    }
     if (TOPIC === "Nebensatz mit weil") return analyzeWeilClause(text);
     const result = await requestEvaluation({
       allowOnlineFeedback: state.learner.allowOnlineAI,
@@ -278,6 +285,12 @@ export function AutomaticityLab({
       taskPrompt: `Verwende ${grammar.title} in eigenen, zusammenhängenden Sätzen.`,
       spellingAffectsMastery: state.settings.spellingAffectsMastery,
     });
+    if (result.accuracyScore === null) {
+      setMessage(
+        result.issues[0]?.message ?? "Die Antwort wurde noch nicht bewertet.",
+      );
+      return null;
+    }
     const sentenceCount = text
       .split(/(?:[.!?]+|\n+)/)
       .map((row) => row.trim())
@@ -369,6 +382,7 @@ export function AutomaticityLab({
     const occurredAt = new Date().toISOString();
     setJournalAnalysis(analysis);
     setDailyAnswer(`${KEY}:journal`, journal);
+    if (!analysis) return;
     recordAttempt({
       topic: TOPIC,
       mode: "writing",
@@ -527,6 +541,7 @@ export function AutomaticityLab({
     const analysis = await analyzeLessonOutput(transcript, 2);
     setSpeechAnalysis(analysis);
     setDailyAnswer(`${KEY}:transcript`, transcript);
+    if (!analysis) return;
     const fluencyScore = Math.min(
       100,
       Math.round((analysis.wordCount / Math.max(1, seconds) / 2) * 100),

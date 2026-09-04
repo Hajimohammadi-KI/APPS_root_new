@@ -1,6 +1,10 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "deutschflow-v24-feedback-1";
+const CACHE = "deutschflow-automaticity-v2-20260905";
 const CORE = [
+  "/practice",
+  "/learning-core/practice.js",
+  "/learning-core/practice.css",
+  "/learning-core/curriculum-de.json",
   "/",
   "/audio",
   "/fehler",

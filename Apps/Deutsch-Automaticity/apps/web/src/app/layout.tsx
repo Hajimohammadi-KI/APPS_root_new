@@ -1,3 +1,4 @@
+import { LearningRecoveryBoundary } from "@/features/settings/learning-recovery-boundary";
 import type { Metadata, Viewport } from "next";
 
 import "./globals.css";
@@ -56,11 +57,11 @@ export default function RootLayout({
     // learning aids opt into RTL only on their own scoped containers.
     <html lang="de" dir="ltr">
       <body>
-        <Providers>
+        <LearningRecoveryBoundary><Providers>
           <AppShell>{children}</AppShell>
           <DeepLSelectionTranslator />
           <GuardedNudge />
-        </Providers>
+        </Providers></LearningRecoveryBoundary>
       </body>
     </html>
   );

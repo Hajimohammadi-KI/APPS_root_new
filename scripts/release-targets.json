@@ -72,7 +72,7 @@
         "rootDirectory": "Apps/Study-Tracker",
         "configFile": "Apps/Study-Tracker/vercel.json"
       },
-      "build": { "command": "bun", "args": ["run", "build"] },
+      "build": { "command": "bun", "args": ["run", "build:all"] },
       "localChecks": [
         { "url": "http://127.0.0.1:4312/", "kind": "html", "includes": ["dir=\"ltr\""] },
         { "url": "http://127.0.0.1:4313/v1/health", "kind": "json", "expected": { "ok": true, "service": "cross-repository-api" } }

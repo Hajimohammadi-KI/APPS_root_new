@@ -9,7 +9,7 @@ status reviewed on 1 September 2026.
 | --- | --- | --- | --- | --- |
 | English learning | English Automaticity | `Apps/English/English-Automaticity` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
 | German learning | Deutsch Automaticity | `Apps/Deutsch-Automaticity` | local 3210; Vercel project `deutschflow-grammar` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
-| Study planning | Cross Repository Tracker | `Apps/Cross-Repository-Tracker` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
+| Study planning | Cross Repository Tracker | `Apps/Study-Tracker` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
 | Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
 | Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
 

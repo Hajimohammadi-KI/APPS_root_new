@@ -8,7 +8,8 @@ const root = resolve(import.meta.dirname, "..");
 const contractFiles = [
   "Apps/English/English-Automaticity/apps/web/app/styles/100-interaction-direction.css",
   "Apps/Deutsch-Automaticity/apps/web/src/app/styles/100-interaction-direction.css",
-  "Apps/Cross-Repository-Tracker/app/styles/100-interaction-direction.css",
+  // The active Tracker was restored under its original Study-Tracker folder so release and UI checks use one canonical source.
+  "Apps/Study-Tracker/app/styles/100-interaction-direction.css",
   "Apps/Apps-For-Integeration/Einstellungen-APP/app/styles/100-interaction-direction.css",
   "Apps/Apps-For-Integeration/Reader-PDF-App/app/styles/100-interaction-direction.css",
 ];

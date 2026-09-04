@@ -58,7 +58,7 @@
     {
       "id": "tracker",
       "name": "Cross Repository Tracker",
-      "projectDir": "Apps/Cross-Repository-Tracker",
+      "projectDir": "Apps/Study-Tracker",
       "owner": {
         "name": "Elahe Hajimohammadi",
         "github": "Hajimohammadi-KI",
@@ -69,8 +69,8 @@
       "deployment": {
         "provider": "vercel",
         "projectName": "study-tracker-plan",
-        "rootDirectory": "Apps/Cross-Repository-Tracker",
-        "configFile": "Apps/Cross-Repository-Tracker/vercel.json"
+        "rootDirectory": "Apps/Study-Tracker",
+        "configFile": "Apps/Study-Tracker/vercel.json"
       },
       "build": { "command": "bun", "args": ["run", "build"] },
       "localChecks": [

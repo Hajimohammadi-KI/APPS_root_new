@@ -43,7 +43,8 @@ function wslLaunch(appRoot) {
 
 const englishRoot = join(appsRoot, "English", "English-Automaticity");
 const germanRoot = join(appsRoot, "Deutsch-Automaticity");
-const trackerRoot = join(appsRoot, "Cross-Repository-Tracker");
+// Use the restored canonical Tracker tree; all launch and release tooling now resolves this same directory.
+const trackerRoot = join(appsRoot, "Study-Tracker");
 const settingsRoot = join(integration, "Einstellungen-APP");
 const pdfReaderRoot = join(integration, "Reader-PDF-App");
 

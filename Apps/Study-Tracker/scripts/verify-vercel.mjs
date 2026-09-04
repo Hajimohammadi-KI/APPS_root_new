@@ -136,7 +136,12 @@ try {
     await persistencePage.clock.setFixedTime(new Date("2026-10-19T10:00:00+02:00"));
     await persistencePage.goto(`${baseUrl}/`, { waitUntil: "domcontentloaded", timeout: 45_000 });
     await persistencePage.waitForTimeout(1_000);
-    await persistencePage.getByRole("button", { name: "Lernplan starten", exact: true }).click();
+    // A production profile may now ship with the canonical October plan already
+    // active. Start it only when the pre-start action is actually present.
+    const startPlanButton = persistencePage.getByRole("button", { name: "Lernplan starten", exact: true });
+    if (await startPlanButton.isVisible().catch(() => false)) {
+      await startPlanButton.click();
+    }
     await persistencePage.waitForFunction(() => {
       const checkbox = document.querySelector(".today-task-list input[type=checkbox]");
       return checkbox instanceof HTMLInputElement && !checkbox.disabled;

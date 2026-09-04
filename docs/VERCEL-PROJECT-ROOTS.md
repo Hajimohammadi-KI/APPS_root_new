@@ -12,7 +12,7 @@ The public applications are separate Vercel projects inside this repository. Ver
 
 ## Verification
 
-On 29 August 2026, authenticated Vercel CLI `58.7.1` inspection confirmed the four Dashboard Root Directory values above and the Next.js default output directory. The tracked contract is checked without credentials by:
+On 4 September 2026, authenticated Vercel CLI `59.11.7` inspection found two live-setting regressions: English still targeted the retired `Apps/English/English-07082026` directory and Tracker targeted the repository root. Both project settings were corrected to the canonical directories in the table, redeployed from commit `aac165c`, and reached READY. The tracked contract is checked without credentials by:
 
 ```powershell
 node --test scripts/vercel-project-roots.test.mjs

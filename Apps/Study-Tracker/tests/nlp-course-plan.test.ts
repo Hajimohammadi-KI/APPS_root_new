@@ -164,7 +164,8 @@ describe("Advanced Deep Learning reading plan", () => {
     expect(nlpSessionsRelatedToPlanDay("Problemstellung und Projektwert")).toEqual([]);
   });
 
-  test("contains exactly 18 unique files from the authoritative NLP course folder", () => {
+  // The corpus lives outside this repository, so a clean app checkout records this check as unavailable instead of failing the product suite.
+  test.skipIf(!existsSync(readingFolder))("contains exactly 18 unique files from the authoritative NLP course folder", () => {
     expect(articleReadings).toHaveLength(18);
     expect(articleReadings.map((reading) => reading.order)).toEqual(
       Array.from({ length: 18 }, (_, index) => index + 6),
@@ -321,12 +322,17 @@ describe("Advanced Deep Learning reading plan", () => {
     }
   });
 
-  test("records Revision 11 with the capacity-based full-time plan", () => {
-    expect(PLAN_VERSION).toBe(11);
-    expect(PLAN_VERSION_HISTORY.at(-1)?.effectiveDate).toBe("2026-08-31");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksRemoved.join(" ")).toContain("25 Planwochen");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksMoved.join(" ")).toContain("16-Stunden-Zyklus");
-    expect(PLAN_VERSION_HISTORY.at(-1)?.tasksAdded.join(" ")).toContain("37 kapazitätsbasierte Wochen");
+  test("records the current start-date revision without losing the capacity-based plan", () => {
+    // Revision 12 changes only the start date; Revision 11 remains the evidence for the full-time capacity calculation.
+    const capacityRevision = PLAN_VERSION_HISTORY.find((entry) => entry.version === 11);
+    const currentRevision = PLAN_VERSION_HISTORY.at(-1);
+    expect(PLAN_VERSION).toBe(12);
+    expect(currentRevision?.effectiveDate).toBe("2026-09-01");
+    expect(currentRevision?.tasksMoved.join(" ")).toContain("15. Oktober 2026");
+    expect(currentRevision?.tasksAdded.join(" ")).toContain("15. Oktober 2026");
+    expect(capacityRevision?.tasksRemoved.join(" ")).toContain("25 Planwochen");
+    expect(capacityRevision?.tasksMoved.join(" ")).toContain("16-Stunden-Zyklus");
+    expect(capacityRevision?.tasksAdded.join(" ")).toContain("37 kapazitätsbasierte Wochen");
     expect(appPackage.version).toBe("0.7.1-version2");
     expect(nlpLabDefinition.courseStart).toBe("2026-08-17");
     expect(nlpLabDefinition.courseEnd).toBe("2026-09-07");

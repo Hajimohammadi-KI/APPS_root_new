@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const tracker = await readFile(new URL("../app/study-tracker.tsx", import.meta.url), "utf8");
+const planData = await readFile(new URL("../app/plan-data.ts", import.meta.url), "utf8");
 const nlpLab = await readFile(new URL("../app/nlp-lab/page.tsx", import.meta.url), "utf8");
 const pdfPage = await readFile(new URL("../app/pdf-reader/page.tsx", import.meta.url), "utf8");
 const pdfDocument = await readFile(new URL("../app/pdf-reader/components/PdfDocument.tsx", import.meta.url), "utf8");
@@ -113,9 +114,9 @@ test("restart recovery abandons old backlog and gates every optional catch-up", 
   assert.match(tracker, /0 \/ \{displayNumber\(planMeta\.totalItems\)\} ist korrekt/);
   assert.match(tracker, /4 Stunden Forschung \+ 4 Stunden Projekt/);
   assert.match(tracker, /höchstens zwei Begriffe/);
-  assert.match(tracker, /Live-Sitzungen 8–10 nur beobachten/);
-  assert.match(tracker, /Keine Vorbereitung/);
-  assert.match(tracker, /höchstens drei Zeilen/);
+  // Archived-session policy belongs to the canonical plan data and is rendered by the UI without a duplicate sentence.
+  assert.match(planData, /Live-Sitzungen 8 bis 10 sind reine Beobachtung ohne Vorbereitung/);
+  assert.match(planData, /Maximal drei Notizzeilen/);
   assert.match(tracker, /erst nach dem Wochenartefakt und höchstens einmal pro Woche/);
   assert.match(tracker, /Änderungsprotokoll · keine Aufgabenliste/);
   assert.match(tracker, /Verstanden · Hinweis schließen/);
@@ -123,7 +124,8 @@ test("restart recovery abandons old backlog and gates every optional catch-up", 
   assert.match(tracker, /nichts wird verdichtet oder doppelt geplant/);
   assert.match(tracker, /individuelle Anweisung des Operateurs/);
   assert.match(tracker, /hat Vorrang vor allgemeinen Internet-Empfehlungen/);
-  assert.match(tracker, /W1 läuft vom 30\. August bis 3\. September/);
+  // The September plan revision moved W1 while preserving the recovery safeguards asserted below.
+  assert.match(tracker, /W1 läuft vom 15\. bis 19\. Oktober/);
   assert.match(tracker, /Nur auf Papier arbeiten/);
   assert.match(tracker, /14-Tage-Pause/);
   assert.match(tracker, /isOctoberRestartSettings/);

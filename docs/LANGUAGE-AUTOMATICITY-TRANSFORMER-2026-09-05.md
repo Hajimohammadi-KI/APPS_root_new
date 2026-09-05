@@ -54,4 +54,4 @@ The app update can be installed and used with model assessment disabled. Content
 
 ## Delivery verification
 
-English 27.3.33 and DeutschFlow 20.8.37 are being packaged. Full English checks and full DeutschFlow verification passed. Installer lifecycle, normal-profile preservation and installed browser verification will be recorded here after execution.
+English 27.3.34 and DeutschFlow 20.8.38 are being packaged. Full English checks and full DeutschFlow verification passed. Installer lifecycle, normal-profile preservation and installed browser verification will be recorded here after execution.

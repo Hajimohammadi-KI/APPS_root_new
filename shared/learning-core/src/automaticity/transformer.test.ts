@@ -451,6 +451,35 @@ test("missing release keeps the installed route disabled without invoking a prov
   expect((await response.json()).assessment).toBeNull();
   expect(calls).toBe(0);
 });
+test("standalone loopback Host is honoured without accepting unrelated origins or forwarded hosts", async () => {
+  const handler = createTransformerRoute({
+    language: "en",
+    loadRelease: async () => null,
+    loadPack: async () => pack(),
+  });
+  for (const [host, origin, status] of [
+    ["127.0.0.1:3202", "http://127.0.0.1:3202", 200],
+    ["localhost:3202", "http://localhost:3202", 200],
+    ["127.0.0.1:3202", "http://localhost:3202", 403],
+    ["127.0.0.1:3202", "http://127.0.0.1:3203", 403],
+    ["127.0.0.1:3202", "https://unrelated.example", 403],
+    ["unrelated.example", "http://unrelated.example", 403],
+    ["127.0.0.1:3202", "null", 403],
+  ] as const) {
+    const response = await handler(
+      new Request("http://localhost:3202/api/automaticity/transformer", {
+        method: "POST",
+        headers: {
+          Host: host,
+          Origin: origin,
+          "X-Forwarded-Host": "unrelated.example",
+        },
+        body: "{}",
+      }),
+    );
+    expect(response.status).toBe(status);
+  }
+});
 test("installed client and route bind a qualified proposal to the original saved attempt", async () => {
   const record = await attempt(),
     baseline = assessControlledTask(record, task, at, "baseline");

@@ -20,6 +20,29 @@ export interface TransformerRelease {
     qualificationSha256: string;
   };
 }
+/** Next's standalone server can reconstruct a 127.0.0.1 request as localhost.
+ * Honour the actual Host only for equivalent loopback bindings and the same port.
+ * Forwarded hosts and arbitrary external hosts cannot widen this boundary.
+ */
+function matchesRequestOrigin(request: Request, origin: string): boolean {
+  try {
+    const internal = new URL(request.url);
+    const host = request.headers.get("host") ?? internal.host;
+    const supplied = new URL(origin);
+    if (origin !== supplied.origin || supplied.host !== host) return false;
+    if (origin === internal.origin) return true;
+    const loopback = new Set(["localhost", "127.0.0.1", "[::1]"]);
+    return (
+      internal.protocol === "http:" &&
+      supplied.protocol === "http:" &&
+      loopback.has(internal.hostname) &&
+      loopback.has(supplied.hostname) &&
+      internal.port === supplied.port
+    );
+  } catch {
+    return false;
+  }
+}
 export async function validateTransformerRelease(
   value: unknown,
 ): Promise<TransformerRelease> {
@@ -71,7 +94,7 @@ export function createTransformerRoute(options: {
     const headers = { "Cache-Control": "no-store" },
       origin = request.headers.get("origin");
     if (
-      (origin && origin !== new URL(request.url).origin) ||
+      (origin && !matchesRequestOrigin(request, origin)) ||
       request.headers.get("sec-fetch-site") === "cross-site"
     )
       return Response.json({ available: false }, { status: 403, headers });

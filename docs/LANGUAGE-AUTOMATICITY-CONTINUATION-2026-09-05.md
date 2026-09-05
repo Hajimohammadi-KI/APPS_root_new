@@ -61,6 +61,8 @@ Source revision: `d7417d53ab3e4a2d35299ce326c957aa6c6b5e48` plus the recorded wo
 
 ## Remaining gates
 
+The subsequent [HTML-roadmap and release-gate update](LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md) adds automatic green progress tracking, recorded content-review validation and task-level evaluator approval checks. It changes workspace tooling and preserves this installed release.
+
 The current catalog contains 112 English and 144 German construction drafts, 2,128 and 2,592 typed tasks, and 3,584 construction × modality × stage cells spanning all 21 strategy families. **Zero cells are independently human-reviewed or release-qualified.** This is the starting catalog, not proof of exhaustive grammar coverage. Reference review must identify omissions and verify task semantics, alternatives and prerequisites.
 
 Open answers have a local review path and remain unassessed when a suitable judgment is unavailable. No Transformer has passed the required benchmark. Historical recordings stay available in their original audio libraries; missing historical audio links, timing, help use or assessment provenance are not reconstructed as v2 proof.

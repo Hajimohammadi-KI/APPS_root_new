@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["bun", "node"],
+    "typeRoots": ["../Apps/Deutsch-Automaticity/node_modules/@types"]
+  },
+  "include": [
+    "language-roadmap.ts",
+    "roadmap/fixture-server.ts",
+    "lib/automaticity-release-reviews.ts",
+    "check-automaticity-coverage.ts",
+    "prepare-automaticity-content-review.ts",
+    "verify-automaticity-release-reviews.ts"
+  ]
+}

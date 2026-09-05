@@ -14,6 +14,7 @@ try {
   for (const [name, change, expected] of [
     ["stale-content", row => { row.contentVersion = "previous-content-version"; }, /Stale coverage version/],
     ["unsupported-review", row => { row.humanReview = "complete"; row.releaseEligible = true; }, /review absent from the content pack/],
+    ["invented-evaluator", row => { row.evaluator = "invented-approved-evaluator"; }, /Stale or invented evaluator mapping/],
   ]) {
     const fixture = structuredClone(original); change(fixture.cells[0]);
     const file = resolve(output, `${name}.json`); await writeFile(file, JSON.stringify(fixture));

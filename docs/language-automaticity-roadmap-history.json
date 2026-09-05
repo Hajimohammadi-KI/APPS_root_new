@@ -1,387 +1,10 @@
 {
-  "schemaVersion": 1,
-  "createdOn": "2026-09-04",
-  "workspace": "D:\\APPS_root_new",
-  "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
-  "status": "in_progress",
-  "updatedOn": "2026-09-05",
-  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
-  "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
-  "statusDefinitions": {
-    "planned": "Work specified; not executed.",
-    "in_progress": "Execution started; evidence incomplete.",
-    "implemented": "Artifacts/code exist; required verification is incomplete.",
-    "verified": "Ticket-specific acceptance evidence recorded; not a global effectiveness claim.",
-    "blocked": "A concrete external or technical blocker is recorded.",
-    "deferred": "Conditional work is deliberately postponed with a reason."
-  },
-  "ownerNote": "Roles are requirements, not assignments to named people. Human review and learner participation are not assumed completed or booked.",
-  "touchpoints": {
-    "root": {
-      "path": ".",
-      "purpose": "Workspace, runtime manifest and task evidence"
-    },
-    "release": {
-      "path": "scripts",
-      "purpose": "Readiness and isolated installer lifecycle"
-    },
-    "core": {
-      "path": "shared/learning-core",
-      "purpose": "Canonical shared contracts, evidence, scheduling and mirror sync"
-    },
-    "en_content": {
-      "path": "Apps/English/English-Automaticity/packages/content/src",
-      "purpose": "English curriculum, taxonomy, task authoring"
-    },
-    "de_content": {
-      "path": "Apps/Deutsch-Automaticity/packages/content/src",
-      "purpose": "German curriculum and exercise completion"
-    },
-    "en_assessment": {
-      "path": "Apps/English/English-Automaticity/apps/api/src/assessment",
-      "purpose": "English upstream assessment contract and service"
-    },
-    "en_client": {
-      "path": "Apps/English/English-Automaticity/apps/web/lib",
-      "purpose": "English assessment, audio and planning adapters"
-    },
-    "de_domain": {
-      "path": "Apps/Deutsch-Automaticity/packages/domain/src",
-      "purpose": "German pure evaluation, mastery and scheduling"
-    },
-    "de_contracts": {
-      "path": "Apps/Deutsch-Automaticity/packages/contracts",
-      "purpose": "German versioned API contracts"
-    },
-    "en_static": {
-      "path": "Apps/English/English-Automaticity/apps/web/public/replacements/en",
-      "purpose": "Active English Daily and Grammar runtime"
-    },
-    "de_static": {
-      "path": "Apps/Deutsch-Automaticity/apps/web/public/replacements/de",
-      "purpose": "Active German Daily and Grammar runtime"
-    },
-    "en_features": {
-      "path": "Apps/English/English-Automaticity/apps/web/features",
-      "purpose": "English state, Studio, progress and review"
-    },
-    "de_features": {
-      "path": "Apps/Deutsch-Automaticity/apps/web/src/features",
-      "purpose": "German state, Studio, progress and review"
-    },
-    "en_scripts": {
-      "path": "Apps/English/English-Automaticity/scripts",
-      "purpose": "English generated curriculum, payload and installer"
-    },
-    "de_scripts": {
-      "path": "Apps/Deutsch-Automaticity/scripts",
-      "purpose": "German generated curriculum, payload and installer"
-    },
-    "en_tests": {
-      "path": "Apps/English/English-Automaticity/tests/e2e",
-      "purpose": "English browser journeys"
-    },
-    "de_tests": {
-      "path": "Apps/Deutsch-Automaticity/tests/e2e",
-      "purpose": "German browser journeys"
-    },
-    "research": {
-      "path": "research/cefr-classification",
-      "purpose": "Existing CEFR research; separate from grammar feedback"
-    },
-    "docs": {
-      "path": "docs",
-      "purpose": "Strategy, reviewed scope, reports and protocols"
-    }
-  },
-  "phases": [
-    {
-      "id": "baseline",
-      "title": "Establish the current baseline",
-      "priority": "P0",
-      "exit": "Canonical routes and storage mapped; preservation fixtures and defect reproductions saved."
-    },
-    {
-      "id": "integrity",
-      "title": "Fix incorrect assessment and evidence",
-      "priority": "P0",
-      "exit": "Known false-success, answer-exposure and verification-conflict cases cannot award independent credit."
-    },
-    {
-      "id": "evidence",
-      "title": "Build the shared evidence foundation",
-      "priority": "P0",
-      "exit": "One versioned record and reducer serve both apps without losing historical data."
-    },
-    {
-      "id": "curriculum",
-      "title": "Map the complete grammar scope",
-      "priority": "P1",
-      "exit": "All current lessons and all 21 families mapped; every missing required cell creates work."
-    },
-    {
-      "id": "loop",
-      "title": "Connect complete learning cycles",
-      "priority": "P1",
-      "exit": "Representative speaking and writing cycles work on actual static and React routes."
-    },
-    {
-      "id": "daily",
-      "title": "Make daily practice usable and personal",
-      "priority": "P1",
-      "exit": "The learner can start, repair, resume and review with clear reasons and honest progress."
-    },
-    {
-      "id": "models",
-      "title": "Evaluate and integrate suitable model assistance",
-      "priority": "P1",
-      "exit": "Task-specific benchmarks determine supported families; unsupported functions abstain."
-    },
-    {
-      "id": "expansion",
-      "title": "Complete all grammar families",
-      "priority": "P1",
-      "exit": "Every required curriculum cell has reviewed content, an appropriate assessment path and verified learner-route evidence."
-    },
-    {
-      "id": "pilot",
-      "title": "Measure independent learner performance",
-      "priority": "P1",
-      "exit": "Dated baseline, transfer and delayed outcomes reported separately by language and mode."
-    },
-    {
-      "id": "scheduling",
-      "title": "Evaluate adaptive review scheduling",
-      "priority": "P2",
-      "exit": "A prospective comparison supports activation or documents retention of the baseline."
-    },
-    {
-      "id": "release",
-      "title": "Verify each delivered increment",
-      "priority": "P0",
-      "exit": "Exact build and installer receipts demonstrate functional routes and data preservation."
-    },
-    {
-      "id": "research",
-      "title": "Consider reinforcement learning only with sufficient evidence",
-      "priority": "P3",
-      "exit": "A recorded decision either opens a bounded experiment or defers it without blocking the core product."
-    }
-  ],
-  "families": [
-    {
-      "id": "G01",
-      "name": "Basic clause structure",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W01",
-      "status": "planned"
-    },
-    {
-      "id": "G02",
-      "name": "Nouns and reference",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W01",
-      "status": "planned"
-    },
-    {
-      "id": "G03",
-      "name": "Determiners",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W01",
-      "status": "planned"
-    },
-    {
-      "id": "G04",
-      "name": "Pronouns",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W01",
-      "status": "planned"
-    },
-    {
-      "id": "G05",
-      "name": "Adjectives and adverbs",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W01",
-      "status": "planned"
-    },
-    {
-      "id": "G06",
-      "name": "Present and past",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W02",
-      "status": "planned"
-    },
-    {
-      "id": "G07",
-      "name": "Future and temporal relations",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W02",
-      "status": "planned"
-    },
-    {
-      "id": "G08",
-      "name": "Verb patterns and valency",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W02",
-      "status": "planned"
-    },
-    {
-      "id": "G09",
-      "name": "Nonfinite constructions",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W02",
-      "status": "planned"
-    },
-    {
-      "id": "G10",
-      "name": "Modality",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W02",
-      "status": "planned"
-    },
-    {
-      "id": "G11",
-      "name": "Voice and causation",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W03",
-      "status": "planned"
-    },
-    {
-      "id": "G12",
-      "name": "Negation and questions",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W03",
-      "status": "planned"
-    },
-    {
-      "id": "G13",
-      "name": "Prepositions",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W01",
-      "status": "planned"
-    },
-    {
-      "id": "G14",
-      "name": "Clause linking",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W03",
-      "status": "planned"
-    },
-    {
-      "id": "G15",
-      "name": "Relative clauses",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W03",
-      "status": "planned"
-    },
-    {
-      "id": "G16",
-      "name": "Conditionals and hypothetical meaning",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W03",
-      "status": "planned"
-    },
-    {
-      "id": "G17",
-      "name": "Reported language",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W04",
-      "status": "planned"
-    },
-    {
-      "id": "G18",
-      "name": "Information structure",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W04",
-      "status": "planned"
-    },
-    {
-      "id": "G19",
-      "name": "Cohesion and register",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W04",
-      "status": "planned"
-    },
-    {
-      "id": "G20",
-      "name": "Advanced integration",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W04",
-      "status": "planned"
-    },
-    {
-      "id": "G21",
-      "name": "Orthography supporting grammar",
-      "languages": [
-        "en",
-        "de"
-      ],
-      "wave": "W04",
-      "status": "planned"
-    }
-  ],
-  "tasks": [
-    {
+  "version": 1,
+  "firstObservedAt": "2026-09-05T05:39:47.639Z",
+  "updatedAt": "2026-09-05T05:50:39.301Z",
+  "sourceSha256": "c94080f74dc57fb98dad4e87f67f040f85d2796287aa6778ed3d2cb04714ebcf",
+  "taskSnapshots": {
+    "B01": {
       "id": "B01",
       "phase": "baseline",
       "title": "Map active routes and current runtime",
@@ -438,7 +61,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "B02": {
       "id": "B02",
       "phase": "baseline",
       "title": "Prepare preservation and restore fixtures",
@@ -498,7 +121,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "B03": {
       "id": "B03",
       "phase": "baseline",
       "title": "Reproduce consequential defects",
@@ -556,7 +179,7 @@
       "condition": null,
       "updatedOn": "2026-09-05"
     },
-    {
+    "F01": {
       "id": "F01",
       "phase": "integrity",
       "title": "Validate English upstream assessments",
@@ -594,7 +217,7 @@
       "condition": null,
       "updatedOn": "2026-09-05"
     },
-    {
+    "F02": {
       "id": "F02",
       "phase": "integrity",
       "title": "Fix German language and orthography handling",
@@ -633,7 +256,7 @@
       "condition": null,
       "updatedOn": "2026-09-05"
     },
-    {
+    "F03": {
       "id": "F03",
       "phase": "integrity",
       "title": "Separate practice completion from independent success",
@@ -668,7 +291,7 @@
       "progressNote": "Shared practice hides teaching material until deliberate exposure; repair, offline open work and legacy completion cannot establish qualified independent evidence. Broader legacy-route acceptance remains open.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "F04": {
       "id": "F04",
       "phase": "integrity",
       "title": "Remove conflicting verification paths",
@@ -709,7 +332,7 @@
       "condition": null,
       "updatedOn": "2026-09-05"
     },
-    {
+    "E01": {
       "id": "E01",
       "phase": "evidence",
       "title": "Define versioned construction, task and assessment contracts",
@@ -743,7 +366,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "E02": {
       "id": "E02",
       "phase": "evidence",
       "title": "Implement idempotent evidence reduction",
@@ -774,7 +397,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "E03": {
       "id": "E03",
       "phase": "evidence",
       "title": "Migrate legacy and static-route state safely",
@@ -829,7 +452,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "E04": {
       "id": "E04",
       "phase": "evidence",
       "title": "Distribute shared code to every runtime",
@@ -877,7 +500,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "C01": {
       "id": "C01",
       "phase": "curriculum",
       "title": "Define the grammar-construction inventory",
@@ -909,7 +532,7 @@
       "progressNote": "256 stable construction drafts span 21 families. Reference review of form, meaning, contrasts, prerequisites and omissions is pending; authored is not human-reviewed.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "C02": {
       "id": "C02",
       "phase": "curriculum",
       "title": "Map every existing lesson and identify missing constructions",
@@ -955,7 +578,7 @@
       "progressNote": "All 112 English and 144 German starting units retain their aliases. Many-to-many lesson mappings, missing-lesson validation and prerequisite-cycle rejection are implemented and tested. Independent reference review and omitted-construction authoring remain open.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "C03": {
       "id": "C03",
       "phase": "curriculum",
       "title": "Define appropriate task types and separate exposed material",
@@ -986,7 +609,7 @@
       "progressNote": "Typed task policies, item families, stage/modality metadata and evaluation partition guards are in code. Human review of transformations and actual held-out benchmark material remains pending.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "C04": {
       "id": "C04",
       "phase": "curriculum",
       "title": "Build an executable coverage gate",
@@ -1047,7 +670,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "L01": {
       "id": "L01",
       "phase": "loop",
       "title": "Implement representative construction validators and tasks",
@@ -1084,7 +707,7 @@
       "progressNote": "Conservative controlled checks and explicit unassessed/human-review paths cover all existing packs. Reviewed valid alternatives and qualified target/relevance evaluators are not yet available for all constructions.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "L02": {
       "id": "L02",
       "phase": "loop",
       "title": "Make audio and response timing trustworthy",
@@ -1136,7 +759,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "L03": {
       "id": "L03",
       "phase": "loop",
       "title": "Integrate actual Daily and Grammar routes",
@@ -1188,7 +811,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "L04": {
       "id": "L04",
       "phase": "loop",
       "title": "Integrate Studio, Errors, Reviews, Progress and teacher review",
@@ -1239,7 +862,7 @@
       "progressNote": "Both React providers import legacy output and refresh shared evidence summaries; shared review retains originals and supports supersession. Historical recordings/reviews remain in their original workflows, without invented v2 assessment or audio identity. Full qualified cross-surface closure still depends on reviewed packs and evaluated judgments.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "L05": {
       "id": "L05",
       "phase": "loop",
       "title": "Verify the representative end-to-end learning cycle",
@@ -1290,7 +913,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "U01": {
       "id": "U01",
       "phase": "daily",
       "title": "Implement transparent personal task selection",
@@ -1339,7 +962,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "U02": {
       "id": "U02",
       "phase": "daily",
       "title": "Deliver one clear daily card with reliable resume",
@@ -1389,7 +1012,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "U03": {
       "id": "U03",
       "phase": "daily",
       "title": "Replace unsupported progress and CEFR claims",
@@ -1438,7 +1061,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "U04": {
       "id": "U04",
       "phase": "daily",
       "title": "Verify offline recovery, consent and accessibility",
@@ -1490,7 +1113,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "M01": {
       "id": "M01",
       "phase": "models",
       "title": "Create reviewed English and German assessment benchmarks",
@@ -1539,7 +1162,7 @@
       "progressNote": "Benchmark cases require source/licence, separate modality, content version and rubric identity. Independent labels, reviewer identities and adjudication have not been collected. Synthetic test labels do not qualify a model.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "M02": {
       "id": "M02",
       "phase": "models",
       "title": "Compare rules, LanguageTool and pretrained candidates",
@@ -1589,7 +1212,7 @@
       "progressNote": "Offline runner reports separate language/modality/construction/content/rubric scopes, error denominators and Wilson uncertainty. No candidate comparison was run on a reviewed benchmark, so no grammar model is qualified.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "M03": {
       "id": "M03",
       "phase": "models",
       "title": "Decide which assessment functions are supported",
@@ -1620,7 +1243,7 @@
       "progressNote": "Current decision is conservative controlled practice feedback and unassessed open work with local review. No construction-wide automatic-assessment scope is approved without M01/M02.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "M04": {
       "id": "M04",
       "phase": "models",
       "title": "Integrate a qualified Transformer through the shared contract",
@@ -1654,7 +1277,7 @@
       "progressNote": "Pinned scope validation is prepared. No Transformer is deployed because no candidate has passed reviewed qualification.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "W01": {
       "id": "W01",
       "phase": "expansion",
       "title": "Complete foundation and reference families",
@@ -1696,7 +1319,7 @@
       "progressNote": "Existing family tasks are generated and mapped; independent linguistic review, approved alternatives and evaluator coverage remain open.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "W02": {
       "id": "W02",
       "phase": "expansion",
       "title": "Complete temporal and verb-system families",
@@ -1737,7 +1360,7 @@
       "progressNote": "Existing family tasks are generated and mapped; temporal meaning, valency and lawful transformation review remain open.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "W03": {
       "id": "W03",
       "phase": "expansion",
       "title": "Complete complex proposition families",
@@ -1778,7 +1401,7 @@
       "progressNote": "Existing family tasks are generated and mapped; scope, role assignment and integrated meaning review remain open.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "W04": {
       "id": "W04",
       "phase": "expansion",
       "title": "Complete discourse, advanced integration and orthography",
@@ -1819,7 +1442,7 @@
       "progressNote": "Existing family tasks are generated and mapped; advanced discourse/register and modality suitability review remain open.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "W05": {
       "id": "W05",
       "phase": "expansion",
       "title": "Close the full-curriculum coverage gate",
@@ -1862,7 +1485,7 @@
       "progressNote": "All 3584 current cells are authored but zero are human-reviewed/release-qualified. Full reviewed reference and scope-matched benchmark gates remain unmet.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "P01": {
       "id": "P01",
       "phase": "pilot",
       "title": "Prepare personal baseline and evaluation protocol",
@@ -1891,7 +1514,7 @@
       "progressNote": "Dated protocol and outcome windows are specified. No real unaided pre-intervention baseline or reviewer-approved held-out probes have been collected.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "P02": {
       "id": "P02",
       "phase": "pilot",
       "title": "Run daily learning on the verified pilot release",
@@ -1920,7 +1543,7 @@
       "progressNote": "The installed practice flow is available. The learner must choose and author real sessions; synthetic browser actions are excluded from learner evidence.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "P03": {
       "id": "P03",
       "phase": "pilot",
       "title": "Measure transfer and delayed retention",
@@ -1948,7 +1571,7 @@
       "progressNote": "Requires real learner baseline, practice, reviews and actual elapsed 24-hour/7-day/later observations. No retention or fluency improvement is claimed.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "S01": {
       "id": "S01",
       "phase": "scheduling",
       "title": "Make prospective FSRS history evidence-eligible",
@@ -1998,7 +1621,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "S02": {
       "id": "S02",
       "phase": "scheduling",
       "title": "Qualify FSRS in shadow, then compare candidate review dates",
@@ -2029,7 +1652,7 @@
       "progressNote": "Insufficient qualified prospective learner outcomes for shadow calibration or a delivered candidate-schedule comparison.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "S03": {
       "id": "S03",
       "phase": "scheduling",
       "title": "Activate a qualified scheduler reversibly",
@@ -2060,7 +1683,7 @@
       "progressNote": "Baseline due dates remain in use; no qualified scheduler benefit or non-inferiority evidence exists.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "R01": {
       "id": "R01",
       "phase": "release",
       "title": "Prepare the repeatable release and preservation checklist",
@@ -2128,7 +1751,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "R02": {
       "id": "R02",
       "phase": "release",
       "title": "Deliver and verify the first learning-loop release",
@@ -2189,7 +1812,7 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
-    {
+    "R03": {
       "id": "R03",
       "phase": "release",
       "title": "Deliver the full-curriculum release",
@@ -2236,7 +1859,7 @@
       "progressNote": "Full reviewed curriculum release cannot pass W05 and assessment scope gates. Technical installers are delivered separately.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "X01": {
       "id": "X01",
       "phase": "research",
       "title": "Assess readiness for a contextual-bandit experiment",
@@ -2267,7 +1890,7 @@
       "progressNote": "Readiness conditions fail without trustworthy delayed outcomes and adequate observations. Deterministic selection remains the deployed policy.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "X02": {
       "id": "X02",
       "phase": "research",
       "title": "Compare a bounded practice-selection policy",
@@ -2297,7 +1920,7 @@
       "progressNote": "No eligible contextual-bandit experiment or participant consent; no exploration or reward learning is activated.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "X03": {
       "id": "X03",
       "phase": "research",
       "title": "Decide whether sequential RL adds value",
@@ -2325,7 +1948,7 @@
       "progressNote": "No evidence that sequential RL adds value beyond the baseline; no RL training started.",
       "updatedOn": "2026-09-05"
     },
-    {
+    "U05": {
       "id": "U05",
       "phase": "daily",
       "title": "Provide a live HTML implementation roadmap",
@@ -2360,30 +1983,119 @@
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     }
-  ],
-  "delivery": {
-    "technicalIncrement": "installed_verified",
-    "englishVersion": "27.3.24",
-    "germanVersion": "20.8.30",
-    "fullRoadmap": "incomplete",
-    "fullCurriculum": "not_qualified",
-    "learningEffectiveness": "not_measured",
-    "contentReview": "pending",
-    "transformer": "not_qualified",
-    "fsrs": "shadow_only",
-    "reinforcementLearning": "deferred"
   },
-  "technicalRelease": {
-    "status": "verified",
-    "versions": {
-      "English": "27.3.26",
-      "German": "20.8.32"
+  "changes": [
+    {
+      "id": "6d2a4497faf6f261607e733185046a55fb0b20e6409335fb103b11afa7572e54",
+      "at": "2026-09-05T05:47:32.193Z",
+      "taskId": "C04",
+      "title": "Build an executable coverage gate",
+      "from": "implemented",
+      "to": "implemented",
+      "note": "Coverage gate strengthened after reproducing an accepted invented evaluator mapping. Reviewed claims now require a recorded human review, exact content/mapping versions and a full-content hash. Every released task needs evaluator approval with pinned rubric and evidence; automated approval recomputes the benchmark for the exact scope and candidate version. All 25 focused checks and four structural negative-gate cases passed. Real human reviews and full curriculum qualification remain open.",
+      "engineeringVerified": true,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "scripts/check-automaticity-coverage.ts",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "scripts/lib/automaticity-release-reviews.ts",
+        "scripts/prepare-automaticity-content-review.ts",
+        "docs/automaticity-release-reviews.json",
+        "artifacts/coverage-review-gate/before.json",
+        "artifacts/coverage-review-gate/2026-09-05T05-45-02-698Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-45-20-701Z/report.json"
+      ]
     },
-    "fullCurriculum": "not_qualified",
-    "learnerOutcomes": "unmeasured",
-    "report": "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md"
-  },
-  "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
-  "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md"
+    {
+      "id": "fd955721343d0e23a144121c9e8c991b24cda76eda1756c3b439ae8d024aee96",
+      "at": "2026-09-05T05:47:32.193Z",
+      "taskId": "U05",
+      "title": "Provide a live HTML implementation roadmap",
+      "from": null,
+      "to": "verified",
+      "note": "Standalone HTML, live local updates, dated change journal and green verified states implemented. All 14 isolated browser checks passed, including reopening a task, malformed input, mobile reflow, keyboard access and direct file opening.",
+      "engineeringVerified": true,
+      "evidence": [
+        "scripts/language-roadmap.ts",
+        "scripts/verify-language-roadmap.mjs",
+        "docs/LANGUAGE-ROADMAP-VIEWER.md",
+        "artifacts/language-roadmap/2026-09-05T05-42-17-425Z/report.json"
+      ]
+    },
+    {
+      "id": "4ff09824f2707547c56b28bbf6c8d865734e4f60a47b0f20227053e3a91a4efd",
+      "at": "2026-09-05T05:50:39.301Z",
+      "taskId": "C04",
+      "title": "Build an executable coverage gate",
+      "from": "implemented",
+      "to": "implemented",
+      "note": "Coverage gate strengthened after reproducing an accepted invented evaluator mapping. Reviewed claims now require a recorded human review, exact content/mapping versions and a full-content hash. Every released task needs evaluator approval with pinned rubric and evidence; automated approval recomputes the benchmark for the exact scope and candidate version. All 29 focused gate/review-packet checks and four structural gate cases passed. Real human reviews and full curriculum qualification remain open.",
+      "engineeringVerified": true,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "scripts/check-automaticity-coverage.ts",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "scripts/lib/automaticity-release-reviews.ts",
+        "scripts/prepare-automaticity-content-review.ts",
+        "docs/automaticity-release-reviews.json",
+        "artifacts/coverage-review-gate/before.json",
+        "artifacts/coverage-review-gate/2026-09-05T05-45-02-698Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-45-20-701Z/report.json",
+        "artifacts/coverage-review-gate/2026-09-05T05-49-06-958Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md"
+      ]
+    },
+    {
+      "id": "194b2598b502b22279f9fe9b0b0f075e4ef9fb2235693e6939295daad1884449",
+      "at": "2026-09-05T05:50:39.301Z",
+      "taskId": "U05",
+      "title": "Provide a live HTML implementation roadmap",
+      "from": "verified",
+      "to": "verified",
+      "note": "Standalone HTML, live local updates, dated change journal and green verified states implemented. All 15 final browser checks passed, including the actual live viewer, reopening a task, malformed input, mobile reflow, keyboard access and direct file opening. Desktop and mobile screenshots inspected; strict TypeScript and HTML freshness checks passed.",
+      "engineeringVerified": true,
+      "evidence": [
+        "scripts/language-roadmap.ts",
+        "scripts/verify-language-roadmap.mjs",
+        "docs/LANGUAGE-ROADMAP-VIEWER.md",
+        "artifacts/language-roadmap/2026-09-05T05-42-17-425Z/report.json",
+        "artifacts/language-roadmap/2026-09-05T05-49-12-465Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md"
+      ]
+    }
+  ]
 }

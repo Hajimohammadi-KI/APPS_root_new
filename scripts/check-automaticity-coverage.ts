@@ -1,6 +1,11 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import {
+  parseReviewLedger,
+  validateReleaseReviews,
+  type CoverageCell,
+} from "./lib/automaticity-release-reviews";
+import {
   GRAMMAR_FAMILIES,
   validateCurriculum,
   type CurriculumPack,
@@ -14,19 +19,15 @@ const coverage = JSON.parse(
     resolve(root, coveragePath ?? "docs/automaticity-coverage.json"),
     "utf8",
   ),
-) as {
-  cells: {
-    language: string;
-    contentVersion: string;
-    mappingVersion: string;
-    constructionId: string;
-    stage: string;
-    modality: string;
-    taskIds: string[];
-    humanReview: string;
-    releaseEligible: boolean;
-  }[];
-};
+) as { cells: CoverageCell[] };
+const ledgerPath =
+  Bun.argv
+    .find((arg) => arg.startsWith("--reviews="))
+    ?.slice("--reviews=".length) ?? "docs/automaticity-release-reviews.json";
+const reviews = parseReviewLedger(
+  JSON.parse(await readFile(resolve(root, ledgerPath), "utf8")),
+);
+const packs = new Map<string, CurriculumPack>();
 const seen = new Set<string>();
 let total = 0;
 for (const [language, app] of [
@@ -42,6 +43,7 @@ for (const [language, app] of [
       "utf8",
     ),
   ) as CurriculumPack;
+  packs.set(language, pack);
   const issues = validateCurriculum(pack);
   if (issues.length) throw new Error(issues.join("\n"));
   const families = new Set(pack.units.flatMap((unit) => unit.familyIds));
@@ -104,6 +106,12 @@ for (const [language, app] of [
 }
 if (total !== coverage.cells.length)
   throw new Error("Coverage contains orphan cells");
+const reviewedEvidence = await validateReleaseReviews(
+  root,
+  coverage.cells,
+  packs,
+  reviews,
+);
 const blocked = coverage.cells.filter(
   (cell) => cell.humanReview !== "complete" || !cell.releaseEligible,
 );
@@ -112,6 +120,7 @@ console.log(
     {
       structuralCoverage: "verified",
       cells: total,
+      ...reviewedEvidence,
       fullCurriculumRelease: blocked.length
         ? "not_qualified"
         : "eligible_for_review",

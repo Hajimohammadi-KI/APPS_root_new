@@ -14,6 +14,18 @@ For a task to support independent evidence, the reviewer must confirm that the p
 
 ## Assessment qualification
 
+### Recorded curriculum release reviews
+
+`docs/automaticity-release-reviews.json` holds actual content-review records and evaluator approvals. Its initial review list is empty. The coverage checker now requires this evidence before accepting a reviewed or release-eligible cell. Changing flags alone cannot qualify content.
+
+Generate a review packet with `bun scripts/prepare-automaticity-content-review.ts en.c.001` (or a German construction ID). It contains the complete construction and all writing/speaking tasks, with empty reviewer fields and a task approval checklist. Generation refuses to overwrite an existing packet. The packet is a draft for the reviewer; it is not approval.
+
+Each recorded cell review pins the content version, mapping version and SHA-256 of the construction. That hash includes prompts, answers, variants, examples, sources, prerequisites and task identities. Only the unit/task review-status flags are excluded, so recording a review does not change the content it reviewed. Same-version content edits invalidate the earlier review.
+
+The content review needs a real reviewer ID, role, date, approved decision and a workspace evidence file with a matching SHA-256. Each evaluator approval identifies its kind (`human`, `rule`, or `transformer`), version, covered task IDs and rubric versions, plus a dated approval record. Every task in a release-eligible cell needs an evaluator; approval for one closed exercise does not qualify its neighbouring open response. A human evaluator requires a documented manual assessment procedure. Automated evaluators also require hash-pinned benchmark input; the gate recomputes qualification and checks language, modality, construction, content version, rubric and candidate version. It does not trust a saved pass flag or activate the evaluator.
+
+Use the `CellReview` interface in `scripts/lib/automaticity-release-reviews.ts` for the record format. Run `bun scripts/check-automaticity-coverage.ts --release` after adding actual reviewed records and corresponding source flags. Exit 2 means structural checks passed but reviewed release coverage is still incomplete. Malformed, stale, mismatched or unsupported claims fail validation. The local ledger checks recorded identity and evidence integrity; it does not authenticate the reviewer's identity or replace independent human review.
+
 `scripts/qualify-automaticity-model.ts` compares saved predictions with reviewed labels. Input contains a pinned candidate identity, cases, and predictions. Each case records language, modality, construction ID, content version, rubric version, source ID and licence. Reports separate those scopes: writing results cannot qualify speech, and an earlier content version cannot qualify changed tasks. The validator rejects duplicate cases, item-family overlap across partitions, incomplete human review, missing predictions, and invalid timing or cost values.
 
 The initial engineering gate requires 20 final cases in each category per released scope: correct alternatives, grammar errors, ambiguity, off-target answers, and ASR corruption. These counts are a starting qualification requirement, not a claim of statistical certainty. Two distinct review identifiers and adjudication are required. Final testing must report false corrections, missed errors, meaning changes, abstention, target judgments, latency and known cost. Missing cost remains unknown. A model that abstains on every supported case cannot qualify by avoiding mistakes.

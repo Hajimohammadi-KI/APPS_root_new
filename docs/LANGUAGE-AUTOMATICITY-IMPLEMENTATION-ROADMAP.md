@@ -2,7 +2,9 @@
 
 Created 4 September 2026 for `D:\APPS_root_new`. This roadmap implements the [agreed strategy](LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md). It covers both language apps and their shared learning code.
 
-There are **45 work packages: 40 required and 5 conditional**. At creation, all implementation packages were **planned**; the backlog now records their current status. Earlier source findings explain the priorities; they do not mean these fixes or learner outcomes are complete. The [structured backlog](language-automaticity-implementation-backlog.json) records each task's dependencies, owner role, affected areas, full acceptance criteria and evidence list.
+There are now **46 work packages: 41 required and 5 conditional**, including the requested HTML progress viewer (U05). At creation, all implementation packages were **planned**; the backlog now records their current status. Earlier source findings explain the priorities; they do not mean these fixes or learner outcomes are complete. The [structured backlog](language-automaticity-implementation-backlog.json) records each task's dependencies, owner role, affected areas, full acceptance criteria and evidence list.
+
+Open the [HTML roadmap](LANGUAGE-AUTOMATICITY-ROADMAP.html) to search tasks, see verified work in green and read the dated change journal. `Open-Language-Roadmap.cmd` starts its local viewer with automatic updates. The [viewer guide](LANGUAGE-ROADMAP-VIEWER.md) explains the two green states and the update commands.
 
 **Installed implementation updated on 5 September 2026.** English 27.3.26 and DeutschFlow 20.8.32 include the shared practice loop, legacy history continuity, honest progress, per-task resume, recording storage, quota recovery and corrected offline task navigation. Both final installers and installed browser checks pass. The [current implementation record](LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md) records exact evidence and separates the technical release from unfinished curriculum review, assessment qualification and real learner outcomes. The full roadmap remains open.
 
@@ -98,6 +100,7 @@ Roles in the backlog describe the work needed. No teacher/reviewer is assumed as
 | U02 | Deliver one clear daily card with reliable resume. Daily card with target, reason, action, session budget and next step. | U01, L03, L04 | en_static, de_static, en_features, de_features |
 | U03 | Replace unsupported progress and CEFR claims. Dated construction-by-mode progress with counts and uncertainty. | E02, L04, L02 | core, en_features, de_features, de_domain |
 | U04 | Verify offline recovery, consent and accessibility. Verified recoverable offline and accessible learning flow. | U02, U03, L02 | en_static, de_static, en_features, de_features, core |
+| U05 | Provide a live HTML implementation roadmap. Searchable offline HTML, automatic green verified states and dated change history. | B01 | docs, release |
 
 **Evaluate and integrate suitable model assistance (P1).** Exit: Task-specific benchmarks determine supported families; unsupported functions abstain.
 

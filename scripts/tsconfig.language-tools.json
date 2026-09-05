@@ -8,16 +8,22 @@
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "skipLibCheck": true,
-    "types": [
-      "bun",
-      "node"
-    ],
-    "typeRoots": [
-      "../Apps/Deutsch-Automaticity/node_modules/@types"
-    ]
+    "types": ["bun", "node"],
+    "typeRoots": ["../Apps/Deutsch-Automaticity/node_modules/@types"]
   },
   "include": [
     "compile-transformer-release.ts",
+    "import-curriculum-review.ts",
+    "reviewed-curriculum.test.ts",
+    "evaluate-learning-study.ts",
+    "learning-study.test.ts",
+    "review-output-transaction.test.ts",
+    "evaluate-fsrs-shadow.ts",
+    "verify-curriculum-engineering.ts",
+    "verify-language-technical-completion.ts",
+    "verify-installed-language-completion.ts",
+    "finalize-language-engineering.ts",
+    "build-completion-release.ts",
     "serve-local-transformer.ts",
     "summarize-model-diagnostics.ts",
     "prepare-model-benchmark.ts",

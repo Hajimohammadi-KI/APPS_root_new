@@ -26,6 +26,7 @@ export interface Task {
   condition: string | null;
   updatedOn?: string;
   engineeringVerification?: string;
+  remainingHumanWork?: string[];
 }
 export interface Backlog {
   schemaVersion: number;
@@ -106,6 +107,15 @@ export function parseBacklog(raw: string): Backlog {
       typeof task.progressNote !== "string"
     )
       throw new Error(`Invalid roadmap task: ${task.id}`);
+    if (
+      task.remainingHumanWork !== undefined &&
+      (!Array.isArray(task.remainingHumanWork) ||
+        task.remainingHumanWork.some(
+          (item) => typeof item !== "string" || !item.trim(),
+        ) ||
+        (task.status === "verified" && task.remainingHumanWork.length))
+    )
+      throw new Error(`Invalid remaining human work: ${task.id}`);
     if (
       (task.status === "verified" ||
         task.engineeringVerification === "verified_for_recorded_scope") &&

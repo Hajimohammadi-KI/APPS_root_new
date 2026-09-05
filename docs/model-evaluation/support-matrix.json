@@ -8,7 +8,7 @@
     "maximumSupportedAbstentionRate": 0.2,
     "automaticallyApprove": false
   },
-  "scopeSha256": "6afa101973c43268e73602436b3e25c1345ca39dc31fa79d009d822f503b32e7",
+  "scopeSha256": "b447b6d26e269b67ccfee238f4b83796dd34d0077d60da6299d040a015c7af8f",
   "benchmarkVersion": "grammar-development-2026-09-05.1",
   "benchmarkSha256": "8326b74fb3414d62b1d04013f0ac5028560d1ac2ea9daa61d88eb8efe4f7b4af",
   "representativeBenchmark": {

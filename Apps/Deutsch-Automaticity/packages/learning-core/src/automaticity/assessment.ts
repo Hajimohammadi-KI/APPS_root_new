@@ -57,6 +57,35 @@ export function assessControlledTask(
     spans: [],
     supersedes: null,
   };
+  const identityKeys = [
+    "id",
+    "version",
+    "constructionId",
+    "familyId",
+    "rubricVersion",
+    "stage",
+    "modality",
+    "partition",
+    "itemFamily",
+    "contextId",
+    "transferCondition",
+    "contentReview",
+  ] as const;
+  if (
+    !task.constructionId.startsWith(attempt.language + ".") ||
+    identityKeys.some((key) => attempt.task[key] !== task[key])
+  ) {
+    base.feedback = english
+      ? "Saved without a score: the response and task identities do not match. Request a review."
+      : "Ohne Bewertung gespeichert: Antwort und Aufgabenkennung passen nicht zusammen. Bitte prüfen lassen.";
+    return base;
+  }
+  if (task.modality === "speaking") {
+    base.feedback = english
+      ? "Saved for review of the original recording. Typed text cannot establish spoken accuracy."
+      : "Zur Prüfung der Originalaufnahme gespeichert. Getippter Text belegt keine mündliche Richtigkeit.";
+    return base;
+  }
   if (!attempt.response.text.trim()) {
     base.feedback = english
       ? "Add your own response before checking."
@@ -72,33 +101,13 @@ export function assessControlledTask(
       scopeApproved: false,
       reviewId: null,
     };
-    const identityKeys = [
-      "id",
-      "version",
-      "constructionId",
-      "familyId",
-      "rubricVersion",
-      "stage",
-      "modality",
-      "partition",
-      "itemFamily",
-      "contextId",
-      "transferCondition",
-    ] as const;
-    if (
-      !resolved ||
-      !resolved.scope.rule.startsWith(attempt.language + ".") ||
-      identityKeys.some((key) => attempt.task[key] !== task[key])
-    ) {
+    if (!resolved || !resolved.scope.rule.startsWith(attempt.language + ".")) {
       base.feedback = english
         ? "Saved without a score: this task does not match the checker version. Request a review."
         : "Ohne Bewertung gespeichert: Diese Aufgabe passt nicht zur Prüfer-Version. Bitte prüfen lassen.";
       return base;
     }
-    if (
-      task.modality === "speaking" ||
-      task.constructionAssessment.route === "human_review"
-    ) {
+    if (task.constructionAssessment.route === "human_review") {
       base.feedback = english
         ? "Saved for review. Check the requested pattern, who does what, and whether the meaning fits the situation. For speech, a reviewer must listen to the original recording; typed text cannot establish spoken accuracy."
         : "Zur Prüfung gespeichert. Prüfe das gefragte Muster, die Rollen und die Bedeutung im Kontext. Bei einer Sprechaufgabe muss eine prüfende Person die Originalaufnahme anhören; getippter Text belegt keine mündliche Richtigkeit.";

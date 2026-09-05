@@ -5,6 +5,7 @@ import { reduceAutomaticityEvents } from "./evidence";
 import { readRecording } from "./media";
 import { sha256 } from "./backup";
 import { mountAssessmentFeedbackPanel } from "./assessment-feedback-panel";
+import { qualifyHumanReview, readHumanReviewManifest } from "./human-review";
 import {
   parseReviewDraft,
   reviewDraftKey,
@@ -24,7 +25,7 @@ export function mountReviewPanel(
   pack: CurriculumPack,
   onSaved: () => void,
   canEdit = true,
-): void {
+): () => void {
   const en = language === "en",
     t = (a: string, b: string) => (en ? a : b);
   const details = node("details");
@@ -180,6 +181,7 @@ export function mountReviewPanel(
   const refreshFeedbackMemory = mountAssessmentFeedbackPanel(details, pack);
   root.append(details);
   let selectedId = "",
+    audioReview: { sha256: string; confirmed: boolean } | null = null,
     audioUrl: string | null = null,
     displayGeneration = 0,
     saving = false;
@@ -289,6 +291,7 @@ export function mountReviewPanel(
     const row = rows().find((row) => row.attempt.id === selectedId);
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     audioUrl = null;
+    audioReview = null;
     media.replaceChildren();
     status.textContent = "";
     if (!row) {
@@ -390,6 +393,7 @@ export function mountReviewPanel(
             return;
           if (
             !audio ||
+            audio.blob.size !== row.attempt.audio!.bytes ||
             (await sha256(await audio.blob.arrayBuffer())) !==
               row.attempt.audio!.sha256
           )
@@ -407,6 +411,28 @@ export function mountReviewPanel(
           player.controls = true;
           player.src = audioUrl;
           media.replaceChildren(player);
+          const confirmed = node("input");
+          confirmed.type = "checkbox";
+          confirmed.disabled = true;
+          const label = node(
+            "label",
+            t(
+              "I listened to and reviewed the original recording",
+              "Ich habe die Originalaufnahme angehört und geprüft",
+            ),
+          );
+          label.prepend(confirmed);
+          media.append(label);
+          player.onended = () => {
+            if (generation === displayGeneration) confirmed.disabled = false;
+          };
+          confirmed.onchange = () => {
+            if (generation === displayGeneration)
+              audioReview = {
+                sha256: row.attempt.audio!.sha256,
+                confirmed: confirmed.checked,
+              };
+          };
         })().catch((error) => {
           if (generation === displayGeneration)
             status.textContent = String(error);
@@ -501,6 +527,49 @@ export function mountReviewPanel(
           Date.parse(row.assessment?.at ?? row.attempt.at) + 1,
         ),
       ).toISOString();
+      const reviewState = JSON.stringify([
+        selectedId,
+        reviewer.value,
+        reviewerName.value,
+        verdict.value,
+        opportunities.value,
+        feedback.value,
+        correction.value,
+      ]);
+      const approved =
+        reviewer.value === "human"
+          ? await qualifyHumanReview(
+              row.attempt,
+              pack,
+              await readHumanReviewManifest(language),
+              reviewerName.value,
+              at,
+              audioReview,
+            )
+          : null;
+      const current = rows().find(
+        (current) => current.attempt.id === row.attempt.id,
+      );
+      if (
+        reviewState !==
+          JSON.stringify([
+            selectedId,
+            reviewer.value,
+            reviewerName.value,
+            verdict.value,
+            opportunities.value,
+            feedback.value,
+            correction.value,
+          ]) ||
+        current?.assessment?.id !== row.assessment?.id ||
+        current?.reasons.includes("conflicting_assessments")
+      )
+        throw new Error(
+          t(
+            "The response or review changed while saving. Your draft was kept; compare the latest review and save again.",
+            "Antwort oder Bewertung hat sich beim Speichern geändert. Dein Entwurf bleibt erhalten; vergleiche die aktuelle Bewertung und speichere erneut.",
+          ),
+        );
       const assessment: AssessmentEvent = {
         version: 2,
         type: "assessment",
@@ -528,7 +597,7 @@ export function mountReviewPanel(
           relevance: result === "pass" ? "pass" : "unknown",
           opportunities: result === "not_assessed" ? null : count,
         },
-        evaluator: {
+        evaluator: approved ?? {
           id:
             reviewer.value === "human"
               ? `local-review:${reviewerName.value.trim()}`
@@ -557,10 +626,15 @@ export function mountReviewPanel(
       drafts.delete(selectedId);
       onSaved();
       refresh();
-      status.textContent = t(
-        "Review saved separately. The original answer was kept. This feedback does not approve a mastery or model-assessment scope.",
-        "Bewertung separat gespeichert. Die Originalantwort bleibt erhalten. Diese Rückmeldung bestätigt keine Beherrschung und gibt keine automatische Bewertungsfunktion frei.",
-      );
+      status.textContent = approved
+        ? t(
+            "Review saved under the approved assessment procedure. Independent learning evidence still depends on the original response, assistance and timing.",
+            "Bewertung nach dem freigegebenen Bewertungsverfahren gespeichert. Unabhängige Lernnachweise hängen weiterhin von Originalantwort, Hilfen und Zeitabstand ab.",
+          )
+        : t(
+            "Review saved separately. The original answer was kept. This feedback does not approve a mastery or model-assessment scope.",
+            "Bewertung separat gespeichert. Die Originalantwort bleibt erhalten. Diese Rückmeldung bestätigt keine Beherrschung und gibt keine automatische Bewertungsfunktion frei.",
+          );
     })()
       .catch((error) => {
         status.textContent =
@@ -581,4 +655,5 @@ export function mountReviewPanel(
       event.returnValue = "";
     }
   });
+  return refresh;
 }

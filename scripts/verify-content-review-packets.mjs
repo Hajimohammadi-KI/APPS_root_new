@@ -6,6 +6,7 @@ import { resolve, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import { spawnSync } from "node:child_process";
 const root = resolve(import.meta.dirname, "..");
+const filesOnly = process.argv.includes("--files-only");
 const directory = resolve(
   root,
   process.argv[2] ?? "artifacts/content-review-packets/all-20260905-task-revision2",
@@ -41,7 +42,9 @@ const report = {
   at: new Date().toISOString(),
   status: "running",
   scope:
-    "Actual generated packets and isolated browser; no human judgments, app or learner data changes",
+    filesOnly
+      ? "Generated packet files only; browser not run; no human judgments, app or learner data changes"
+      : "Actual generated packets and isolated browser; no human judgments, app or learner data changes",
   directory: relative(root, directory),
   cases: [],
 };
@@ -141,6 +144,7 @@ try {
   report.cases.push(
     "Regeneration refuses an existing review directory and preserves every packet",
   );
+  if (!filesOnly) {
   const require = createRequire(
     resolve(root, "Apps/English/English-Automaticity/package.json"),
   );
@@ -182,6 +186,7 @@ try {
   report.cases.push(
     "Browser index renders, filters by language/family/construction and handles no results",
   );
+  }
   assert.deepEqual(
     await readFile(resolve(root, "docs/automaticity-release-reviews.json")),
     ledgerBefore,

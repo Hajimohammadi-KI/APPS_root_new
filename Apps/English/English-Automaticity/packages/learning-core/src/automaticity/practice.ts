@@ -1456,6 +1456,11 @@ export async function mountPractice(
         .finally(() => {
           busy = false;
           submit.disabled = !!session.submittedId || !editing;
+          try {
+            refreshReviews();
+          } catch (error) {
+            writeError(error);
+          }
         });
     };
     taskPanel.append(form, feedback);
@@ -1546,7 +1551,7 @@ export async function mountPractice(
   renderFocus();
   const reviews = element("section", undefined, "card");
   root.append(reviews);
-  mountReviewPanel(
+  const refreshReviews = mountReviewPanel(
     reviews,
     language,
     pack,

@@ -42,7 +42,7 @@ try {
         const attempt = (id, day, task = {}) => {
           const at = `2026-09-0${day}T10:00:00.000Z`;
           return { version: 2, type: "attempt", id, language, at,
-            task: { id: "item-a", version: "1", constructionId: `${language}.c.001`, familyId: "G01", itemFamily: "family-a", contextId: "context-a", rubricVersion: "1", stage: "retrieve", modality: "writing", partition: "practice", transferCondition: "none", contentReview: "human_reviewed", ...task },
+            task: { definitionSha256: "b".repeat(64), id: "item-a", version: "1", constructionId: `${language}.c.001`, familyId: "G01", itemFamily: "family-a", contextId: "context-a", rubricVersion: "1", stage: "retrieve", modality: "writing", partition: "practice", transferCondition: "none", contentReview: "human_reviewed", ...task },
             response: { text: "Synthetic answer", sha256: "a".repeat(64), originalTranscriptSha256: null, transcriptEdited: false },
             timing: { startedAt: at, activeMs: null, firstInputMs: null, source: "unavailable" },
             assistance: { hintCount: 0, solutionRevealed: false, exampleSeen: false, selfReportedAssistance: false }, audio: null, previousAttemptId: null };
@@ -59,7 +59,7 @@ try {
         const result = run();
         check("two familiar items retain separate identities", result.eligible.length === 2 && new Set(result.eligible.map(r => r.cardId)).size === 2);
         check("ratings preserve exact response and assessment links", result.eligible.every(r => r.responseSha256 === "a".repeat(64) && r.assessmentId === `judge-${r.attemptId}`));
-        for (const [name, change] of [["new item", { id: "new" }], ["new version", { version: "2" }], ["transfer", { stage: "transfer", transferCondition: "free" }], ["held-out evaluation", { partition: "evaluation" }]]) {
+        for (const [name, change] of [["changed definition", { definitionSha256: "c".repeat(64) }], ["unbound legacy", { definitionSha256: undefined }], ["new item", { id: "new" }], ["new version", { version: "2" }], ["transfer", { stage: "transfer", transferCondition: "free" }], ["held-out evaluation", { partition: "evaluation" }]]) {
           const changed = attempt(`changed-${name}`, 8, change);
           check(`${name} excluded from familiar recall`, run([...events, changed, judge(changed)], [rating(changed)]).eligible.length === 0);
         }
@@ -71,7 +71,7 @@ try {
         check("inputs and learner storage remain unchanged", JSON.stringify({ events, ratings, storage: { ...localStorage } }) === before);
         return checks;
       }, language);
-      assert.equal(row.checks.length, 12); assert.deepEqual(errors, []); row.status = "passed";
+      assert.equal(row.checks.length, 14); assert.deepEqual(errors, []); row.status = "passed";
     } catch (error) { row.status = "failed"; row.error = String(error); row.pageErrors = errors; }
     finally { await context.close(); }
   }

@@ -69,7 +69,7 @@ function memoryCardId(attempt: AttemptEvent): string {
   const task = attempt.task;
   // Retrieval and retention may revisit the same cue. Changed cues, versions,
   // contexts, rubrics and modalities must never inherit its memory state.
-  return `fsrs-item-v1:${JSON.stringify([
+  return `fsrs-item-v2:${JSON.stringify([
     attempt.language,
     task.constructionId,
     task.familyId,
@@ -80,6 +80,7 @@ function memoryCardId(attempt: AttemptEvent): string {
     task.rubricVersion,
     task.modality,
     task.partition,
+    task.definitionSha256,
   ])}`;
 }
 /** Explicit, prospective familiar-item recall; transfer evidence stays in its own ledger. */
@@ -156,6 +157,9 @@ export function qualifyProspectiveReviews(
     else if (!isRecallTask(row.attempt))
       reason =
         "Only familiar-item practice retrieval or retention can enter FSRS";
+    else if (!row.attempt.task.definitionSha256)
+      reason =
+        "The original task definition is not pinned; legacy history cannot seed this item";
     else if (
       !rows.some(
         (prior) =>

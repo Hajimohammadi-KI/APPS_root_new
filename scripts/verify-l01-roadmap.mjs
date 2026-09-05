@@ -32,7 +32,7 @@ try {
     "✓ Engineering checks passed",
   );
   await expect(card).toContainText(
-    "Independent content review and scoped evaluator approval remain pending",
+    /Independent content review and scoped evaluator approval .*pending/,
   );
   await page.screenshot({
     path: resolve(root, "artifacts/l01-assessment/roadmap.png"),

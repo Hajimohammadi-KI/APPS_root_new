@@ -65,7 +65,7 @@
     },
     {
       "path": "scripts/build-automaticity-curriculum.ts",
-      "sha256": "ec9d9dc39bfd3266a90f293644bc460fde18a92e84669109ef41730bc1de86ac"
+      "sha256": "77ab392e30c88e3338cd588776a1101e218d1dd6dc03ece68c102ba94e332316"
     }
   ],
   "references": [

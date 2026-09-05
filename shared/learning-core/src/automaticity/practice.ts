@@ -22,6 +22,7 @@ import { preserveLegacyStateDurable } from "./migration";
 import { mountReviewPanel } from "./review-panel";
 import { reduceAutomaticityEvents } from "./evidence";
 import { assessControlledTask } from "./assessment";
+import { collectAssessmentFeedback, guardAssessmentWithFeedback } from "./assessment-feedback";
 import { createTransformerClient } from "./transformer-client";
 import {
   captureCompleteBackup,
@@ -1411,15 +1412,23 @@ export async function mountPractice(
         saveSession();
         const assessment = assessControlledTask(attempt, task, now(), id());
         appendAutomaticityEvent(localStorage, assessment);
-        feedback.textContent = assessment.feedback;
-        if (typeof navigator === "undefined" || navigator.onLine !== false) {
+        const applyFeedback = async (proposal: typeof assessment) => {
+          const history = await collectAssessmentFeedback(readAutomaticityEvents(localStorage, language).events, pack, now());
+          const guarded = await guardAssessmentWithFeedback(attempt, task, proposal, history, now(), id());
+          if (guarded) appendAutomaticityEvent(localStorage, guarded);
+          return guarded;
+        };
+        const guarded = await applyFeedback(assessment);
+        feedback.textContent = (guarded ?? assessment).feedback;
+        if (!guarded && (typeof navigator === "undefined" || navigator.onLine !== false)) {
           const modelAssessment = await qualifiedTransformer(
             attempt,
             assessment,
           );
           if (modelAssessment) {
             appendAutomaticityEvent(localStorage, modelAssessment);
-            feedback.textContent = modelAssessment.feedback;
+            const modelGuard = await applyFeedback(modelAssessment);
+            feedback.textContent = (modelGuard ?? modelAssessment).feedback;
           }
         }
         renderTask();

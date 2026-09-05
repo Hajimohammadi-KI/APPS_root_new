@@ -73,6 +73,8 @@ test("prospective reviews require consent, explicit ratings and current delayed 
   const baseline = attempt("baseline", "2026-09-01T10:00:10.000Z");
   const later = attempt("later", "2026-09-03T10:00:10.000Z"),
     judge = assessment(later);
+  baseline.task.partition = "practice";
+  later.task = { ...baseline.task, stage: "retain" };
   const events = [baseline, assessment(baseline), later, judge];
   const consent = {
     id: "synthetic-consent",

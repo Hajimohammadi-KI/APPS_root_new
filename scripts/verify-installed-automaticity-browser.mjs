@@ -9,14 +9,15 @@ const {chromium,expect}=require("@playwright/test");
 const output=resolve(root,`artifacts/installed-automaticity-browser/${new Date().toISOString().replace(/[:.]/g,"-")}`);
 await mkdir(output,{recursive:true});
 const browser=await chromium.launch({channel:"msedge",headless:true});
-const report={createdAt:new Date().toISOString(),scope:"Installed HTTP runtime; isolated browser profiles with synthetic state and audio, never the normal Electron profile",cases:[]};
+const report={createdAt:new Date().toISOString(),scope:"HTTP runtime identified per case; isolated browser profiles with synthetic state and audio, never the normal Electron profile",cases:[]};
 try {
   for(const language of ["en","de"]){
-    const base=`http://127.0.0.1:${language==="en"?3202:3210}`;
+    const override=process.argv.find(arg=>arg.startsWith(`--${language}-base=`))?.split("=")[1];
+    const base=override??`http://127.0.0.1:${language==="en"?3202:3210}`;
     const context=await browser.newContext({viewport:{width:1365,height:1000},acceptDownloads:true});
     const page=await context.newPage();page.setDefaultTimeout(20000);
     const errors=[];page.on("pageerror",error=>errors.push(error.message));
-    const row={language,status:"running",base};report.cases.push(row);
+    const row={language,status:"running",base,runtime:override?"compiled-web-override":"installed-desktop"};report.cases.push(row);
     try{
       const served=await (await context.request.get(`${base}/learning-core/practice.js`)).body();
       const expected=await readFile(resolve(root,"shared/learning-core/browser/practice.js"));

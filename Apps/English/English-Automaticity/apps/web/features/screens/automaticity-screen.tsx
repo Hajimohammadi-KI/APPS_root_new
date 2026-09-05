@@ -17,9 +17,7 @@ import { grammarUnits, type GrammarUnit } from "@grammar/content";
 import {
   appendLearningEvidenceBundleToStorage,
   buildAttemptVerticalSlice,
-  fsrsShadowRatingFromResult,
   normalizeDailySessionMinutes,
-  recordFsrsShadowReview,
   type CefrLevel,
 } from "@automaticity/learning-core";
 import { Badge } from "@/components/ui/badge";
@@ -518,41 +516,8 @@ export function AutomaticityScreen({
       );
       return;
     }
-    const confidence =
-      analysis.score >= 95 ? "easy" : analysis.score >= 80 ? "good" : "hard";
-    const nextSuccessStreak = analysis.targetHit
-      ? dueReview.successStreak + 1
-      : dueReview.successStreak;
-    const nextStabilityScore = analysis.targetHit
-      ? Math.min(100, dueReview.stabilityScore + 20)
-      : dueReview.stabilityScore;
-    recordFsrsShadowReview({
-      storage: window.localStorage,
-      event: {
-        version: 1,
-        eventId: `fsrs-shadow:${attemptId}`,
-        language: "en",
-        reviewId: dueReview.id,
-        sourceId: dueReview.sourceId,
-        reviewedAt: occurredAt,
-        rating: fsrsShadowRatingFromResult(analysis.targetHit, confidence),
-        legacyBefore: {
-          dueAt: dueReview.dueAt,
-          state: `${dueReview.status}:interval-${dueReview.intervalDays}`,
-          successStreak: dueReview.successStreak,
-          stabilityScore: dueReview.stabilityScore,
-        },
-        legacyAfter: {
-          dueAt: dueReview.dueAt,
-          state: `${analysis.targetHit ? "done" : dueReview.status}:interval-${dueReview.intervalDays}`,
-          successStreak: nextSuccessStreak,
-          stabilityScore: nextStabilityScore,
-          ...(analysis.targetHit
-            ? { lastSuccessAt: Date.parse(occurredAt) }
-            : {}),
-        },
-      },
-    });
+    // Transfer scores cannot supply explicit familiar-item FSRS ratings.
+    // Keep existing review behavior; prospective collection uses its own gate.
     if (analysis.targetHit) {
       mutate((draft) => {
         const review = draft.reviews.find((row) => row.id === dueReview.id);

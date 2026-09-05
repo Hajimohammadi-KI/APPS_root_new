@@ -1,5 +1,7 @@
 # English and German automaticity: continuation and installed release
 
+Historical release record for 27.3.26/20.8.32. The [current installed release](LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md) is English 27.3.27 / DeutschFlow 20.8.33.
+
 Updated 5 September 2026, Europe/Berlin. Workspace: `D:\APPS_root_new`.
 
 **English 27.3.26 and DeutschFlow 20.8.32 are installed and technically verified. The full reviewed curriculum and learner-effectiveness roadmap remain open.** This report supersedes the earlier 27.3.24/20.8.30 handoff. Your normal app profiles were backed up and preserved before startup. No thesis files were changed.

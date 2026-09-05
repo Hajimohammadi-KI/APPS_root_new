@@ -74,13 +74,13 @@
       .join("");
     const release = backlog.technicalRelease;
     $("release").innerHTML =
-      `<div><span class="pill ${release.status === "verified" ? "good" : "warning"}">${release.status === "verified" ? "✓ Technical release verified" : "Technical release pending"}</span><p><strong>${Object.entries(
+      `<div><span class="pill ${release.status === "verified" ? "good" : "warning"}">${release.status === "verified" ? "✓ Technical release verified" : release.status === "blocked" ? "Desktop release blocked" : "Technical release pending"}</span><p><strong>${Object.entries(
         release.versions,
       )
         .map(([name, version]) => escape(name) + " " + escape(version))
         .join(
           " · ",
-        )}</strong></p></div><div><p>Full curriculum: <span class="pill ${release.fullCurriculum === "not_qualified" ? "warning" : "muted"}">${escape(release.fullCurriculum.replaceAll("_", " "))}</span></p><p>Learner outcomes: <span class="pill muted">${escape(release.learnerOutcomes.replaceAll("_", " "))}</span></p></div>`;
+        )}</strong></p>${release.installedVersions ? `<p>Installed and preserved: ${Object.entries(release.installedVersions).map(([name, version]) => escape(name) + " " + escape(version)).join(" · ")}</p>` : ""}${release.blocker ? `<p>${escape(release.blocker)}</p>` : ""}</div><div><p>Full curriculum: <span class="pill ${release.fullCurriculum === "not_qualified" ? "warning" : "muted"}">${escape(release.fullCurriculum.replaceAll("_", " "))}</span></p><p>Learner outcomes: <span class="pill muted">${escape(release.learnerOutcomes.replaceAll("_", " "))}</span></p></div>`;
     $("updated").textContent = "Updated " + date(snapshot.generatedAt);
     $("scope").textContent = backlog.scope;
     const phaseValue = $("phase").value;

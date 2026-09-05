@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
   [Parameter(Mandatory = $true)][string]$Setup,
-  [string]$Version = '27.3.27',
+  [string]$Version = '27.3.28',
   [ValidateRange(90, 600)][int]$RuntimeTimeoutSeconds = 240
 )
 

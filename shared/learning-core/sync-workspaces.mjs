@@ -30,6 +30,7 @@ const files = [
   "src/automaticity/legacy.ts",
   "src/automaticity/legacy.test.ts",
   "src/automaticity/prospective.ts",
+  "src/automaticity/prospective.test.ts",
   "src/automaticity/practice.ts",
   "src/automaticity/review-panel.ts",
   "src/automaticity/review-draft.ts",

@@ -37,6 +37,8 @@ export interface Backlog {
   technicalRelease: {
     status: string;
     versions: Record<string, string>;
+    installedVersions?: Record<string, string>;
+    blocker?: string;
     fullCurriculum: string;
     learnerOutcomes: string;
     report: string;

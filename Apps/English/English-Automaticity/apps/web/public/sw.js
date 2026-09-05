@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "english-automaticity-automaticity-v2-20260905d";
+const CACHE = "english-automaticity-automaticity-v2-20260905e";
 const PRECACHE = [
   "/practice",
   "/learning-core/practice.js",

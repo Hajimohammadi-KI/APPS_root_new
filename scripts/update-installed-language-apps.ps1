@@ -1,13 +1,48 @@
-param([switch]$Launch, [switch]$DirectStartup)
+param(
+  [switch]$Launch,
+  [switch]$DirectStartup
+)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $workspace = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $output = Join-Path $workspace ('artifacts\installed-language-update\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
-New-Item -ItemType Directory -Path $output -Force | Out-Null
 $products = @(
-  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.27'; Source='Apps\English\English-Automaticity'; Port=3202 },
-  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.33'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
+  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.28'; Source='Apps\English\English-Automaticity'; Port=3202 },
+  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.34'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
 )
+function Assert-VerifiedInstaller($ProductSpec, [string]$SetupPath, [string]$PayloadPath, [array]$Receipts) {
+  $setupHash = (Get-FileHash -LiteralPath $SetupPath -Algorithm SHA256).Hash
+  $payloadHash = (Get-FileHash -LiteralPath $PayloadPath -Algorithm SHA256).Hash
+  $required = @('product','version','setupSha256','payloadSha256','install','upgrade','startup','update','repair','uninstall','learnerDataPreserved')
+  $qualified = @($Receipts | Where-Object {
+    $row = $_
+    $row -is [Collections.IDictionary] -and @($required | Where-Object { -not $row.Contains($_) }).Count -eq 0 -and
+    $row.product -eq $ProductSpec.Name -and $row.version -eq $ProductSpec.Version -and
+    $row.setupSha256 -eq $setupHash -and $row.payloadSha256 -eq $payloadHash -and
+    $row.install -eq 'verified' -and $row.upgrade -eq 'verified' -and
+    $row.startup -eq 'verified' -and $row.update -eq 'verified' -and
+    $row.repair -eq 'verified' -and $row.uninstall -eq 'verified' -and $row.learnerDataPreserved -eq $true
+  })
+  if (-not $qualified.Count) { throw "No complete verified installer lifecycle for the exact $($ProductSpec.Name) $($ProductSpec.Version) setup and payload. Normal installations and profiles have not been changed." }
+}
+# Validate every selected artifact before opening or copying any normal profile.
+# A blocked desktop must not replace the previously working installation.
+$cycleReports = @(Get-ChildItem -LiteralPath (Join-Path $workspace 'artifacts\installer-cycle') -Directory | ForEach-Object {
+  $receiptPath = Join-Path $_.FullName 'report.json'
+  if (Test-Path -LiteralPath $receiptPath) {
+    try {
+      $savedReceipt = Get-Content -LiteralPath $receiptPath -Raw | ConvertFrom-Json
+      $receiptMap = @{}
+      foreach ($property in $savedReceipt.PSObject.Properties) { $receiptMap[$property.Name] = $property.Value }
+      $receiptMap
+    } catch {}
+  }
+})
+foreach ($product in $products) {
+  $candidateSetup = Join-Path $workspace ($product.Source + '\apps\web\public\downloads\' + $product.Setup + '-v' + $product.Version + '.exe')
+  Assert-VerifiedInstaller $product $candidateSetup ([IO.Path]::ChangeExtension($candidateSetup, '.payload.zip')) $cycleReports
+}
+New-Item -ItemType Directory -Path $output -Force | Out-Null
 function Get-TreeManifest([string]$Root) {
   $resolved = [IO.Path]::GetFullPath($Root).TrimEnd('\') + '\'
   @(Get-ChildItem -LiteralPath $Root -File -Recurse -Force | Sort-Object FullName | ForEach-Object {

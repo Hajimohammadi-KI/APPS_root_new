@@ -32,7 +32,7 @@ try{
    assert.equal(unit.tasks.length,writtenOnly?7:14);
    for(const stage of ["notice","retrieve","vary","produce","repair","transfer","retain"]){
     for(const modality of writtenOnly?["writing"]:["writing","speaking"]){
-     const task=unit.tasks.find(row=>row.stage===stage&&row.modality===modality);assert(task);
+     const task:PracticeTask|undefined=unit.tasks.find(row=>row.stage===stage&&row.modality===modality);assert(task);
      assert(task.prompt.length>15);assert.equal(task.contentReview,"authored");
      if(task.answerPolicy==="closed"){
       for(const answer of task.acceptedAnswers){const result=await assess(task,answer,language);assert.equal(result.verdict,"pass");assert.equal(result.evaluator.scopeApproved,false);}

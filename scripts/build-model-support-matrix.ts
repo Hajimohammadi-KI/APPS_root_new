@@ -1,0 +1,15 @@
+import {mkdir,readFile,writeFile} from "node:fs/promises";
+import {resolve} from "node:path";
+import {digest,parseManifest,policy} from "./lib/model-benchmark";
+const root=resolve(import.meta.dir,".."),folder=resolve(root,"docs/model-evaluation");
+const scope=JSON.parse(await readFile(resolve(root,"docs/grammar-scope/inventory.json"),"utf8")) as {inventory:{id:string;language:string;title:string;familyIds:string[]}[];cells:{id:string;constructionId:string;stage:string;modality:string;required:boolean;taskIds:string[]}[]};
+const draft=parseManifest(JSON.parse(await readFile(resolve(folder,"development.json"),"utf8")));
+const matrix={schemaVersion:1,version:"2026-09-05.2",policy,scopeSha256:digest(JSON.stringify(scope)),benchmarkVersion:draft.version,benchmarkSha256:digest(JSON.stringify(draft)),
+ decision:"No automatic grammar evaluator is qualified. Closed-answer matching remains practice feedback; open work is saved for manual review.",
+ candidateAvailability:[{id:"controlled-answer",version:"1.0.0",status:"development_diagnostic_run",deployment:"controlled_practice_only"},
+ {id:"languagetool",version:"6.6",status:"local_development_diagnostic_run",deployment:"not_qualified",evidence:"docs/model-evaluation/development-comparison.json",reason:"Portable local server completed 20 unreviewed drafts. Suggestions cannot establish task target or meaning. Calibration and final human-reviewed runs remain unavailable."},
+ {id:"pretrained-local",version:null,status:"no_pinned_candidate_endpoint",deployment:"not_qualified",reason:"No configured local grammar-assessment model. A CEFR classifier cannot substitute for this task."}],
+ functions:[{id:"closed-answer-match",status:"practice_feedback_only"},{id:"orthography-suggestions",status:"practice_feedback_only"},{id:"open-grammar-assessment",status:"manual_review_required"},{id:"target-and-meaning-assessment",status:"manual_review_required"},{id:"minimal-correction",status:"manual_review_required"},{id:"style-rewrite",status:"no_mastery_credit"},{id:"asr",status:"not_qualified"},{id:"pronunciation-and-fluency",status:"not_qualified"}],
+ cells:scope.cells.filter(cell=>cell.required).map(cell=>({id:cell.id,constructionId:cell.constructionId,language:cell.constructionId.slice(0,2),stage:cell.stage,modality:cell.modality,taskIds:cell.taskIds,automaticScopeApproved:false,humanAssessmentPath:"/practice?review=1",humanAssessmentQualification:"Reviewer identity and content/evaluator approval must be independently recorded",fallback:"Save original response without an independent correctness score"}))};
+await mkdir(folder,{recursive:true});await writeFile(resolve(folder,"support-matrix.json"),JSON.stringify(matrix,null,2)+"\n");
+console.log(JSON.stringify({requiredCells:matrix.cells.length,approvedAutomaticScopes:0,reviewWorkflow:"available",qualifiedHumanScopes:0}));

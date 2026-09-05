@@ -15,6 +15,10 @@ export interface BenchmarkCase {
   rubricVersion: string;
   partition: "development" | "calibration" | "final";
   itemFamily: string;
+  sourceGroup: string;
+  templateFamily: string;
+  learnerGroup: string | null;
+  contentFingerprint: string;
   category:
     | "correct_alternative"
     | "grammar_error"
@@ -55,6 +59,10 @@ export interface QualificationReport {
     missedErrorRate: number | null;
     abstentions: number;
     meaningChanges: number;
+    unsafePasses: number;
+    targetContradictions: number;
+    assessedCoverage: number | null;
+    p95LatencyMs: number | null;
     medianLatencyMs: number | null;
     reportedCost: number | null;
   }[];
@@ -102,10 +110,25 @@ export function qualifyCandidate(
       );
     if (ids.has(row.id)) reasons.push(`Duplicate case ${row.id}`);
     ids.add(row.id);
-    const partition = families.get(row.itemFamily);
-    if (partition && partition !== row.partition)
-      reasons.push(`Partition leakage ${row.itemFamily}`);
-    families.set(row.itemFamily, row.partition);
+    if (
+      !row.sourceGroup?.trim() ||
+      !row.templateFamily?.trim() ||
+      !/^[a-f0-9]{64}$/.test(row.contentFingerprint) ||
+      (row.learnerGroup !== null && !row.learnerGroup?.trim())
+    )
+      reasons.push(`Missing partition provenance ${row.id}`);
+    for (const family of [
+      `item:${row.itemFamily}`,
+      `source:${row.sourceGroup}`,
+      `template:${row.templateFamily}`,
+      `content:${row.contentFingerprint}`,
+      ...(row.learnerGroup ? [`learner:${row.learnerGroup}`] : []),
+    ]) {
+      const partition = families.get(family);
+      if (partition && partition !== row.partition)
+        reasons.push(`Partition leakage ${family}`);
+      families.set(family, row.partition);
+    }
     if (
       row.humanReviewIds.filter((value) => value.trim()).length < 2 ||
       new Set(row.humanReviewIds).size < 2 ||
@@ -175,11 +198,16 @@ export function qualifyCandidate(
         row.expected !== prediction.verdict &&
         prediction.verdict !== "not_assessed",
     ).length;
+    const targetContradictions = available.filter(
+      ({ prediction }) =>
+        prediction.verdict === "pass" && prediction.targetObserved !== true,
+    ).length;
     if (
       falseCorrections ||
       missedErrors ||
       meaningChanges ||
       riskyPasses ||
+      targetContradictions ||
       disagreements
     )
       reasons.push(`Consequential judgment errors in ${first.constructionId}`);
@@ -201,11 +229,13 @@ export function qualifyCandidate(
         `Insufficient assessed coverage for ${first.constructionId}`,
       );
     if (
-      supported.some(
-        ({ prediction }) =>
-          prediction.meaningPreserved === null ||
-          prediction.targetObserved === null,
-      )
+      supported
+        .filter(({ prediction }) => prediction.verdict !== "not_assessed")
+        .some(
+          ({ prediction }) =>
+            prediction.meaningPreserved === null ||
+            prediction.targetObserved === null,
+        )
     )
       reasons.push(
         `Missing meaning or target judgments for ${first.constructionId}`,
@@ -247,6 +277,16 @@ export function qualifyCandidate(
         : null,
       abstentions,
       meaningChanges,
+      unsafePasses: riskyPasses,
+      targetContradictions,
+      assessedCoverage: supported.length
+        ? supported.filter(
+            ({ prediction }) => prediction.verdict !== "not_assessed",
+          ).length / supported.length
+        : null,
+      p95LatencyMs: times.length
+        ? times[Math.ceil(times.length * 0.95) - 1]!
+        : null,
       medianLatencyMs: times.length
         ? times.length % 2
           ? times[Math.floor(times.length / 2)]!
@@ -295,6 +335,9 @@ export function parseBenchmarkInput(value: unknown): {
         "contentVersion",
         "sourceId",
         "license",
+        "sourceGroup",
+        "templateFamily",
+        "contentFingerprint",
       ].every((key) => typeof row[key] === "string" && row[key]) ||
       !["en", "de"].includes(String(row.language)) ||
       !["writing", "speaking"].includes(String(row.modality)) ||
@@ -307,7 +350,8 @@ export function parseBenchmarkInput(value: unknown): {
       ) ||
       !Array.isArray(row.humanReviewIds) ||
       row.humanReviewIds.some((id) => typeof id !== "string") ||
-      typeof row.adjudicated !== "boolean"
+      typeof row.adjudicated !== "boolean" ||
+      (row.learnerGroup !== null && typeof row.learnerGroup !== "string")
     )
       throw new Error("Invalid benchmark case");
   for (const row of value.predictions)

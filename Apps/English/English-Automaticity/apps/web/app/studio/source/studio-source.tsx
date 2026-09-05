@@ -1,4 +1,5 @@
 "use client";
+import {AutomaticityEvidenceSummary} from "@/features/components/automaticity-evidence-summary";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -825,6 +826,7 @@ export default function Home() {
       </aside>
 
       <main>
+<AutomaticityEvidenceSummary />
         <header>
           <div>
             <h1>{text.title}</h1>

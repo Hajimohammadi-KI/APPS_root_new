@@ -106,6 +106,13 @@ export interface ModelScopeApproval {
   constructionIds: string[];
   rubricVersions: string[];
   modalities: ("writing" | "speaking")[];
+  /** Exact tuples prevent approval crossing content versions or scope combinations. */
+  scopes: {
+    constructionId: string;
+    taskVersion: string;
+    rubricVersion: string;
+    modality: "writing" | "speaking";
+  }[];
   benchmarkSha256: string;
   approved: boolean;
 }
@@ -134,9 +141,26 @@ export function validateModelAssessment(
     !approval.constructionIds.includes(attempt.task.constructionId) ||
     !approval.rubricVersions.includes(attempt.task.rubricVersion) ||
     !approval.modalities.includes(attempt.task.modality) ||
+    !approval.scopes?.some(
+      (scope) =>
+        scope.constructionId === attempt.task.constructionId &&
+        scope.taskVersion === attempt.task.version &&
+        scope.rubricVersion === attempt.task.rubricVersion &&
+        scope.modality === attempt.task.modality,
+    ) ||
     !/^[a-f0-9]{64}$/.test(approval.benchmarkSha256)
   )
     throw new Error("This model scope has not passed its benchmark gate.");
+  if (
+    parsed.verdict === "pass" &&
+    (parsed.dimensions.grammar !== "pass" ||
+      parsed.dimensions.target !== "observed" ||
+      parsed.dimensions.relevance !== "pass" ||
+      parsed.uncertainty)
+  )
+    throw new Error(
+      "A passing model judgment needs consistent target, meaning and grammar evidence.",
+    );
   return {
     ...parsed,
     evaluator: {

@@ -5,7 +5,7 @@
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
   "updatedOn": "2026-09-05",
-  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -386,7 +386,7 @@
       "phase": "baseline",
       "title": "Map active routes and current runtime",
       "status": "verified",
-      "progressNote": "Canonical source and active route mappings retain their baseline record. Current normal installations are English 27.3.28 and DeutschFlow 20.8.34; exact source/release hashes, installed versions and live practice/API endpoints pass refreshed verification. The thesis remains outside scope.",
+      "progressNote": "Canonical route/storage mappings retain their baseline record. Normal installations are English 27.3.31 and DeutschFlow 20.8.35. Their installed versions, live curriculum/practice/overview/service-worker hashes and HTTP API endpoints match the current source and exact-hash installer receipts. The thesis remains outside scope.",
       "priority": "P0",
       "dependsOn": [],
       "ownerRole": "Implementation",
@@ -434,7 +434,16 @@
         "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
         "artifacts/language-foundations/runtime-preservation.json",
         "artifacts/installed-automaticity-browser/2026-09-05T10-42-03-491Z/report.json",
-        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md"
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/phase7-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-135010-e953ce91/report.json",
+        "artifacts/installer-cycle/German-20260905-132213-a9011b39/report.json",
+        "artifacts/installed-language-update/20260905-135209/report.json",
+        "artifacts/installed-language-update/20260905-132730/report.json",
+        "artifacts/phase7-browser/2026-09-05T11-53-51-306Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T11-53-52-221Z/report.json",
+        "artifacts/language-release-source/20260905-phase7-en31-de35/manifest.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
@@ -953,11 +962,20 @@
         "artifacts/installed-automaticity-browser/2026-09-05T10-42-03-491Z/report.json",
         "artifacts/language-foundations/runtime-preservation.json",
         "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
-        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log",
+        "artifacts/phase7-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-135010-e953ce91/report.json",
+        "artifacts/installer-cycle/German-20260905-132213-a9011b39/report.json",
+        "artifacts/installed-language-update/20260905-135209/report.json",
+        "artifacts/installed-language-update/20260905-132730/report.json",
+        "artifacts/phase7-browser/2026-09-05T11-53-51-306Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T11-53-52-221Z/report.json",
+        "artifacts/language-release-source/20260905-phase7-en31-de35/manifest.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "The canonical source, both mirrors and relevant installed public bundles match. Fault injection verifies rejection of unlisted canonical source plus stale and missing copies, restoring exact bytes afterward. Eleven input scenarios per language agree between actual Node execution and installed browser reduction. Source, installed hashes and both required app checks pass.",
+      "progressNote": "Canonical source and both workspace mirrors match. Installed curriculum, shared practice, evidence overview and service-worker assets match their source hashes in both products. The installed English six-route and German seven-route journeys agree on the original response and linked repair. Required app checks pass.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope",
       "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
@@ -1069,11 +1087,13 @@
         "artifacts/coverage-review-gate/2026-09-05T10-18-52-372Z/report.json",
         "artifacts/phase4-scope/runtime-preservation.json",
         "artifacts/language-release-source/20260905-phase4/manifest.json",
-        "artifacts/phase4-scope/final-verification.json"
+        "artifacts/phase4-scope/final-verification.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Phase 4 crosswalk complete: all 112 English and 144 German lessons and original aliases are retained. Many-to-many primary, reinforcement and partial links are distinct. All 21 families in both languages have dated automated reference checks across 20 sources; 24 explicit targets generate named authoring work. Broad integration lessons and equal level counts do not establish exhaustive grammar coverage or CEFR qualification.",
+      "progressNote": "All 256 original lessons retain complete stable unit/task identities. The 24 identified additional targets now have 322 authored tasks; all 280 targets are mapped across 21 grammar families. None of the 3906 required cells lacks authored tasks. Human review and evaluator qualification remain pending.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope",
       "completionScope": "Phase 4 inventory, mapping and executable authoring/coverage controls. Independent human content approval and full curriculum release are not claimed."
@@ -1197,11 +1217,20 @@
         "artifacts/coverage-review-gate/2026-09-05T10-18-52-372Z/report.json",
         "artifacts/phase4-scope/runtime-preservation.json",
         "artifacts/language-release-source/20260905-phase4/manifest.json",
-        "artifacts/phase4-scope/final-verification.json"
+        "artifacts/phase4-scope/final-verification.json",
+        "artifacts/phase7-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-135010-e953ce91/report.json",
+        "artifacts/installer-cycle/German-20260905-132213-a9011b39/report.json",
+        "artifacts/installed-language-update/20260905-135209/report.json",
+        "artifacts/installed-language-update/20260905-132730/report.json",
+        "artifacts/phase7-browser/2026-09-05T11-53-51-306Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T11-53-52-221Z/report.json",
+        "artifacts/language-release-source/20260905-phase7-en31-de35/manifest.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Phase 4 gate complete: 3,920 cells include 3,906 required cells, 322 explicit missing-task cells and 14 reasoned spoken N/A cells for graphic targets. Existing 3,584 authored cells remain unqualified. Every required gap has named work; missing evaluators cannot become N/A. The combined release gate includes new targets and still exits 2. Verification: 54 scope checks, six CLI checks, 11 browser checks, four existing coverage checks and 29 review-gate checks passed.",
+      "progressNote": "The current 3,920-cell inventory has 3,906 required authored cells, zero missing authored cells and 14 reasoned spoken N/A cells for graphic targets. All 3,906 required cells remain unqualified pending independent review. The release gate still rejects unqualified coverage. Scope, CLI, viewer, preservation and review-gate checks pass.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope",
       "completionScope": "Phase 4 inventory, mapping and executable authoring/coverage controls. Independent human content approval and full curriculum release are not claimed."
@@ -1343,11 +1372,20 @@
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
         "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
         "docs/grammar-scope/missing-work.json",
-        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md"
+        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+        "artifacts/phase7-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-135010-e953ce91/report.json",
+        "artifacts/installer-cycle/German-20260905-132213-a9011b39/report.json",
+        "artifacts/installed-language-update/20260905-135209/report.json",
+        "artifacts/installed-language-update/20260905-132730/report.json",
+        "artifacts/phase7-browser/2026-09-05T11-53-51-306Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T11-53-52-221Z/report.json",
+        "artifacts/language-release-source/20260905-phase7-en31-de35/manifest.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Daily and Grammar routes enter shared practice. Static answers now persist before grading and import into the shared history. Back/Forward and reload retain per-task drafts. Offline task URLs use the cached practice shell. Legacy completion totals remain practice activity.",
+      "progressNote": "Installed Daily and Grammar routes now share the evidence summary and exact original-response repair links. Both languages pass linked repair, saved drafts, offline practice and backup/restore checks. Generated curriculum and shared asset hashes match the source. Full reviewed construction/evaluator coverage remains open.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
@@ -1407,11 +1445,20 @@
         "artifacts/installed-automaticity-browser/2026-09-05T08-36-36-356Z/report.json",
         "artifacts/automaticity-recording/2026-09-05T08-36-36-157Z/report.json",
         "artifacts/automaticity-practice/2026-09-05T08-27-54-469Z/report.json",
-        "artifacts/language-release-source/20260905-en27-de33/manifest.json"
+        "artifacts/language-release-source/20260905-en27-de33/manifest.json",
+        "artifacts/phase7-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-135010-e953ce91/report.json",
+        "artifacts/installer-cycle/German-20260905-132213-a9011b39/report.json",
+        "artifacts/installed-language-update/20260905-135209/report.json",
+        "artifacts/installed-language-update/20260905-132730/report.json",
+        "artifacts/phase7-browser/2026-09-05T11-53-51-306Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T11-53-52-221Z/report.json",
+        "artifacts/language-release-source/20260905-phase7-en31-de35/manifest.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Review draft recovery is implemented and installed in English 27.3.27 / German 20.8.33. All 12 review checks per language pass against the installed apps: reopen/reload/switching, backup, quota export, corrupt draft retention, newer-feedback conflicts, second-tab ownership and recording association. Original responses are preserved; local feedback does not approve mastery. Historical recordings and due reviews still retain their original workflows; full cross-surface closure remains open.",
+      "progressNote": "Installed English six-route and German seven-route journeys agree on the original attempt and next repair. Linked corrections clear the repair queue without becoming new independent success. Twelve review-draft checks and twelve prospective-recall checks per language passed; saved originals, conflicts and elapsed-time/exposure boundaries remain protected. Independent evaluator/content approval remains open.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
@@ -1708,12 +1755,18 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md",
+        "artifacts/model-evaluation-gates/2026-09-05T11-23-04-437Z/report.json",
+        "artifacts/model-adapter-gates/2026-09-05T11-18-54-131Z/report.json",
+        "artifacts/model-evaluation-gates/2026-09-05T11-35-14-858Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Benchmark cases require source/licence, separate modality, content version and rubric identity. Independent labels, reviewer identities and adjudication have not been collected. Synthetic test labels do not qualify a model.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Engineering verified: 20 original development drafts, blind offline review/export, hash-bound import, two-reviewer and adjudication checks, partition provenance and frozen-evaluation manifests. Independent human labels and separate calibration/final cases have not been collected. Review page is open at http://127.0.0.1:3320. No reviewed benchmark is claimed.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "M02",
@@ -1758,12 +1811,20 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md",
+        "artifacts/model-evaluation-gates/2026-09-05T11-23-04-437Z/report.json",
+        "artifacts/model-adapter-gates/2026-09-05T11-18-54-131Z/report.json",
+        "artifacts/model-evaluation/2026-09-05T11-41-29-126Z-languagetool/report.json",
+        "docs/model-evaluation/development-comparison.json",
+        "artifacts/model-evaluation-gates/2026-09-05T11-35-14-858Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Offline runner reports separate language/modality/construction/content/rubric scopes, error denominators and Wilson uncertainty. No candidate comparison was run on a reviewed benchmark, so no grammar model is qualified.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Engineering verified: production controlled-answer matching ran on 20 draft cases (4 matches, 16 abstentions). Portable LanguageTool 6.6 completed the same 20 requests, producing one English agreement annotation and four German proper-name annotations; all task-level judgments abstained. Five mock adapter scenarios also pass. Reviewed calibration/final data and a pinned pretrained candidate are still missing. No model is qualified.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "M03",
@@ -1789,12 +1850,18 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/assessment.ts",
-        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md",
+        "artifacts/model-evaluation-gates/2026-09-05T11-23-04-437Z/report.json",
+        "artifacts/model-adapter-gates/2026-09-05T11-18-54-131Z/report.json",
+        "artifacts/model-evaluation-gates/2026-09-05T11-35-14-858Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Current decision is conservative controlled practice feedback and unassessed open work with local review. No construction-wide automatic-assessment scope is approved without M01/M02.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Engineering verified: versioned matrix accounts for all 3906 required cells with a manual-review workflow and conservative fallback. Exact construction/task-version/rubric/mode tuples prevent inherited approval. Automated release requires the reviewed labels, frozen configuration and exact final-run evidence. Zero automatic or qualified human scopes are approved; final deployment qualification awaits M01/M02.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "M04",
@@ -1823,11 +1890,13 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/assessment.ts",
-        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md"
       ],
       "required": false,
       "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release.",
-      "progressNote": "Pinned scope validation is prepared. No Transformer is deployed because no candidate has passed reviewed qualification.",
+      "progressNote": "The optional Transformer contract now pins exact content/mode tuples and rejects changed or inconsistent output. No Transformer is deployed because no candidate has passed independent reviewed qualification.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -1857,7 +1926,9 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "artifacts/supplementary-curriculum/2026-09-05T11-10-51-974Z/report.json",
+        "docs/grammar-scope/inventory.json"
       ],
       "required": true,
       "condition": null,
@@ -1869,7 +1940,7 @@
         "G05",
         "G13"
       ],
-      "progressNote": "Existing family tasks are generated and mapped; independent linguistic review, approved alternatives and evaluator coverage remain open.",
+      "progressNote": "All declared family targets now have authored tasks, including the supplementary constructions. Original lesson and task identities are preserved. Independent linguistic review, reviewed alternatives and qualified assessment coverage remain open.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -1899,7 +1970,9 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "artifacts/supplementary-curriculum/2026-09-05T11-10-51-974Z/report.json",
+        "docs/grammar-scope/inventory.json"
       ],
       "required": true,
       "condition": null,
@@ -1910,7 +1983,7 @@
         "G09",
         "G10"
       ],
-      "progressNote": "Existing family tasks are generated and mapped; temporal meaning, valency and lawful transformation review remain open.",
+      "progressNote": "All declared family targets now have authored tasks, including the supplementary constructions. Original lesson and task identities are preserved. Independent linguistic review, reviewed alternatives and qualified assessment coverage remain open.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -1940,7 +2013,9 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "artifacts/supplementary-curriculum/2026-09-05T11-10-51-974Z/report.json",
+        "docs/grammar-scope/inventory.json"
       ],
       "required": true,
       "condition": null,
@@ -1951,7 +2026,7 @@
         "G15",
         "G16"
       ],
-      "progressNote": "Existing family tasks are generated and mapped; scope, role assignment and integrated meaning review remain open.",
+      "progressNote": "All declared family targets now have authored tasks, including the supplementary constructions. Original lesson and task identities are preserved. Independent linguistic review, reviewed alternatives and qualified assessment coverage remain open.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -1981,7 +2056,9 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "artifacts/supplementary-curriculum/2026-09-05T11-10-51-974Z/report.json",
+        "docs/grammar-scope/inventory.json"
       ],
       "required": true,
       "condition": null,
@@ -1992,7 +2069,7 @@
         "G20",
         "G21"
       ],
-      "progressNote": "Existing family tasks are generated and mapped; advanced discourse/register and modality suitability review remain open.",
+      "progressNote": "All declared family targets now have authored tasks, including the supplementary constructions. Original lesson and task identities are preserved. Independent linguistic review, reviewed alternatives and qualified assessment coverage remain open.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -2031,11 +2108,13 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "All 3584 current cells are authored but zero are human-reviewed/release-qualified. Full reviewed reference and scope-matched benchmark gates remain unmet.",
+      "progressNote": "All 3906 required cells in the 280-target inventory now have authored tasks, including the 24 previously missing targets. Zero are human-reviewed or evaluator-qualified. Full reference/content review and matching full-scope M01-M03 evidence remain unmet.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -2408,7 +2487,16 @@
         "artifacts/automaticity-recording/2026-09-05T09-42-36-163Z/report.json",
         "artifacts/review-drafts/2026-09-05T09-42-36-164Z/report.json",
         "artifacts/language-release-source/20260905-en28-de34-approved/manifest.json",
-        "artifacts/approval-resume/20260905-en28-de34/final-delivery.json"
+        "artifacts/approval-resume/20260905-en28-de34/final-delivery.json",
+        "artifacts/phase7-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-135010-e953ce91/report.json",
+        "artifacts/installer-cycle/German-20260905-132213-a9011b39/report.json",
+        "artifacts/installed-language-update/20260905-135209/report.json",
+        "artifacts/installed-language-update/20260905-132730/report.json",
+        "artifacts/phase7-browser/2026-09-05T11-53-51-306Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T11-53-52-221Z/report.json",
+        "artifacts/language-release-source/20260905-phase7-en31-de35/manifest.json",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
@@ -2418,7 +2506,7 @@
           "when": "The pilot release includes a selected Transformer adapter."
         }
       ],
-      "progressNote": "English 27.3.28 and German 20.8.34 are installed and running after the user changed the Windows setting. Unchanged exact-hash installers pass install, upgrade, startup, update, repair, uninstall and synthetic preservation. Complete normal profile backups and pre-startup file equality are verified. Five installed browser suites pass in both languages, including offline practice, playable audio restore, recording, recall and review drafts. Packages remain unsigned. Full curriculum/evaluator qualification and real learner-outcome dependencies remain open.",
+      "progressNote": "English 27.3.31 and DeutschFlow 20.8.35 are installed and running. Exact-hash packages pass install, previous-version upgrade, startup, update, damaged-payload repair, uninstall and synthetic preservation. Complete normal profiles were backed up and verified unchanged before startup. Installed browser tests cover all shared overview routes, linked repair, unavailable service workers, offline practice and playable audio export/restore. The learning-loop release dependencies still require independent content/evaluator approval and learner evidence. Packages remain unsigned.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
@@ -2596,8 +2684,8 @@
   ],
   "delivery": {
     "technicalIncrement": "verified",
-    "englishVersion": "27.3.28",
-    "germanVersion": "20.8.34",
+    "englishVersion": "27.3.31",
+    "germanVersion": "20.8.35",
     "fullRoadmap": "incomplete",
     "fullCurriculum": "not_qualified",
     "learningEffectiveness": "not_measured",
@@ -2605,26 +2693,26 @@
     "transformer": "not_qualified",
     "fsrs": "shadow_only",
     "reinforcementLearning": "deferred",
-    "installedEnglishVersion": "27.3.28",
-    "installedGermanVersion": "20.8.34"
+    "installedEnglishVersion": "27.3.31",
+    "installedGermanVersion": "20.8.35"
   },
   "technicalRelease": {
     "status": "verified",
     "versions": {
-      "English": "27.3.28",
-      "German": "20.8.34"
+      "English": "27.3.31",
+      "German": "20.8.35"
     },
     "installedVersions": {
-      "English": "27.3.28",
-      "German": "20.8.34"
+      "English": "27.3.31",
+      "German": "20.8.35"
     },
     "fullCurriculum": "not_qualified",
     "learnerOutcomes": "unmeasured",
-    "report": "docs/LANGUAGE-AUTOMATICITY-DELIVERY-2026-09-05.md"
+    "report": "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
   "grammarScope": {
     "status": "mapping_verified",
     "report": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
@@ -2632,7 +2720,8 @@
     "existingUnits": 256,
     "additionalTargets": 24,
     "requiredCells": 3906,
-    "missingTaskCells": 322,
-    "humanContentReview": "pending"
+    "missingTaskCells": 0,
+    "humanContentReview": "pending",
+    "currentUnits": 280
   }
 }

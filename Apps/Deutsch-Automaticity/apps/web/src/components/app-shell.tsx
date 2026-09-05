@@ -1,4 +1,5 @@
 "use client";
+import { AutomaticityEvidenceSummary } from "@/features/progress/automaticity-evidence-summary";
 
 import { ChevronDown, Clock3, Folder, Settings } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
@@ -175,6 +176,11 @@ export function AppShell({
           tabIndex={-1}
         >
           {children}
+          {["/studio", "/fehler", "/wiederholungen", "/lehrkraft"].includes(
+            pathname,
+          ) ? (
+            <AutomaticityEvidenceSummary />
+          ) : null}
         </main>
       </div>
     </div>

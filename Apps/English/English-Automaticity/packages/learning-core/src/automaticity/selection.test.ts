@@ -10,6 +10,7 @@ import { type CurriculumPack, type PracticeTask } from "./curriculum";
 import { constructionsForLesson, validateCurriculum } from "./curriculum";
 import { type AttemptEvent } from "./contracts";
 import { reduceAutomaticityEvents } from "./evidence";
+import { evidenceOverview } from "./overview";
 const at = "2026-09-05T10:00:00.000Z";
 const task: PracticeTask = {
   id: "t",
@@ -87,6 +88,110 @@ const pack: CurriculumPack = {
   })),
 };
 describe("scoped feedback and task selection", () => {
+  test("approved model tuples cannot cross content versions, modes or rubrics", () => {
+    const proposal = assessControlledTask(attempt, task, at, "model-result");
+    proposal.evaluator = {
+      id: "test-model",
+      version: "1",
+      kind: "transformer",
+      scopeApproved: false,
+      reviewId: null,
+    };
+    const approval = {
+      evaluatorId: "test-model",
+      evaluatorVersion: "1",
+      language: "de" as const,
+      constructionIds: [task.constructionId],
+      rubricVersions: [task.rubricVersion, "changed"],
+      modalities: ["writing" as const, "speaking" as const],
+      scopes: [
+        {
+          constructionId: task.constructionId,
+          taskVersion: task.version,
+          rubricVersion: task.rubricVersion,
+          modality: task.modality,
+        },
+      ],
+      benchmarkSha256: "b".repeat(64),
+      approved: true,
+    };
+    expect(
+      validateModelAssessment(proposal, attempt, approval).evaluator
+        .scopeApproved,
+    ).toBe(true);
+    for (const change of [
+      { version: "2" },
+      { modality: "speaking" as const },
+      { rubricVersion: "changed" },
+    ]) {
+      const changed = { ...attempt, task: { ...attempt.task, ...change } };
+      expect(() =>
+        validateModelAssessment(
+          {
+            ...proposal,
+            taskVersion: changed.task.version,
+            rubricVersion: changed.task.rubricVersion,
+          },
+          changed,
+          approval,
+        ),
+      ).toThrow("benchmark");
+    }
+    expect(() =>
+      validateModelAssessment(
+        {
+          ...proposal,
+          dimensions: { ...proposal.dimensions, target: "not_observed" },
+        },
+        attempt,
+        approval,
+      ),
+    ).toThrow(/contradicts|consistent/);
+  });
+  test("all views select the same repair and remove it after an overturned judgment", () => {
+    const wrong = {
+      ...attempt,
+      response: { ...attempt.response, text: "ich bin bereit." },
+    };
+    const judgment = assessControlledTask(wrong, task, at, "repair-judgment");
+    const withTasks = {
+      ...pack,
+      units: pack.units.map((unit, index) =>
+        index ? unit : { ...unit, tasks: [task] },
+      ),
+    };
+    const view = evidenceOverview(
+      reduceAutomaticityEvents([wrong, judgment], "de", at),
+      withTasks,
+    );
+    expect(view.repairs[0]?.attemptId).toBe(attempt.id);
+    expect(
+      new URL(view.repairs[0]!.href, "http://localhost").searchParams.get(
+        "repairOf",
+      ),
+    ).toBe(attempt.id);
+    expect(view.modes[0]?.accuracy).toBeNull();
+    expect(view.modes[1]?.attempts).toBe(0);
+    const replacement = {
+      ...judgment,
+      id: "overturned",
+      at: "2026-09-05T10:00:00.500Z",
+      supersedes: judgment.id,
+      verdict: "pass" as const,
+      dimensions: {
+        grammar: "pass" as const,
+        target: "observed" as const,
+        relevance: "pass" as const,
+        opportunities: 1,
+      },
+    };
+    expect(
+      evidenceOverview(
+        reduceAutomaticityEvents([wrong, judgment, replacement], "de", at),
+        withTasks,
+      ).repairs,
+    ).toEqual([]);
+  });
   test("lesson aliases support many-to-many mappings without changing construction IDs", () => {
     const linked: CurriculumPack = {
       ...pack,
@@ -163,6 +268,14 @@ describe("scoped feedback and task selection", () => {
       constructionIds: [task.constructionId],
       rubricVersions: ["1"],
       modalities: ["writing" as const],
+      scopes: [
+        {
+          constructionId: task.constructionId,
+          taskVersion: task.version,
+          rubricVersion: task.rubricVersion,
+          modality: task.modality,
+        },
+      ],
       benchmarkSha256: "b".repeat(64),
       approved: false,
     };

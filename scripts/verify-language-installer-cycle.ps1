@@ -157,7 +157,6 @@ $profiles = @{
     WebUrl = 'http://127.0.0.1:3202/'
     ApiUrl = 'http://127.0.0.1:4201/api/health'
     CurriculumLanguage = 'en'
-    CurriculumUnits = 112
     WebValidator = { param($response) $response.Content -match 'dir="ltr"' }
     ApiValidator = {
       param($response)
@@ -172,7 +171,6 @@ $profiles = @{
     WebUrl = 'http://127.0.0.1:3210/'
     ApiUrl = 'http://127.0.0.1:4210/api/v1/health'
     CurriculumLanguage = 'de'
-    CurriculumUnits = 144
     WebValidator = { param($response) $response.Content -match 'dir="ltr"' }
     ApiValidator = {
       param($response)
@@ -194,6 +192,17 @@ if (-not (Test-Path -LiteralPath $payloadPath -PathType Leaf)) {
 
 $workspaceRoot = Split-Path -Parent $PSScriptRoot
 $sourceConfiguration = Get-Content -Raw -Encoding UTF8 -LiteralPath (Join-Path $workspaceRoot $profile.Configuration) | ConvertFrom-Json
+function Get-CurriculumTextHash {
+  param([string]$Text)
+  $algorithm = [Security.Cryptography.SHA256]::Create()
+  try { return ([BitConverter]::ToString($algorithm.ComputeHash([Text.Encoding]::UTF8.GetBytes($Text.Replace("`r`n", "`n"))))).Replace('-', '').ToLowerInvariant() }
+  finally { $algorithm.Dispose() }
+}
+$configurationDirectory = Split-Path -Parent (Join-Path $workspaceRoot $profile.Configuration)
+$sourceCurriculumPath = [IO.Path]::GetFullPath((Join-Path $configurationDirectory ("..\..\apps\web\public\learning-core\curriculum-" + $profile.CurriculumLanguage + '.json')))
+$sourceCurriculumText = Get-Content -Raw -Encoding UTF8 -LiteralPath $sourceCurriculumPath
+$sourceCurriculum = $sourceCurriculumText | ConvertFrom-Json
+$curriculumSha256 = Get-CurriculumTextHash $sourceCurriculumText
 $releaseVersion = if ([string]::IsNullOrWhiteSpace($ExpectedVersion)) { [string]$sourceConfiguration.version } else { $ExpectedVersion }
 
 # Busy canonical ports can otherwise make an old source server look like a
@@ -334,7 +343,7 @@ try {
         @{ Name = 'api'; Url = [string]$profile.ApiUrl; Validator = $profile.ApiValidator },
         @{ Name = 'practice'; Url = ([string]$profile.WebUrl + 'practice'); Validator = { param($response) $response.Content -match 'id="practice-root"' -and $response.Content -match '/learning-core/practice.js' } },
         @{ Name = 'practice-runtime'; Url = ([string]$profile.WebUrl + 'learning-core/practice.js'); Validator = { param($response) $response.Content.Length -gt 20000 -and $response.Content -match 'automaticity:v2:' } },
-        @{ Name = 'curriculum'; Url = ([string]$profile.WebUrl + 'learning-core/curriculum-' + $profile.CurriculumLanguage + '.json'); Validator = { param($response) $catalog = $response.Content | ConvertFrom-Json; $catalog.language -eq $profile.CurriculumLanguage -and $catalog.units.Count -eq $profile.CurriculumUnits -and @($catalog.units | Where-Object { $_.tasks.Count -lt 14 }).Count -eq 0 } }
+        @{ Name = 'curriculum'; Url = ([string]$profile.WebUrl + 'learning-core/curriculum-' + $profile.CurriculumLanguage + '.json'); Validator = { param($response) $catalog = $response.Content | ConvertFrom-Json; $catalog.language -eq $profile.CurriculumLanguage -and $catalog.units.Count -eq $sourceCurriculum.units.Count -and (Get-CurriculumTextHash $response.Content) -eq $curriculumSha256 } }
       ) `
       -Deadline $deadline `
       -DesktopProcess $desktopProcess
@@ -342,6 +351,8 @@ try {
     $report.startupProcessExited = $startupResult.processExited
     $report.startupProcessExitCode = $startupResult.processExitCode
     $report.startupContracts = $startupResult.checks
+    $report.sourceCurriculumSha256 = $curriculumSha256
+    $report.sourceCurriculumUnits = $sourceCurriculum.units.Count
     if (-not $startupResult.ready) {
       $failedContracts = @(
         $startupResult.checks |

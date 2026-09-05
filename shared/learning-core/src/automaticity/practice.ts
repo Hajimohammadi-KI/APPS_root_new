@@ -821,10 +821,28 @@ export async function mountPractice(
           "Übertragen",
           "Später abrufen",
         ];
-    const requestedRepair = repairRequestId ? ledger().attempts.find(row=>row.attempt.id===repairRequestId && row.attempt.task.constructionId===unit.id) : undefined;
-    if (requestedRepair && session.previousAttemptId !== requestedRepair.attempt.id) {
-      const sourceTask=taskById.get(requestedRepair.attempt.task.id);
-      if(sourceTask) taskPanel.append(button(t("Start a repair of this response","Korrektur dieser Antwort beginnen"),()=>fresh(sourceTask,requestedRepair.attempt.id)));
+    const requestedRepair = repairRequestId
+      ? ledger().attempts.find(
+          (row) =>
+            row.attempt.id === repairRequestId &&
+            row.attempt.task.constructionId === unit.id,
+        )
+      : undefined;
+    if (
+      requestedRepair &&
+      session.previousAttemptId !== requestedRepair.attempt.id
+    ) {
+      const sourceTask = taskById.get(requestedRepair.attempt.task.id);
+      if (sourceTask)
+        taskPanel.append(
+          button(
+            t(
+              "Start a repair of this response",
+              "Korrektur dieser Antwort beginnen",
+            ),
+            () => fresh(sourceTask, requestedRepair.attempt.id),
+          ),
+        );
     }
     const stageNav = element("div", undefined, "stage-nav");
     stageNav.setAttribute("aria-label", t("Learning cycle", "Lernzyklus"));

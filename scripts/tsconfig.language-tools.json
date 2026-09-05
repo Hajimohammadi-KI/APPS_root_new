@@ -12,6 +12,16 @@
     "typeRoots": ["../Apps/Deutsch-Automaticity/node_modules/@types"]
   },
   "include": [
+    "summarize-model-diagnostics.ts",
+    "prepare-model-benchmark.ts",
+    "import-model-benchmark-review.ts",
+    "serve-model-review.ts",
+    "evaluate-model-candidates.ts",
+    "freeze-model-evaluation.ts",
+    "verify-model-evaluation.ts",
+    "verify-model-adapters.ts",
+    "build-model-support-matrix.ts",
+    "verify-supplementary-curriculum.ts",
     "lib/grammar-scope.ts",
     "lib/grammar-scope-files.ts",
     "build-grammar-scope.ts",

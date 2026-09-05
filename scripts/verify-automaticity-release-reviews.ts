@@ -271,6 +271,10 @@ try {
             ? ("needs_repair" as const)
             : ("not_assessed" as const),
       humanReviewIds: ["synthetic-1", "synthetic-2"],
+      sourceGroup: `synthetic-final-${category}-${index}`,
+      templateFamily: `synthetic-final-${category}-${index}`,
+      learnerGroup: null,
+      contentFingerprint: sha256(`synthetic-final-${category}-${index}`),
       adjudicated: true,
     })),
   );
@@ -297,8 +301,8 @@ try {
     path: relative(root, benchmarkPath),
     sha256: sha256(JSON.stringify(input)),
   };
-  await check(model);
-  pass("automated-scope-recomputes-qualified-benchmark");
+  await assert.rejects(() => check(model), /frozen evaluation evidence/);
+  pass("bare-score-file-cannot-bypass-human-labels-and-frozen-evaluation");
   approval.version = "2";
   await assert.rejects(() => check(model), /not qualified for this version/);
   pass("model-version-mismatch");

@@ -82,7 +82,7 @@ try {
     assert.equal(result.status, expected, result.stderr);
     const parsed = JSON.parse(result.stdout);
     if (name.startsWith("combined")) {
-      assert.equal(parsed.missingExpandedScopeCells, 322);
+      assert.equal(parsed.missingExpandedScopeCells, 0);
       assert.equal(parsed.totalUnqualifiedRequiredCells, 3906);
       assert.equal(parsed.fullCurriculumRelease, "not_qualified");
     }

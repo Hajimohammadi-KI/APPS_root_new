@@ -1,5 +1,6 @@
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
+import { validateEvaluationEvidence } from "./lib/model-benchmark";
 import {
   parseBenchmarkInput,
   qualifyCandidate,
@@ -17,6 +18,8 @@ const report = qualifyCandidate(
   input.predictions,
   input.candidate,
 );
+try { await validateEvaluationEvidence(resolve(import.meta.dir,".."),input); }
+catch(error) { report.eligibleForReleaseReview=false; report.reasons.push(String(error)); }
 const target = resolve(
   import.meta.dir,
   `../artifacts/model-qualification/${new Date().toISOString().replace(/[:.]/g, "-")}.json`,

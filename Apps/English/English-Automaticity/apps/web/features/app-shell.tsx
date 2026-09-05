@@ -1,4 +1,5 @@
 "use client";
+import {AutomaticityEvidenceSummary} from "./components/automaticity-evidence-summary";
 
 import * as React from "react";
 import dynamic from "next/dynamic";
@@ -525,6 +526,7 @@ export function AppShell() {
 					</div>
 				</header>
 				<div className="app-content" data-screen={screen}>
+{["errors", "progress"].includes(screen) ? <AutomaticityEvidenceSummary /> : null}
 					{screen === "home" ? <DashboardV2Screen navigate={navigate} /> : null}
 					{screen === "progress" ? <AutomaticityScreen /> : null}
 					{screen === "integrated-skills" ? (

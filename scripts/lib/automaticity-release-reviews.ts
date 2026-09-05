@@ -5,6 +5,7 @@ import type {
   ConstructionUnit,
   CurriculumPack,
 } from "../../shared/learning-core/src/automaticity/curriculum";
+import { validateEvaluationEvidence } from "./model-benchmark";
 import {
   isRecord,
   validDate,
@@ -304,6 +305,7 @@ export async function validateReleaseReviews(
               `Evaluator benchmark scope does not cover task ${id}`,
             );
         }
+        await validateEvaluationEvidence(root, input);
       } else if (evaluator.benchmarkInput !== null)
         throw new Error(
           `Human evaluator must not imply automated benchmark approval ${key}`,

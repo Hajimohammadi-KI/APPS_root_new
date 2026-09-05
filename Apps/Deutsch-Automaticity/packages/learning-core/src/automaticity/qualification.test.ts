@@ -25,6 +25,13 @@ const cases: BenchmarkCase[] = categories.flatMap((category, index) =>
     rubricVersion: "1",
     partition: "final",
     itemFamily: `${index}-${i}`,
+    sourceGroup: `source-${index}-${i}`,
+    templateFamily: `template-${index}-${i}`,
+    learnerGroup: null,
+    contentFingerprint: `${index}${i.toString(16).padStart(2, "0")}`.padEnd(
+      64,
+      "a",
+    ),
     category,
     expected:
       category === "correct_alternative"
@@ -116,3 +123,34 @@ test("malformed external benchmark records are rejected", () => {
     }),
   ).toThrow();
 });
+test("a passing prediction with an absent target is rejected", () => {
+  const changed = predictions.map((row, index) =>
+    index ? row : { ...row, targetObserved: false },
+  );
+  const report = qualifyCandidate(cases, changed, candidate);
+  expect(report.eligibleForReleaseReview).toBe(false);
+  expect(report.scopes[0]?.targetContradictions).toBe(1);
+});
+for (const field of [
+  "sourceGroup",
+  "templateFamily",
+  "learnerGroup",
+  "contentFingerprint",
+] as const)
+  test(`shared ${field} cannot leak across partitions`, () => {
+    const final = { ...cases[0]!, learnerGroup: "learner-one" };
+    const development = {
+      ...cases[1]!,
+      id: "development",
+      partition: "development" as const,
+      learnerGroup: "learner-two",
+    };
+    development[field] = final[field];
+    expect(
+      qualifyCandidate(
+        [...cases.slice(2), final, development],
+        predictions,
+        candidate,
+      ).reasons.some((reason) => reason.includes("Partition leakage")),
+    ).toBe(true);
+  });

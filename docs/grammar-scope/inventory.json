@@ -53,7 +53,7 @@
     },
     {
       "path": "scripts/lib/grammar-scope.ts",
-      "sha256": "6b678d3657a3b7953e259e3c1d7bb40e2d6ba73dba2658ee995de1e9b97c1cd6"
+      "sha256": "513d4dd75079d185f35d92fa3c2e1af53b6611b5ceebccf345f8bab87084f966"
     },
     {
       "path": "scripts/lib/grammar-scope-files.ts",
@@ -61,11 +61,11 @@
     },
     {
       "path": "scripts/build-grammar-scope.ts",
-      "sha256": "8efd914aa5defbc4e2534b5ebdcf8d9080a131f5026f9f223cf3cf6a43ede967"
+      "sha256": "00264f0d880080d15fb6cbb99cb66f99464f6496278caa130b858523f84aef1b"
     },
     {
       "path": "scripts/build-automaticity-curriculum.ts",
-      "sha256": "cd84f4b353445b0514dfadd2353cb9786f3cf212cf13e00773f5b421eaac98ac"
+      "sha256": "bb7c7986635e69f52f4f025f5918e52ba40145e5d70ff709f8ecc8069bf93672"
     }
   ],
   "references": [

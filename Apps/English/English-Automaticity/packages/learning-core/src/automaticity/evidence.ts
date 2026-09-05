@@ -25,6 +25,7 @@ export interface ConstructionProgress {
   attempts: number;
   assessed: number;
   practiceFailures: number;
+  repairNeeded?: boolean;
   independentAssessed: number;
   independentSuccesses: number;
   accuracy: number | null;
@@ -148,6 +149,10 @@ export function reduceAutomaticityEvents(
     // Two competing verdicts require adjudication; never choose a convenient one.
     const assessment = candidates.length === 1 ? candidates[0]! : null;
     const reasons: string[] = [];
+    if (attempt.task.version === "legacy-import-1")
+      reasons.push(
+        "Historical assistance, task context and assessment are not established",
+      );
     if (candidates.length > 1) reasons.push("conflicting_assessments");
     const prior = attempts.filter(
       (row) =>
@@ -196,6 +201,7 @@ export function reduceAutomaticityEvents(
         attempt.response.originalTranscriptSha256 === attempt.response.sha256
       );
     const independent =
+      attempt.task.version !== "legacy-import-1" &&
       first &&
       !assisted &&
       !exposed &&
@@ -286,6 +292,9 @@ export function reduceAutomaticityEvents(
         .filter(
           (row) => row.checked && row.assessment?.verdict === "needs_repair",
         ).length,
+      repairNeeded:
+        rows.filter((row) => row.checked).at(-1)?.assessment?.verdict ===
+        "needs_repair",
       independentAssessed: eligible.length,
       independentSuccesses: wins.length,
       accuracy: eligible.length ? wins.length / eligible.length : null,

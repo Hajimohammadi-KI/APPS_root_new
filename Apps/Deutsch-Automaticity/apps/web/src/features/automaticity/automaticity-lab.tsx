@@ -945,7 +945,7 @@ export function AutomaticityLab({
               <div className="flex flex-wrap gap-2">
                 <Badge>Offline-Übung</Badge>
                 <Badge variant="outline">
-                  Bestätigte Automatik:{" "}
+                  Frühere Übungsschwelle:{" "}
                   {verifiedMastery?.scores.automaticity ?? 0}%
                 </Badge>
               </div>

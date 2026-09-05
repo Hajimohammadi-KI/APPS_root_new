@@ -17,6 +17,10 @@ const cases: BenchmarkCase[] = categories.flatMap((category, index) =>
   Array.from({ length: 20 }, (_, i) => ({
     id: `${index}-${i}`,
     language: "en",
+    modality: "writing",
+    contentVersion: "synthetic-1",
+    sourceId: "synthetic-test-fixture",
+    license: "Original synthetic test fixture",
     constructionId: "en.c.001",
     rubricVersion: "1",
     partition: "final",
@@ -45,6 +49,26 @@ test("passing synthetic checks still require independent release approval", () =
   expect(report.eligibleForReleaseReview).toBe(true);
   expect(report.automaticallyApproved).toBe(false);
   expect(report.scopes[0]?.reportedCost).toBeNull();
+  expect(report.scopes[0]?.falseCorrectionUpper95).toBeGreaterThan(0.1);
+});
+test("writing coverage cannot silently qualify speech or a new content version", () => {
+  const mixed = cases.map((row, index) => ({
+    ...row,
+    modality: index % 2 ? ("speaking" as const) : ("writing" as const),
+  }));
+  const result = qualifyCandidate(mixed, predictions, candidate);
+  expect(result.scopes).toHaveLength(2);
+  expect(result.eligibleForReleaseReview).toBe(false);
+  expect(
+    qualifyCandidate(
+      cases.map((row, index) => ({
+        ...row,
+        contentVersion: index % 2 ? "changed" : "original",
+      })),
+      predictions,
+      candidate,
+    ).eligibleForReleaseReview,
+  ).toBe(false);
 });
 test("unreviewed samples and leaked item families cannot qualify a model", () => {
   const report = qualifyCandidate(

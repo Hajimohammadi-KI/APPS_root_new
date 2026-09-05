@@ -1,4 +1,5 @@
 "use client";
+import { syncLegacyPracticeInBrowser } from "@automaticity/learning-core/automaticity";
 
 import {
   createContext,
@@ -35,7 +36,6 @@ import {
   type SessionRecord,
   type UserAttempt,
 } from "@grammar/domain";
-import { grammarUnits } from "@grammar/content";
 import {
   fsrsShadowRatingFromResult,
   recordFsrsShadowReview,
@@ -119,73 +119,8 @@ function countActiveCriticalErrors(
   ).length;
 }
 
-function average(values: readonly number[]): number | null {
-  if (values.length === 0) return null;
-  const recent = values.slice(-10);
-  return Math.round(
-    recent.reduce((total, value) => total + value, 0) / recent.length,
-  );
-}
-
-const CEFR_ORDER = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
-
-function deriveVerifiedLevel(
-  state: LearnerState,
-): LearnerState["learner"]["verifiedLevel"] {
-  let verified: LearnerState["learner"]["verifiedLevel"] = null;
-
-  for (const level of CEFR_ORDER) {
-    const levelTitles = grammarUnits
-      .filter((unit) => unit.level === level)
-      .map((unit) => unit.title);
-    if (levelTitles.length === 0) break;
-    const titleSet = new Set(levelTitles);
-    const allAutomatic = levelTitles.every(
-      (title) => state.mastery[title]?.status === "automatic",
-    );
-    if (!allAutomatic) break;
-
-    const activeCriticalErrors = state.errors.filter(
-      (error) =>
-        titleSet.has(error.topic) &&
-        error.critical &&
-        error.repairStatus !== "fixed",
-    ).length;
-    if (activeCriticalErrors > 0) break;
-
-    const successful = state.attempts.filter(
-      (attempt) =>
-        titleSet.has(attempt.topic) &&
-        attempt.verified === true &&
-        attempt.targetHit &&
-        attempt.accuracyScore >= 80,
-    );
-    const speaking = successful.filter(
-      (attempt) => attempt.mode === "speaking",
-    );
-    const writing = successful.filter((attempt) => attempt.mode === "writing");
-    const transfer = successful.filter(
-      (attempt) => attempt.mode === "transfer",
-    );
-    const minimumSamples = Math.max(6, Math.ceil(levelTitles.length * 0.5));
-    if (
-      speaking.length < minimumSamples ||
-      writing.length < minimumSamples ||
-      transfer.length < minimumSamples
-    ) {
-      break;
-    }
-
-    verified = level;
-  }
-
-  return verified;
-}
-
 function withAutomaticVerifiedLevel(state: LearnerState): LearnerState {
-  const nextVerified = state.learner.selfDeclaredLevel
-    ? deriveVerifiedLevel(state)
-    : null;
+  const nextVerified = null; // Grammar completion cannot certify a CEFR level.
   if (state.learner.verifiedLevel === nextVerified) {
     return state;
   }
@@ -199,132 +134,37 @@ function withAutomaticVerifiedLevel(state: LearnerState): LearnerState {
 }
 
 export function buildGermanEvidence(state: LearnerState): EvidenceSummary {
-  const level = state.learner.selfDeclaredLevel;
-  if (!level) return emptyEvidenceSummary();
-  const titles = new Set(
-    grammarUnits
-      .filter((unit) => unit.level === level)
-      .map((unit) => unit.title),
-  );
-  const attempts = state.attempts.filter((attempt) =>
-    titles.has(attempt.topic),
-  );
-  const speaking = attempts.filter((attempt) => attempt.mode === "speaking");
-  const writing = attempts.filter((attempt) => attempt.mode === "writing");
-  const mastery = Object.entries(state.mastery)
-    .filter(([title]) => titles.has(title))
-    .map(([, record]) => record);
-  const successful = (attempt: UserAttempt) =>
-    attempt.verified === true &&
-    attempt.targetHit &&
-    attempt.accuracyScore >= 80;
-  const dailyRows = new Map<
-    string,
-    {
-      date: string;
-      practiceCount: number;
-      speakingSamples: number;
-      writingSamples: number;
-      spontaneousSamples: number;
-      delayedReviews: number;
-      averageScore: number | null;
-      scores: number[];
-    }
-  >();
-  for (const [date, practiceCount] of Object.entries(state.activity)) {
-    dailyRows.set(date, {
-      date,
-      practiceCount,
-      speakingSamples: 0,
-      writingSamples: 0,
-      spontaneousSamples: 0,
-      delayedReviews: 0,
-      averageScore: null,
-      scores: [],
-    });
-  }
-  for (const attempt of attempts) {
+  const counts = new Map<string, number>();
+  for (const attempt of state.attempts) {
     const date = attempt.date.slice(0, 10);
-    const row = dailyRows.get(date) ?? {
-      date,
-      practiceCount: 0,
-      speakingSamples: 0,
-      writingSamples: 0,
-      spontaneousSamples: 0,
-      delayedReviews: 0,
-      averageScore: null,
-      scores: [],
-    };
-    row.practiceCount += 1;
-    row.scores.push(attempt.accuracyScore);
-    if (successful(attempt) && attempt.mode === "speaking") {
-      row.speakingSamples += 1;
-    }
-    if (successful(attempt) && attempt.mode === "writing") {
-      row.writingSamples += 1;
-    }
-    if (
-      successful(attempt) &&
-      (attempt.mode === "speaking" || attempt.mode === "transfer")
-    ) {
-      row.spontaneousSamples += 1;
-    }
-    dailyRows.set(date, row);
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date))
+      counts.set(date, (counts.get(date) ?? 0) + 1);
   }
+  // Historical percentages and transcripts lack independent review provenance.
+  // Retain activity while leaving proficiency dimensions unknown.
   return {
-    speakingSamples: speaking.filter(successful).length,
-    writingSamples: writing.filter(successful).length,
-    spontaneousSamples: attempts.filter(
-      (attempt) =>
-        successful(attempt) &&
-        (attempt.mode === "speaking" || attempt.mode === "transfer"),
-    ).length,
-    delayedReviews: mastery.reduce(
-      (total, record) => total + record.successfulReviews,
-      0,
-    ),
+    ...emptyEvidenceSummary(),
     criticalErrorCount: state.errors.filter(
-      (error) =>
-        titles.has(error.topic) &&
-        error.critical &&
-        error.repairStatus !== "fixed",
+      (error) => error.critical && error.repairStatus !== "fixed",
     ).length,
-    dailyActivity: [...dailyRows.values()]
-      .map(({ scores, ...row }) => ({
-        ...row,
-        averageScore: scores.length
-          ? Math.round(
-              scores.reduce((total, value) => total + value, 0) / scores.length,
-            )
-          : null,
-      }))
-      .sort((left, right) => left.date.localeCompare(right.date))
-      .slice(-90),
-    scores: {
-      listening: null,
-      reading: null,
-      spoken_interaction: average(
-        mastery.map((record) => record.scores.speaking),
-      ),
-      spoken_production: average(
-        mastery.map((record) => record.scores.speaking),
-      ),
-      writing: average(mastery.map((record) => record.scores.writing)),
-      grammar: average(mastery.map((record) => record.scores.automaticity)),
-      vocabulary: null,
-      pronunciation: null,
-      fluency: average(
-        speaking.flatMap((attempt) =>
-          attempt.fluencyScore === undefined ? [] : [attempt.fluencyScore],
-        ),
-      ),
-    },
+    dailyActivity: [...counts]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, practiceCount]) => ({
+        date,
+        practiceCount,
+        speakingSamples: 0,
+        writingSamples: 0,
+        spontaneousSamples: 0,
+        delayedReviews: 0,
+        averageScore: null,
+      })),
   };
 }
 
 export function LearnerStateProvider({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const [persistenceProblem, setPersistenceProblem] = useState(false);
   const [state, setState] = useState<LearnerState>(createInitialLearnerState);
   const [hydrated, setHydrated] = useState(false);
   const [profileReady, setProfileReady] = useState(false);
@@ -346,7 +186,21 @@ export function LearnerStateProvider({
 
   useLayoutEffect(() => {
     if (hydrated) {
-      localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(state));
+      try {
+        const previous = localStorage.getItem(LEGACY_STORAGE_KEY);
+        if (previous !== null) JSON.parse(previous);
+        localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(state));
+        void syncLegacyPracticeInBrowser("de").catch((error) =>
+          window.dispatchEvent(
+            new CustomEvent("automaticity-sync-error", {
+              detail: String(error),
+            }),
+          ),
+        );
+        setPersistenceProblem(false);
+      } catch {
+        setPersistenceProblem(true);
+      }
     }
   }, [hydrated, state]);
 
@@ -383,9 +237,7 @@ export function LearnerStateProvider({
                 ? (shared.selfDeclaredLevel ??
                   current.learner.selfDeclaredLevel)
                 : current.learner.selfDeclaredLevel,
-              verifiedLevel: profile.privacy.shareAcrossApps
-                ? shared.verifiedLevel
-                : current.learner.verifiedLevel,
+              verifiedLevel: null,
               placementMode: profile.privacy.shareAcrossApps
                 ? shared.placementMode
                 : current.learner.placementMode,
@@ -1101,6 +953,16 @@ export function LearnerStateProvider({
 
   return (
     <LearnerStateContext.Provider value={value}>
+      {persistenceProblem ? (
+        <p
+          role="alert"
+          className="border border-red-700 bg-white p-4 text-red-800"
+        >
+          Änderungen konnten nicht gespeichert werden. Lass diesen Tab offen und
+          exportiere deine Daten in den Einstellungen, bevor du es erneut
+          versuchst.
+        </p>
+      ) : null}
       {children}
     </LearnerStateContext.Provider>
   );

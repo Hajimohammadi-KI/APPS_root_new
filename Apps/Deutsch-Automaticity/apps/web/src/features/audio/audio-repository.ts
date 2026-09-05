@@ -40,10 +40,11 @@ async function runRequest<T>(
   }
   try {
     return await new Promise<T>((resolve, reject) => {
-      const request = operation(
-        database.transaction(AUDIO_STORE, mode).objectStore(AUDIO_STORE),
-      );
-      request.onsuccess = () => resolve(request.result);
+      const transaction = database.transaction(AUDIO_STORE, mode);
+      const request = operation(transaction.objectStore(AUDIO_STORE));
+      transaction.oncomplete = () => resolve(request.result);
+      transaction.onabort = () =>
+        reject(transaction.error ?? new Error("Audio transaction aborted"));
       request.onerror = () => reject(request.error);
     });
   } finally {
@@ -52,7 +53,10 @@ async function runRequest<T>(
 }
 
 export async function saveAudio(record: AudioRecord): Promise<void> {
-  await runRequest("readwrite", (store) => store.put(record));
+  if ((await runRequest("readwrite", (store) => store.put(record))) === null)
+    throw new Error(
+      "Audio storage is unavailable; the recording was not saved.",
+    );
 }
 
 export async function listAudio(): Promise<readonly AudioRecord[]> {

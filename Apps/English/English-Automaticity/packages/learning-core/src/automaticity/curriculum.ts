@@ -31,6 +31,7 @@ export interface ConstructionMapping {
   id: string;
   language: Language;
   lessonAlias: string;
+  lessonAliases?: string[];
   familyIds: FamilyId[];
   prerequisites: string[];
   review: ReviewStatus;
@@ -64,6 +65,7 @@ export interface ConstructionUnit {
   familyIds: FamilyId[];
   prerequisites: string[];
   lessonAlias: string;
+  lessonAliases?: string[];
   rule: string;
   examples: string[];
   commonError: string;
@@ -81,15 +83,18 @@ export interface CurriculumPack {
 export function validateCurriculum(pack: CurriculumPack): string[] {
   const issues: string[] = [];
   const ids = new Set<string>(),
-    aliases = new Set<string>(),
     taskIds = new Set<string>();
   const families = new Set<string>(GRAMMAR_FAMILIES.map(([id]) => id));
   for (const unit of pack.units) {
     if (ids.has(unit.id)) issues.push(`Duplicate construction ${unit.id}`);
     ids.add(unit.id);
-    if (aliases.has(unit.lessonAlias))
-      issues.push(`Duplicate lesson alias ${unit.lessonAlias}`);
-    aliases.add(unit.lessonAlias);
+    if (
+      !unit.lessonAlias ||
+      unit.lessonAliases?.some(
+        (alias) => typeof alias !== "string" || !alias.trim(),
+      )
+    )
+      issues.push(`Invalid lesson alias ${unit.id}`);
     if (unit.language !== pack.language)
       issues.push(`Wrong language ${unit.id}`);
     if (
@@ -133,4 +138,14 @@ export function validateCurriculum(pack: CurriculumPack): string[] {
   };
   for (const id of ids) visit(id);
   return issues;
+}
+
+/** A lesson can teach several constructions; a construction can span lessons. */
+export function constructionsForLesson(
+  pack: CurriculumPack,
+  alias: string,
+): ConstructionUnit[] {
+  return pack.units.filter(
+    (unit) => unit.lessonAlias === alias || unit.lessonAliases?.includes(alias),
+  );
 }

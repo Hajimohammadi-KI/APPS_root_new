@@ -755,7 +755,14 @@
         feedback.removeAttribute('style');
         updatePathStatus();
       };
+      const preserveResponse = (text, mode) => {
+        if (!text.trim()) return true;
+        const key='english-automaticity:grammar-open-responses:v1';
+        try { const rows=JSON.parse(localStorage.getItem(key)||'[]'); if(!Array.isArray(rows))throw new Error('Unreadable history'); rows.push({id:crypto.randomUUID(),topic:progress.activeTopic,level:progress.activeLevel,inputText:text,mode,occurredAt:new Date().toISOString()}); localStorage.setItem(key,JSON.stringify(rows)); return true; }
+        catch { feedback.className='feedback show bad';feedback.textContent='Your answer could not be saved. Keep this tab open and export a backup before retrying.';return false; }
+      };
       $('#checkBtn').addEventListener('click', () => {
+        if(!preserveResponse(answer.value,'writing'))return;
         const task = currentTask();
         if (isRecitationTask(task) || task.open) {
           if (!answer.value.trim()) {
@@ -794,6 +801,7 @@
         feedback.textContent = `Hint: ${currentTask().hint}`;
       });
       $('#repairBtn').addEventListener('click', () => {
+        if(!preserveResponse(repairInput.value,'repair'))return;
         if (normalize(repairInput.value) === normalize(currentTask().answer)) {
           feedback.className = 'feedback show good';
           feedback.textContent = 'Model-copying practice completed. This repair does not establish independent recall.';

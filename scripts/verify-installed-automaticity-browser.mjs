@@ -22,6 +22,13 @@ try {
       const expected=await readFile(resolve(root,"shared/learning-core/browser/practice.js"));
       const hash=value=>createHash("sha256").update(value).digest("hex");
       assert.equal(hash(served),hash(expected));row.practiceBundleSha256=hash(served);
+      row.runtimeAssets=[];
+      const app=language==="en"?"Apps/English/English-Automaticity":"Apps/Deutsch-Automaticity";
+      for(const path of ["sw.js",`learning-core/curriculum-${language}.json`]){
+        const actual=await (await context.request.get(`${base}/${path}`)).body();
+        const canonical=await readFile(resolve(root,`${app}/apps/web/public/${path}`));
+        assert.equal(hash(actual),hash(canonical));row.runtimeAssets.push({path,sha256:hash(actual)});
+      }
       row.routes=[];
       for(const route of language==="en"?["/daily","/grammar"]:["/heute","/grammatik"]){
         await page.goto(base+route,{waitUntil:"domcontentloaded"});
@@ -34,10 +41,14 @@ try {
       row.checkpoint="service-worker-ready";
       await page.evaluate(async()=>{await navigator.serviceWorker.ready;});
       row.checkpoint="service-worker-controller";
-      await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
+      row.workerBeforeControl=await page.evaluate(async()=>({controller:navigator.serviceWorker.controller?.scriptURL,registrations:(await navigator.serviceWorker.getRegistrations()).map(r=>({scope:r.scope,active:r.active?.state,installing:r.installing?.state,waiting:r.waiting?.state}))}));
       row.checkpoint="service-worker-cache";
-      await page.waitForFunction(async()=>!!await caches.match("/practice")&&!!await caches.match("/learning-core/practice.js"));
+      await page.waitForFunction(async(language)=>!!await caches.match("/practice")&&!!await caches.match("/learning-core/practice.js")&&!!await caches.match(`/learning-core/curriculum-${language}.json`),language);
+      // A new task URL may never have been cached online. Its shell must still work.
+      await page.evaluate(async()=>{for(const name of await caches.keys()){const cache=await caches.open(name);for(const request of await cache.keys()){const url=new URL(request.url);if(url.pathname==="/practice"&&url.search)await cache.delete(request);}}});
       await context.setOffline(true);await page.reload();
+      // ready promises an active registration. Verify control on the actual offline navigation.
+      await page.waitForFunction(()=>!!navigator.serviceWorker.controller);
       await expect(page.locator("#practice-response")).toHaveValue("Synthetic installed-runtime draft");
       await page.getByRole("button",{name:language==="en"?"Produce":"Produzieren",exact:true}).click();
       await page.locator("#practice-response").fill("Synthetic offline original response");

@@ -5,7 +5,7 @@
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
   "updatedOn": "2026-09-05",
-  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -386,7 +386,7 @@
       "phase": "baseline",
       "title": "Map active routes and current runtime",
       "status": "verified",
-      "progressNote": "Current source, normal installs, resolved Start Menu launchers, route implementations and endpoints are recorded. Ten installed route/health probes pass. Initial tracked changes were preserved; this is a current baseline, not a retroactive pre-change browser run.",
+      "progressNote": "Current source, installed executable paths, versions and real routes are recorded for English 27.3.26 and German 20.8.32. Source patch and new-file copies are retained. The thesis is outside scope.",
       "priority": "P0",
       "dependsOn": [],
       "ownerRole": "Implementation",
@@ -416,18 +416,34 @@
         "artifacts/installer-cycle/English-20260905-005157-b640f6d5/report.json",
         "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
         "artifacts/installed-language-update/20260905-005438/report.json",
-        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "B02",
       "phase": "baseline",
       "title": "Prepare preservation and restore fixtures",
       "status": "verified",
-      "progressNote": "Synthetic fixtures preserve duplicate and partial raw history, due reviews, settings, drafts and hash-identical playable audio. Quota and interrupted restores recover. Normal profile trees were also copied and hash-checked before installed updates.",
+      "progressNote": "Complete normal profiles are copied and hash-verified before update. Synthetic duplicates, partial JSON, drafts, due reviews and playable audio survive complete backup/restore and interrupted recovery.",
       "priority": "P0",
       "dependsOn": [
         "B01"
@@ -460,18 +476,34 @@
         "artifacts/installer-cycle/English-20260905-005157-b640f6d5/report.json",
         "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
         "artifacts/installed-language-update/20260905-005438/report.json",
-        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "B03",
       "phase": "baseline",
       "title": "Reproduce consequential defects",
       "status": "in_progress",
-      "progressNote": "Focused reproductions and regressions cover the consequential defects. Complete pre-fix reproduction receipts for every newly added exposure/offline case are not available; post-fix tests are not presented as historical failure evidence.",
+      "progressNote": "Post-fix regressions cover malformed upstream results, uncertain language, exposure, offline work and verification conflicts. This continuation also captured the pre-fix offline query-route failure before fixing it. Historical pre-fix receipts for every earlier defect remain incomplete; no test is backdated.",
       "priority": "P0",
       "dependsOn": [
         "B01"
@@ -503,7 +535,22 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json",
         "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
-        "shared/learning-core/src/automaticity/automaticity.test.ts"
+        "shared/learning-core/src/automaticity/automaticity.test.ts",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -693,7 +740,8 @@
       "required": true,
       "condition": null,
       "progressNote": "Versioned task/attempt/exposure/assessment/invalidation contracts and deep validators are implemented and tested. Full reviewed construction inventory remains a dependency.",
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "E02",
@@ -723,7 +771,8 @@
       "required": true,
       "condition": null,
       "progressNote": "Deterministic reduction, duplicate conflict quarantine, supersession and separate modality progress are tested. Real learner qualification is not inferred.",
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "E03",
@@ -757,12 +806,28 @@
         "shared/learning-core/src/automaticity/migration.ts",
         "shared/learning-core/src/automaticity/backup.ts",
         "artifacts/automaticity-preservation/2026-09-04T22-38-00-980Z/report.json",
-        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Exact legacy snapshot, existing aliases, complete backup, transactional restore and interruption recovery are tested. Original data remains readable in existing workflows; full legacy-to-v2 semantic adaptation is still open.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Dated original attempts, sessions and static responses import idempotently into v2 as unqualified legacy output. Missing dates, corrupt sources and ambiguous associations stay in original storage; no historical assistance or audio provenance is invented. Existing recordings and due reviews remain in the original workflows and complete backups.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "E04",
@@ -789,12 +854,28 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/sync-workspaces.mjs",
         "scripts/build-automaticity-assets.ts",
-        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Canonical modules, mirrors and public bundles match; installed practice bundle hash equals canonical. Explicit destructive-staleness test and exhaustive Node/browser parity receipts remain to close all acceptance cases.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Canonical source and mirrors match; deliberate stale and missing package/browser copies fail the check and are restored byte-for-byte. Actual Bun/browser reduction parity and installed bundle, worker and catalog hashes pass.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "C01",
@@ -852,11 +933,26 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "All 112 English and 144 German units have preserved aliases and coverage work items. Reviewed additions and generalized many-to-many lesson mapping remain open.",
+      "progressNote": "All 112 English and 144 German starting units retain their aliases. Many-to-many lesson mappings, missing-lesson validation and prerequisite-cycle rejection are implemented and tested. Independent reference review and omitted-construction authoring remain open.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -920,12 +1016,28 @@
         "scripts/check-automaticity-coverage.ts",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Executable matrix checks all 3584 current cells and generates explicit review gaps. Structural gate passes and full-release gate exits 2; reviewed inventory dependencies remain open.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "All 3584 cells carry content and mapping versions. Structural validation passes; stale versions and review claims absent from source content fail. Full reviewed release correctly remains closed with exit 2.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "L01",
@@ -993,12 +1105,28 @@
         "shared/learning-core/src/automaticity/practice.ts",
         "artifacts/automaticity-preservation/2026-09-04T22-38-00-980Z/report.json",
         "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
-        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Real Blob recording, hash persistence, visible monotonic timing and manual-transcript exclusion are implemented. Synthetic playable-audio recovery passes; physical microphone/silence/corrupt-ASR and device acceptance remain open. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Writing timing has an explicit untimed mode. Real browser MediaRecorder with synthetic input, refusal recovery, transaction-abort rejection, playback and audio hashes pass. Typed/edited transcripts remain insufficient for spoken qualification. Physical microphone, screen-reader and ASR-quality checks remain unverified.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "L03",
@@ -1029,12 +1157,28 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
-        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Actual Daily/Grammar routes link to the compiled shared practice loop; draft, hint, repair, reload, catalog parity and offline checks pass. Legacy embedded exercises retain their original stores.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Daily and Grammar routes enter shared practice. Static answers now persist before grading and import into the shared history. Back/Forward and reload retain per-task drafts. Offline task URLs use the cached practice shell. Legacy completion totals remain practice activity.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "L04",
@@ -1065,18 +1209,33 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/review-panel.ts",
-        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json"
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Shared review panel, review/teacher entry links and React evidence summaries exist. Human review preserves originals and supersedes prior assessments. Remaining Studio/Reviews legacy adapters still need full shared-store integration.",
+      "progressNote": "Both React providers import legacy output and refresh shared evidence summaries; shared review retains originals and supports supersession. Historical recordings/reviews remain in their original workflows, without invented v2 assessment or audio identity. Full qualified cross-surface closure still depends on reviewed packs and evaluated judgments.",
       "updatedOn": "2026-09-05"
     },
     {
       "id": "L05",
       "phase": "loop",
       "title": "Verify the representative end-to-end learning cycle",
-      "status": "in_progress",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "L03",
@@ -1100,12 +1259,28 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
         "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
-        "shared/learning-core/src/automaticity/automaticity.test.ts"
+        "shared/learning-core/src/automaticity/automaticity.test.ts",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Production, conservative feedback, repair, review and offline persistence pass in browser tests; delayed/new-context qualification has deterministic unit coverage. One fully reviewed pack and a complete single-journey delayed fixture remain pending.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Synthetic English and German fixtures exercise original failure, repair, new-context transfer, next-day and next-week review, including the failed denominator. Browser practice, local review, recording and installed offline journeys pass. This verifies architecture; no reviewed real-learner pack or elapsed learning result is claimed.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "U01",
@@ -1133,12 +1308,28 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/selector.ts",
-        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json"
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Explainable baseline chooses at most two focuses and five repair priorities, with due/repair priority and language separation. Topic choice is persisted. Comprehensive queue-load/fairness and explicit override-history acceptance remain open.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Due work outranks new work even with large attempt counts. Repair priorities use current judgments, clear after repair and count unique constructions, with at most five priorities. Learner overrides and selection reasons are journaled. Deterministic tests and installed practice checks pass.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "U02",
@@ -1167,12 +1358,28 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
-        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "One practice surface exposes the next action and complete catalog; task/draft resume, saved earlier drafts and mobile reflow pass. Exhaustive Back/Forward and physical touch-device cases remain open.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "One shared practice surface provides next actions, full topic selection and per-task recovery. Back/Forward, refresh, draft reopening, keyboard submission and mobile/tablet reflow are verified. Physical touch-device testing is unavailable.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "U03",
@@ -1200,18 +1407,34 @@
       ],
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
-        "shared/learning-core/src/automaticity/evidence.ts"
+        "shared/learning-core/src/automaticity/evidence.ts",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Practice and qualified outcomes are separated; dashboards label legacy thresholds and avoid duration-based fluency. Remaining legacy screens require a full unsupported-claims sweep.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Legacy completion and scores no longer derive a verified CEFR level or qualified shared-profile scores. Installed tests verify both state and profile claims clear without deleting original responses. Shared progress separates practice, independent accuracy, delay and modality. Legacy practice metrics remain labelled as earlier activity, not a certificate.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "U04",
       "phase": "daily",
       "title": "Verify offline recovery, consent and accessibility",
-      "status": "in_progress",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "U02",
@@ -1236,12 +1459,28 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "artifacts/automaticity-preservation/2026-09-04T22-38-00-980Z/report.json",
         "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
-        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Offline response preservation, Settings recovery and mobile layouts pass with no browser page exceptions. Physical mic refusal, screen-reader/tablet, full keyboard and Persian guidance checks remain open. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Installed offline response storage, uncached task-URL recovery, mic-refusal recovery, quota warnings and export of unsaved in-memory state pass. Corrupt originals are retained. Keyboard, mobile/tablet layout, Persian RTL guidance and untimed mode pass. Physical assistive-device/screen-reader and real ASR tests are unavailable; no cloud training or new provider consent is inferred.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "M01",
@@ -1270,11 +1509,26 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/qualification.ts",
-        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Benchmark schema, partition guards, review requirements and protocol exist. No independent reviewed labels/adjudication have been collected.",
+      "progressNote": "Benchmark cases require source/licence, separate modality, content version and rubric identity. Independent labels, reviewer identities and adjudication have not been collected. Synthetic test labels do not qualify a model.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -1305,11 +1559,26 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "scripts/qualify-automaticity-model.ts",
         "shared/learning-core/src/automaticity/qualification.ts",
-        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "No reviewed benchmark is available for a valid comparison of rules, LanguageTool and pretrained models. Offline qualification runner is implemented; synthetic tests are not model results.",
+      "progressNote": "Offline runner reports separate language/modality/construction/content/rubric scopes, error denominators and Wilson uncertainty. No candidate comparison was run on a reviewed benchmark, so no grammar model is qualified.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -1675,7 +1944,7 @@
       "id": "S01",
       "phase": "scheduling",
       "title": "Make prospective FSRS history evidence-eligible",
-      "status": "in_progress",
+      "status": "implemented",
       "priority": "P2",
       "dependsOn": [
         "E02",
@@ -1698,12 +1967,28 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/contracts.ts",
         "shared/learning-core/src/automaticity/evidence.ts",
-        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "New attempts carry eligibility provenance and original timestamps. Existing FSRS remains shadow-only; a complete prospective v2-to-FSRS adapter and qualified learner history remain open.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Prospective eligibility and read-only FSRS candidate adapters are implemented and tested. They require prior consent and explicit ratings linked to current qualified delayed assessments; conflicts/invalidation remove eligibility. No ratings are inferred and no learner due dates are written. Real eligible history and an opted-in collection pilot remain open.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "S02",
@@ -1771,8 +2056,8 @@
       "id": "R01",
       "phase": "release",
       "title": "Prepare the repeatable release and preservation checklist",
-      "status": "implemented",
-      "progressNote": "Repeatable source, browser, profile backup and installer checks now include real upgrades and payload corruption/repair. Source checkpoint, versions and hashes are recorded; repeat per further increment. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
+      "status": "verified",
+      "progressNote": "Repeatable release evidence includes source revision plus patch/new files, exact installer/ZIP hashes, old-to-new upgrade, startup, damaged-payload repair, normal profile copies, installed routes and synthetic audio restore. Final 27.3.26/20.8.32 lifecycle receipts pass.",
       "priority": "P0",
       "dependsOn": [
         "B01",
@@ -1812,18 +2097,34 @@
         "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
         "artifacts/installed-language-update/20260905-005438/report.json",
         "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
-        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
       "recurring": true,
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "R02",
       "phase": "release",
       "title": "Deliver and verify the first learning-loop release",
-      "status": "in_progress",
+      "status": "implemented",
       "priority": "P0",
       "dependsOn": [
         "L05",
@@ -1851,7 +2152,22 @@
         "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
         "artifacts/installed-language-update/20260905-005438/report.json",
         "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
-        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -1861,8 +2177,9 @@
           "when": "The pilot release includes a selected Transformer adapter."
         }
       ],
-      "progressNote": "Technical increment is built, installed and verified with both normal profiles preserved. Full ticket closure still depends on L05/U04 acceptance; this is not full reviewed learning-loop qualification. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "The corrected technical release is installed and tested, including the offline query-route regression found in 27.3.25/20.8.31. Qualified learning-loop closure still depends on content/evaluator review and the recorded external acceptance limits; this is not full curriculum certification.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "R03",
@@ -2012,5 +2329,15 @@
     "transformer": "not_qualified",
     "fsrs": "shadow_only",
     "reinforcementLearning": "deferred"
+  },
+  "technicalRelease": {
+    "status": "verified",
+    "versions": {
+      "English": "27.3.26",
+      "German": "20.8.32"
+    },
+    "fullCurriculum": "not_qualified",
+    "learnerOutcomes": "unmeasured",
+    "report": "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md"
   }
 }

@@ -142,14 +142,28 @@ describe("active Grammar-Labor answer handler", () => {
     await page.answer(answer);
     expect(page.feedback.className).toBe("feedback show");
     expect(page.feedback.innerHTML).toContain("noch nicht bewertet");
-    expect(page.storage.size).toBe(0);
+    expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
+      false,
+    );
+    expect(
+      JSON.parse(
+        page.storage.get("deutsch-automaticity:grammar-open-responses:v1")!,
+      )[0].response,
+    ).toBe(answer);
   });
 
   it("does not use an open task's inspiration to disambiguate the learner's language", async () => {
     const page = grammarPage("Hotel", { open: true });
     await page.answer("Hotel");
     expect(page.feedback.innerHTML).toContain("noch nicht bewertet");
-    expect(page.storage.size).toBe(0);
+    expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
+      false,
+    );
+    expect(
+      JSON.parse(
+        page.storage.get("deutsch-automaticity:grammar-open-responses:v1")!,
+      )[0].response,
+    ).toBe("Hotel");
   });
 
   it("checks language without a topic-specific hint or completion", async () => {
@@ -157,7 +171,26 @@ describe("active Grammar-Labor answer handler", () => {
     await page.answer("Hello my friend");
     expect(page.feedback.className).toContain("bad");
     expect(page.feedback.innerHTML).not.toContain("Supermarkt");
-    expect(page.storage.size).toBe(0);
+    expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
+      false,
+    );
+    expect(
+      JSON.parse(
+        page.storage.get("deutsch-automaticity:grammar-open-responses:v1")!,
+      )[0].response,
+    ).toBe("Hello my friend");
+  });
+
+  it("keeps corrupt response history and the unsaved answer when storage fails", async () => {
+    const page = grammarPage("Ich bin hier.");
+    const key = "deutsch-automaticity:grammar-open-responses:v1";
+    page.storage.set(key, "{incomplete");
+    await page.answer("Ich bin hier.");
+    expect(page.storage.get(key)).toBe("{incomplete");
+    expect(page.feedback.textContent).toContain("nicht gespeichert");
+    expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
+      false,
+    );
   });
 
   it("keeps domain and browser language decisions aligned on boundary cases", () => {

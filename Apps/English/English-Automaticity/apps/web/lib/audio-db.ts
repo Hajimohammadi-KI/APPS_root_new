@@ -27,37 +27,24 @@ function openDatabase() {
 }
 
 export async function putAudio(record: AudioRecord) {
-  const database = await openDatabase();
-  return new Promise<void>((resolve, reject) => {
-    const request = database
-      .transaction(STORE, "readwrite")
-      .objectStore(STORE)
-      .put(record);
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
+  await runAudio("readwrite",store=>store.put(record));
 }
 
 export async function listAudio() {
-  const database = await openDatabase();
-  return new Promise<AudioRecord[]>((resolve, reject) => {
-    const request = database
-      .transaction(STORE, "readonly")
-      .objectStore(STORE)
-      .getAll();
-    request.onsuccess = () => resolve(request.result as AudioRecord[]);
-    request.onerror = () => reject(request.error);
-  });
+  return await runAudio("readonly",store=>store.getAll()) as AudioRecord[];
 }
 
 export async function deleteAudio(id: string) {
+  await runAudio("readwrite",store=>store.delete(id));
+}
+
+async function runAudio<T>(mode:IDBTransactionMode,operation:(store:IDBObjectStore)=>IDBRequest<T>):Promise<T> {
   const database = await openDatabase();
-  return new Promise<void>((resolve, reject) => {
-    const request = database
-      .transaction(STORE, "readwrite")
-      .objectStore(STORE)
-      .delete(id);
-    request.onsuccess = () => resolve();
+  try { return await new Promise<T>((resolve, reject) => {
+    const transaction=database.transaction(STORE,mode);
+    const request=operation(transaction.objectStore(STORE));
+    transaction.oncomplete=()=>resolve(request.result);
+    transaction.onabort=()=>reject(transaction.error??new Error("Audio transaction aborted"));
     request.onerror = () => reject(request.error);
-  });
+  }); } finally { database.close(); }
 }

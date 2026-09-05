@@ -14,9 +14,128 @@ import {
   type LocalStore,
 } from "./storage";
 import { sha256, validateCompleteBackup } from "./backup";
+import { qualifyProspectiveReviews } from "./prospective";
+import { buildQualifiedFsrsCandidates } from "../fsrs-shadow/qualified";
 
 const hash = "a".repeat(64);
 const now = "2026-09-10T12:00:00.000Z";
+for (const language of ["en", "de"] as const)
+  test(`${language}: complete simulated repair, transfer and delayed-review cycle`, () => {
+    const make = (id: string, at: string) => {
+      const row = attempt(id, at);
+      row.language = language;
+      row.task.constructionId = `${language}.c.001`;
+      return row;
+    };
+    const original = make("original", "2026-09-01T10:00:00.000Z"),
+      wrong = assessment(original);
+    wrong.verdict = "needs_repair";
+    wrong.dimensions.grammar = "fail";
+    const repair = make("repair", "2026-09-01T10:02:00.000Z");
+    repair.previousAttemptId = original.id;
+    repair.task.stage = "repair";
+    const transfer = make("transfer", "2026-09-01T11:00:00.000Z");
+    transfer.task.stage = "transfer";
+    transfer.task.transferCondition = "target_named";
+    const day = make("day", "2026-09-02T11:01:00.000Z"),
+      week = make("week", "2026-09-09T11:01:00.000Z");
+    day.task.stage = "retain";
+    week.task.stage = "retain";
+    const events = [
+      original,
+      wrong,
+      repair,
+      assessment(repair),
+      transfer,
+      assessment(transfer),
+      day,
+      assessment(day),
+      week,
+      assessment(week),
+    ];
+    const result = reduceAutomaticityEvents(events, language, now);
+    expect(
+      result.attempts.find((row) => row.attempt.id === "repair")
+        ?.eligibleForMastery,
+    ).toBe(false);
+    expect(
+      result.attempts.find((row) => row.attempt.id === "transfer")?.novel,
+    ).toBe(true);
+    expect(
+      result.attempts.find((row) => row.attempt.id === "transfer")?.delayed,
+    ).toBe(false);
+    expect(result.progress[0]?.independentAssessed).toBe(4);
+    expect(result.progress[0]?.accuracy).toBe(0.75);
+    expect(result.progress[0]?.delayedSuccesses).toBe(2);
+    expect(result.progress[0]?.status).toBe("retention_evidence");
+  });
+test("prospective reviews require consent, explicit ratings and current delayed evidence", () => {
+  const baseline = attempt("baseline", "2026-09-01T10:00:10.000Z");
+  const later = attempt("later", "2026-09-03T10:00:10.000Z"),
+    judge = assessment(later);
+  const events = [baseline, assessment(baseline), later, judge];
+  const consent = {
+    id: "synthetic-consent",
+    language: "en" as const,
+    purpose: "fsrs_shadow" as const,
+    at: "2026-09-02T10:00:00.000Z",
+  };
+  const rating = {
+    id: "r",
+    attemptId: later.id,
+    assessmentId: judge.id,
+    consentId: consent.id,
+    rating: 3 as const,
+    recordedAt: "2026-09-03T10:05:00.000Z",
+  };
+  expect(
+    qualifyProspectiveReviews(events, "en", now, null, [rating]).eligible,
+  ).toHaveLength(0);
+  expect(
+    qualifyProspectiveReviews(events, "en", now, consent, []).eligible,
+  ).toHaveLength(0);
+  expect(
+    qualifyProspectiveReviews(events, "en", now, consent, [rating]).eligible,
+  ).toHaveLength(1);
+  const originals = JSON.stringify({ events, consent, rating });
+  const shadow = buildQualifiedFsrsCandidates(events, "en", now, consent, [
+    rating,
+  ]);
+  expect(shadow.cards).toHaveLength(1);
+  expect(shadow.cards[0]?.history[0]?.responseSha256).toBe(
+    later.response.sha256,
+  );
+  expect(shadow.cards[0]?.candidate).toBeDefined();
+  expect(shadow.learnerScheduleApplied).toBe(false);
+  expect(shadow.rolloutEligible).toBe(false);
+  expect(JSON.stringify({ events, consent, rating })).toBe(originals);
+  expect(
+    qualifyProspectiveReviews(events, "en", now, consent, [
+      rating,
+      { ...rating, rating: 4 },
+    ]).eligible,
+  ).toHaveLength(0);
+  expect(
+    qualifyProspectiveReviews(
+      [
+        ...events,
+        {
+          version: 2,
+          type: "invalidation",
+          id: "void",
+          language: "en",
+          at: "2026-09-04T12:00:00.000Z",
+          assessmentId: judge.id,
+          reason: "review_overturned",
+        },
+      ],
+      "en",
+      now,
+      consent,
+      [rating],
+    ).eligible,
+  ).toHaveLength(0);
+});
 function attempt(id = "a", at = "2026-09-01T10:00:10.000Z"): AttemptEvent {
   return {
     version: 2,

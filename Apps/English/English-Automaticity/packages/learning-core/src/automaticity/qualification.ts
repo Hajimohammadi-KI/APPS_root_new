@@ -1,7 +1,16 @@
-import { isRecord, type Language, type Verdict } from "./contracts";
+import {
+  isRecord,
+  type Language,
+  type Modality,
+  type Verdict,
+} from "./contracts";
 export interface BenchmarkCase {
   id: string;
   language: Language;
+  modality: Modality;
+  contentVersion: string;
+  sourceId: string;
+  license: string;
   constructionId: string;
   rubricVersion: string;
   partition: "development" | "calibration" | "final";
@@ -32,11 +41,18 @@ export interface QualificationReport {
   reasons: string[];
   scopes: {
     language: Language;
+    modality: Modality;
+    contentVersion: string;
     constructionId: string;
     rubricVersion: string;
     sampleSize: number;
     falseCorrections: number;
+    correctAlternativeCases: number;
+    falseCorrectionRate: number | null;
+    falseCorrectionUpper95: number | null;
     missedErrors: number;
+    grammarErrorCases: number;
+    missedErrorRate: number | null;
     abstentions: number;
     meaningChanges: number;
     medianLatencyMs: number | null;
@@ -50,6 +66,19 @@ const categories: BenchmarkCase["category"][] = [
   "off_target",
   "asr_corruption",
 ];
+function upperWilson(errors: number, total: number): number | null {
+  if (!total) return null;
+  const p = errors / total,
+    z = 1.959963984540054,
+    z2 = z * z;
+  return Math.min(
+    1,
+    (p +
+      z2 / (2 * total) +
+      z * Math.sqrt((p * (1 - p)) / total + z2 / (4 * total * total))) /
+      (1 + z2 / total),
+  );
+}
 /** Evaluation never trains on held-out items and never approves its own model. */
 export function qualifyCandidate(
   cases: readonly BenchmarkCase[],
@@ -62,6 +91,15 @@ export function qualifyCandidate(
   const ids = new Set<string>(),
     families = new Map<string, string>();
   for (const row of cases) {
+    if (
+      !["writing", "speaking"].includes(row.modality) ||
+      !row.contentVersion?.trim() ||
+      !row.sourceId?.trim() ||
+      !row.license?.trim()
+    )
+      reasons.push(
+        `Missing modality, content version or source rights ${row.id}`,
+      );
     if (ids.has(row.id)) reasons.push(`Duplicate case ${row.id}`);
     ids.add(row.id);
     const partition = families.get(row.itemFamily);
@@ -99,7 +137,7 @@ export function qualifyCandidate(
   if (!final.length) reasons.push("No reviewed final-test cases.");
   const groups = new Map<string, BenchmarkCase[]>();
   for (const row of final) {
-    const key = `${row.language}:${row.constructionId}:${row.rubricVersion}`;
+    const key = `${row.language}:${row.modality}:${row.constructionId}:${row.contentVersion}:${row.rubricVersion}`;
     groups.set(key, [...(groups.get(key) ?? []), row]);
   }
   const scopes = [...groups.values()].map((rows) => {
@@ -177,11 +215,36 @@ export function qualifyCandidate(
       .sort((a, b) => a - b);
     return {
       language: first.language,
+      modality: first.modality,
+      contentVersion: first.contentVersion,
       constructionId: first.constructionId,
       rubricVersion: first.rubricVersion,
       sampleSize: rows.length,
       falseCorrections,
+      correctAlternativeCases: rows.filter(
+        (row) => row.category === "correct_alternative",
+      ).length,
+      falseCorrectionRate: available.filter(
+        ({ row }) => row.category === "correct_alternative",
+      ).length
+        ? falseCorrections /
+          available.filter(({ row }) => row.category === "correct_alternative")
+            .length
+        : null,
+      falseCorrectionUpper95: upperWilson(
+        falseCorrections,
+        available.filter(({ row }) => row.category === "correct_alternative")
+          .length,
+      ),
       missedErrors,
+      grammarErrorCases: rows.filter((row) => row.category === "grammar_error")
+        .length,
+      missedErrorRate: available.filter(
+        ({ row }) => row.category === "grammar_error",
+      ).length
+        ? missedErrors /
+          available.filter(({ row }) => row.category === "grammar_error").length
+        : null,
       abstentions,
       meaningChanges,
       medianLatencyMs: times.length
@@ -224,10 +287,17 @@ export function parseBenchmarkInput(value: unknown): {
   for (const row of value.cases)
     if (
       !isRecord(row) ||
-      !["id", "constructionId", "rubricVersion", "itemFamily"].every(
-        (key) => typeof row[key] === "string" && row[key],
-      ) ||
+      ![
+        "id",
+        "constructionId",
+        "rubricVersion",
+        "itemFamily",
+        "contentVersion",
+        "sourceId",
+        "license",
+      ].every((key) => typeof row[key] === "string" && row[key]) ||
       !["en", "de"].includes(String(row.language)) ||
+      !["writing", "speaking"].includes(String(row.modality)) ||
       !["development", "calibration", "final"].includes(
         String(row.partition),
       ) ||

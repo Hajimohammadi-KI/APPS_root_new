@@ -14,7 +14,7 @@ For a task to support independent evidence, the reviewer must confirm that the p
 
 ## Assessment qualification
 
-`scripts/qualify-automaticity-model.ts` compares saved predictions with reviewed labels. Input contains a pinned candidate identity, cases, and predictions. It reports each language/construction/rubric scope separately. The validator rejects duplicate cases, item-family overlap across partitions, incomplete human review, missing predictions, and invalid timing or cost values.
+`scripts/qualify-automaticity-model.ts` compares saved predictions with reviewed labels. Input contains a pinned candidate identity, cases, and predictions. Each case records language, modality, construction ID, content version, rubric version, source ID and licence. Reports separate those scopes: writing results cannot qualify speech, and an earlier content version cannot qualify changed tasks. The validator rejects duplicate cases, item-family overlap across partitions, incomplete human review, missing predictions, and invalid timing or cost values.
 
 The initial engineering gate requires 20 final cases in each category per released scope: correct alternatives, grammar errors, ambiguity, off-target answers, and ASR corruption. These counts are a starting qualification requirement, not a claim of statistical certainty. Two distinct review identifiers and adjudication are required. Final testing must report false corrections, missed errors, meaning changes, abstention, target judgments, latency and known cost. Missing cost remains unknown. A model that abstains on every supported case cannot qualify by avoiding mistakes.
 
@@ -38,7 +38,9 @@ The learner must produce these samples. The application cannot generate them as 
 
 The deployed policy is an explainable baseline. It gives priority to due practice and observed repair needs, then under-practised constructions. Unobserved skills are not classified as weaknesses. A revisit may be scheduled even when an answer is awaiting assessment; that scheduling decision never adds mastery credit.
 
-The existing FSRS module stays in shadow mode. Its aggregate legacy history is not a reconstruction of memory strength. Qualify prospective original-response histories before comparing candidate dates. Keep the baseline available for rollback.
+The FSRS module stays in shadow mode. `qualifyProspectiveReviews` requires consent recorded before the original delayed attempt and an explicit rating linked to its current qualified assessment. It rejects missing, conflicting, premature and invalidated ratings. Legacy aggregates never supply missing history. `buildQualifiedFsrsCandidates` calculates candidate dates without writing learner due dates or enabling rollout. These functions have synthetic tests; no qualified prospective learner history or candidate-schedule experiment has been collected. Keep the baseline available for rollback.
+
+The qualification report includes false-correction and missed-error denominators and a Wilson 95% upper bound for false corrections. Zero observed errors in a small sample does not establish a zero population error rate. The independent release review must assess this uncertainty as well as the engineering gate.
 
 A contextual-bandit or reinforcement-learning experiment requires reviewed outcomes, a pre-intervention baseline, explicit participation consent, adequate observations, logged action probabilities, and a held-out evaluation. Its reward must reflect later independent retention and transfer, not clicks, time spent, streaks, or immediate model agreement. No adaptive policy is activated merely because its code runs. These conditions cannot be satisfied with synthetic test fixtures.
 

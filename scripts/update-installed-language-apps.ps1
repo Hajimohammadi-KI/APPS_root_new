@@ -5,8 +5,8 @@ $workspace = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $output = Join-Path $workspace ('artifacts\installed-language-update\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 New-Item -ItemType Directory -Path $output -Force | Out-Null
 $products = @(
-  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.24'; Source='Apps\English\English-Automaticity'; Port=3202 },
-  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.30'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
+  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.26'; Source='Apps\English\English-Automaticity'; Port=3202 },
+  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.32'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
 )
 function Get-TreeManifest([string]$Root) {
   $resolved = [IO.Path]::GetFullPath($Root).TrimEnd('\') + '\'

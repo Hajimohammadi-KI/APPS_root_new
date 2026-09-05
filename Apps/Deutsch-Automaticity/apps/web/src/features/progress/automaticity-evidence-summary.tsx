@@ -27,8 +27,16 @@ export function AutomaticityEvidenceSummary() {
       }
     };
     refresh();
+    const problem = (event: Event) =>
+      setProblem(String((event as CustomEvent<unknown>).detail));
     window.addEventListener("storage", refresh);
-    return () => window.removeEventListener("storage", refresh);
+    window.addEventListener("automaticity-history-updated", refresh);
+    window.addEventListener("automaticity-sync-error", problem);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("automaticity-history-updated", refresh);
+      window.removeEventListener("automaticity-sync-error", problem);
+    };
   }, []);
   return (
     <section

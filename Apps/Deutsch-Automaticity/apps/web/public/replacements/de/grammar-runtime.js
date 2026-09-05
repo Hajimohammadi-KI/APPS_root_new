@@ -534,8 +534,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     response,
     outcome,
   ) => {
-    const existing = readJson(productionKey, []);
-    const rows = Array.isArray(existing) ? existing : [];
+    const rows = JSON.parse(localStorage.getItem(productionKey) || "[]");
+    if (!Array.isArray(rows)) throw new Error("Unreadable response history");
     const metadata = exerciseMetadata(exercise);
     rows.push({
       version: 2,
@@ -547,7 +547,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       outcome,
       occurredAt: new Date().toISOString(),
     });
-    localStorage.setItem(productionKey, JSON.stringify(rows.slice(-100)));
+    localStorage.setItem(productionKey, JSON.stringify(rows));
   };
 
   const parseAiEvaluation = (text) => {
@@ -1020,6 +1020,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       return;
     }
 
+    try { saveOpenResponse(unit, exercise, learnerIntentFa, answer, open ? "submitted-unassessed" : "guided-practice"); }
+    catch { feedback.className="feedback show bad"; feedback.textContent="Deine Antwort konnte nicht gespeichert werden. Lass diesen Tab offen und exportiere eine Sicherung."; return; }
     const acceptedAnswers = open ? [] : [expected, ...(Array.isArray(metadata?.acceptedAnswers) ? metadata.acceptedAnswers : [])];
     const languageFeedback = answerLanguageFeedback(answer, acceptedAnswers);
     if (languageFeedback) {
@@ -1045,13 +1047,6 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
               ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(localIssue.corrected)}</p>`
               : ""
           }`;
-          saveOpenResponse(
-            unit,
-            exercise,
-            learnerIntentFa,
-            answer,
-            "local-revision",
-          );
           return;
         }
       }
@@ -1107,13 +1102,6 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
             message: `${copy.inspiration} ${expected}`,
           },
         ])}`;
-        saveOpenResponse(
-          unit,
-          exercise,
-          learnerIntentFa,
-          answer,
-          "self-check",
-        );
         notify(`${completed}/${unit.exercises.length}`);
         return;
       }
@@ -1130,13 +1118,6 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
           ? `<p><strong>${escapeHtml(copy.corrected)}:</strong> ${escapeHtml(evaluation.correctedGerman)}</p>`
           : ""
       }<small>${escapeHtml(source)} · ${escapeHtml(copy.dimensions)}: ${escapeHtml(localizedDimensions(metadata))}</small>`;
-      saveOpenResponse(
-        unit,
-        exercise,
-        learnerIntentFa,
-        answer,
-        accepted ? "ai-accepted" : "ai-revision",
-      );
       if (accepted) markExerciseComplete(unit);
       return;
     }

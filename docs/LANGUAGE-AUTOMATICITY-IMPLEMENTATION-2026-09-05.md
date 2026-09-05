@@ -1,5 +1,7 @@
 # English and German automaticity: installed implementation
 
+Historical handoff for 27.3.24/20.8.30. See the [current installed release and verification record](LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md) for 27.3.26/20.8.32.
+
 Updated 5 September 2026, Europe/Berlin. Scope: `D:\APPS_root_new`. The [roadmap](LANGUAGE-AUTOMATICITY-IMPLEMENTATION-ROADMAP.md) and [structured backlog](language-automaticity-implementation-backlog.json) remain the work record. This follows the [4 September integrity increment](LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md).
 
 **The shared practice implementation is built, tested, packaged and installed. The full roadmap is not complete.** Current curriculum tasks are authored drafts awaiting language review. No Transformer, FSRS policy or reinforcement-learning policy was qualified or activated, and no learner improvement was fabricated from software tests.

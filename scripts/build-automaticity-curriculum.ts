@@ -120,21 +120,31 @@ for (const [language, units, project] of [
   ["de", de, "Apps/Deutsch-Automaticity"],
 ] as const) {
   const pack: CurriculumPack = {
-    version: "2026-09-05.1",
+    version: "2026-09-05.2",
     mappingVersion: registry.version,
     language,
     units: [],
   };
-  for (const unit of units) {
-    const alias = `${unit.level}::${unit.title}`;
-    const matches = registry.mappings.filter(
-      (row) => row.language === language && row.lessonAlias === alias,
-    );
-    if (matches.length !== 1)
-      throw new Error(
-        `Exactly one stable mapping required: ${language} ${alias}`,
-      );
-    const mapping = matches[0]!;
+  for (const original of units) {
+    const alias = `${original.level}::${original.title}`;
+    if (
+      !registry.mappings.some(
+        (row) =>
+          row.language === language &&
+          (row.lessonAlias === alias || row.lessonAliases?.includes(alias)),
+      )
+    )
+      throw new Error(`Unmapped original lesson: ${language} ${alias}`);
+  }
+  for (const mapping of registry.mappings.filter(
+    (row) => row.language === language,
+  )) {
+    const alias = mapping.lessonAlias;
+    const unit = units.find((unit) => `${unit.level}::${unit.title}` === alias);
+    if (!unit) throw new Error(`Unknown source lesson: ${language} ${alias}`);
+    for (const secondary of mapping.lessonAliases ?? [])
+      if (!units.some((unit) => `${unit.level}::${unit.title}` === secondary))
+        throw new Error(`Unknown linked lesson ${secondary}`);
     const task = (
       stage: Stage,
       index: number,
@@ -338,6 +348,7 @@ for (const [language, units, project] of [
       familyIds: mapping.familyIds,
       prerequisites: mapping.prerequisites,
       lessonAlias: alias,
+      lessonAliases: [...new Set([alias, ...(mapping.lessonAliases ?? [])])],
       rule: unit.rule,
       examples: [...unit.examples],
       commonError: unit.commonError,
@@ -363,6 +374,8 @@ for (const [language, units, project] of [
         );
         coverage.push({
           language,
+          contentVersion: pack.version,
+          mappingVersion: pack.mappingVersion,
           constructionId: mapping.id,
           families: mapping.familyIds,
           stage,
@@ -399,7 +412,7 @@ await output(
   "docs/automaticity-coverage.json",
   JSON.stringify(
     {
-      version: "2026-09-05.1",
+      version: "2026-09-05.2",
       scope:
         "Current catalog crosswalk. Reference review may add constructions. Authored tasks are not curriculum completion.",
       families: GRAMMAR_FAMILIES,

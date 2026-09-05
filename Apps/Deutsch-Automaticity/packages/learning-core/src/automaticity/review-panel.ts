@@ -181,7 +181,11 @@ export function mountReviewPanel(
     prompt.textContent =
       pack.units
         .flatMap((unit) => unit.tasks)
-        .find((task) => task.id === row.attempt.task.id)?.prompt ?? "";
+        .find((task) => task.id === row.attempt.task.id)?.prompt ??
+      t(
+        "Earlier practice: the original prompt and assistance are not established. Recordings remain available in the audio library.",
+        "Frühere Übung: Originalaufgabe und Hilfen sind nicht belegt. Aufnahmen bleiben in der Audiobibliothek verfügbar.",
+      );
     if (row.attempt.audio) {
       const play = node(
         "button",

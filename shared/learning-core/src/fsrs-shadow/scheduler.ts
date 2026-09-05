@@ -76,7 +76,10 @@ export function assessLegacyReviewMigration(
 }
 
 export function replayFsrsShadowEvents(
-  events: readonly FsrsShadowReviewEvent[],
+  events: readonly Pick<
+    FsrsShadowReviewEvent,
+    "eventId" | "reviewedAt" | "rating"
+  >[],
 ): FsrsCandidateSchedule {
   if (events.length === 0)
     throw new RangeError("At least one review event is required");

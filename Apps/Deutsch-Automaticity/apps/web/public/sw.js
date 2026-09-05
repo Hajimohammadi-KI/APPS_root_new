@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "deutschflow-automaticity-v2-20260905";
+const CACHE = "deutschflow-automaticity-v2-20260905c";
 const CORE = [
   "/practice",
   "/learning-core/practice.js",
@@ -40,9 +40,9 @@ self.addEventListener("activate", (event) => {
             .filter((key) => key !== CACHE && key.startsWith("deutschflow-"))
             .map((key) => caches.delete(key)),
         ),
-      ),
+      )
+      .then(() => self.clients.claim()),
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -61,6 +61,11 @@ self.addEventListener("fetch", (event) => {
         return response;
       })
       .catch(async () => {
+        // Task query parameters select local state within the cached practice shell.
+        if (event.request.mode === "navigate" && new URL(event.request.url).pathname === "/practice") {
+          const practice = await caches.match("/practice");
+          if (practice) return practice;
+        }
         const cached = await caches.match(event.request);
         if (cached) {
           return cached;

@@ -21,13 +21,20 @@ export function selectDailyFocus(
   const repairs = progress
     .filter(
       (row) =>
-        row.practiceFailures > 0 ||
-        (row.accuracy !== null && row.accuracy < 0.8),
+        row.repairNeeded ??
+        (row.practiceFailures > 0 ||
+          (row.accuracy !== null && row.accuracy < 0.8)),
     )
     .sort(
       (a, b) =>
         b.practiceFailures - a.practiceFailures ||
         (a.accuracy ?? 1) - (b.accuracy ?? 1),
+    )
+    .filter(
+      (row, index, rows) =>
+        rows.findIndex(
+          (other) => other.constructionId === row.constructionId,
+        ) === index,
     )
     .slice(0, 5);
   const byId = new Map<string, ConstructionProgress[]>();
@@ -69,14 +76,19 @@ export function selectDailyFocus(
         repair,
         tried,
         score:
-          (due ? -10000 : repair ? -5000 : 0) +
           tried * 50 +
           Math.min(...unit.familyIds.map((id) => familyCounts.get(id) ?? 0)) *
             3 +
           (seed(`${now.slice(0, 10)}:${unit.id}`) % 17),
       };
     })
-    .sort((a, b) => a.score - b.score || a.unit.id.localeCompare(b.unit.id));
+    .sort(
+      (a, b) =>
+        Number(b.due) - Number(a.due) ||
+        Number(b.repair) - Number(a.repair) ||
+        a.score - b.score ||
+        a.unit.id.localeCompare(b.unit.id),
+    );
   const selected = ranked.slice(0, Math.max(1, Math.min(2, limit)));
   return {
     focus: selected.map((row) => row.unit),

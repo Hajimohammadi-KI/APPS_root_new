@@ -35,6 +35,7 @@ import {
   type StoredRecording,
 } from "./media";
 import { selectDailyFocus } from "./selector";
+import { syncLegacyPractice } from "./legacy";
 
 interface Session {
   version: 2;
@@ -126,6 +127,7 @@ export async function mountPractice(
   )
     throw new Error("Invalid curriculum");
   const unitById = new Map(pack.units.map((unit) => [unit.id, unit]));
+  await syncLegacyPractice(localStorage, language, pack, now());
   const taskById = new Map(
     pack.units.flatMap((unit) =>
       unit.tasks.map((task) => [task.id, task] as const),
@@ -133,6 +135,8 @@ export async function mountPractice(
   );
   const settingKey = `automaticity:v2:${language}:level`;
   let level = localStorage.getItem(settingKey) ?? "B1";
+  const timingKey = `automaticity:v2:${language}:timing`;
+  let timingEnabled = localStorage.getItem(timingKey) !== "off";
   const requested = new URLSearchParams(location.search);
   let unit: ConstructionUnit =
     pack.units.find(
@@ -155,6 +159,11 @@ export async function mountPractice(
     unit.tasks.find(
       (row) => row.stage === "retrieve" && row.modality === "writing",
     ) ?? unit.tasks[0]!;
+  const requestedTask = taskById.get(requested.get("task") ?? "");
+  if (requestedTask) {
+    task = requestedTask;
+    unit = unitById.get(task.constructionId)!;
+  }
   let session: Session;
   let timer: ResponseTimer | null = null;
   let recording: StoredRecording | null = null;
@@ -233,6 +242,10 @@ export async function mountPractice(
     assertEditable();
     const value = JSON.stringify(session);
     localStorage.setItem(sessionKey(language), value);
+    localStorage.setItem(
+      `${sessionKey(language)}:task:${encodeURIComponent(session.taskId)}`,
+      value,
+    );
     if (localStorage.getItem(sessionKey(language)) !== value)
       throw new Error("Draft was not saved");
   };
@@ -279,14 +292,23 @@ export async function mountPractice(
       submittedId: null,
       audioId: null,
     };
-    timer = new ResponseTimer();
-    timer.visibility(!document.hidden);
+    timer = timingEnabled ? new ResponseTimer() : null;
+    timer?.visibility(!document.hidden);
     saveSession();
+    const url = new URL(location.href);
+    if (url.searchParams.get("task") !== task.id) {
+      url.searchParams.set("task", task.id);
+      history.pushState({ taskId: task.id }, "", url);
+    }
     feedback.textContent = "";
     renderTask();
     renderProgress();
   };
-  const raw = localStorage.getItem(sessionKey(language));
+  const raw = requestedTask
+    ? localStorage.getItem(
+        `${sessionKey(language)}:task:${encodeURIComponent(requestedTask.id)}`,
+      )
+    : localStorage.getItem(sessionKey(language));
   let resume = false;
   if (raw) {
     let parsed: unknown;
@@ -337,6 +359,11 @@ export async function mountPractice(
         raw,
       );
     }
+  }
+  if (!requestedTask) {
+    const url = new URL(location.href);
+    url.searchParams.set("task", task.id);
+    history.replaceState({ taskId: task.id }, "", url);
   }
   const header = element("header", undefined, "practice-header");
   const nav = element("nav");
@@ -398,6 +425,59 @@ export async function mountPractice(
     );
   };
   controls.append(levelSelect, topicSelect);
+  const timingLabel = element("label");
+  const timingControl = element("input");
+  timingControl.type = "checkbox";
+  timingControl.checked = timingEnabled;
+  timingControl.onchange = () => {
+    timingEnabled = timingControl.checked;
+    localStorage.setItem(timingKey, timingEnabled ? "on" : "off");
+    timer = null;
+  };
+  timingLabel.append(
+    timingControl,
+    document.createTextNode(
+      t(
+        "Record response timing from the next task",
+        "Antwortzeit ab der nächsten Aufgabe erfassen",
+      ),
+    ),
+  );
+  controls.append(timingLabel);
+  const persianHelp = element("details");
+  persianHelp.append(element("summary", "راهنمای فارسی"));
+  const guide = element(
+    "p",
+    "اول بدون دیدن مثال پاسخ بده. اگر لازم شد از راهنما استفاده کن؛ این پاسخ تمرین کمکی است. بعد یک جملهٔ تازه بساز و روز دیگری دوباره تلاش کن. زمان‌سنج اختیاری است و سرعت به‌تنهایی نشانهٔ تسلط نیست.",
+  );
+  guide.dir = "rtl";
+  guide.lang = "fa";
+  persianHelp.append(guide);
+  controls.append(persianHelp);
+  const recordChoice = (reason: string) => {
+    const selection = selectDailyFocus(pack, ledger().progress, now(), level);
+    const key = `automaticity:v2:${language}:selection:${id()}`;
+    localStorage.setItem(
+      key,
+      JSON.stringify({
+        version: 1,
+        at: now(),
+        language,
+        policy: "baseline-2",
+        reason,
+        level,
+        selectedTaskId: task.id,
+        recommendedConstructionIds: selection.focus.map((unit) => unit.id),
+      }),
+    );
+  };
+  topicSelect.addEventListener("change", () =>
+    recordChoice("learner_topic_override"),
+  );
+  levelSelect.addEventListener("change", () =>
+    recordChoice("learner_level_preference"),
+  );
+  if (editing) recordChoice(resume ? "resume" : "daily_selection");
   const focusSection = element("section", undefined, "card");
   focusSection.append(
     element("h2", t("Today's focus", "Dein Fokus heute")),
@@ -1129,6 +1209,16 @@ export async function mountPractice(
     stream?.getTracks().forEach((track) => track.stop());
     lockRelease?.();
     if (audioUrl) URL.revokeObjectURL(audioUrl);
+  });
+  window.addEventListener("popstate", () => {
+    if (editing) saveSession();
+    location.reload();
+  });
+  window.addEventListener("beforeunload", (event) => {
+    if (recorder?.state === "recording" || recordingPending || busy) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
   });
   if (resume) {
     renderTask();

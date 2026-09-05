@@ -6,11 +6,19 @@ import {
   type CurriculumPack,
 } from "../shared/learning-core/src/automaticity/curriculum";
 const root = resolve(import.meta.dir, "..");
+const coveragePath = Bun.argv
+  .find((arg) => arg.startsWith("--coverage="))
+  ?.slice("--coverage=".length);
 const coverage = JSON.parse(
-  await readFile(resolve(root, "docs/automaticity-coverage.json"), "utf8"),
+  await readFile(
+    resolve(root, coveragePath ?? "docs/automaticity-coverage.json"),
+    "utf8",
+  ),
 ) as {
   cells: {
     language: string;
+    contentVersion: string;
+    mappingVersion: string;
     constructionId: string;
     stage: string;
     modality: string;
@@ -63,6 +71,24 @@ for (const [language, app] of [
         );
         if (cells.length !== 1)
           throw new Error(`Missing/duplicate coverage cell ${key}`);
+        if (
+          cells[0]!.contentVersion !== pack.version ||
+          cells[0]!.mappingVersion !== pack.mappingVersion
+        )
+          throw new Error(`Stale coverage version ${key}`);
+        if (
+          (cells[0]!.humanReview === "complete" || cells[0]!.releaseEligible) &&
+          (unit.review !== "human_reviewed" ||
+            unit.tasks.some(
+              (task) =>
+                task.stage === stage &&
+                task.modality === modality &&
+                task.contentReview !== "human_reviewed",
+            ))
+        )
+          throw new Error(
+            `Coverage claims review absent from the content pack: ${key}`,
+          );
         const actual = unit.tasks
           .filter((task) => task.stage === stage && task.modality === modality)
           .map((task) => task.id)

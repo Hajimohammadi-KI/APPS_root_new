@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "english-automaticity-automaticity-v2-20260905";
+const CACHE = "english-automaticity-automaticity-v2-20260905c";
 const PRECACHE = [
   "/practice",
   "/learning-core/practice.js",
@@ -29,10 +29,10 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))),
-      ),
+        Promise.all(keys.filter((key) => key !== CACHE && key.startsWith("english-automaticity-")).map((key) => caches.delete(key))),
+      )
+      .then(() => self.clients.claim()),
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
@@ -42,13 +42,18 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        if (response.ok) {
+        if (response.ok && new URL(event.request.url).origin === self.location.origin) {
           const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+          event.waitUntil(caches.open(CACHE).then((cache) => cache.put(event.request, copy)));
         }
         return response;
       })
       .catch(async () => {
+        // Task selection lives in the query string; every task uses this same shell.
+        if (event.request.mode === "navigate" && new URL(event.request.url).pathname === "/practice") {
+          const practice = await caches.match("/practice");
+          if (practice) return practice;
+        }
         return (
           (await caches.match(event.request)) ??
           (event.request.mode === "navigate"

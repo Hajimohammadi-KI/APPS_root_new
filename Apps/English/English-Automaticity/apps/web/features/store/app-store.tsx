@@ -1,11 +1,8 @@
 "use client";
 
 import * as React from "react";
-import {
-	grammarUnits,
-	type CefrLevel,
-	type GrammarUnit,
-} from "@grammar/content";
+import { syncLegacyPracticeInBrowser } from "@automaticity/learning-core/automaticity";
+import type { CefrLevel, GrammarUnit } from "@grammar/content";
 import {
 	appStateCalendarEvents,
 	readDesktopCalendarStatus,
@@ -195,11 +192,19 @@ const RETIRED_PRIVATE_STORAGE_KEY = "thesis-b2-sprint-v24";
 const CEFR_ORDER: readonly CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 function persistAppState(state: AppState) {
-	if (typeof window === "undefined") return;
+	if (typeof window === "undefined") return false;
 	try {
+		const previous = localStorage.getItem(STORAGE_KEY);
+		if (previous !== null) JSON.parse(previous);
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+		void syncLegacyPracticeInBrowser("en").catch((error) =>
+			window.dispatchEvent(
+				new CustomEvent("automaticity-sync-error", { detail: String(error) }),
+			),
+		);
+		return true;
 	} catch {
-		// Keep the current in-memory session usable if browser storage is blocked.
+		return false;
 	}
 }
 
@@ -410,9 +415,7 @@ export function normalizeAppState(value: unknown): AppState {
 			selfDeclaredLevel: isCefrLevel(learner.selfDeclaredLevel)
 				? learner.selfDeclaredLevel
 				: null,
-			verifiedLevel: isCefrLevel(learner.verifiedLevel)
-				? learner.verifiedLevel
-				: null,
+			verifiedLevel: null,
 			placementMode: isPlacementMode(learner.placementMode)
 				? learner.placementMode
 				: isCefrLevel(learner.selfDeclaredLevel)
@@ -705,60 +708,9 @@ export function recalculateMastery(draft: AppState, grammarTitle: string) {
 	draft.mastery[grammarTitle] = current;
 }
 
-function latestAverage(values: number[]): number | null {
-	if (values.length === 0) return null;
-	const recent = values.slice(-10);
-	return Math.round(
-		recent.reduce((total, value) => total + value, 0) / recent.length,
-	);
-}
-
-function deriveVerifiedLevel(state: AppState): CefrLevel | null {
-	let verified: CefrLevel | null = null;
-	for (const level of CEFR_ORDER) {
-		const levelTitles = grammarUnits
-			.filter((unit) => unit.level === level)
-			.map((unit) => unit.title);
-		if (levelTitles.length === 0) break;
-		const titleSet = new Set(levelTitles);
-		const allAutomatic = levelTitles.every(
-			(title) => state.mastery[title]?.status === "automatic",
-		);
-		if (!allAutomatic) break;
-
-		const activeCriticalErrors = state.errors.filter(
-			(error) =>
-				titleSet.has(error.grammarTitle) &&
-				error.repairStatus !== "fixed" &&
-				error.errorClass !== "spelling",
-		).length;
-		if (activeCriticalErrors > 0) break;
-
-		const successful = state.attempts.filter(
-			(attempt) =>
-				titleSet.has(attempt.grammarTitle) &&
-				attempt.verified === true &&
-				attempt.passed,
-		);
-		const speaking = successful.filter(
-			(attempt) => attempt.mode === "speaking",
-		);
-		const writing = successful.filter((attempt) => attempt.mode === "writing");
-		const transfer = successful.filter(
-			(attempt) => attempt.mode === "transfer" || attempt.mode === "timed",
-		);
-		const minimumSamples = Math.max(6, Math.ceil(levelTitles.length * 0.5));
-		if (
-			speaking.length < minimumSamples ||
-			writing.length < minimumSamples ||
-			transfer.length < minimumSamples
-		) {
-			break;
-		}
-
-		verified = level;
-	}
-	return verified;
+// Grammar practice does not certify an overall CEFR level.
+function deriveVerifiedLevel(): CefrLevel | null {
+	return null;
 }
 
 function refreshVerifiedLevel(state: AppState) {
@@ -766,7 +718,7 @@ function refreshVerifiedLevel(state: AppState) {
 		state.learner.verifiedLevel = null;
 		return;
 	}
-	state.learner.verifiedLevel = deriveVerifiedLevel(state);
+	state.learner.verifiedLevel = deriveVerifiedLevel();
 }
 
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30] as const;
@@ -793,104 +745,31 @@ export function adaptiveReviewInterval(
 }
 
 export function buildEnglishEvidence(state: AppState): EvidenceSummary {
-	const level = state.learner.selfDeclaredLevel;
-	if (!level) return emptyEvidenceSummary();
-	const titles = new Set(
-		grammarUnits
-			.filter((unit) => unit.level === level)
-			.map((unit) => unit.title),
-	);
-	const attempts = state.attempts.filter(
-		(attempt) => titles.has(attempt.grammarTitle) && attempt.verified === true,
-	);
-	const speaking = attempts.filter((attempt) => attempt.mode === "speaking");
-	const writing = attempts.filter((attempt) => attempt.mode === "writing");
-	const spontaneous = attempts.filter(
-		(attempt) =>
-			attempt.passed &&
-			(attempt.mode === "speaking" ||
-				attempt.mode === "transfer" ||
-				attempt.mode === "timed"),
-	);
-	const relevantReviews = state.reviews.filter(
-		(review) =>
-			titles.has(review.sourceId) &&
-			review.sourceType === "grammar_topic" &&
-			review.status === "done",
-	);
-	const activeCriticalErrors = state.errors.filter(
-		(error) =>
-			titles.has(error.grammarTitle) &&
-			error.repairStatus !== "fixed" &&
-			error.errorClass !== "spelling",
-	);
-	const speakingAccuracy = latestAverage(
-		speaking.map((attempt) => attempt.accuracyScore),
-	);
-	const dailyRows = new Map<
-		string,
-		EvidenceSummary["dailyActivity"][number] & { scores: number[] }
-	>();
-	for (const [date, practiceCount] of Object.entries(state.activity)) {
-		dailyRows.set(date, {
-			date,
-			practiceCount,
-			speakingSamples: 0,
-			writingSamples: 0,
-			spontaneousSamples: 0,
-			delayedReviews: 0,
-			averageScore: null,
-			scores: [],
-		});
-	}
-	for (const attempt of attempts) {
+	const counts = new Map<string, number>();
+	for (const attempt of state.attempts) {
 		const date = attempt.createdAt.slice(0, 10);
-		const row = dailyRows.get(date) ?? {
-			date,
-			practiceCount: 0,
-			speakingSamples: 0,
-			writingSamples: 0,
-			spontaneousSamples: 0,
-			delayedReviews: 0,
-			averageScore: null,
-			scores: [],
-		};
-		row.practiceCount += 1;
-		row.scores.push(attempt.accuracyScore);
-		if (attempt.passed && attempt.mode === "speaking") row.speakingSamples += 1;
-		if (attempt.passed && attempt.mode === "writing") row.writingSamples += 1;
-		if (
-			attempt.passed &&
-			["speaking", "transfer", "timed"].includes(attempt.mode)
-		) {
-			row.spontaneousSamples += 1;
-		}
-		dailyRows.set(date, row);
+		if (/^\d{4}-\d{2}-\d{2}$/.test(date))
+			counts.set(date, (counts.get(date) ?? 0) + 1);
 	}
+	// Historical percentages and transcripts lack independent review provenance.
+	// Retain activity while leaving proficiency dimensions unknown.
 	return {
-		speakingSamples: speaking.filter((attempt) => attempt.passed).length,
-		writingSamples: writing.filter((attempt) => attempt.passed).length,
-		spontaneousSamples: spontaneous.length,
-		delayedReviews: relevantReviews.length,
-		criticalErrorCount: activeCriticalErrors.length,
-		dailyActivity: [...dailyRows.values()]
-			.map(({ scores, ...row }) => ({
-				...row,
-				averageScore: scores.length ? average(scores) : null,
-			}))
-			.sort((left, right) => left.date.localeCompare(right.date))
-			.slice(-90),
-		scores: {
-			listening: null,
-			reading: null,
-			spoken_interaction: speakingAccuracy,
-			spoken_production: speakingAccuracy,
-			writing: latestAverage(writing.map((attempt) => attempt.accuracyScore)),
-			grammar: latestAverage(attempts.map((attempt) => attempt.accuracyScore)),
-			vocabulary: null,
-			pronunciation: null,
-			fluency: latestAverage(speaking.map((attempt) => attempt.fluencyScore)),
-		},
+		...emptyEvidenceSummary(),
+		criticalErrorCount: state.errors.filter(
+			(error) =>
+				error.repairStatus !== "fixed" && error.errorClass !== "spelling",
+		).length,
+		dailyActivity: [...counts]
+			.sort(([a], [b]) => a.localeCompare(b))
+			.map(([date, practiceCount]) => ({
+				date,
+				practiceCount,
+				speakingSamples: 0,
+				writingSamples: 0,
+				spontaneousSamples: 0,
+				delayedReviews: 0,
+				averageScore: null,
+			})),
 	};
 }
 
@@ -906,6 +785,7 @@ interface StoreValue {
 const AppStoreContext = React.createContext<StoreValue | null>(null);
 
 export function AppStoreProvider({ children }: { children: React.ReactNode }) {
+	const [persistenceProblem, setPersistenceProblem] = React.useState(false);
 	const [state, setState] = React.useState<AppState>(DEFAULT_STATE);
 	const [hydrated, setHydrated] = React.useState(false);
 	const [profileReady, setProfileReady] = React.useState(false);
@@ -927,7 +807,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	}, []);
 
 	React.useEffect(() => {
-		if (hydrated) persistAppState(state);
+		if (hydrated) setPersistenceProblem(!persistAppState(state));
 	}, [hydrated, state]);
 
 	React.useEffect(() => {
@@ -974,9 +854,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 								? (shared.selfDeclaredLevel ??
 									current.learner.selfDeclaredLevel)
 								: current.learner.selfDeclaredLevel,
-							verifiedLevel: profile.privacy.shareAcrossApps
-								? shared.verifiedLevel
-								: current.learner.verifiedLevel,
+							verifiedLevel: null,
 							placementMode: profile.privacy.shareAcrossApps
 								? shared.placementMode
 								: current.learner.placementMode,
@@ -1160,6 +1038,15 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 
 	return (
 		<AppStoreContext.Provider value={value}>
+			{persistenceProblem ? (
+				<p
+					role="alert"
+					className="border border-red-700 bg-white p-4 text-red-800"
+				>
+					Changes could not be saved. Keep this tab open and export your data
+					from Settings before trying again.
+				</p>
+			) : null}
 			{children}
 		</AppStoreContext.Provider>
 	);

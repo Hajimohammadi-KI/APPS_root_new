@@ -7,6 +7,7 @@ import {
 import { ResponseTimer } from "./media";
 import { selectDailyFocus } from "./selector";
 import { type CurriculumPack, type PracticeTask } from "./curriculum";
+import { constructionsForLesson, validateCurriculum } from "./curriculum";
 import { type AttemptEvent } from "./contracts";
 import { reduceAutomaticityEvents } from "./evidence";
 const at = "2026-09-05T10:00:00.000Z";
@@ -86,6 +87,26 @@ const pack: CurriculumPack = {
   })),
 };
 describe("scoped feedback and task selection", () => {
+  test("lesson aliases support many-to-many mappings without changing construction IDs", () => {
+    const linked: CurriculumPack = {
+      ...pack,
+      units: pack.units.map((unit, index) => ({
+        ...unit,
+        lessonAliases: index < 2 ? ["A1::Shared lesson"] : [],
+      })),
+    };
+    expect(
+      constructionsForLesson(linked, "A1::Shared lesson").map(
+        (unit) => unit.id,
+      ),
+    ).toEqual(["de.c.001", "de.c.002"]);
+    expect(validateCurriculum(linked)).toEqual([]);
+    linked.units[0]!.prerequisites = ["de.c.002"];
+    linked.units[1]!.prerequisites = ["de.c.001"];
+    expect(
+      validateCurriculum(linked).some((issue) => issue.includes("cycle")),
+    ).toBe(true);
+  });
   test("normalization preserves grammatical case and significant punctuation", () => {
     expect(normaliseAnswer("  Ich   bin bereit. ", task)).toBe(
       "Ich bin bereit",
@@ -196,5 +217,44 @@ describe("scoped feedback and task selection", () => {
     timer.input();
     clock = 10600;
     expect(timer.read()).toEqual({ activeMs: 800, firstInputMs: 600 });
+  });
+  test("a repaired error leaves the repair queue but remains in history", () => {
+    const fail = assessControlledTask(
+      {
+        ...attempt,
+        response: { ...attempt.response, text: "ich bin bereit." },
+      },
+      task,
+      at,
+      "bad",
+    );
+    const later = {
+      ...attempt,
+      id: "b",
+      at: "2026-09-05T10:01:00.000Z",
+      previousAttemptId: attempt.id,
+    };
+    const pass = assessControlledTask(later, task, later.at, "good");
+    const state = reduceAutomaticityEvents(
+      [attempt, fail, later, pass],
+      "de",
+      later.at,
+    );
+    expect(state.progress[0]?.practiceFailures).toBe(1);
+    expect(state.progress[0]?.repairNeeded).toBe(false);
+    expect(
+      selectDailyFocus(pack, state.progress, later.at, "A1").repairs,
+    ).toEqual([]);
+  });
+  test("large practice totals cannot push a due construction behind new work", () => {
+    const progress = reduceAutomaticityEvents([attempt], "de", at).progress;
+    const due = {
+      ...progress[0]!,
+      attempts: 100000,
+      nextReviewAt: "2026-09-04T10:00:00.000Z",
+    };
+    expect(selectDailyFocus(pack, [due], at, "A1").focus[0]?.id).toBe(
+      due.constructionId,
+    );
   });
 });

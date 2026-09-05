@@ -5,7 +5,7 @@
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
   "updatedOn": "2026-09-05",
-  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -386,7 +386,7 @@
       "phase": "baseline",
       "title": "Map active routes and current runtime",
       "status": "verified",
-      "progressNote": "Current source, installed executable paths, versions and real routes are recorded for English 27.3.26 and German 20.8.32. Source patch and new-file copies are retained. The thesis is outside scope.",
+      "progressNote": "Canonical source and active route mappings retain their baseline record. Current normal installations are English 27.3.28 and DeutschFlow 20.8.34; exact source/release hashes, installed versions and live practice/API endpoints pass refreshed verification. The thesis remains outside scope.",
       "priority": "P0",
       "dependsOn": [],
       "ownerRole": "Implementation",
@@ -431,7 +431,10 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "artifacts/language-foundations/runtime-preservation.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T10-42-03-491Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
@@ -443,7 +446,7 @@
       "phase": "baseline",
       "title": "Prepare preservation and restore fixtures",
       "status": "verified",
-      "progressNote": "Complete normal profiles are copied and hash-verified before update. Synthetic duplicates, partial JSON, drafts, due reviews and playable audio survive complete backup/restore and interrupted recovery.",
+      "progressNote": "Preservation and restore fixtures pass again in both languages: original answers/dates/reviews, duplicate and corrupt raw state, drafts, teacher content and playable audio are retained. Failed/interrupted restores roll back; cross-language/corrupt imports are rejected. Normal learner profiles were not used by these synthetic browser checks.",
       "priority": "P0",
       "dependsOn": [
         "B01"
@@ -491,7 +494,11 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T10-36-39-638Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T10-36-44-634Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T10-42-03-491Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
@@ -502,8 +509,8 @@
       "id": "B03",
       "phase": "baseline",
       "title": "Reproduce consequential defects",
-      "status": "in_progress",
-      "progressNote": "Post-fix regressions cover malformed upstream results, uncertain language, exposure, offline work and verification conflicts. This continuation also captured the pre-fix offline query-route failure before fixing it. Historical pre-fix receipts for every earlier defect remain incomplete; no test is backdated.",
+      "status": "verified",
+      "progressNote": "Thirteen dated historical source replays and fresh installed regressions complete the defect ledger. Exact pre-fix Git bytes reproduce upstream false-success, German language/case defects, exposed-repair credit, unsupported delay/transfer flags and English store conflicts. A direct-client false-success hypothesis was revised to the observed crash. Replays are retrospective evidence recorded today, never backdated receipts.",
       "priority": "P0",
       "dependsOn": [
         "B01"
@@ -550,18 +557,26 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/language-foundation-history/2026-09-05T10-38-25-548Z/report.json",
+        "artifacts/language-foundation-browser/2026-09-05T10-40-58-020Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T10-34-26-160Z/report.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Focused regression ledger with exact historical-source replay recorded today, revised non-reproduction and current installed-route evidence. No original pre-fix timestamps are invented."
     },
     {
       "id": "F01",
       "phase": "integrity",
       "title": "Validate English upstream assessments",
-      "status": "implemented",
-      "progressNote": "Required upstream and caller regressions pass in source and installed browsers. Ticket closure remains subject to completing B03 reproduction records.",
+      "status": "verified",
+      "progressNote": "Strict upstream and client validation passes the full English check and installed repair/writing controls. Missing/null/non-array matches, invalid JSON, invalid/overlapping edits and timeouts cannot grant verified credit. Valid empty results remain usable. B03 now includes exact historical source replay and caller evidence.",
       "priority": "P0",
       "dependsOn": [
         "B03"
@@ -588,18 +603,25 @@
         "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
         "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json",
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
-        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json"
+        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/language-foundation-history/2026-09-05T10-38-25-548Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T10-34-26-160Z/report.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "F02",
       "phase": "integrity",
       "title": "Fix German language and orthography handling",
-      "status": "implemented",
-      "progressNote": "German uncertain-language, valid control, capitalization and actual weil-path regressions pass. Ticket closure remains subject to B03.",
+      "status": "verified",
+      "progressNote": "Domain and real browser-handler tests preserve German capitalization, endings and punctuation, abstain on unknown/mixed input, reject known non-German negatives and accept declared short/word-order alternatives. Installed casing, French uncertainty, ambiguous English hat and weil-path controls pass. Historical source defects are reproduced in B03.",
       "priority": "P0",
       "dependsOn": [
         "B03"
@@ -627,17 +649,24 @@
         "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
         "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json",
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
-        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json"
+        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/language-foundation-history/2026-09-05T10-38-25-548Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T10-34-26-160Z/report.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "F03",
       "phase": "integrity",
       "title": "Separate practice completion from independent success",
-      "status": "implemented",
+      "status": "verified",
       "priority": "P0",
       "dependsOn": [
         "B03",
@@ -661,19 +690,27 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/evidence.ts",
         "shared/learning-core/src/automaticity/practice.ts",
-        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json"
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/language-foundation-browser/2026-09-05T10-40-58-020Z/report.json",
+        "artifacts/automaticity-practice/2026-09-05T10-43-18-994Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T10-42-03-491Z/report.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Shared practice hides teaching material until deliberate exposure; repair, offline open work and legacy completion cannot establish qualified independent evidence. Broader legacy-route acceptance remains open.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Shared practice tests verify hidden models, deliberate exposure and linked copied repairs. Installed legacy Grammar checks save English repairs/explanations and German offline open output, then import the original responses without independence, mastery, delay or novelty credit. Teaching examples remain useful on the guided pages. Offline installed practice also saves unassessed output.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "F04",
       "phase": "integrity",
       "title": "Remove conflicting verification paths",
-      "status": "implemented",
-      "progressNote": "Reducer validates identity, supersession, conflicts, invalidation, delay and novelty; self-checks cannot overwrite authoritative assessments. Legacy English writing control now requires masteryEligible false without independence. All legacy workflow adapters are not yet complete.",
+      "status": "verified",
+      "progressNote": "The historical English store conflict is reproduced and current writing/repair callers pass both malformed and valid controls. Shared regressions cover duplicate submissions, re-recording, competing/superseded/invalidated judgments and honest elapsed-time/context requirements. Eleven semantic reducer scenarios per language produce identical Node and installed-browser results. Older completion stores remain historical practice data, not an independent evidence authority.",
       "priority": "P0",
       "dependsOn": [
         "B03",
@@ -703,17 +740,26 @@
         "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/evidence.ts",
-        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json"
+        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/language-foundation-history/2026-09-05T10-38-25-548Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T10-34-26-160Z/report.json",
+        "artifacts/language-foundation-browser/2026-09-05T10-40-58-020Z/report.json",
+        "artifacts/automaticity-practice/2026-09-05T10-43-18-994Z/report.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "updatedOn": "2026-09-05"
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "E01",
       "phase": "evidence",
       "title": "Define versioned construction, task and assessment contracts",
-      "status": "implemented",
+      "status": "verified",
       "priority": "P0",
       "dependsOn": [
         "B03",
@@ -735,19 +781,25 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/contracts.ts",
-        "shared/learning-core/src/automaticity/automaticity.test.ts"
+        "shared/learning-core/src/automaticity/automaticity.test.ts",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/language-foundation-browser/2026-09-05T10-40-58-020Z/report.json",
+        "artifacts/language-foundation-history/2026-09-05T10-38-25-548Z/report.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Versioned task/attempt/exposure/assessment/invalidation contracts and deep validators are implemented and tested. Full reviewed construction inventory remains a dependency.",
+      "progressNote": "Versioned construction/task/attempt/assessment/invalidation contracts and English/German adapters pass full source checks. Stable IDs, rubric/task versions, opportunities, exposure, assistance, timing, original/edited transcript hashes and review provenance are validated. Four verdicts preserve uncertainty; Phase 4 now supplies the extended construction specification inventory. Human curriculum/evaluator approval remains a separate release gate.",
       "updatedOn": "2026-09-05",
-      "engineeringVerification": "verified_for_recorded_scope"
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "E02",
       "phase": "evidence",
       "title": "Implement idempotent evidence reduction",
-      "status": "implemented",
+      "status": "verified",
       "priority": "P0",
       "dependsOn": [
         "E01"
@@ -766,19 +818,25 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/evidence.ts",
-        "shared/learning-core/src/automaticity/automaticity.test.ts"
+        "shared/learning-core/src/automaticity/automaticity.test.ts",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/language-foundation-browser/2026-09-05T10-40-58-020Z/report.json",
+        "artifacts/automaticity-practice/2026-09-05T10-43-18-994Z/report.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Deterministic reduction, duplicate conflict quarantine, supersession and separate modality progress are tested. Real learner qualification is not inferred.",
+      "progressNote": "Deterministic reduction passes event-identity deduplication/quarantine, eligible-failure denominators, declared windows, supersession, invalidation, recomputed review inputs and modality separation. Twenty-two installed-browser/Node comparisons include positive delay/novelty controls and unknown audio/timing. These synthetic checks establish software behavior only.",
       "updatedOn": "2026-09-05",
-      "engineeringVerification": "verified_for_recorded_scope"
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "E03",
       "phase": "evidence",
       "title": "Migrate legacy and static-route state safely",
-      "status": "implemented",
+      "status": "verified",
       "priority": "P0",
       "dependsOn": [
         "B02",
@@ -821,19 +879,28 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/automaticity-preservation/2026-09-05T10-36-39-638Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T10-36-44-634Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T10-40-29-770Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T10-42-03-491Z/report.json",
+        "artifacts/language-foundations/runtime-preservation.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Dated original attempts, sessions and static responses import idempotently into v2 as unqualified legacy output. Missing dates, corrupt sources and ambiguous associations stay in original storage; no historical assistance or audio provenance is invented. Existing recordings and due reviews remain in the original workflows and complete backups.",
+      "progressNote": "Fresh source and installed-browser checks verify idempotent legacy/static import, retained original associations/answers/dates/reviews and playable audio, exact raw/corrupt/partial state preservation, transaction aborts, quota recovery and interrupted-restore rollback. Cross-language/corrupt imports are rejected. Historical evidence with missing provenance stays insufficient and readable in original storage and complete backups.",
       "updatedOn": "2026-09-05",
-      "engineeringVerification": "verified_for_recorded_scope"
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "E04",
       "phase": "evidence",
       "title": "Distribute shared code to every runtime",
-      "status": "implemented",
+      "status": "verified",
       "priority": "P0",
       "dependsOn": [
         "E01"
@@ -879,13 +946,21 @@
         "artifacts/installed-automaticity-browser/2026-09-05T08-36-36-356Z/report.json",
         "artifacts/automaticity-recording/2026-09-05T08-36-36-157Z/report.json",
         "artifacts/automaticity-practice/2026-09-05T08-27-54-469Z/report.json",
-        "artifacts/language-release-source/20260905-en27-de33/manifest.json"
+        "artifacts/language-release-source/20260905-en27-de33/manifest.json",
+        "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
+        "artifacts/learning-core-sync/2026-09-05T10-37-26-871Z/report.json",
+        "artifacts/language-foundation-browser/2026-09-05T10-40-58-020Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T10-42-03-491Z/report.json",
+        "artifacts/language-foundations/runtime-preservation.json",
+        "Apps/English/English-Automaticity/artifacts/foundation-check-2026-09-05.log",
+        "Apps/Deutsch-Automaticity/artifacts/foundation-verify-process-access-2026-09-05.log"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Shared-source sync rejects canonical TypeScript files absent from its manifest. Missing review-draft files were caught and fixed before release; the unlisted/stale/missing-source checks and full English/German verification pass. The installed practice bundle hashes match the canonical source.",
+      "progressNote": "The canonical source, both mirrors and relevant installed public bundles match. Fault injection verifies rejection of unlisted canonical source plus stale and missing copies, restoring exact bytes afterward. Eleven input scenarios per language agree between actual Node execution and installed browser reduction. Source, installed hashes and both required app checks pass.",
       "updatedOn": "2026-09-05",
-      "engineeringVerification": "verified_for_recorded_scope"
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Ticket-specific software acceptance criteria; independent human content/evaluator approval and learner effectiveness remain separate requirements."
     },
     {
       "id": "C01",
@@ -2549,7 +2624,7 @@
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-FOUNDATIONS-2026-09-05.md",
   "grammarScope": {
     "status": "mapping_verified",
     "report": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",

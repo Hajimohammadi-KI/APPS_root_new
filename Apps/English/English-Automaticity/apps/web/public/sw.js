@@ -3,6 +3,7 @@ const CACHE = "english-automaticity-automaticity-v2-20260905e";
 const PRECACHE = [
   "/practice",
   "/learning-core/practice.js",
+  "/learning-core/overview.js",
   "/learning-core/practice.css",
   "/learning-core/curriculum-en.json",
   "/",

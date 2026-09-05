@@ -62,7 +62,7 @@ export interface Construction extends Specification {
   title: string;
   level: string | null;
   familyIds: string[];
-  kind: "existing_unit" | "missing_target";
+  kind: "existing_unit" | "additional_target" | "missing_target";
   lessonLinks: {
     id: string;
     relationship: "primary" | "reinforcement" | "partial_only";
@@ -194,7 +194,7 @@ export function buildInventory(input: ScopeInput): Construction[] {
         if (
           !STAGES.includes(task.stage) ||
           !MODES.includes(task.modality) ||
-          task.version !== pack.version ||
+          !task.version?.trim() ||
           !unit.familyIds.includes(
             task.familyId as (typeof unit.familyIds)[number],
           ) ||
@@ -269,7 +269,9 @@ export function buildInventory(input: ScopeInput): Construction[] {
     input.specifications.map((row) => row.id),
     "Duplicate specification ID",
   );
-  if (input.specifications.length !== units.length)
+  if (input.additions.some(row => input.specifications.some(spec => spec.id === row.id)))
+    throw new Error("Reused construction ID");
+  if (input.specifications.length !== units.filter(unit=>!input.additions.some(row=>row.id===unit.id)).length)
     throw new Error("Missing/orphan existing specification");
   for (const group of input.reinforcements) {
     unique(group, "Duplicate reinforcement member");
@@ -281,7 +283,7 @@ export function buildInventory(input: ScopeInput): Construction[] {
       throw new Error("Invalid reinforcement group");
   }
   const all = [
-    ...units.map((unit) => {
+    ...units.filter(unit=>!input.additions.some(row=>row.id===unit.id)).map((unit) => {
       const spec = input.specifications.find((row) => row.id === unit.id);
       if (!spec) throw new Error(`Missing specification: ${unit.id}`);
       return {
@@ -294,7 +296,7 @@ export function buildInventory(input: ScopeInput): Construction[] {
     }),
     ...input.additions.map((spec) => ({
       spec,
-      unit: undefined,
+      unit: units.find(unit=>unit.id===spec.id),
       title: spec.title,
       families: [spec.family],
       related: spec.related,
@@ -340,10 +342,11 @@ export function buildInventory(input: ScopeInput): Construction[] {
         title,
         level: unit?.level ?? null,
         familyIds: families,
-        kind: unit ? "existing_unit" : "missing_target",
+        kind: unit ? input.additions.some(row=>row.id===spec.id) ? "additional_target" : "existing_unit" : "missing_target",
         lessonLinks: unit
           ? [
               { id: unit.id, relationship: "primary" },
+              ...related.map(id=>({id,relationship:"partial_only" as const})),
               ...[...new Set(peers)].map((id) => ({
                 id,
                 relationship: "reinforcement" as const,
@@ -387,7 +390,7 @@ export function buildInventory(input: ScopeInput): Construction[] {
         !inventory.some(
           (row) =>
             row.id === id &&
-            row.kind === "missing_target" &&
+            row.kind !== "existing_unit" &&
             row.language === audit.language &&
             row.familyIds.includes(audit.family),
         )

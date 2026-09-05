@@ -3,6 +3,7 @@ const root = resolve(import.meta.dir, "..");
 for (const [entry, file] of [
   ["browser-entry.ts", "automaticity-v2.js"],
   ["practice-entry.ts", "practice.js"],
+  ["overview-entry.ts", "overview.js"],
 ]) {
   const result = await Bun.build({
     entrypoints: [

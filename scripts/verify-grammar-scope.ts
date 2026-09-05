@@ -102,7 +102,11 @@ try {
     );
   });
   test("partial lesson links do not satisfy added-target coverage", () => {
-    const added = inventory.filter((row) => row.kind === "missing_target");
+    const fixture = structuredClone(input);
+    fixture.packs.forEach(pack => { pack.units = pack.units.filter(unit => !fixture.additions.some(row => row.id === unit.id)); });
+    const removed = buildInventory(fixture);
+    const missingCells = buildCoverage(removed, fixture.packs);
+    const added = removed.filter((row) => row.kind === "missing_target");
     assert.equal(added.length, 24);
     assert(
       added.every(
@@ -112,7 +116,7 @@ try {
       ),
     );
     assert(
-      cells
+      missingCells
         .filter(
           (cell) =>
             added.some((row) => row.id === cell.constructionId) &&
@@ -126,11 +130,11 @@ try {
   test("coverage distinguishes missing tasks from authored but unqualified", () => {
     assert.equal(
       cells.filter((row) => row.status === "missing_tasks").length,
-      322,
+      0,
     );
     assert.equal(
       cells.filter((row) => row.status === "authored_unqualified").length,
-      3584,
+      3906,
     );
     assert(cells.every((row) => row.releaseEligible === false));
   });
@@ -254,9 +258,9 @@ try {
     /Invalid reinforcement/,
   );
   reject(
-    "stale task version rejected",
+    "empty task version rejected",
     (f) => {
-      f.packs[0]!.units[0]!.tasks[0]!.version = "old";
+      f.packs[0]!.units[0]!.tasks[0]!.version = "";
     },
     /Invalid\/stale task/,
   );
@@ -463,7 +467,7 @@ try {
       0,
     ));
   test("generated inventory matches current sources", () =>
-    assert.equal(scope.summary.currentLessons, input.baseline.length));
+    assert.equal(scope.summary.currentLessons, input.baseline.length + input.additions.length));
   const repeated = await buildScope(root);
   test("generation is deterministic", () =>
     assert.equal(JSON.stringify(scope), JSON.stringify(repeated)));

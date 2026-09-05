@@ -36,11 +36,11 @@ try {
     "Independent human content review is pending",
   );
   report.cases.push("model authorship and human-review limit visible");
-  await page.locator("#kind").selectOption("missing_target");
+  await page.locator("#kind").selectOption("additional_target");
   await expect(page.locator("#count")).toHaveText("24 targets shown");
   await page.locator("#language").selectOption("de");
   await expect(page.locator("#count")).toHaveText("12 targets shown");
-  report.cases.push("language and missing-target filters combine");
+  report.cases.push("language and additional-target filters combine");
   await page.locator("#search").fill("Ersatzinfinitiv");
   await expect(page.locator("#count")).toHaveText("1 targets shown");
   await page.locator("summary").focus();
@@ -48,8 +48,8 @@ try {
   await expect(page.locator("details")).toHaveAttribute("open", "");
   await expect(page.locator("details")).toContainText("de.c.146");
   await expect(page.locator("details")).toContainText("partial_only");
-  await expect(page.locator("details")).toContainText("14 cells need tasks");
-  report.cases.push("keyboard opens the exact missing-target specification");
+  await expect(page.locator("details")).toContainText("0 cells need tasks");
+  report.cases.push("keyboard opens the exact additional-target specification");
   await expect(page.locator("details")).toContainText(
     "C1::Komplexe Verbvalenz und Rektion",
   );
@@ -80,7 +80,7 @@ try {
   report.cases.push("empty search has a clear state");
   await page.locator("#search").fill("");
   await page.locator("#language").selectOption("all");
-  await page.locator("#kind").selectOption("missing_target");
+  await page.locator("#kind").selectOption("additional_target");
   await page.screenshot({ path: resolve(output, "desktop.png") });
   await page.setViewportSize({ width: 390, height: 844 });
   assert(

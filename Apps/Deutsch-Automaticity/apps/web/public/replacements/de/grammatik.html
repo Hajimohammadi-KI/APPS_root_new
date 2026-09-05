@@ -427,7 +427,7 @@
         </div>
       </header>
 
-      <main class="workspace">
+      <main class="workspace"><div style="grid-column:1/-1"><section data-automaticity-overview></section></div>
         <aside class="catalog" aria-label="Grammar topic browser">
           <div class="catalog-tools">
             <label class="search-box"><span class="sr-only">Themen suchen</span><input id="topicSearch" type="search" placeholder="Themen suchen ..." autocomplete="off"/><svg class="icon"><use href="#i-search"/></svg></label>
@@ -667,5 +667,5 @@
     })();
   </script>
 <script>// Navigation uses canonical page paths so visible Grammar menu actions never send learners to removed aliases.
-const navMap={'Heute üben und sprechen':'/','Heutiges Training':'/heute','Konversationsstudio':'/studio','Grammatik und Deutsch lernen':'/grammatik','Lernressourcen':'/ressourcen','Integrierte Fertigkeiten':'/fertigkeiten','Fehler und Aufnahmen':'/fehler','Speicher und persönliche Optionen':'/einstellungen'};document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{const u=navMap[b.dataset.nav];if(u)location.href=u}));</script></body>
+const navMap={'Heute üben und sprechen':'/','Heutiges Training':'/heute','Konversationsstudio':'/studio','Grammatik und Deutsch lernen':'/grammatik','Lernressourcen':'/ressourcen','Integrierte Fertigkeiten':'/fertigkeiten','Fehler und Aufnahmen':'/fehler','Speicher und persönliche Optionen':'/einstellungen'};document.querySelectorAll('[data-nav]').forEach(b=>b.addEventListener('click',()=>{const u=navMap[b.dataset.nav];if(u)location.href=u}));</script><script defer src="/learning-core/overview.js"></script></body>
 </html>

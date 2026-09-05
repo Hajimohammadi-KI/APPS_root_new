@@ -63,6 +63,11 @@ for (const [language, app] of [
       "retain",
     ])
       for (const modality of ["writing", "speaking"]) {
+        const scopeCell = grammarScope.cells.find(cell=>cell.constructionId===unit.id && cell.stage===stage && cell.modality===modality);
+        if (scopeCell && !scopeCell.required) {
+          if (unit.tasks.some(task=>task.stage===stage && task.modality===modality)) throw new Error(`N/A target must not offer assessed ${modality} tasks: ${unit.id}`);
+          continue;
+        }
         const key = `${language}:${unit.id}:${stage}:${modality}`;
         if (seen.has(key)) throw new Error(`Duplicate cell ${key}`);
         seen.add(key);

@@ -3,15 +3,15 @@
   "scopeVersion": "2026-09-05.scope.1",
   "sourceSummary": {
     "baselineLessons": 256,
-    "currentLessons": 256,
+    "currentLessons": 280,
     "existingConstructions": 256,
     "additionalTargets": 24,
     "familyAudits": 42,
     "cells": 3920,
     "requiredCells": 3906,
     "notApplicableCells": 14,
-    "missingTaskCells": 322,
-    "authoredUnqualifiedCells": 3584,
+    "missingTaskCells": 0,
+    "authoredUnqualifiedCells": 3906,
     "humanReviewedConstructions": 0,
     "qualifiedReleaseCells": 0,
     "fullCurriculumRelease": "not_qualified"
@@ -52368,9 +52368,8 @@
       "constructionId": "en.c.113",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52384,9 +52383,8 @@
       "constructionId": "en.c.113",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52400,9 +52398,8 @@
       "constructionId": "en.c.113",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52416,9 +52413,8 @@
       "constructionId": "en.c.113",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52432,9 +52428,8 @@
       "constructionId": "en.c.113",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52448,9 +52443,8 @@
       "constructionId": "en.c.113",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52464,9 +52458,8 @@
       "constructionId": "en.c.113",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52480,9 +52473,8 @@
       "constructionId": "en.c.113",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52496,9 +52488,8 @@
       "constructionId": "en.c.113",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52512,9 +52503,8 @@
       "constructionId": "en.c.113",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52528,9 +52518,8 @@
       "constructionId": "en.c.113",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52544,9 +52533,8 @@
       "constructionId": "en.c.113",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52560,9 +52548,8 @@
       "constructionId": "en.c.113",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52576,9 +52563,8 @@
       "constructionId": "en.c.113",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Generic and zero conditionals; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52592,9 +52578,8 @@
       "constructionId": "en.c.114",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52607,9 +52592,8 @@
       "constructionId": "en.c.114",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52622,9 +52606,8 @@
       "constructionId": "en.c.114",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52637,9 +52620,8 @@
       "constructionId": "en.c.114",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52652,9 +52634,8 @@
       "constructionId": "en.c.114",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52667,9 +52648,8 @@
       "constructionId": "en.c.114",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52682,9 +52662,8 @@
       "constructionId": "en.c.114",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52697,9 +52676,8 @@
       "constructionId": "en.c.114",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52712,9 +52690,8 @@
       "constructionId": "en.c.114",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52727,9 +52704,8 @@
       "constructionId": "en.c.114",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52742,9 +52718,8 @@
       "constructionId": "en.c.114",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52757,9 +52732,8 @@
       "constructionId": "en.c.114",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52772,9 +52746,8 @@
       "constructionId": "en.c.114",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52787,9 +52760,8 @@
       "constructionId": "en.c.114",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Demonstratives and reference distance; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52802,9 +52774,8 @@
       "constructionId": "en.c.115",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52817,9 +52788,8 @@
       "constructionId": "en.c.115",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52832,9 +52802,8 @@
       "constructionId": "en.c.115",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52847,9 +52816,8 @@
       "constructionId": "en.c.115",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52862,9 +52830,8 @@
       "constructionId": "en.c.115",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52877,9 +52844,8 @@
       "constructionId": "en.c.115",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52892,9 +52858,8 @@
       "constructionId": "en.c.115",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52907,9 +52872,8 @@
       "constructionId": "en.c.115",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52922,9 +52886,8 @@
       "constructionId": "en.c.115",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52937,9 +52900,8 @@
       "constructionId": "en.c.115",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52952,9 +52914,8 @@
       "constructionId": "en.c.115",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52967,9 +52928,8 @@
       "constructionId": "en.c.115",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52982,9 +52942,8 @@
       "constructionId": "en.c.115",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -52997,9 +52956,8 @@
       "constructionId": "en.c.115",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Indefinite pronouns and reference; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53012,9 +52970,8 @@
       "constructionId": "en.c.116",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53027,9 +52984,8 @@
       "constructionId": "en.c.116",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53042,9 +52998,8 @@
       "constructionId": "en.c.116",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53057,9 +53012,8 @@
       "constructionId": "en.c.116",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53072,9 +53026,8 @@
       "constructionId": "en.c.116",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53087,9 +53040,8 @@
       "constructionId": "en.c.116",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53102,9 +53054,8 @@
       "constructionId": "en.c.116",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53117,9 +53068,8 @@
       "constructionId": "en.c.116",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53132,9 +53082,8 @@
       "constructionId": "en.c.116",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53147,9 +53096,8 @@
       "constructionId": "en.c.116",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53162,9 +53110,8 @@
       "constructionId": "en.c.116",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53177,9 +53124,8 @@
       "constructionId": "en.c.116",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53192,9 +53138,8 @@
       "constructionId": "en.c.116",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53207,9 +53152,8 @@
       "constructionId": "en.c.116",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Reciprocal pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53222,9 +53166,8 @@
       "constructionId": "en.c.117",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53237,9 +53180,8 @@
       "constructionId": "en.c.117",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53252,9 +53194,8 @@
       "constructionId": "en.c.117",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53267,9 +53208,8 @@
       "constructionId": "en.c.117",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53282,9 +53222,8 @@
       "constructionId": "en.c.117",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53297,9 +53236,8 @@
       "constructionId": "en.c.117",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53312,9 +53250,8 @@
       "constructionId": "en.c.117",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53327,9 +53264,8 @@
       "constructionId": "en.c.117",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53342,9 +53278,8 @@
       "constructionId": "en.c.117",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53357,9 +53292,8 @@
       "constructionId": "en.c.117",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53372,9 +53306,8 @@
       "constructionId": "en.c.117",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53387,9 +53320,8 @@
       "constructionId": "en.c.117",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53402,9 +53334,8 @@
       "constructionId": "en.c.117",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53417,9 +53348,8 @@
       "constructionId": "en.c.117",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Independent possessive pronouns; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53432,9 +53362,8 @@
       "constructionId": "en.c.118",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53447,9 +53376,8 @@
       "constructionId": "en.c.118",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53462,9 +53390,8 @@
       "constructionId": "en.c.118",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53477,9 +53404,8 @@
       "constructionId": "en.c.118",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53492,9 +53418,8 @@
       "constructionId": "en.c.118",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53507,9 +53432,8 @@
       "constructionId": "en.c.118",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53522,9 +53446,8 @@
       "constructionId": "en.c.118",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53537,9 +53460,8 @@
       "constructionId": "en.c.118",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53552,9 +53474,8 @@
       "constructionId": "en.c.118",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53567,9 +53488,8 @@
       "constructionId": "en.c.118",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53582,9 +53502,8 @@
       "constructionId": "en.c.118",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53597,9 +53516,8 @@
       "constructionId": "en.c.118",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53612,9 +53530,8 @@
       "constructionId": "en.c.118",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53627,9 +53544,8 @@
       "constructionId": "en.c.118",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Agreement with complex subjects; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53642,9 +53558,8 @@
       "constructionId": "en.c.119",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53657,9 +53572,8 @@
       "constructionId": "en.c.119",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53672,9 +53586,8 @@
       "constructionId": "en.c.119",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53687,9 +53600,8 @@
       "constructionId": "en.c.119",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53702,9 +53614,8 @@
       "constructionId": "en.c.119",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53717,9 +53628,8 @@
       "constructionId": "en.c.119",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53732,9 +53642,8 @@
       "constructionId": "en.c.119",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53747,9 +53656,8 @@
       "constructionId": "en.c.119",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53762,9 +53670,8 @@
       "constructionId": "en.c.119",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53777,9 +53684,8 @@
       "constructionId": "en.c.119",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53792,9 +53698,8 @@
       "constructionId": "en.c.119",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53807,9 +53712,8 @@
       "constructionId": "en.c.119",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53822,9 +53726,8 @@
       "constructionId": "en.c.119",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53837,9 +53740,8 @@
       "constructionId": "en.c.119",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Subject and object questions; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53852,9 +53754,8 @@
       "constructionId": "en.c.120",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53867,9 +53768,8 @@
       "constructionId": "en.c.120",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53882,9 +53782,8 @@
       "constructionId": "en.c.120",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53897,9 +53796,8 @@
       "constructionId": "en.c.120",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53912,9 +53810,8 @@
       "constructionId": "en.c.120",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53927,9 +53824,8 @@
       "constructionId": "en.c.120",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53942,9 +53838,8 @@
       "constructionId": "en.c.120",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53957,9 +53852,8 @@
       "constructionId": "en.c.120",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53972,9 +53866,8 @@
       "constructionId": "en.c.120",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -53987,9 +53880,8 @@
       "constructionId": "en.c.120",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54002,9 +53894,8 @@
       "constructionId": "en.c.120",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54017,9 +53908,8 @@
       "constructionId": "en.c.120",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54032,9 +53922,8 @@
       "constructionId": "en.c.120",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54047,9 +53936,8 @@
       "constructionId": "en.c.120",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Dummy it and extraposition; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54062,9 +53950,8 @@
       "constructionId": "en.c.121",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54077,9 +53964,8 @@
       "constructionId": "en.c.121",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54092,9 +53978,8 @@
       "constructionId": "en.c.121",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54107,9 +53992,8 @@
       "constructionId": "en.c.121",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54122,9 +54006,8 @@
       "constructionId": "en.c.121",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54137,9 +54020,8 @@
       "constructionId": "en.c.121",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54152,9 +54034,8 @@
       "constructionId": "en.c.121",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54167,9 +54048,8 @@
       "constructionId": "en.c.121",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54182,9 +54062,8 @@
       "constructionId": "en.c.121",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54197,9 +54076,8 @@
       "constructionId": "en.c.121",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54212,9 +54090,8 @@
       "constructionId": "en.c.121",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54227,9 +54104,8 @@
       "constructionId": "en.c.121",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54242,9 +54118,8 @@
       "constructionId": "en.c.121",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54257,9 +54132,8 @@
       "constructionId": "en.c.121",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Attributive adjective order; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54272,9 +54146,8 @@
       "constructionId": "en.c.122",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54287,9 +54160,8 @@
       "constructionId": "en.c.122",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54302,9 +54174,8 @@
       "constructionId": "en.c.122",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54317,9 +54188,8 @@
       "constructionId": "en.c.122",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54332,9 +54202,8 @@
       "constructionId": "en.c.122",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54347,9 +54216,8 @@
       "constructionId": "en.c.122",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54362,9 +54230,8 @@
       "constructionId": "en.c.122",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54377,9 +54244,8 @@
       "constructionId": "en.c.122",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54392,9 +54258,8 @@
       "constructionId": "en.c.122",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54407,9 +54272,8 @@
       "constructionId": "en.c.122",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54422,9 +54286,8 @@
       "constructionId": "en.c.122",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54437,9 +54300,8 @@
       "constructionId": "en.c.122",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54452,9 +54314,8 @@
       "constructionId": "en.c.122",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54467,9 +54328,8 @@
       "constructionId": "en.c.122",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Genitive and of-construction choices; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54482,9 +54342,8 @@
       "constructionId": "en.c.123",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54498,9 +54357,8 @@
       "constructionId": "en.c.123",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54514,9 +54372,8 @@
       "constructionId": "en.c.123",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54530,9 +54387,8 @@
       "constructionId": "en.c.123",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54546,9 +54402,8 @@
       "constructionId": "en.c.123",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54562,9 +54417,8 @@
       "constructionId": "en.c.123",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54578,9 +54432,8 @@
       "constructionId": "en.c.123",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54594,9 +54447,8 @@
       "constructionId": "en.c.123",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54610,9 +54462,8 @@
       "constructionId": "en.c.123",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54626,9 +54477,8 @@
       "constructionId": "en.c.123",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54642,9 +54492,8 @@
       "constructionId": "en.c.123",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54658,9 +54507,8 @@
       "constructionId": "en.c.123",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54674,9 +54522,8 @@
       "constructionId": "en.c.123",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54690,9 +54537,8 @@
       "constructionId": "en.c.123",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Mandative complement clauses; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54706,9 +54552,8 @@
       "constructionId": "en.c.124",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Inflectional spelling changes; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54722,9 +54567,8 @@
       "constructionId": "en.c.124",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Inflectional spelling changes; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54738,9 +54582,8 @@
       "constructionId": "en.c.124",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Inflectional spelling changes; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54754,9 +54597,8 @@
       "constructionId": "en.c.124",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Inflectional spelling changes; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54770,9 +54612,8 @@
       "constructionId": "en.c.124",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Inflectional spelling changes; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54786,9 +54627,8 @@
       "constructionId": "en.c.124",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Inflectional spelling changes; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54802,9 +54642,8 @@
       "constructionId": "en.c.124",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Inflectional spelling changes; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54818,9 +54657,8 @@
       "constructionId": "de.c.145",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54833,9 +54671,8 @@
       "constructionId": "de.c.145",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54848,9 +54685,8 @@
       "constructionId": "de.c.145",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54863,9 +54699,8 @@
       "constructionId": "de.c.145",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54878,9 +54713,8 @@
       "constructionId": "de.c.145",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54893,9 +54727,8 @@
       "constructionId": "de.c.145",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54908,9 +54741,8 @@
       "constructionId": "de.c.145",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54923,9 +54755,8 @@
       "constructionId": "de.c.145",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54938,9 +54769,8 @@
       "constructionId": "de.c.145",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54953,9 +54783,8 @@
       "constructionId": "de.c.145",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54968,9 +54797,8 @@
       "constructionId": "de.c.145",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54983,9 +54811,8 @@
       "constructionId": "de.c.145",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -54998,9 +54825,8 @@
       "constructionId": "de.c.145",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55013,9 +54839,8 @@
       "constructionId": "de.c.145",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Futur II und vergangenheitsbezogene Vermutung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55028,9 +54853,8 @@
       "constructionId": "de.c.146",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55045,9 +54869,8 @@
       "constructionId": "de.c.146",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55062,9 +54885,8 @@
       "constructionId": "de.c.146",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55079,9 +54901,8 @@
       "constructionId": "de.c.146",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55096,9 +54917,8 @@
       "constructionId": "de.c.146",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55113,9 +54933,8 @@
       "constructionId": "de.c.146",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55130,9 +54949,8 @@
       "constructionId": "de.c.146",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55147,9 +54965,8 @@
       "constructionId": "de.c.146",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55164,9 +54981,8 @@
       "constructionId": "de.c.146",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55181,9 +54997,8 @@
       "constructionId": "de.c.146",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55198,9 +55013,8 @@
       "constructionId": "de.c.146",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55215,9 +55029,8 @@
       "constructionId": "de.c.146",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55232,9 +55045,8 @@
       "constructionId": "de.c.146",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55249,9 +55061,8 @@
       "constructionId": "de.c.146",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Ersatzinfinitiv und Oberfeld; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55266,9 +55077,8 @@
       "constructionId": "de.c.147",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55282,9 +55092,8 @@
       "constructionId": "de.c.147",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55298,9 +55107,8 @@
       "constructionId": "de.c.147",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55314,9 +55122,8 @@
       "constructionId": "de.c.147",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55330,9 +55137,8 @@
       "constructionId": "de.c.147",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55346,9 +55152,8 @@
       "constructionId": "de.c.147",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55362,9 +55167,8 @@
       "constructionId": "de.c.147",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55378,9 +55182,8 @@
       "constructionId": "de.c.147",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55394,9 +55197,8 @@
       "constructionId": "de.c.147",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55410,9 +55212,8 @@
       "constructionId": "de.c.147",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55426,9 +55227,8 @@
       "constructionId": "de.c.147",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55442,9 +55242,8 @@
       "constructionId": "de.c.147",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55458,9 +55257,8 @@
       "constructionId": "de.c.147",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55474,9 +55272,8 @@
       "constructionId": "de.c.147",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Adjektivvalenz und Rektion; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55490,9 +55287,8 @@
       "constructionId": "de.c.148",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55505,9 +55301,8 @@
       "constructionId": "de.c.148",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55520,9 +55315,8 @@
       "constructionId": "de.c.148",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55535,9 +55329,8 @@
       "constructionId": "de.c.148",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55550,9 +55343,8 @@
       "constructionId": "de.c.148",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55565,9 +55357,8 @@
       "constructionId": "de.c.148",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55580,9 +55371,8 @@
       "constructionId": "de.c.148",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55595,9 +55385,8 @@
       "constructionId": "de.c.148",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55610,9 +55399,8 @@
       "constructionId": "de.c.148",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55625,9 +55413,8 @@
       "constructionId": "de.c.148",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55640,9 +55427,8 @@
       "constructionId": "de.c.148",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55655,9 +55441,8 @@
       "constructionId": "de.c.148",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55670,9 +55455,8 @@
       "constructionId": "de.c.148",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55685,9 +55469,8 @@
       "constructionId": "de.c.148",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Demonstrative Determinierer und Pronomen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55700,9 +55483,8 @@
       "constructionId": "de.c.149",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55716,9 +55498,8 @@
       "constructionId": "de.c.149",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55732,9 +55513,8 @@
       "constructionId": "de.c.149",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55748,9 +55528,8 @@
       "constructionId": "de.c.149",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55764,9 +55543,8 @@
       "constructionId": "de.c.149",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55780,9 +55558,8 @@
       "constructionId": "de.c.149",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55796,9 +55573,8 @@
       "constructionId": "de.c.149",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55812,9 +55588,8 @@
       "constructionId": "de.c.149",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55828,9 +55603,8 @@
       "constructionId": "de.c.149",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55844,9 +55618,8 @@
       "constructionId": "de.c.149",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55860,9 +55633,8 @@
       "constructionId": "de.c.149",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55876,9 +55648,8 @@
       "constructionId": "de.c.149",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55892,9 +55663,8 @@
       "constructionId": "de.c.149",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55908,9 +55678,8 @@
       "constructionId": "de.c.149",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Lexikalisches Genus und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55924,9 +55693,8 @@
       "constructionId": "de.c.150",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55939,9 +55707,8 @@
       "constructionId": "de.c.150",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55954,9 +55721,8 @@
       "constructionId": "de.c.150",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55969,9 +55735,8 @@
       "constructionId": "de.c.150",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55984,9 +55749,8 @@
       "constructionId": "de.c.150",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -55999,9 +55763,8 @@
       "constructionId": "de.c.150",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56014,9 +55777,8 @@
       "constructionId": "de.c.150",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56029,9 +55791,8 @@
       "constructionId": "de.c.150",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56044,9 +55805,8 @@
       "constructionId": "de.c.150",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56059,9 +55819,8 @@
       "constructionId": "de.c.150",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56074,9 +55833,8 @@
       "constructionId": "de.c.150",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56089,9 +55847,8 @@
       "constructionId": "de.c.150",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56104,9 +55861,8 @@
       "constructionId": "de.c.150",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56119,9 +55875,8 @@
       "constructionId": "de.c.150",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Genitivische Relativattribute; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56134,9 +55889,8 @@
       "constructionId": "de.c.151",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56150,9 +55904,8 @@
       "constructionId": "de.c.151",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56166,9 +55919,8 @@
       "constructionId": "de.c.151",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56182,9 +55934,8 @@
       "constructionId": "de.c.151",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56198,9 +55949,8 @@
       "constructionId": "de.c.151",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56214,9 +55964,8 @@
       "constructionId": "de.c.151",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56230,9 +55979,8 @@
       "constructionId": "de.c.151",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56246,9 +55994,8 @@
       "constructionId": "de.c.151",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56262,9 +56009,8 @@
       "constructionId": "de.c.151",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56278,9 +56024,8 @@
       "constructionId": "de.c.151",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56294,9 +56039,8 @@
       "constructionId": "de.c.151",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56310,9 +56054,8 @@
       "constructionId": "de.c.151",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56326,9 +56069,8 @@
       "constructionId": "de.c.151",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56342,9 +56084,8 @@
       "constructionId": "de.c.151",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Vergleich mit als und wie; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56358,9 +56099,8 @@
       "constructionId": "de.c.152",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56374,9 +56114,8 @@
       "constructionId": "de.c.152",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56390,9 +56129,8 @@
       "constructionId": "de.c.152",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56406,9 +56144,8 @@
       "constructionId": "de.c.152",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56422,9 +56159,8 @@
       "constructionId": "de.c.152",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56438,9 +56174,8 @@
       "constructionId": "de.c.152",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56454,9 +56189,8 @@
       "constructionId": "de.c.152",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56470,9 +56204,8 @@
       "constructionId": "de.c.152",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56486,9 +56219,8 @@
       "constructionId": "de.c.152",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56502,9 +56234,8 @@
       "constructionId": "de.c.152",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56518,9 +56249,8 @@
       "constructionId": "de.c.152",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56534,9 +56264,8 @@
       "constructionId": "de.c.152",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56550,9 +56279,8 @@
       "constructionId": "de.c.152",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56566,9 +56294,8 @@
       "constructionId": "de.c.152",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Korrelat-es und unpersönliche Muster; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56582,9 +56309,8 @@
       "constructionId": "de.c.153",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56598,9 +56324,8 @@
       "constructionId": "de.c.153",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56614,9 +56339,8 @@
       "constructionId": "de.c.153",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56630,9 +56354,8 @@
       "constructionId": "de.c.153",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56646,9 +56369,8 @@
       "constructionId": "de.c.153",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56662,9 +56384,8 @@
       "constructionId": "de.c.153",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56678,9 +56399,8 @@
       "constructionId": "de.c.153",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56694,9 +56414,8 @@
       "constructionId": "de.c.153",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56710,9 +56429,8 @@
       "constructionId": "de.c.153",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56726,9 +56444,8 @@
       "constructionId": "de.c.153",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56742,9 +56459,8 @@
       "constructionId": "de.c.153",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56758,9 +56474,8 @@
       "constructionId": "de.c.153",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56774,9 +56489,8 @@
       "constructionId": "de.c.153",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56790,9 +56504,8 @@
       "constructionId": "de.c.153",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Nominale Wortbildung und Komposita; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56806,9 +56519,8 @@
       "constructionId": "de.c.154",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56821,9 +56533,8 @@
       "constructionId": "de.c.154",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56836,9 +56547,8 @@
       "constructionId": "de.c.154",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56851,9 +56561,8 @@
       "constructionId": "de.c.154",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56866,9 +56575,8 @@
       "constructionId": "de.c.154",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56881,9 +56589,8 @@
       "constructionId": "de.c.154",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56896,9 +56603,8 @@
       "constructionId": "de.c.154",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56911,9 +56617,8 @@
       "constructionId": "de.c.154",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56926,9 +56631,8 @@
       "constructionId": "de.c.154",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56941,9 +56645,8 @@
       "constructionId": "de.c.154",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56956,9 +56659,8 @@
       "constructionId": "de.c.154",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56971,9 +56673,8 @@
       "constructionId": "de.c.154",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -56986,9 +56687,8 @@
       "constructionId": "de.c.154",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57001,9 +56701,8 @@
       "constructionId": "de.c.154",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Reziproke Beziehungen; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57016,9 +56715,8 @@
       "constructionId": "de.c.155",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57031,9 +56729,8 @@
       "constructionId": "de.c.155",
       "stage": "notice",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice speaking tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57046,9 +56743,8 @@
       "constructionId": "de.c.155",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57061,9 +56757,8 @@
       "constructionId": "de.c.155",
       "stage": "retrieve",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve speaking tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57076,9 +56771,8 @@
       "constructionId": "de.c.155",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57091,9 +56785,8 @@
       "constructionId": "de.c.155",
       "stage": "vary",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary speaking tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57106,9 +56799,8 @@
       "constructionId": "de.c.155",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57121,9 +56813,8 @@
       "constructionId": "de.c.155",
       "stage": "produce",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce speaking tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57136,9 +56827,8 @@
       "constructionId": "de.c.155",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57151,9 +56841,8 @@
       "constructionId": "de.c.155",
       "stage": "repair",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair speaking tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57166,9 +56855,8 @@
       "constructionId": "de.c.155",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57181,9 +56869,8 @@
       "constructionId": "de.c.155",
       "stage": "transfer",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer speaking tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57196,9 +56883,8 @@
       "constructionId": "de.c.155",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57211,9 +56897,8 @@
       "constructionId": "de.c.155",
       "stage": "retain",
       "modality": "speaking",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain speaking tasks for Negative Indefinita und Kongruenz; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57226,9 +56911,8 @@
       "constructionId": "de.c.156",
       "stage": "notice",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author notice writing tasks for Getrennt- und Zusammenschreibung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57241,9 +56925,8 @@
       "constructionId": "de.c.156",
       "stage": "retrieve",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retrieve writing tasks for Getrennt- und Zusammenschreibung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57256,9 +56939,8 @@
       "constructionId": "de.c.156",
       "stage": "vary",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author vary writing tasks for Getrennt- und Zusammenschreibung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57271,9 +56953,8 @@
       "constructionId": "de.c.156",
       "stage": "produce",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author produce writing tasks for Getrennt- und Zusammenschreibung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57286,9 +56967,8 @@
       "constructionId": "de.c.156",
       "stage": "repair",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author repair writing tasks for Getrennt- und Zusammenschreibung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57301,9 +56981,8 @@
       "constructionId": "de.c.156",
       "stage": "transfer",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author transfer writing tasks for Getrennt- und Zusammenschreibung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],
@@ -57316,9 +56995,8 @@
       "constructionId": "de.c.156",
       "stage": "retain",
       "modality": "writing",
-      "status": "missing_tasks",
+      "status": "authored_unqualified",
       "work": [
-        "Author retain writing tasks for Getrennt- und Zusammenschreibung; partial lesson links do not supply task coverage.",
         "Record independent content review and acceptable variants.",
         "Qualify the evaluator for the exact task and rubric before awarding learning evidence."
       ],

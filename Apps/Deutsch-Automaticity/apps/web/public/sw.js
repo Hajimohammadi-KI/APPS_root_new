@@ -3,6 +3,7 @@ const CACHE = "deutschflow-automaticity-v2-20260905e";
 const CORE = [
   "/practice",
   "/learning-core/practice.js",
+  "/learning-core/overview.js",
   "/learning-core/practice.css",
   "/learning-core/curriculum-de.json",
   "/",

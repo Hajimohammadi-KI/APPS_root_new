@@ -186,7 +186,7 @@ export function mountReviewPanel(
     { draft: ReviewDraft; raw: string | null; persisted: boolean }
   >();
   try {
-    selectedId = localStorage.getItem(reviewSelectionKey(language)) ?? "";
+    selectedId = new URLSearchParams(location.search).get("attempt") ?? localStorage.getItem(reviewSelectionKey(language)) ?? "";
   } catch {
     /* Response selection is optional. */
   }

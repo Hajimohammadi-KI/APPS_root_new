@@ -189,7 +189,7 @@ export async function buildScope(root: string) {
         (row) => row.kind === "existing_unit",
       ).length,
       additionalTargets: inventory.filter(
-        (row) => row.kind === "missing_target",
+        (row) => row.kind !== "existing_unit",
       ).length,
       familyAudits: input.familyAudit.length,
       cells: cells.length,

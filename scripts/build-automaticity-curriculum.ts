@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { validateGeneratedPractice } from "./lib/grammar-scope";
 import { readProtectedMaterial } from "./lib/grammar-scope-files";
+import { buildSupplementaryUnits } from "./lib/supplementary-curriculum";
 import { grammarUnits as en } from "../Apps/English/English-Automaticity/packages/content/src/index";
 import { grammarUnits as de } from "../Apps/Deutsch-Automaticity/packages/content/src/index";
 import {
@@ -123,8 +124,8 @@ for (const [language, units, project] of [
   ["de", de, "Apps/Deutsch-Automaticity"],
 ] as const) {
   const pack: CurriculumPack = {
-    version: "2026-09-05.2",
-    mappingVersion: registry.version,
+    version: "2026-09-05.3",
+    mappingVersion: `${registry.version}+supplement-1`,
     language,
     units: [],
   };
@@ -158,7 +159,8 @@ for (const [language, units, project] of [
       modality: "writing" | "speaking" = "writing",
     ): PracticeTask => ({
       id: `${mapping.id}.${stage}.${index}.${modality}`,
-      version: pack.version,
+      // Existing task identities stay stable so saved drafts remain recoverable.
+      version: "2026-09-05.2",
       constructionId: mapping.id,
       familyId: mapping.familyIds[0]!,
       itemFamily: answer
@@ -393,14 +395,23 @@ for (const [language, units, project] of [
         });
       }
   }
-  const issues = validateCurriculum(pack);
-  generatedPacks.push(pack);
-  if (issues.length) throw new Error(issues.join("\n"));
   if (
     registry.mappings.filter((row) => row.language === language).length !==
     pack.units.length
   )
     throw new Error(`Orphan ${language} mapping`);
+  const supplemental = await buildSupplementaryUnits(root, language, pack.version);
+  pack.units.push(...supplemental);
+  for (const unit of supplemental) for (const stage of ["notice","retrieve","vary","produce","repair","transfer","retain"] as const)
+    for (const modality of ["writing","speaking"] as const) {
+      if (modality === "speaking" && ["en.c.124","de.c.156"].includes(unit.id)) continue;
+      const matching = unit.tasks.filter(task => task.stage === stage && task.modality === modality);
+      coverage.push({language,contentVersion:pack.version,mappingVersion:pack.mappingVersion,constructionId:unit.id,families:unit.familyIds,stage,modality,
+        status:matching.length?"authored":"missing",taskIds:matching.map(task=>task.id),humanReview:"pending",evaluator:matching.some(task=>task.answerPolicy==="closed")?"closed-nfc-case-v1":"human-review-required",releaseEligible:false});
+    }
+  const issues = validateCurriculum(pack);
+  generatedPacks.push(pack);
+  if (issues.length) throw new Error(issues.join("\n"));
   await output(
     `${project}/apps/web/public/learning-core/curriculum-${language}.json`,
     JSON.stringify(pack) + "\n",
@@ -416,7 +427,7 @@ await output(
   "docs/automaticity-coverage.json",
   JSON.stringify(
     {
-      version: "2026-09-05.2",
+      version: "2026-09-05.3",
       scope:
         "Current catalog crosswalk. Reference review may add constructions. Authored tasks are not curriculum completion.",
       families: GRAMMAR_FAMILIES,

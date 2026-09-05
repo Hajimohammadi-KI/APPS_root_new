@@ -1185,7 +1185,10 @@ export async function mountPractice(
         appendAutomaticityEvent(localStorage, assessment);
         feedback.textContent = assessment.feedback;
         if (typeof navigator === "undefined" || navigator.onLine !== false) {
-          const modelAssessment = await qualifiedTransformer(attempt, assessment);
+          const modelAssessment = await qualifiedTransformer(
+            attempt,
+            assessment,
+          );
           if (modelAssessment) {
             appendAutomaticityEvent(localStorage, modelAssessment);
             feedback.textContent = modelAssessment.feedback;

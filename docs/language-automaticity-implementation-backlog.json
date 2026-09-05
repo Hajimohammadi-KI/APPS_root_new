@@ -1867,7 +1867,7 @@
       "id": "M04",
       "phase": "models",
       "title": "Integrate a qualified Transformer through the shared contract",
-      "status": "deferred",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "M03",
@@ -1892,11 +1892,15 @@
         "shared/learning-core/src/automaticity/assessment.ts",
         "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
         "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
-        "docs/model-evaluation/README.md"
+        "docs/model-evaluation/README.md",
+        "docs/LANGUAGE-AUTOMATICITY-TRANSFORMER-2026-09-05.md",
+        "shared/learning-core/src/automaticity/transformer.ts",
+        "scripts/compile-transformer-release.ts",
+        "scripts/verify-transformer-browser.mjs"
       ],
       "required": false,
       "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release.",
-      "progressNote": "The optional Transformer contract now pins exact content/mode tuples and rejects changed or inconsistent output. No Transformer is deployed because no candidate has passed independent reviewed qualification.",
+      "progressNote": "Shared Transformer adapter, installed server routes, conservative browser client, pinned release compiler and diagnostic launcher implemented. A real Qwen3-8B development run produced 3 accepted pass proposals and 17 rejected outputs across 20 unreviewed drafts; no learner assessment is enabled. Full app checks passed; installer and browser delivery verification is running.",
       "updatedOn": "2026-09-05"
     },
     {
@@ -2697,7 +2701,7 @@
     "installedGermanVersion": "20.8.35"
   },
   "technicalRelease": {
-    "status": "verified",
+    "status": "in_progress",
     "versions": {
       "English": "27.3.31",
       "German": "20.8.35"
@@ -2712,7 +2716,7 @@
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-TRANSFORMER-2026-09-05.md",
   "grammarScope": {
     "status": "mapping_verified",
     "report": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",

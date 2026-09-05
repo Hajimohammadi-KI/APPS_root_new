@@ -1,8 +1,8 @@
 {
   "version": 1,
   "firstObservedAt": "2026-09-05T05:39:47.639Z",
-  "updatedAt": "2026-09-05T11:54:21.853Z",
-  "sourceSha256": "4d806d83a2fe5ae2ca2834d5e65a537a76db7981bbdeb9d38497e304696e1be5",
+  "updatedAt": "2026-09-05T12:28:30.150Z",
+  "sourceSha256": "dd0b57143ebd24e7b60b82fa070e0b98dae451557049751061e7d36360440366",
   "taskSnapshots": {
     "B01": {
       "id": "B01",
@@ -1490,7 +1490,7 @@
       "id": "M04",
       "phase": "models",
       "title": "Integrate a qualified Transformer through the shared contract",
-      "status": "deferred",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "M03",
@@ -1515,11 +1515,15 @@
         "shared/learning-core/src/automaticity/assessment.ts",
         "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
         "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
-        "docs/model-evaluation/README.md"
+        "docs/model-evaluation/README.md",
+        "docs/LANGUAGE-AUTOMATICITY-TRANSFORMER-2026-09-05.md",
+        "shared/learning-core/src/automaticity/transformer.ts",
+        "scripts/compile-transformer-release.ts",
+        "scripts/verify-transformer-browser.mjs"
       ],
       "required": false,
       "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release.",
-      "progressNote": "The optional Transformer contract now pins exact content/mode tuples and rejects changed or inconsistent output. No Transformer is deployed because no candidate has passed independent reviewed qualification.",
+      "progressNote": "Shared Transformer adapter, installed server routes, conservative browser client, pinned release compiler and diagnostic launcher implemented. A real Qwen3-8B development run produced 3 accepted pass proposals and 17 rejected outputs across 20 unreviewed drafts; no learner assessment is enabled. Full app checks passed; installer and browser delivery verification is running.",
       "updatedOn": "2026-09-05"
     },
     "W01": {
@@ -4126,6 +4130,27 @@
         "artifacts/installed-automaticity-browser/2026-09-05T11-53-52-221Z/report.json",
         "artifacts/language-release-source/20260905-phase7-en31-de35/manifest.json",
         "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md"
+      ]
+    },
+    {
+      "id": "fa2efce363c8af6edbfeca7f77241c2e9b0bb43c75a966ae99f9f643ee0e8b05",
+      "at": "2026-09-05T12:28:30.150Z",
+      "taskId": "M04",
+      "title": "Integrate a qualified Transformer through the shared contract",
+      "from": "deferred",
+      "to": "in_progress",
+      "note": "Shared Transformer adapter, installed server routes, conservative browser client, pinned release compiler and diagnostic launcher implemented. A real Qwen3-8B development run produced 3 accepted pass proposals and 17 rejected outputs across 20 unreviewed drafts; no learner assessment is enabled. Full app checks passed; installer and browser delivery verification is running.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/assessment.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md",
+        "docs/LANGUAGE-AUTOMATICITY-TRANSFORMER-2026-09-05.md",
+        "shared/learning-core/src/automaticity/transformer.ts",
+        "scripts/compile-transformer-release.ts",
+        "scripts/verify-transformer-browser.mjs"
       ]
     }
   ]

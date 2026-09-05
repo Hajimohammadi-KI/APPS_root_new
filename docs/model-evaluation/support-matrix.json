@@ -29,10 +29,11 @@
     },
     {
       "id": "pretrained-local",
-      "version": null,
-      "status": "no_pinned_candidate_endpoint",
+      "version": "qwen3-8b-q4km-d98cdcbd03e1-p2-b10809",
+      "status": "local_development_diagnostic_run",
       "deployment": "not_qualified",
-      "reason": "No configured local grammar-assessment model. A CEFR classifier cannot substitute for this task."
+      "evidence": "docs/model-evaluation/development-comparison.json",
+      "reason": "Real Qwen3-8B Q4_K_M run: 3 pass proposals, 17 rejected responses on 20 unreviewed development drafts. Shared installed adapter and release compiler are implemented; no reviewed calibration/final qualification or release approval exists."
     }
   ],
   "functions": [

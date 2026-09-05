@@ -35,6 +35,7 @@
     "lib/automaticity-release-reviews.ts",
     "check-automaticity-coverage.ts",
     "prepare-automaticity-content-review.ts",
-    "verify-automaticity-release-reviews.ts"
+    "verify-automaticity-release-reviews.ts",
+    "verify-transformer-release.ts"
   ]
 }

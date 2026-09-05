@@ -26,7 +26,7 @@ Two additional adapters are implemented and require an explicitly configured, ve
 
 ```powershell
 bun scripts/evaluate-model-candidates.ts --candidate=languagetool --version=SERVER_VERSION --endpoint=http://127.0.0.1:8081/v2/check
-bun scripts/evaluate-model-candidates.ts --candidate=pretrained-local --version=MODEL_VERSION --endpoint=http://127.0.0.1:8082/assess
+bun scripts/evaluate-model-candidates.ts --candidate=pretrained-local --version=MODEL_VERSION --endpoint=http://127.0.0.1:8082/assess --provider-config-sha256=CONFIGURATION_SHA256
 ```
 
 The pretrained adapter sends only the task, response, language, modality, construction and pinned model version. It expects a structured verdict, target/meaning judgments and the same version. Malformed responses, changed versions, timeout and connection failure produce `not_assessed`. No adapter changes learner history, mastery, scheduling or model settings.
@@ -36,10 +36,10 @@ LanguageTool annotations are recorded as proofreading suggestions. A lack of ann
 The [recorded comparison](development-comparison.json) includes exact run hashes, category denominators, suggestions, failures and latency. It can be regenerated with:
 
 ```powershell
-bun scripts/summarize-model-diagnostics.ts artifacts/model-evaluation/2026-09-05T11-08-09-885Z-controlled-answer artifacts/model-evaluation/2026-09-05T11-41-29-126Z-languagetool
+bun scripts/summarize-model-diagnostics.ts artifacts/model-evaluation/2026-09-05T11-08-09-885Z-controlled-answer artifacts/model-evaluation/2026-09-05T11-41-29-126Z-languagetool artifacts/model-evaluation/2026-09-05T12-18-48-387Z-pretrained-local
 ```
 
-No pretrained grammar endpoint is configured. The free public LanguageTool endpoint prohibits automated requests, so it was not used for batch evaluation. The local server offers the basic engine without the cloud AI rules. See the [public API rules](https://dev.languagetool.org/public-http-api.html) and [official local-server instructions](https://dev.languagetool.org/http-server.html). The portable server's startup path, source URL and download hashes are recorded in `artifacts/model-evaluation-local/server.json` and `download-hashes.json`; it is bound to localhost and is separate from the installed apps.
+A pinned Qwen3-8B Q4_K_M candidate was run locally through the shared structured adapter. Of 20 unreviewed development requests, 3 produced accepted pass proposals and 17 produced invalid or contradictory output and fell back to unassessed. These are development diagnostics, not accuracy measurements. The model is not qualified. Its optional diagnostic launcher, file hashes, prompt, runtime pin and release workflow are documented in [the M04 report](../LANGUAGE-AUTOMATICITY-TRANSFORMER-2026-09-05.md). The free public LanguageTool endpoint prohibits automated requests, so it was not used for batch evaluation. The local server offers the basic engine without the cloud AI rules. See the [public API rules](https://dev.languagetool.org/public-http-api.html) and [official local-server instructions](https://dev.languagetool.org/http-server.html). The portable server's startup path, source URL and download hashes are recorded in `artifacts/model-evaluation-local/server.json` and `download-hashes.json`; it is bound to localhost and is separate from the installed apps.
 
 The temporary server was stopped after diagnostics to release memory; the review form does not need it. To run this same local candidate again, from the workspace root:
 
@@ -55,10 +55,10 @@ bun scripts/freeze-model-evaluation.ts reviewed-manifest.json calibration-run.js
 bun scripts/evaluate-model-candidates.ts --manifest=reviewed-manifest.json --partition=final --freeze=new-freeze.json
 ```
 
-The candidate and endpoint options must match the calibration run. The frozen record pins the whole manifest, candidate, configuration, policy, exact final-case IDs and calibration artifact. A final run records its start before sending requests. Post-test freezes, changed content, missing predictions and reused material fail the gate. The policy requires at least 20 final examples in each category per construction/content/rubric/mode scope, no consequential observed errors and at most 20% abstention on supported correct/error cases. This initial engineering threshold does not establish population accuracy. Independent release review must assess uncertainty and representative learner samples.
+The candidate and endpoint options must match the calibration run. Pretrained runs also require the same `--provider-config-sha256`; the final release compiler checks it against the actual prompt, schema, sampling and pinned runtime configuration. The frozen record pins the whole manifest, candidate, configuration, policy, exact final-case IDs and calibration artifact. A final run records its start before sending requests. Post-test freezes, changed content, missing predictions and reused material fail the gate. The policy requires at least 20 final examples in each category per construction/content/rubric/mode scope, no consequential observed errors and at most 20% abstention on supported correct/error cases. This initial engineering threshold does not establish population accuracy. Independent release review must assess uncertainty and representative learner samples.
 
 Automated curriculum approval additionally requires `evaluationEvidence` references to the reviewed manifest, final run and freeze. Each reference has a workspace path and SHA-256. The release checker recomputes the entire evidence chain; a saved passing score is insufficient. Runtime model approvals use exact construction, task-version, rubric and modality tuples. A new version or a neighbouring scope cannot inherit approval.
 
-The [support matrix](support-matrix.json) accounts for all 3,906 required curriculum cells. Each has a manual-review workflow and conservative fallback. Zero automatic scopes and zero qualified human scopes are approved. Transformer deployment stays deferred until a reviewed candidate passes; reinforcement learning remains a later, separately consented learning-outcome experiment.
+The [support matrix](support-matrix.json) accounts for all 3,906 required curriculum cells. Each has a manual-review workflow and conservative fallback. Zero automatic scopes and zero qualified human scopes are approved. The shared Transformer integration is implemented with activation disabled until a reviewed candidate passes; reinforcement learning remains a later, separately consented learning-outcome experiment.
 
 Verification: `bun scripts/verify-model-evaluation.ts` checks the evidence chain with explicitly synthetic fixtures. `node scripts/verify-phase7-browser.mjs` checks the review UI and compiled practice flow; `--installed` checks installed app routes. Synthetic reviewer names, responses and timing never enter the real review ledger or learner profile.

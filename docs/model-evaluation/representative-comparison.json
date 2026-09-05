@@ -57,8 +57,8 @@
               "annotationCases": 0
             }
           ],
-          "medianLatencyMs": 0.13369999999999038,
-          "p95LatencyMs": 0.34369999999999834,
+          "medianLatencyMs": 0.13989999999999725,
+          "p95LatencyMs": 0.7833000000000041,
           "reportedApiCost": 0,
           "suggestedSpans": []
         },

@@ -19,7 +19,11 @@ param(
   # isolated runs answered in 1.768s (English) and 7.400s (German). Keep a
   # larger ceiling for slower disks/antivirus while the per-contract evidence
   # below still records attempts, last errors, process exit, and elapsed time.
-  [int]$StartupTimeoutSeconds = 180
+  [int]$StartupTimeoutSeconds = 180,
+
+  # Use the ordinary desktop launch path when redirected Windows stream handles
+  # interfere with Electron startup. The HTTP and payload checks are identical.
+  [switch]$DirectStartup
 )
 
 Set-StrictMode -Version Latest
@@ -255,6 +259,7 @@ $report = [ordered]@{
   startupContracts = @()
   startupStdoutPath = $null
   startupStderrPath = $null
+  startupMode = $(if ($DirectStartup) { 'direct-no-redirection' } else { 'captured-streams' })
   update = 'not-run'
   repair = 'not-run'
   repairedPayloadFiles = @()
@@ -307,15 +312,14 @@ try {
     try {
       $startupStdoutPath = Join-Path $evidenceRoot 'startup.stdout.log'
       $startupStderrPath = Join-Path $evidenceRoot 'startup.stderr.log'
-      $desktopProcess = Start-Process `
-        -FilePath $mainExecutable `
-        -WorkingDirectory $installRoot `
-        -WindowStyle Hidden `
-        -RedirectStandardOutput $startupStdoutPath `
-        -RedirectStandardError $startupStderrPath `
-        -PassThru
-      $report.startupStdoutPath = $startupStdoutPath
-      $report.startupStderrPath = $startupStderrPath
+      $launch = @{ FilePath=$mainExecutable; WorkingDirectory=$installRoot; WindowStyle='Hidden'; PassThru=$true }
+      if (-not $DirectStartup) {
+        $launch.RedirectStandardOutput=$startupStdoutPath
+        $launch.RedirectStandardError=$startupStderrPath
+        $report.startupStdoutPath=$startupStdoutPath
+        $report.startupStderrPath=$startupStderrPath
+      }
+      $desktopProcess = Start-Process @launch
     } finally {
       if ($hadElectronRunAsNode) {
         Set-Item Env:ELECTRON_RUN_AS_NODE $electronRunAsNode

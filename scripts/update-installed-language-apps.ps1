@@ -1,12 +1,12 @@
-param([switch]$Launch)
+param([switch]$Launch, [switch]$DirectStartup)
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 $workspace = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $output = Join-Path $workspace ('artifacts\installed-language-update\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 New-Item -ItemType Directory -Path $output -Force | Out-Null
 $products = @(
-  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.26'; Source='Apps\English\English-Automaticity'; Port=3202 },
-  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.32'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
+  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.27'; Source='Apps\English\English-Automaticity'; Port=3202 },
+  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.33'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
 )
 function Get-TreeManifest([string]$Root) {
   $resolved = [IO.Path]::GetFullPath($Root).TrimEnd('\') + '\'
@@ -63,7 +63,13 @@ try {
     if ($Launch) {
       # Electron checks presence; clear the PowerShell provider entry too.
       Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
-      $desktop = Start-Process -FilePath (Join-Path $install $product.Executable) -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $saved 'startup.stdout.log') -RedirectStandardError (Join-Path $saved 'startup.stderr.log')
+      $launchOptions = @{ FilePath=(Join-Path $install $product.Executable); WindowStyle='Hidden'; PassThru=$true }
+      if (-not $DirectStartup) {
+        $launchOptions.RedirectStandardOutput=(Join-Path $saved 'startup.stdout.log')
+        $launchOptions.RedirectStandardError=(Join-Path $saved 'startup.stderr.log')
+      }
+      $desktop = Start-Process @launchOptions
+      $row.startupMode = $(if ($DirectStartup) { 'direct-no-redirection' } else { 'captured-streams' })
       $row.processId=$desktop.Id
       $deadline=(Get-Date).AddSeconds(180)
       do {

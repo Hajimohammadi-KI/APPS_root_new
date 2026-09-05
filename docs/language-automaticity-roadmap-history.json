@@ -1,8 +1,8 @@
 {
   "version": 1,
   "firstObservedAt": "2026-09-05T05:39:47.639Z",
-  "updatedAt": "2026-09-05T05:50:39.301Z",
-  "sourceSha256": "c94080f74dc57fb98dad4e87f67f040f85d2796287aa6778ed3d2cb04714ebcf",
+  "updatedAt": "2026-09-05T08:27:05.287Z",
+  "sourceSha256": "cfd8d58d9e4a2fe135af0276da5886d9f19275b60ddf1054932f21c5eff52c67",
   "taskSnapshots": {
     "B01": {
       "id": "B01",
@@ -492,11 +492,13 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T08-24-20-438Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Canonical source and mirrors match; deliberate stale and missing package/browser copies fail the check and are restored byte-for-byte. Actual Bun/browser reduction parity and installed bundle, worker and catalog hashes pass.",
+      "progressNote": "Shared-source sync now rejects canonical TypeScript files absent from its manifest. This caught and fixed missing review-draft files before release. Unlisted source, stale mirrors and missing mirrors are verified; full English/German checks pass with the synchronized files.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
@@ -855,12 +857,17 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "shared/learning-core/src/automaticity/review-draft.ts",
+        "artifacts/review-drafts/2026-09-05T08-19-13-602Z/report.json",
+        "artifacts/review-drafts/2026-09-05T08-22-56-652Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Both React providers import legacy output and refresh shared evidence summaries; shared review retains originals and supports supersession. Historical recordings/reviews remain in their original workflows, without invented v2 assessment or audio identity. Full qualified cross-surface closure still depends on reviewed packs and evaluated judgments.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Review draft recovery is implemented and source-verified: 12 browser cases per language and six storage tests cover collapse/reload/switching, complete backups, quota export, corrupt draft retention, newer-feedback conflicts, second-tab ownership and late audio loading. Local feedback still does not approve mastery. English 27.3.27 / German 20.8.33 installer checks are in progress. Historical recordings and due reviews still retain their original workflows; full cross-surface closure remains open.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     "L05": {
       "id": "L05",
@@ -2095,6 +2102,73 @@
         "artifacts/language-roadmap/2026-09-05T05-42-17-425Z/report.json",
         "artifacts/language-roadmap/2026-09-05T05-49-12-465Z/report.json",
         "docs/LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md"
+      ]
+    },
+    {
+      "id": "8740dde9cf05e1f8c07dd9eb5eac0839b15fe69d9eca04222811c8318873c9c8",
+      "at": "2026-09-05T08:27:05.287Z",
+      "taskId": "E04",
+      "title": "Distribute shared code to every runtime",
+      "from": "implemented",
+      "to": "implemented",
+      "note": "Shared-source sync now rejects canonical TypeScript files absent from its manifest. This caught and fixed missing review-draft files before release. Unlisted source, stale mirrors and missing mirrors are verified; full English/German checks pass with the synchronized files.",
+      "engineeringVerified": true,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/sync-workspaces.mjs",
+        "scripts/build-automaticity-assets.ts",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T08-24-20-438Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md"
+      ]
+    },
+    {
+      "id": "e642fa243bff4d142ea8d9fd82c87352ebf65384f08419699551a172f5749916",
+      "at": "2026-09-05T08:27:05.287Z",
+      "taskId": "L04",
+      "title": "Integrate Studio, Errors, Reviews, Progress and teacher review",
+      "from": "in_progress",
+      "to": "in_progress",
+      "note": "Review draft recovery is implemented and source-verified: 12 browser cases per language and six storage tests cover collapse/reload/switching, complete backups, quota export, corrupt draft retention, newer-feedback conflicts, second-tab ownership and late audio loading. Local feedback still does not approve mastery. English 27.3.27 / German 20.8.33 installer checks are in progress. Historical recordings and due reviews still retain their original workflows; full cross-surface closure remains open.",
+      "engineeringVerified": true,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/review-panel.ts",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-CONTINUATION-2026-09-05.md",
+        "artifacts/language-release-source/20260905-en26-de32/manifest.json",
+        "artifacts/installed-language-update/20260905-071445/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T05-19-35-224Z/report.json",
+        "artifacts/installed-history-recovery/2026-09-05T05-20-25-207Z/report.json",
+        "artifacts/automaticity-recording/2026-09-05T05-19-37-366Z/report.json",
+        "artifacts/language-integrity-browser/2026-09-05T05-19-36-805Z/report.json",
+        "artifacts/automaticity-preservation/2026-09-05T04-58-20-875Z/report.json",
+        "artifacts/legacy-continuity/2026-09-05T04-52-17-668Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T04-58-06-929Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T05-04-21-129Z/report.json",
+        "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
+        "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
+        "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "shared/learning-core/src/automaticity/review-draft.ts",
+        "artifacts/review-drafts/2026-09-05T08-19-13-602Z/report.json",
+        "artifacts/review-drafts/2026-09-05T08-22-56-652Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md"
       ]
     }
   ]

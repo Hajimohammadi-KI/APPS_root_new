@@ -1249,11 +1249,17 @@ export async function mountPractice(
   renderFocus();
   const reviews = element("section", undefined, "card");
   root.append(reviews);
-  mountReviewPanel(reviews, language, pack, () => {
-    renderTask();
-    renderProgress();
-    renderFocus();
-  });
+  mountReviewPanel(
+    reviews,
+    language,
+    pack,
+    () => {
+      renderTask();
+      renderProgress();
+      renderFocus();
+    },
+    editing,
+  );
   if ("serviceWorker" in navigator)
     void navigator.serviceWorker.register("/sw.js").catch(() => {
       /* Practice remains usable; offline readiness is checked separately. */

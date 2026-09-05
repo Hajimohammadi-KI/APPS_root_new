@@ -11,6 +11,10 @@ const check = () => execFileSync(process.execPath, ["shared/learning-core/sync-w
 check();
 const report = { createdAt: new Date().toISOString(), cases: [], status: "running" };
 try {
+  const unlisted=resolve(root,`shared/learning-core/src/unlisted-sync-fixture-${process.pid}.ts`);
+  await writeFile(unlisted,'// Synthetic canonical source to verify inventory coverage.\n',{flag:'wx'});
+  try { assert.throws(check,/missing from sync manifest/);report.cases.push({path:unlisted,unlistedSourceRejected:true}); }
+  finally { await unlink(unlisted); }
   for (const relative of [
     "Apps/English/English-Automaticity/packages/learning-core/src/automaticity/evidence.ts",
     "Apps/Deutsch-Automaticity/apps/web/public/learning-core/automaticity-v2.js",

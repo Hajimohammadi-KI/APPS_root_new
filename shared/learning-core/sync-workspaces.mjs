@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { copyFileSync, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -32,6 +32,8 @@ const files = [
   "src/automaticity/prospective.ts",
   "src/automaticity/practice.ts",
   "src/automaticity/review-panel.ts",
+  "src/automaticity/review-draft.ts",
+  "src/automaticity/review-draft.test.ts",
   "src/automaticity/practice-entry.ts",
   "src/automaticity/index.ts",
   "src/automaticity/browser-entry.ts",
@@ -90,6 +92,19 @@ const browserBundles = [
   "practice-de.html",
 ];
 const checkOnly = process.argv.includes("--check");
+
+// New canonical TypeScript files must not silently disappear from app mirrors.
+function checkSourceInventory(directory) {
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const path = join(directory, entry.name);
+    if (entry.isDirectory()) checkSourceInventory(path);
+    else if (entry.isFile() && entry.name.endsWith(".ts")) {
+      const name = relative(sourceRoot, path).replaceAll("\\", "/");
+      if (!files.includes(name)) throw new Error(`Canonical source missing from sync manifest: ${name}`);
+    }
+  }
+}
+checkSourceInventory(join(sourceRoot, "src"));
 
 function digest(path) {
   return createHash("sha256").update(readFileSync(path)).digest("hex");

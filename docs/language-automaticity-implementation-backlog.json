@@ -869,11 +869,13 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "artifacts/learning-core-sync/2026-09-05T08-24-20-438Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Canonical source and mirrors match; deliberate stale and missing package/browser copies fail the check and are restored byte-for-byte. Actual Bun/browser reduction parity and installed bundle, worker and catalog hashes pass.",
+      "progressNote": "Shared-source sync now rejects canonical TypeScript files absent from its manifest. This caught and fixed missing review-draft files before release. Unlisted source, stale mirrors and missing mirrors are verified; full English/German checks pass with the synchronized files.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
     },
@@ -1232,12 +1234,17 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "shared/learning-core/src/automaticity/review-draft.ts",
+        "artifacts/review-drafts/2026-09-05T08-19-13-602Z/report.json",
+        "artifacts/review-drafts/2026-09-05T08-22-56-652Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Both React providers import legacy output and refresh shared evidence summaries; shared review retains originals and supports supersession. Historical recordings/reviews remain in their original workflows, without invented v2 assessment or audio identity. Full qualified cross-surface closure still depends on reviewed packs and evaluated judgments.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Review draft recovery is implemented and source-verified: 12 browser cases per language and six storage tests cover collapse/reload/switching, complete backups, quota export, corrupt draft retention, newer-feedback conflicts, second-tab ownership and late audio loading. Local feedback still does not approve mastery. English 27.3.27 / German 20.8.33 installer checks are in progress. Historical recordings and due reviews still retain their original workflows; full cross-surface closure remains open.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
     },
     {
       "id": "L05",
@@ -2385,5 +2392,5 @@
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md"
+  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-REVIEW-RECOVERY-2026-09-05.md"
 }

@@ -1,10 +1,10 @@
 # Human validation handoff
 
-Independent language review, learner-authored work and elapsed time are still needed. They are not the only remaining work: S02 Stage B also needs an implemented and delivered bounded schedule experiment with withdrawal and rollback, and qualified inputs must still be followed by actual benchmark runs and final release checks. See the [open-work audit](ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md). Engineering results do not supply human judgments.
+Independent language review, learner-authored work and elapsed time are still needed. S02 Stage B now has an implemented bounded writing comparison with actual assigned dates, explicit opt-in, withdrawal and rollback. See the [implementation and human handoff](SCHEDULER-PILOT-IMPLEMENTATION-2026-09-06.md). Genuine qualified inputs must still be followed by the actual benchmark/study runs and checks of the resulting enabled release. Engineering results do not supply human judgments.
 
 ## Review the content and assessment procedure
 
-The current catalog contains 280 constructions, 4,924 active tasks and 3,906 required stage/modality cells. There are also 506 archived task definitions. The representative L01 subset contains 168 cells. The existing packet set is `artifacts/content-review-packets/all-20260905-feedback38-42`; its task bytes remain current for English 27.3.40 and DeutschFlow 20.8.44. Its review fields are intentionally blank.
+The current catalog contains 280 constructions, 4,924 active tasks and 3,906 required stage/modality cells. There are also 506 archived task definitions. The representative L01 subset contains 168 cells. The existing packet set is `artifacts/content-review-packets/all-20260905-feedback38-42`; its task bytes remain current for English 27.3.41 and DeutschFlow 20.8.45. Its review fields are intentionally blank.
 
 A qualified reviewer completes the packet's content evidence and, separately, its manual evaluator evidence. Each judgment must refer to the actual task and state specific findings. A signature field alone does not approve a task. Do not copy the synthetic engineering fixtures into the real ledger.
 

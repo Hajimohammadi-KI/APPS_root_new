@@ -50,6 +50,15 @@ import {
   type DailyPracticePlan,
 } from "./daily-plan";
 import { syncLegacyPractice } from "./legacy";
+import {
+  loadSchedulerPilot,
+  mountSchedulerPilotPanel,
+} from "./scheduler-pilot-panel";
+import {
+  outsidePilotPack,
+  schedulerPilotCards,
+  readPilotEnrollment,
+} from "./scheduler-pilot";
 
 interface Session {
   version: 2;
@@ -142,6 +151,20 @@ export async function mountPractice(
   )
     throw new Error("Invalid curriculum");
   const unitById = new Map(pack.units.map((unit) => [unit.id, unit]));
+  const pilot = await loadSchedulerPilot(pack, localStorage);
+  const recommendationPack = () =>
+    pilot
+      ? outsidePilotPack(
+          pack,
+          schedulerPilotCards(
+            pilot.plan,
+            readPilotEnrollment(localStorage, pilot.plan, pilot.sha256),
+            readAutomaticityEvents(localStorage, language).events,
+            now(),
+          ),
+        )
+      : pack;
+  let refreshPilot = () => {};
   await syncLegacyPractice(localStorage, language, pack, now());
   const taskById = new Map(
     pack.units.flatMap((unit) =>
@@ -161,7 +184,7 @@ export async function mountPractice(
         (!requested.get("level") || row.level === requested.get("level")),
     ) ??
     selectDailyFocus(
-      pack,
+      recommendationPack(),
       reduceAutomaticityEvents(
         readAutomaticityEvents(localStorage, language).events,
         language,
@@ -493,7 +516,12 @@ export async function mountPractice(
   persianHelp.append(guide);
   controls.append(persianHelp);
   const recordChoice = (reason: string) => {
-    const selection = selectDailyFocus(pack, ledger().progress, now(), level);
+    const selection = selectDailyFocus(
+      recommendationPack(),
+      ledger().progress,
+      now(),
+      level,
+    );
     const key = `automaticity:v2:${language}:selection:${id()}`;
     localStorage.setItem(
       key,
@@ -608,6 +636,15 @@ export async function mountPractice(
     ),
   );
   root.replaceChildren(header, errorBox, focusSection, grid, tools);
+  refreshPilot = mountSchedulerPilotPanel(
+    tools,
+    pack,
+    localStorage,
+    pilot,
+    () => renderFocus(),
+    (task) => fresh(task),
+    () => editing,
+  );
   if (!editing) {
     errorBox.textContent = t(
       "Another practice tab is open. You can view progress here; close the other tab and reload to continue.",
@@ -616,7 +653,13 @@ export async function mountPractice(
   }
   function renderFocus(): void {
     renderDailyPlan();
-    const selection = selectDailyFocus(pack, ledger().progress, now(), level);
+    refreshPilot();
+    const selection = selectDailyFocus(
+      recommendationPack(),
+      ledger().progress,
+      now(),
+      level,
+    );
     focusPanel.replaceChildren(
       element(
         "p",
@@ -1495,7 +1538,10 @@ export async function mountPractice(
     timer?.visibility(!document.hidden),
   );
   window.addEventListener("storage", (event) => {
-    if (event.key?.startsWith(`automaticity:v2:${language}:event:`)) {
+    if (
+      event.key?.startsWith(`automaticity:v2:${language}:event:`) ||
+      event.key?.startsWith(`automaticity:v2:${language}:scheduler-pilot:`)
+    ) {
       renderProgress();
       renderFocus();
     }

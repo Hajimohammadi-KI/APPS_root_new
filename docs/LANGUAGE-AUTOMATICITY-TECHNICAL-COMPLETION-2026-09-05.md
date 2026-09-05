@@ -1,3 +1,5 @@
+Historical record for English 27.3.40 / DeutschFlow 20.8.44. The subsequent [6 September delivery](LANGUAGE-AUTOMATICITY-DELIVERY-2026-09-06.md) implements and verifies the S02 Stage B gap described below; its original audit findings and receipts remain preserved here.
+
 Correction after the completion audit: recorded engineering checks exist for all 43 required roadmap tasks, but that does not mean every required implementation is complete. Full acceptance is recorded for 29 and 14 remain open. S02 still has a Stage B implementation gap as well as missing human evidence. Actual benchmark evaluation and final release work must also run after qualified inputs arrive. Five conditional tasks remain open. See the [task-by-task correction](ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md).
 
 English **27.3.40** and DeutschFlow **20.8.44** are installed. Both pass their required source checks, install/upgrade/start/repair/uninstall cycles, normal-profile preservation and ten groups of installed browser tests. The exact receipts and hashes are in [the verification record](../artifacts/language-engineering-completion/20260905-40-44/verification.json).

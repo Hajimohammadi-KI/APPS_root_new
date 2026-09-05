@@ -1,0 +1,303 @@
+﻿{
+    "at":  "2026-09-05T22:20:02.1415105Z",
+    "rows":  [
+                 {
+                     "original":  ".codex-tmp\\proposal-final-render\\final-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-final-render\\final-copy.docx",
+                     "bytes":  41201,
+                     "sha256":  "ab1adcd1ea5920f35d14c5fb5cd53e1f6fee5c00d8b948503cc9bbd9c4120c97"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-final-render\\final.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-final-render\\final.pdf",
+                     "bytes":  305579,
+                     "sha256":  "72345a3c5448f0668fa2cd530e7240f1473d7026e7fa5e7943aef3da67f176f1"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-final-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-final-render\\page-1.png",
+                     "bytes":  417463,
+                     "sha256":  "0210ed059b68b4dbbb78fd6d8e8ed8be336d52658f121d404cc9972ca6d5535f"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-final-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-final-render\\page-2.png",
+                     "bytes":  484247,
+                     "sha256":  "80df8cd23fd29dc8d00125fa280832adc96a6824b4787354d57864bc007fcbfa"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-final-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-final-render\\page-3.png",
+                     "bytes":  428614,
+                     "sha256":  "2125d88aeb366738967ae6b020b2da5d63be411d821390c3420cc06f0f9eeeeb"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\complete-page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\complete-page-1.png",
+                     "bytes":  347976,
+                     "sha256":  "5edbc002da5e701532c10ac53de6a0c86a7efed54223d1f2f96b519124211e40"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\complete-page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\complete-page-2.png",
+                     "bytes":  381954,
+                     "sha256":  "8034dd88c0ee399c879798000c6af2578c0dbd237f232b5421c17ede766a6aee"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\complete-page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\complete-page-3.png",
+                     "bytes":  393341,
+                     "sha256":  "c871167664230896c1ce88c1c0d0cb85a992eb413c25c38509afde5bc042e674"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\original-complete.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\original-complete.pdf",
+                     "bytes":  301727,
+                     "sha256":  "f18cce7c47c4fd3a93dbbd97f2e46a36e08687e69358ac179568b53b121a73e0"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\original.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\original.pdf",
+                     "bytes":  301727,
+                     "sha256":  "0a96afb6d5736ba6862cb7e16b64a76a90ebc75978a07e39b1f0641cb2a0a379"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\page-1.png",
+                     "bytes":  347976,
+                     "sha256":  "5edbc002da5e701532c10ac53de6a0c86a7efed54223d1f2f96b519124211e40"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\page-2.png",
+                     "bytes":  381954,
+                     "sha256":  "8034dd88c0ee399c879798000c6af2578c0dbd237f232b5421c17ede766a6aee"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\page-3.png",
+                     "bytes":  393341,
+                     "sha256":  "c871167664230896c1ce88c1c0d0cb85a992eb413c25c38509afde5bc042e674"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-original-render\\source-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-original-render\\source-copy.docx",
+                     "bytes":  39418,
+                     "sha256":  "f29f601083259badfc1e28d9154a19d30a68e6c011658aa850639a3b047b610c"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\complete-page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\complete-page-1.png",
+                     "bytes":  417463,
+                     "sha256":  "0210ed059b68b4dbbb78fd6d8e8ed8be336d52658f121d404cc9972ca6d5535f"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\complete-page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\complete-page-2.png",
+                     "bytes":  484247,
+                     "sha256":  "80df8cd23fd29dc8d00125fa280832adc96a6824b4787354d57864bc007fcbfa"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\complete-page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\complete-page-3.png",
+                     "bytes":  428614,
+                     "sha256":  "2125d88aeb366738967ae6b020b2da5d63be411d821390c3420cc06f0f9eeeeb"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\page-1.png",
+                     "bytes":  417463,
+                     "sha256":  "0210ed059b68b4dbbb78fd6d8e8ed8be336d52658f121d404cc9972ca6d5535f"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\page-2.png",
+                     "bytes":  484247,
+                     "sha256":  "80df8cd23fd29dc8d00125fa280832adc96a6824b4787354d57864bc007fcbfa"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\page-3.png",
+                     "bytes":  428614,
+                     "sha256":  "2125d88aeb366738967ae6b020b2da5d63be411d821390c3420cc06f0f9eeeeb"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\revised-complete.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\revised-complete.pdf",
+                     "bytes":  305579,
+                     "sha256":  "bde8320d62539af167f78d985921d9e7ad037c6a1ba9621b91152aa260197bcc"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\revised-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\revised-copy.docx",
+                     "bytes":  40476,
+                     "sha256":  "c580a4211af90ec967544a62d3149a5e2f4ac5c1bc0cf639638360df96271011"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-revised-render\\revised.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-revised-render\\revised.pdf",
+                     "bytes":  305579,
+                     "sha256":  "79e2b4edd842d65a9074563e9a6ea1fd3e905cac0354f47aac7dd7daad685eb0"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v3-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v3-render\\page-1.png",
+                     "bytes":  419133,
+                     "sha256":  "279e2e19fc3eaaf7a7209e0372ca960bc11e689421a2ed82f5ff0a50442e04ab"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v3-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v3-render\\page-2.png",
+                     "bytes":  484247,
+                     "sha256":  "80df8cd23fd29dc8d00125fa280832adc96a6824b4787354d57864bc007fcbfa"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v3-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v3-render\\page-3.png",
+                     "bytes":  428614,
+                     "sha256":  "2125d88aeb366738967ae6b020b2da5d63be411d821390c3420cc06f0f9eeeeb"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v3-render\\proposal-v3-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v3-render\\proposal-v3-copy.docx",
+                     "bytes":  41570,
+                     "sha256":  "3aff895f4f7f27fe2ea480fc84c6e78d148579c3fe7752764b40c308defe36a1"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v3-render\\proposal-v3.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v3-render\\proposal-v3.pdf",
+                     "bytes":  313771,
+                     "sha256":  "a97895e72109bc656e6df565d9c82fc3ca5a4f1d1c27a88b8cc7da861b57e811"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final-render\\page-1.png",
+                     "bytes":  346003,
+                     "sha256":  "e23369f39de59b37e1bae0e3f7c8175458afccc96a9916b58342c405c55626a1"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final-render\\page-2.png",
+                     "bytes":  521064,
+                     "sha256":  "6b34342781f024f8dc1407555b8d95df22d7952abab12d9728885b1cbb61ce04"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final-render\\page-3.png",
+                     "bytes":  357506,
+                     "sha256":  "93dcb78e34ac8c2ab26d46bcb956eab93bc18f29fecbce3624f771fdf0bfa627"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final-render\\proposal-v5-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final-render\\proposal-v5-copy.docx",
+                     "bytes":  27809,
+                     "sha256":  "ff4935cd757fb0894831af2ff576b9b14004605884516d23b052e6b86922c013"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final-render\\proposal-v5.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final-render\\proposal-v5.pdf",
+                     "bytes":  230507,
+                     "sha256":  "a4489bf1de8af9812275b9b770ef73a2f8e0b4988eb5819ad4fa03b6fc2ccb78"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final2-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final2-render\\page-1.png",
+                     "bytes":  344922,
+                     "sha256":  "b5b382985e85e2442e7ce460fa64c0604d48d99ec5a017be831513261e23734b"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final2-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final2-render\\page-2.png",
+                     "bytes":  514269,
+                     "sha256":  "a44da9d782293484e301fab4a416a4debfb10dfab46b11969bbad9c3784b8933"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final2-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final2-render\\page-3.png",
+                     "bytes":  373484,
+                     "sha256":  "75f7079b254bf0a296e35350665af21e4b2244dcc82b1954896a8ccc599ce933"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final2-render\\proposal-v5-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final2-render\\proposal-v5-copy.docx",
+                     "bytes":  27789,
+                     "sha256":  "c239df620442e4f18a71b1b3f4db22965759447b789170b8a8b18e0aa5fa15f5"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final2-render\\proposal-v5.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final2-render\\proposal-v5.pdf",
+                     "bytes":  231023,
+                     "sha256":  "e8b2e43d1412d43b6f7b05f96a37060ce10fe6ccbd69b0b41b2033d4b70611f5"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final3-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final3-render\\page-1.png",
+                     "bytes":  344922,
+                     "sha256":  "b5b382985e85e2442e7ce460fa64c0604d48d99ec5a017be831513261e23734b"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final3-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final3-render\\page-2.png",
+                     "bytes":  514269,
+                     "sha256":  "a44da9d782293484e301fab4a416a4debfb10dfab46b11969bbad9c3784b8933"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final3-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final3-render\\page-3.png",
+                     "bytes":  373484,
+                     "sha256":  "75f7079b254bf0a296e35350665af21e4b2244dcc82b1954896a8ccc599ce933"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final3-render\\proposal-v5-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final3-render\\proposal-v5-copy.docx",
+                     "bytes":  27912,
+                     "sha256":  "fe8879ed10de3ee06a9a1889ef302b4ca564a07ee0582eea06fe5a6956808b2a"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-final3-render\\proposal-v5.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-final3-render\\proposal-v5.pdf",
+                     "bytes":  231023,
+                     "sha256":  "f354269ef65d9a91ffb72affe3ed290cfdd0fc68f36965af07064631ab1ae7a0"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-render\\page-1.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-render\\page-1.png",
+                     "bytes":  346003,
+                     "sha256":  "e23369f39de59b37e1bae0e3f7c8175458afccc96a9916b58342c405c55626a1"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-render\\page-2.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-render\\page-2.png",
+                     "bytes":  291188,
+                     "sha256":  "cb69d6249d1503e5170d1c98fe7c231c233887c16ecfec7d1299388209572851"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-render\\page-3.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-render\\page-3.png",
+                     "bytes":  293642,
+                     "sha256":  "78d4572e7d01b3df2dc56af45879f5d80bfd650e4d0f380e7e294abe7271f46d"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-render\\page-4.png",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-render\\page-4.png",
+                     "bytes":  305703,
+                     "sha256":  "70c669ea9d3b441acfbc7be47fed786c5ac3fb0f89ebdbb7fee9df2e14ad5b78"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-render\\proposal-v5-copy.docx",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-render\\proposal-v5-copy.docx",
+                     "bytes":  27809,
+                     "sha256":  "ff4935cd757fb0894831af2ff576b9b14004605884516d23b052e6b86922c013"
+                 },
+                 {
+                     "original":  ".codex-tmp\\proposal-v5-render\\proposal-v5.pdf",
+                     "destination":  "DELETE\\20260906-obsolete-renders\\proposal-v5-render\\proposal-v5.pdf",
+                     "bytes":  230507,
+                     "sha256":  "842aec84425491ce037ddfaa609bbf4fa546623db2102c67f620722c498473e3"
+                 }
+             ],
+    "files":  49,
+    "bytes":  15526973,
+    "status":  "verified",
+    "directories":  8
+}

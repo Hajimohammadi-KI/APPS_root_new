@@ -10,6 +10,11 @@ const root = resolve(import.meta.dir, ".."),
   );
 await mkdir(folder, { recursive: true });
 const commands = [
+  [
+    "scheduler-pilot",
+    "scripts/verify-scheduler-pilot-browser.mjs",
+    "--installed",
+  ],
   ["human-review", "scripts/verify-human-review-browser.mjs", "--installed"],
   ["all-curriculum-cells", "scripts/verify-curriculum-routes.mjs"],
   [

@@ -115,6 +115,26 @@ const commands: [
     "pass",
   ],
   [
+    "scheduler-pilot-unit",
+    [
+      "bun",
+      "test",
+      "./shared/learning-core/src/automaticity/scheduler-pilot.test.ts",
+      "./scripts/scheduler-pilot-evaluation.test.ts",
+    ],
+    "pass",
+  ],
+  [
+    "scheduler-pilot-empty-release",
+    ["bun", "scripts/compile-scheduler-pilot.ts", "--empty"],
+    "pass",
+  ],
+  [
+    "scheduler-pilot-empty-study",
+    ["bun", "scripts/evaluate-scheduler-pilot.ts", "--empty"],
+    "pass",
+  ],
+  [
     "full-human-gate",
     ["bun", "scripts/check-automaticity-coverage.ts", "--release"],
     "human_full",

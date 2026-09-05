@@ -13,3 +13,4 @@ export * from "./legacy";
 export * from "./prospective";
 export * from "./overview";
 export * from "./transformer";
+export * from "./scheduler-pilot";

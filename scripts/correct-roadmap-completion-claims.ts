@@ -16,6 +16,11 @@ const path = resolve(
   ),
   original = await readFile(path),
   backlog = JSON.parse(original.toString("utf8"));
+assert.deepEqual(
+  backlog.technicalRelease.versions,
+  { English: "27.3.40", German: "20.8.44" },
+  "This historical audit applies only to the 40/44 release; do not restore a resolved implementation gap on a later release.",
+);
 const open = backlog.tasks.filter(
   (task: { status: string }) => task.status !== "verified",
 );

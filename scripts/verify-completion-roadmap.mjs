@@ -35,8 +35,13 @@ try {
     await page.request.get("http://127.0.0.1:3317/snapshot")
   ).json();
   assert.equal(snapshot.sourceSha256, sourceSha256);
-  assert.equal(snapshot.backlog.technicalRelease.versions.English, "27.3.40");
-  assert.equal(snapshot.backlog.technicalRelease.versions.German, "20.8.44");
+  assert.equal(snapshot.backlog.technicalRelease.versions.English, "27.3.41");
+  assert.equal(snapshot.backlog.technicalRelease.versions.German, "20.8.45");
+  assert.equal(snapshot.backlog.delivery.requiredEngineeringTasksStillOpen, 0);
+  assert.equal(
+    snapshot.backlog.delivery.fsrs,
+    "bounded_pilot_available_not_enrolled",
+  );
   await expect(page.locator(".task")).toHaveCount(48);
   await expect(page.locator("#stats .stat strong")).toHaveText([
     "29 / 43",
@@ -83,14 +88,29 @@ try {
   await expect(page.locator("#completion-note")).toContainText(
     "14 required tasks and 5 conditional tasks remain open",
   );
-  await expect(page.locator("#completion-note")).toContainText(
-    "Required implementation still open: S02",
+  assert.deepEqual(
+    backlog.tasks
+      .filter((task) => task.required && task.remainingEngineeringWork?.length)
+      .map((task) => task.id),
+    [],
+  );
+  await expect(page.locator("#completion-note")).not.toContainText(
+    "Required implementation still open:",
   );
   await expect(page.locator("#task-S02")).toHaveAttribute(
+    "data-human-validation",
+    "pending",
+  );
+  await expect(page.locator("#task-S02")).not.toHaveAttribute(
     "data-implementation",
     "pending",
   );
-  await expect(page.locator("#task-S02")).toContainText("Stage A only");
+  await expect(page.locator("#task-S02")).toContainText(
+    "Stage A and Stage B engineering checks pass",
+  );
+  await expect(page.locator("#task-S02")).toContainText(
+    "Shipped plans are empty",
+  );
   await expect(page.locator("#task-L01")).toContainText(
     "0/168 representative cells",
   );
@@ -141,7 +161,7 @@ try {
     tasksWithRecordedEngineeringChecks: 43,
     fullAcceptanceVerified: 29,
     humanValidationPending: 14,
-    requiredImplementationStillOpen: ["S02"],
+    requiredImplementationStillOpen: [],
   });
 } catch (error) {
   report.status = "failed";

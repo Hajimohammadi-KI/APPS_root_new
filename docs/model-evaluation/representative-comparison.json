@@ -13,12 +13,12 @@
         "id": "controlled-answer",
         "version": "1.0.0"
       },
-      "startedAt": "2026-09-05T20:38:43.046Z",
-      "finishedAt": "2026-09-05T20:38:43.063Z",
+      "startedAt": "2026-09-05T22:13:38.380Z",
+      "finishedAt": "2026-09-05T22:13:38.397Z",
       "source": {
-        "folder": "artifacts/model-evaluation/2026-09-05T20-38-43-046Z-controlled-answer",
-        "runSha256": "303c6e3bb682a3d02863013ba97bc3d8dcceba884fb7d7ff3ac276dbc2d8088a",
-        "reportSha256": "ae0116359ef74f341946ac116ba73202a406877f627f72789cda8da37d0228d8"
+        "folder": "artifacts/model-evaluation/2026-09-05T22-13-38-380Z-controlled-answer",
+        "runSha256": "11c5f27a4ae7e9663a10f23a6951cadb7e64b72a7dab35423e63e7158d79b935",
+        "reportSha256": "5da1276240beb008c647607f6b5807abebcf1e9f78f5ab2fc3009c1863143a69"
       },
       "languages": [
         {
@@ -57,8 +57,8 @@
               "annotationCases": 0
             }
           ],
-          "medianLatencyMs": 0.1343999999999994,
-          "p95LatencyMs": 0.38989999999999725,
+          "medianLatencyMs": 0.1325999999999965,
+          "p95LatencyMs": 0.3539999999999992,
           "reportedApiCost": 0,
           "suggestedSpans": []
         },
@@ -98,8 +98,8 @@
               "annotationCases": 0
             }
           ],
-          "medianLatencyMs": 0.1290000000000049,
-          "p95LatencyMs": 0.20430000000000348,
+          "medianLatencyMs": 0.12439999999999429,
+          "p95LatencyMs": 0.24490000000000123,
           "reportedApiCost": 0,
           "suggestedSpans": []
         }
@@ -110,12 +110,12 @@
         "id": "representative-construction",
         "version": "1.0.0"
       },
-      "startedAt": "2026-09-05T20:38:43.257Z",
-      "finishedAt": "2026-09-05T20:38:43.270Z",
+      "startedAt": "2026-09-05T22:13:38.620Z",
+      "finishedAt": "2026-09-05T22:13:38.629Z",
       "source": {
-        "folder": "artifacts/model-evaluation/2026-09-05T20-38-43-257Z-representative-construction",
-        "runSha256": "4661f9a8c41353498bd3c1899840fff850528d407b9ecee206d2d71350577525",
-        "reportSha256": "3b61f51566ed616d74741bf2c5f6fb4203b27e9e9e14d0cb65a03f1b49d952bb"
+        "folder": "artifacts/model-evaluation/2026-09-05T22-13-38-620Z-representative-construction",
+        "runSha256": "46cf2f54444c6116a665430589776949f15227f04587f1a08e1cdeb1e2e46f33",
+        "reportSha256": "b9d73761b04317d159c48b1859eefa0ce738539a0c9114dadf84ecce4e01eb56"
       },
       "languages": [
         {
@@ -154,8 +154,8 @@
               "annotationCases": 0
             }
           ],
-          "medianLatencyMs": 0.04609999999999559,
-          "p95LatencyMs": 0.11999999999997613,
+          "medianLatencyMs": 0.05819999999999936,
+          "p95LatencyMs": 0.12189999999998236,
           "reportedApiCost": 0,
           "suggestedSpans": []
         },
@@ -195,8 +195,8 @@
               "annotationCases": 0
             }
           ],
-          "medianLatencyMs": 0.077699999999993,
-          "p95LatencyMs": 0.3533999999999935,
+          "medianLatencyMs": 0.05119999999999436,
+          "p95LatencyMs": 0.0992999999999995,
           "reportedApiCost": 0,
           "suggestedSpans": []
         }

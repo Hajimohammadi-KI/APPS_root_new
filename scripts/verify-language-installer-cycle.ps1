@@ -152,6 +152,8 @@ $profiles = @{
     MainExecutable = 'English Grammar Automaticity.exe'
     WebUrl = 'http://127.0.0.1:3202/'
     ApiUrl = 'http://127.0.0.1:4201/api/health'
+    CurriculumLanguage = 'en'
+    CurriculumUnits = 112
     WebValidator = { param($response) $response.Content -match 'dir="ltr"' }
     ApiValidator = {
       param($response)
@@ -165,6 +167,8 @@ $profiles = @{
     MainExecutable = 'DeutschFlow.exe'
     WebUrl = 'http://127.0.0.1:3210/'
     ApiUrl = 'http://127.0.0.1:4210/api/v1/health'
+    CurriculumLanguage = 'de'
+    CurriculumUnits = 144
     WebValidator = { param($response) $response.Content -match 'dir="ltr"' }
     ApiValidator = {
       param($response)
@@ -323,7 +327,10 @@ try {
     $startupResult = Wait-ForHttpContracts `
       -Contracts @(
         @{ Name = 'web'; Url = [string]$profile.WebUrl; Validator = $profile.WebValidator },
-        @{ Name = 'api'; Url = [string]$profile.ApiUrl; Validator = $profile.ApiValidator }
+        @{ Name = 'api'; Url = [string]$profile.ApiUrl; Validator = $profile.ApiValidator },
+        @{ Name = 'practice'; Url = ([string]$profile.WebUrl + 'practice'); Validator = { param($response) $response.Content -match 'id="practice-root"' -and $response.Content -match '/learning-core/practice.js' } },
+        @{ Name = 'practice-runtime'; Url = ([string]$profile.WebUrl + 'learning-core/practice.js'); Validator = { param($response) $response.Content.Length -gt 20000 -and $response.Content -match 'automaticity:v2:' } },
+        @{ Name = 'curriculum'; Url = ([string]$profile.WebUrl + 'learning-core/curriculum-' + $profile.CurriculumLanguage + '.json'); Validator = { param($response) $catalog = $response.Content | ConvertFrom-Json; $catalog.language -eq $profile.CurriculumLanguage -and $catalog.units.Count -eq $profile.CurriculumUnits -and @($catalog.units | Where-Object { $_.tasks.Count -lt 14 }).Count -eq 0 } }
       ) `
       -Deadline $deadline `
       -DesktopProcess $desktopProcess

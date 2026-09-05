@@ -25,6 +25,7 @@
     "format:check": "bun x prettier --check .",
     "lint": "bun run --filter '*' --if-present lint",
     "typecheck": "bun run --filter '*' --if-present typecheck",
+    "automaticity:check": "bun test packages/learning-core/src/automaticity packages/learning-core/src/index.test.ts && bun run --cwd packages/learning-core typecheck",
     "test": "bun run --filter '*' --if-present test",
     "test:integration": "bun run --filter '*' --if-present test:integration",
     "test:e2e": "bun run --cwd apps/web test:e2e",

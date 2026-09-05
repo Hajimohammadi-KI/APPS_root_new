@@ -14,10 +14,11 @@ import {
 } from "./curriculum";
 import {
   appendAutomaticityEvent,
-  preserveLegacyState,
   readAutomaticityEvents,
   sessionKey,
 } from "./storage";
+import { preserveLegacyStateDurable } from "./migration";
+import { mountReviewPanel } from "./review-panel";
 import { reduceAutomaticityEvents } from "./evidence";
 import { assessControlledTask } from "./assessment";
 import {
@@ -108,7 +109,7 @@ export async function mountPractice(
     t = (english: string, german: string) => (en ? english : german);
   const persistence = { storage: localStorage, indexedDB };
   await recoverBeforeMount(persistence, language);
-  preserveLegacyState(localStorage, language, now());
+  await preserveLegacyStateDurable(persistence, language, now());
   const response = await fetch(`/learning-core/curriculum-${language}.json`);
   if (!response.ok)
     throw new Error(
@@ -151,7 +152,9 @@ export async function mountPractice(
     ).focus[0] ??
     pack.units[0]!;
   let task: PracticeTask =
-    unit.tasks.find((row) => row.stage === "retrieve") ?? unit.tasks[0]!;
+    unit.tasks.find(
+      (row) => row.stage === "retrieve" && row.modality === "writing",
+    ) ?? unit.tasks[0]!;
   let session: Session;
   let timer: ResponseTimer | null = null;
   let recording: StoredRecording | null = null;
@@ -355,7 +358,7 @@ export async function mountPractice(
     element("p", t("English Automaticity", "DeutschFlow"), "eyebrow"),
     element(
       "h1",
-      t("Make the pattern your own", "Mach das Muster zu deinem eigenen"),
+      t("Use grammar in your own words", "Grammatik aktiv anwenden"),
     ),
     element(
       "p",
@@ -389,8 +392,9 @@ export async function mountPractice(
   topicSelect.onchange = () => {
     const selected = unitById.get(topicSelect.value)!;
     fresh(
-      selected.tasks.find((row) => row.stage === "retrieve") ??
-        selected.tasks[0]!,
+      selected.tasks.find(
+        (row) => row.stage === "retrieve" && row.modality === "writing",
+      ) ?? selected.tasks[0]!,
     );
   };
   controls.append(levelSelect, topicSelect);
@@ -516,8 +520,9 @@ export async function mountPractice(
       focusPanel.append(
         button(`${selected.title}`, () =>
           fresh(
-            selected.tasks.find((row) => row.stage === "retrieve") ??
-              selected.tasks[0]!,
+            selected.tasks.find(
+              (row) => row.stage === "retrieve" && row.modality === "writing",
+            ) ?? selected.tasks[0]!,
           ),
         ),
       );
@@ -652,10 +657,18 @@ export async function mountPractice(
       );
     for (const row of rowsForUnit) {
       const entry = element("details");
+      const verdictLabel =
+        row.assessment?.verdict === "pass"
+          ? t("Practice checked", "Übung geprüft")
+          : row.assessment?.verdict === "needs_repair"
+            ? t("Needs a repair", "Korrektur nötig")
+            : row.assessment?.verdict === "target_not_observed"
+              ? t("Target not observed", "Zielstruktur nicht beobachtet")
+              : t("Awaiting review", "Prüfung ausstehend");
       entry.append(
         element(
           "summary",
-          `${new Date(row.attempt.at).toLocaleString(language)} · ${row.attempt.task.modality} · ${row.assessment?.verdict ?? "not_assessed"}`,
+          `${new Date(row.attempt.at).toLocaleString(language)} · ${row.attempt.task.modality === "writing" ? t("Writing", "Schreiben") : t("Speaking", "Sprechen")} · ${verdictLabel}`,
         ),
         element("p", row.attempt.response.text, "response-copy"),
         element(
@@ -874,7 +887,16 @@ export async function mountPractice(
                 "Aufnahmen sind in diesem Browser nicht verfügbar. Du kannst weiterhin schriftlich üben.",
               ),
             );
-          stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          } catch {
+            throw new Error(
+              t(
+                "The microphone is unavailable or permission was denied. Your draft is kept. Allow microphone access or continue with writing.",
+                "Das Mikrofon ist nicht verfügbar oder der Zugriff wurde abgelehnt. Dein Entwurf bleibt erhalten. Erlaube den Mikrofonzugriff oder übe schriftlich weiter.",
+              ),
+            );
+          }
           const parts: Blob[] = [];
           recorder = new MediaRecorder(stream);
           recordingStart = performance.now();
@@ -1135,4 +1157,15 @@ export async function mountPractice(
     renderProgress();
   }
   renderFocus();
+  const reviews = element("section", undefined, "card");
+  root.append(reviews);
+  mountReviewPanel(reviews, language, pack, () => {
+    renderTask();
+    renderProgress();
+    renderFocus();
+  });
+  if ("serviceWorker" in navigator)
+    void navigator.serviceWorker.register("/sw.js").catch(() => {
+      /* Practice remains usable; offline readiness is checked separately. */
+    });
 }

@@ -1,0 +1,98 @@
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import {
+  GRAMMAR_FAMILIES,
+  validateCurriculum,
+  type CurriculumPack,
+} from "../shared/learning-core/src/automaticity/curriculum";
+const root = resolve(import.meta.dir, "..");
+const coverage = JSON.parse(
+  await readFile(resolve(root, "docs/automaticity-coverage.json"), "utf8"),
+) as {
+  cells: {
+    language: string;
+    constructionId: string;
+    stage: string;
+    modality: string;
+    taskIds: string[];
+    humanReview: string;
+    releaseEligible: boolean;
+  }[];
+};
+const seen = new Set<string>();
+let total = 0;
+for (const [language, app] of [
+  ["en", "Apps/English/English-Automaticity"],
+  ["de", "Apps/Deutsch-Automaticity"],
+] as const) {
+  const pack = JSON.parse(
+    await readFile(
+      resolve(
+        root,
+        `${app}/apps/web/public/learning-core/curriculum-${language}.json`,
+      ),
+      "utf8",
+    ),
+  ) as CurriculumPack;
+  const issues = validateCurriculum(pack);
+  if (issues.length) throw new Error(issues.join("\n"));
+  const families = new Set(pack.units.flatMap((unit) => unit.familyIds));
+  for (const [family] of GRAMMAR_FAMILIES)
+    if (!families.has(family))
+      throw new Error(`Unmapped ${language} grammar family ${family}`);
+  for (const unit of pack.units)
+    for (const stage of [
+      "notice",
+      "retrieve",
+      "vary",
+      "produce",
+      "repair",
+      "transfer",
+      "retain",
+    ])
+      for (const modality of ["writing", "speaking"]) {
+        const key = `${language}:${unit.id}:${stage}:${modality}`;
+        if (seen.has(key)) throw new Error(`Duplicate cell ${key}`);
+        seen.add(key);
+        const cells = coverage.cells.filter(
+          (cell) =>
+            cell.language === language &&
+            cell.constructionId === unit.id &&
+            cell.stage === stage &&
+            cell.modality === modality,
+        );
+        if (cells.length !== 1)
+          throw new Error(`Missing/duplicate coverage cell ${key}`);
+        const actual = unit.tasks
+          .filter((task) => task.stage === stage && task.modality === modality)
+          .map((task) => task.id)
+          .sort();
+        if (
+          !actual.length ||
+          JSON.stringify(actual) !==
+            JSON.stringify([...cells[0]!.taskIds].sort())
+        )
+          throw new Error(`Missing or stale tasks ${key}`);
+        total++;
+      }
+}
+if (total !== coverage.cells.length)
+  throw new Error("Coverage contains orphan cells");
+const blocked = coverage.cells.filter(
+  (cell) => cell.humanReview !== "complete" || !cell.releaseEligible,
+);
+console.log(
+  JSON.stringify(
+    {
+      structuralCoverage: "verified",
+      cells: total,
+      fullCurriculumRelease: blocked.length
+        ? "not_qualified"
+        : "eligible_for_review",
+      unqualifiedCells: blocked.length,
+    },
+    null,
+    2,
+  ),
+);
+if (Bun.argv.includes("--release") && blocked.length) process.exitCode = 2;

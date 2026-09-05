@@ -4,8 +4,8 @@
   "workspace": "D:\\APPS_root_new",
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
-  "updatedOn": "2026-09-04",
-  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-04.md",
+  "updatedOn": "2026-09-05",
+  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -385,8 +385,8 @@
       "id": "B01",
       "phase": "baseline",
       "title": "Map active routes and current runtime",
-      "status": "in_progress",
-      "progressNote": "Captured source and installed versions, process paths, storage keys and active-route implementations. The restored source runtime passed all 10 HTTP probes, and eight selected post-change browser regressions passed. Launcher-target resolution and a verified pre-change browser baseline remain incomplete; post-change evidence does not retroactively close those B01 requirements.",
+      "status": "verified",
+      "progressNote": "Current source, normal installs, resolved Start Menu launchers, route implementations and endpoints are recorded. Ten installed route/health probes pass. Initial tracked changes were preserved; this is a current baseline, not a retroactive pre-change browser run.",
       "priority": "P0",
       "dependsOn": [],
       "ownerRole": "Implementation",
@@ -410,17 +410,24 @@
         "artifacts/language-automaticity/baseline-2026-09-04T20-49-37-290Z.json",
         "scripts/browser-language-integrity-check.mjs",
         "artifacts/language-automaticity/baseline-2026-09-04T21-06-31-192Z.json",
-        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json"
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/language-automaticity/installed-runtime-2026-09-05.json",
+        "artifacts/installer-cycle/English-20260905-005157-b640f6d5/report.json",
+        "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
+        "artifacts/installed-language-update/20260905-005438/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
       ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "B02",
       "phase": "baseline",
       "title": "Prepare preservation and restore fixtures",
-      "status": "in_progress",
-      "progressNote": "Implemented isolated desktop profile, extraction and staging-cache paths. Both isolated installer lifecycles passed with the synthetic file marker preserved. The reports explicitly mark browser-data restore as not run; full browser or IndexedDB export/restore, real legacy records, due reviews and playable-audio recovery remain pending.",
+      "status": "verified",
+      "progressNote": "Synthetic fixtures preserve duplicate and partial raw history, due reviews, settings, drafts and hash-identical playable audio. Quota and interrupted restores recover. Normal profile trees were also copied and hash-checked before installed updates.",
       "priority": "P0",
       "dependsOn": [
         "B01"
@@ -447,17 +454,24 @@
         "Apps/English/English-Automaticity/scripts/windows-installer.test.ts",
         "Apps/Deutsch-Automaticity/scripts/windows-installer.test.ts",
         "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json",
-        "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json"
+        "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/automaticity-preservation/2026-09-04T22-38-00-980Z/report.json",
+        "artifacts/installer-cycle/English-20260905-005157-b640f6d5/report.json",
+        "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
+        "artifacts/installed-language-update/20260905-005438/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
       ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "B03",
       "phase": "baseline",
       "title": "Reproduce consequential defects",
       "status": "in_progress",
-      "progressNote": "Added reproductions and focused regressions for malformed English assessments, German language uncertainty, capitalization, accepted alternatives and the German weil evaluation bypass. Caller-verification conflicts also receive focused coverage, and all eight selected browser regressions passed. The complete ledger for answer exposure, offline completion and unsupported shared delay/novelty flags across all affected routes remains pending.",
+      "progressNote": "Focused reproductions and regressions cover the consequential defects. Complete pre-fix reproduction receipts for every newly added exposure/offline case are not available; post-fix tests are not presented as historical failure evidence.",
       "priority": "P0",
       "dependsOn": [
         "B01"
@@ -485,17 +499,22 @@
         "Apps/Deutsch-Automaticity/packages/domain/src/grammar-runtime-evaluation.test.ts",
         "Apps/Deutsch-Automaticity/apps/web/src/features/automaticity/automaticity-language.test.ts",
         "artifacts/language-automaticity/de-check-2026-09-04.log",
-        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json"
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "shared/learning-core/src/automaticity/automaticity.test.ts"
       ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "F01",
       "phase": "integrity",
       "title": "Validate English upstream assessments",
       "status": "implemented",
-      "progressNote": "Provider and client validation reject malformed payloads, invalid edit spans, overlapping edits and inconsistent fields; the inspected caller boundary preserves unverified outcomes. Focused checks, selected browser regressions and the isolated English 27.3.22-to-27.3.23 installer lifecycle passed. B03 and comprehensive caller acceptance remain incomplete, so this ticket remains implemented rather than verified; no all-caller or full-curriculum qualification is claimed.",
+      "progressNote": "Required upstream and caller regressions pass in source and installed browsers. Ticket closure remains subject to completing B03 reproduction records.",
       "priority": "P0",
       "dependsOn": [
         "B03"
@@ -520,17 +539,20 @@
         "Apps/English/English-Automaticity/apps/web/lib/assessment.test.ts",
         "artifacts/language-automaticity/en-check-final-2026-09-04.log",
         "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
-        "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json"
+        "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json"
       ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "F02",
       "phase": "integrity",
       "title": "Fix German language and orthography handling",
       "status": "implemented",
-      "progressNote": "Domain and static grading preserve capitalization and relevant punctuation, accept authored short-answer alternatives and leave inconclusive language unassessed with null accuracy. The Automaticity weil shortcut checks language first; words shared with English, such as hat, are not decisive German evidence. Focused tests, consumer typechecks, selected browser regressions and the isolated German 20.8.28-to-20.8.29 installer lifecycle passed. B03 and comprehensive acceptance remain incomplete, so the ticket stays implemented. The detector remains heuristic; neither all-grammar assessment nor validated language identification is claimed.",
+      "progressNote": "German uncertain-language, valid control, capitalization and actual weil-path regressions pass. Ticket closure remains subject to B03.",
       "priority": "P0",
       "dependsOn": [
         "B03"
@@ -556,16 +578,19 @@
         "Apps/Deutsch-Automaticity/apps/web/src/features/automaticity/automaticity-language.test.ts",
         "artifacts/language-automaticity/de-check-2026-09-04.log",
         "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
-        "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json"
+        "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json"
       ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "F03",
       "phase": "integrity",
       "title": "Separate practice completion from independent success",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P0",
       "dependsOn": [
         "B03",
@@ -585,16 +610,23 @@
         "Offline open work and nonempty rule explanations can be saved without assessed mastery.",
         "Hide assessed solutions until deliberate reveal; preserve useful teaching examples on the teaching stage."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/evidence.ts",
+        "shared/learning-core/src/automaticity/practice.ts",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Shared practice hides teaching material until deliberate exposure; repair, offline open work and legacy completion cannot establish qualified independent evidence. Broader legacy-route acceptance remains open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "F04",
       "phase": "integrity",
       "title": "Remove conflicting verification paths",
-      "status": "in_progress",
-      "progressNote": "Fixed the inspected English Automaticity caller boundary so app state and its evidence bundle retain the assessment verification result instead of forcing deterministic verification; the selected browser regression passed. Shared reducer consistency, actual elapsed-delay and novelty evidence, answer exposure, duplicate/re-recording handling and overturned-verdict propagation remain pending under E01/E02 and the remaining F04 work.",
+      "status": "implemented",
+      "progressNote": "Reducer validates identity, supersession, conflicts, invalidation, delay and novelty; self-checks cannot overwrite authoritative assessments. Legacy English writing control now requires masteryEligible false without independence. All legacy workflow adapters are not yet complete.",
       "priority": "P0",
       "dependsOn": [
         "B03",
@@ -621,16 +653,20 @@
         "Apps/English/English-Automaticity/apps/web/lib/automaticity-analysis.ts",
         "Apps/English/English-Automaticity/apps/web/lib/automaticity-analysis.test.ts",
         "artifacts/language-automaticity/en-check-final-2026-09-04.log",
-        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json"
+        "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/evidence.ts",
+        "artifacts/language-integrity-browser/2026-09-04T22-58-02-122Z/report.json"
       ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "E01",
       "phase": "evidence",
       "title": "Define versioned construction, task and assessment contracts",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P0",
       "dependsOn": [
         "B03",
@@ -649,15 +685,21 @@
         "Include assessment IDs, supersession/invalidation, original and edited transcript identities, and review provenance.",
         "Validate pass, needs_repair, target_not_observed and not_assessed without model-defined mastery."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/contracts.ts",
+        "shared/learning-core/src/automaticity/automaticity.test.ts"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Versioned task/attempt/exposure/assessment/invalidation contracts and deep validators are implemented and tested. Full reviewed construction inventory remains a dependency.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "E02",
       "phase": "evidence",
       "title": "Implement idempotent evidence reduction",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P0",
       "dependsOn": [
         "E01"
@@ -673,15 +715,21 @@
         "Invalidate superseded judgments and recompute repair/progress/scheduling inputs while retaining history.",
         "Untested, missing audio and missing timing remain unknown or unassessed; never synthesize proof."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/evidence.ts",
+        "shared/learning-core/src/automaticity/automaticity.test.ts"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Deterministic reduction, duplicate conflict quarantine, supersession and separate modality progress are tested. Real learner qualification is not inferred.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "E03",
       "phase": "evidence",
       "title": "Migrate legacy and static-route state safely",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P0",
       "dependsOn": [
         "B02",
@@ -704,15 +752,23 @@
         "Repeated migration is idempotent; missing historical evidence remains marked insufficient.",
         "Interrupted/corrupt migration restores the saved pre-migration state; language backups cannot cross-import."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/migration.ts",
+        "shared/learning-core/src/automaticity/backup.ts",
+        "artifacts/automaticity-preservation/2026-09-04T22-38-00-980Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Exact legacy snapshot, existing aliases, complete backup, transactional restore and interruption recovery are tested. Original data remains readable in existing workflows; full legacy-to-v2 semantic adaptation is still open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "E04",
       "phase": "evidence",
       "title": "Distribute shared code to every runtime",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P0",
       "dependsOn": [
         "E01"
@@ -729,15 +785,22 @@
         "The sync --check fails on a deliberately stale or missing copy.",
         "Identical Node and browser input produces the same assessment/evidence interpretation."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/sync-workspaces.mjs",
+        "scripts/build-automaticity-assets.ts",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Canonical modules, mirrors and public bundles match; installed practice bundle hash equals canonical. Explicit destructive-staleness test and exhaustive Node/browser parity receipts remain to close all acceptance cases.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "C01",
       "phase": "curriculum",
       "title": "Define the grammar-construction inventory",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "B01"
@@ -754,15 +817,22 @@
         "Separate hard prerequisites from instructional suggestions; reject prerequisite cycles.",
         "Reviewer role/date and source mappings are recorded; model-authored drafts are not labelled human-reviewed."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "256 stable construction drafts span 21 families. Reference review of form, meaning, contrasts, prerequisites and omissions is pending; authored is not human-reviewed.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "C02",
       "phase": "curriculum",
       "title": "Map every existing lesson and identify missing constructions",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "C01"
@@ -778,15 +848,22 @@
         "Preserve old IDs/titles as aliases; support many-to-many mappings.",
         "Check every family against reviewed references; equal level counts do not prove completeness."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "All 112 English and 144 German units have preserved aliases and coverage work items. Reviewed additions and generalized many-to-many lesson mapping remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "C03",
       "phase": "curriculum",
       "title": "Define appropriate task types and separate exposed material",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "C01"
@@ -803,15 +880,21 @@
         "Acceptable transformations preserve meaning and grammatical possibility.",
         "Track template/scenario families and exposure; final evaluation material cannot enter generated practice."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/curriculum.ts",
+        "scripts/build-automaticity-curriculum.ts"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Typed task policies, item families, stage/modality metadata and evaluation partition guards are in code. Human review of transformations and actual held-out benchmark material remains pending.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "C04",
       "phase": "curriculum",
       "title": "Build an executable coverage gate",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "C02",
@@ -832,15 +915,23 @@
         "N/A needs a linguistic reason; unavailable implementation or evaluator is a gap, not N/A.",
         "Retain original lessons as a migration minimum and replace obsolete exact exercise-count assertions."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "scripts/check-automaticity-coverage.ts",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Executable matrix checks all 3584 current cells and generates explicit review gaps. Structural gate passes and full-release gate exits 2; reviewed inventory dependencies remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "L01",
       "phase": "loop",
       "title": "Implement representative construction validators and tasks",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "F01",
@@ -861,15 +952,23 @@
         "Unsupported judgments abstain or enter the explicit human-review path.",
         "Each pack covers retrieval, applicable variation, speaking, writing, repair and transfer."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/assessment.ts",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Conservative controlled checks and explicit unassessed/human-review paths cover all existing packs. Reviewed valid alternatives and qualified target/relevance evaluators are not yet available for all constructions.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "L02",
       "phase": "loop",
       "title": "Make audio and response timing trustworthy",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "E01",
@@ -888,15 +987,24 @@
         "Silence, corrupt audio and uncertain ASR leave affected dimensions unassessed; network time is excluded.",
         "Untimed/accessibility modes retain accuracy evidence without fluency claims; no universal eight-second pass gate."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/media.ts",
+        "shared/learning-core/src/automaticity/practice.ts",
+        "artifacts/automaticity-preservation/2026-09-04T22-38-00-980Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Real Blob recording, hash persistence, visible monotonic timing and manual-transcript exclusion are implemented. Synthetic playable-audio recovery passes; physical microphone/silence/corrupt-ASR and device acceptance remain open. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "L03",
       "phase": "loop",
       "title": "Integrate actual Daily and Grammar routes",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "F03",
@@ -918,15 +1026,21 @@
         "Generated catalogs match their canonical source and contain new task metadata.",
         "Static fallback code cannot bypass or disagree with the common contract."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Actual Daily/Grammar routes link to the compiled shared practice loop; draft, hint, repair, reload, catalog parity and offline checks pass. Legacy embedded exercises retain their original stores.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "L04",
       "phase": "loop",
       "title": "Integrate Studio, Errors, Reviews, Progress and teacher review",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "F04",
@@ -948,15 +1062,21 @@
         "Human review can accept a valid alternative, overturn a verdict and recompute progress.",
         "Delayed-review eligibility requires elapsed time and unexposed task/context evidence."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/review-panel.ts",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Shared review panel, review/teacher entry links and React evidence summaries exist. Human review preserves originals and supersedes prior assessments. Remaining Studio/Reviews legacy adapters still need full shared-store integration.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "L05",
       "phase": "loop",
       "title": "Verify the representative end-to-end learning cycle",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "L03",
@@ -976,15 +1096,22 @@
         "Use a test clock for scheduling logic but do not claim a simulated delay proves learning.",
         "Record this milestone as architecture verified, full curriculum incomplete."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "shared/learning-core/src/automaticity/automaticity.test.ts"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Production, conservative feedback, repair, review and offline persistence pass in browser tests; delayed/new-context qualification has deterministic unit coverage. One fully reviewed pack and a complete single-journey delayed fixture remain pending.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "U01",
       "phase": "daily",
       "title": "Implement transparent personal task selection",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "E02",
@@ -1003,15 +1130,21 @@
         "Reduce new work when reviews accumulate; keep language histories separate.",
         "Record a learner override and explain the selected task in plain language."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/selector.ts",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Explainable baseline chooses at most two focuses and five repair priorities, with due/repair priority and language separation. Topic choice is persisted. Comprehensive queue-load/fairness and explicit override-history acceptance remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "U02",
       "phase": "daily",
       "title": "Deliver one clear daily card with reliable resume",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "U01",
@@ -1031,15 +1164,21 @@
         "Back/Forward, refresh, interruptions and reopening retain the chosen task and draft.",
         "One or two daily focuses do not hide or cap the full grammar curriculum."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/automaticity-practice/2026-09-04T22-44-58-305Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "One practice surface exposes the next action and complete catalog; task/draft resume, saved earlier drafts and mobile reflow pass. Exhaustive Back/Forward and physical touch-device cases remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "U03",
       "phase": "daily",
       "title": "Replace unsupported progress and CEFR claims",
-      "status": "planned",
+      "status": "implemented",
       "priority": "P1",
       "dependsOn": [
         "E02",
@@ -1059,15 +1198,20 @@
         "A grammar completion total never generates a global CEFR certificate.",
         "Old evidence remains visible with its limitations; no silent deletion or invented upgrade."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/evidence.ts"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Practice and qualified outcomes are separated; dashboards label legacy thresholds and avoid duration-based fluency. Remaining legacy screens require a full unsupported-claims sweep.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "U04",
       "phase": "daily",
       "title": "Verify offline recovery, consent and accessibility",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "U02",
@@ -1088,15 +1232,22 @@
         "Cloud assessment consent, stored history and training reuse are separate; no raw answers/audio enter aggregate analytics.",
         "Check keyboard, mobile/tablet reflow, reading order, local Persian RTL guidance and untimed mode; report any unavailable screen-reader/device test."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/automaticity-preservation/2026-09-04T22-38-00-980Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Offline response preservation, Settings recovery and mobile layouts pass with no browser page exceptions. Physical mic refusal, screen-reader/tablet, full keyboard and Persian guidance checks remain open. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "M01",
       "phase": "models",
       "title": "Create reviewed English and German assessment benchmarks",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "C03",
@@ -1116,15 +1267,21 @@
         "Record licensing and human review; predeclare error limits and coverage requirements before final testing.",
         "Every expansion records construction IDs, content versions and benchmark version; full-scope benchmark coverage must be refreshed before W05."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/qualification.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Benchmark schema, partition guards, review requirements and protocol exist. No independent reviewed labels/adjudication have been collected.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "M02",
       "phase": "models",
       "title": "Compare rules, LanguageTool and pretrained candidates",
-      "status": "planned",
+      "status": "blocked",
       "priority": "P1",
       "dependsOn": [
         "M01",
@@ -1144,15 +1301,22 @@
         "Existing CEFR text classifiers and external threshold searches are not treated as validated grammar judges.",
         "Report evaluated construction IDs and content/benchmark versions; repeat evaluation for new or materially changed families before their approval."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "scripts/qualify-automaticity-model.ts",
+        "shared/learning-core/src/automaticity/qualification.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "No reviewed benchmark is available for a valid comparison of rules, LanguageTool and pretrained models. Offline qualification runner is implemented; synthetic tests are not model results.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "M03",
       "phase": "models",
       "title": "Decide which assessment functions are supported",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "M02"
@@ -1169,15 +1333,21 @@
         "No supported label relies on model-generated benchmark answers that the same model self-certified.",
         "Initial scope approval can support the pilot; full-scope approval with current M01/M02 evidence is required at W05."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/assessment.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Current decision is conservative controlled practice feedback and unassessed open work with local review. No construction-wide automatic-assessment scope is approved without M01/M02.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "M04",
       "phase": "models",
       "title": "Integrate a qualified Transformer through the shared contract",
-      "status": "planned",
+      "status": "deferred",
       "priority": "P1",
       "dependsOn": [
         "M03",
@@ -1197,15 +1367,21 @@
         "Validate output structure and evidence spans; preserve minimal correction separately from stylistic rewriting.",
         "Provider unavailable/changed model triggers unassessed or validated fallback; rerun relevant benchmarks after changes."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/assessment.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": false,
-      "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release."
+      "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release.",
+      "progressNote": "Pinned scope validation is prepared. No Transformer is deployed because no candidate has passed reviewed qualification.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "W01",
       "phase": "expansion",
       "title": "Complete foundation and reference families",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "C04",
@@ -1224,7 +1400,12 @@
         "Preserve prior lesson identities; add reviewed omitted constructions.",
         "Generate catalog parity and browser evidence for completed cells."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
       "condition": null,
       "families": [
@@ -1234,13 +1415,15 @@
         "G04",
         "G05",
         "G13"
-      ]
+      ],
+      "progressNote": "Existing family tasks are generated and mapped; independent linguistic review, approved alternatives and evaluator coverage remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "W02",
       "phase": "expansion",
       "title": "Complete temporal and verb-system families",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "C04",
@@ -1259,7 +1442,12 @@
         "Respect cross-family prerequisites without forcing every learner through a linear wave order.",
         "Apply the common family completion checklist."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
       "condition": null,
       "families": [
@@ -1268,13 +1456,15 @@
         "G08",
         "G09",
         "G10"
-      ]
+      ],
+      "progressNote": "Existing family tasks are generated and mapped; temporal meaning, valency and lawful transformation review remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "W03",
       "phase": "expansion",
       "title": "Complete complex proposition families",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "C04",
@@ -1293,7 +1483,12 @@
         "Validate required foundation/verb subskills before integrated task release.",
         "Apply the common family completion checklist."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
       "condition": null,
       "families": [
@@ -1302,13 +1497,15 @@
         "G14",
         "G15",
         "G16"
-      ]
+      ],
+      "progressNote": "Existing family tasks are generated and mapped; scope, role assignment and integrated meaning review remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "W04",
       "phase": "expansion",
       "title": "Complete discourse, advanced integration and orthography",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "C04",
@@ -1327,7 +1524,12 @@
         "Apply orthography from the first relevant task; this wave does not postpone capitalization correctness.",
         "Apply the common family completion checklist; written-only cells need justified N/A for speech."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
       "condition": null,
       "families": [
@@ -1336,13 +1538,15 @@
         "G19",
         "G20",
         "G21"
-      ]
+      ],
+      "progressNote": "Existing family tasks are generated and mapped; advanced discourse/register and modality suitability review remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "W05",
       "phase": "expansion",
       "title": "Close the full-curriculum coverage gate",
-      "status": "planned",
+      "status": "blocked",
       "priority": "P1",
       "dependsOn": [
         "W01",
@@ -1370,15 +1574,22 @@
         "A representative slice or count parity cannot close this task.",
         "Require refreshed full-scope M01-M03 evidence matching the final construction/content versions, not only a previously completed representative benchmark."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "All 3584 current cells are authored but zero are human-reviewed/release-qualified. Full reviewed reference and scope-matched benchmark gates remain unmet.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "P01",
       "phase": "pilot",
       "title": "Prepare personal baseline and evaluation protocol",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P1",
       "dependsOn": [
         "C03",
@@ -1394,9 +1605,14 @@
         "Collect comparable baseline samples before the target practice intervention and log other tutoring/practice.",
         "Choose outcomes and eligibility windows in advance; never expose final probes during practice."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Dated protocol and outcome windows are specified. No real unaided pre-intervention baseline or reviewer-approved held-out probes have been collected.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "P02",
@@ -1418,15 +1634,20 @@
         "No scripted browser session substitutes for learner participation.",
         "Pilot can start before W05; accurately label the available curriculum scope."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "The installed practice flow is available. The learner must choose and author real sessions; synthetic browser actions are excluded from learner evidence.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "P03",
       "phase": "pilot",
       "title": "Measure transfer and delayed retention",
-      "status": "planned",
+      "status": "blocked",
       "priority": "P1",
       "dependsOn": [
         "P02"
@@ -1441,15 +1662,20 @@
         "Report opportunity and attempt denominators, assistance, errors, valid timing and uncertainty.",
         "Separate workflow completion, technical success, personal improvement trend and causal claims; no results without real samples."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Requires real learner baseline, practice, reviews and actual elapsed 24-hour/7-day/later observations. No retention or fluency improvement is claimed.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "S01",
       "phase": "scheduling",
       "title": "Make prospective FSRS history evidence-eligible",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P2",
       "dependsOn": [
         "E02",
@@ -1468,15 +1694,22 @@
         "Do not invent ratings or reconstruct missing history from aggregate progress.",
         "FSRS remains shadow-only and changing due dates stays disabled."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/contracts.ts",
+        "shared/learning-core/src/automaticity/evidence.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "New attempts carry eligibility provenance and original timestamps. Existing FSRS remains shadow-only; a complete prospective v2-to-FSRS adapter and qualified learner history remain open.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "S02",
       "phase": "scheduling",
       "title": "Qualify FSRS in shadow, then compare candidate review dates",
-      "status": "planned",
+      "status": "blocked",
       "priority": "P2",
       "dependsOn": [
         "S01",
@@ -1494,15 +1727,20 @@
         "Compare real delayed accuracy and workload with uncertainty, missing follow-ups and intervening practice; insufficient evidence leads to deferral.",
         "Define benefit/non-inferiority criteria before Stage B; prediction accuracy alone cannot certify spontaneous grammar competence."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": true,
-      "condition": null
+      "condition": null,
+      "progressNote": "Insufficient qualified prospective learner outcomes for shadow calibration or a delivered candidate-schedule comparison.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "S03",
       "phase": "scheduling",
       "title": "Activate a qualified scheduler reversibly",
-      "status": "planned",
+      "status": "deferred",
       "priority": "P2",
       "dependsOn": [
         "S02",
@@ -1520,16 +1758,21 @@
         "Retain baseline schedule snapshot and preserve due-review obligations and learner overrides.",
         "Run the release checklist for this increment as well."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": false,
-      "condition": "S02 supplies sufficient favourable evidence; otherwise leave shadow-only."
+      "condition": "S02 supplies sufficient favourable evidence; otherwise leave shadow-only.",
+      "progressNote": "Baseline due dates remain in use; no qualified scheduler benefit or non-inferiority evidence exists.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "R01",
       "phase": "release",
       "title": "Prepare the repeatable release and preservation checklist",
-      "status": "in_progress",
-      "progressNote": "Both isolated lifecycles passed previous-version install, upgrade, startup, update, payload repair and uninstall: English 27.3.22-to-27.3.23 and German 20.8.28-to-20.8.29. Their reports retain artifact hashes and synthetic-marker preservation limits. All eight selected browser regressions and 10 restored-source HTTP probes passed. Aggregate full-repository gates, normal-profile coverage and full export/restore/audio preservation remain incomplete under B01/B02 and R01; isolated lifecycle success is not full release qualification.",
+      "status": "implemented",
+      "progressNote": "Repeatable source, browser, profile backup and installer checks now include real upgrades and payload corruption/repair. Source checkpoint, versions and hashes are recorded; repeat per further increment. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
       "priority": "P0",
       "dependsOn": [
         "B01",
@@ -1562,17 +1805,25 @@
         "artifacts/installer-cycle/English-20260904-230404-158b4cf6/report.json",
         "artifacts/installer-cycle/German-20260904-230350-5824a8d4/report.json",
         "artifacts/language-integrity-browser/2026-09-04T21-08-40-076Z/report.json",
-        "artifacts/language-automaticity/baseline-2026-09-04T21-06-31-192Z.json"
+        "artifacts/language-automaticity/baseline-2026-09-04T21-06-31-192Z.json",
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "scripts/update-installed-language-apps.ps1",
+        "artifacts/installer-cycle/English-20260905-005157-b640f6d5/report.json",
+        "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
+        "artifacts/installed-language-update/20260905-005438/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "recurring": true
+      "recurring": true,
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "R02",
       "phase": "release",
       "title": "Deliver and verify the first learning-loop release",
-      "status": "planned",
+      "status": "in_progress",
       "priority": "P0",
       "dependsOn": [
         "L05",
@@ -1594,7 +1845,14 @@
         "Record only measured outcomes; blocked policy/signing/device gates remain explicit and cannot become success.",
         "If Transformer assistance is included, verify M04 and current scope-matched M01-M03 approval before delivery."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "artifacts/installer-cycle/English-20260905-005157-b640f6d5/report.json",
+        "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
+        "artifacts/installed-language-update/20260905-005438/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json",
+        "artifacts/automaticity-recording/2026-09-04T23-01-35-845Z/report.json"
+      ],
       "required": true,
       "condition": null,
       "conditionalDependencies": [
@@ -1602,13 +1860,15 @@
           "task": "M04",
           "when": "The pilot release includes a selected Transformer adapter."
         }
-      ]
+      ],
+      "progressNote": "Technical increment is built, installed and verified with both normal profiles preserved. Full ticket closure still depends on L05/U04 acceptance; this is not full reviewed learning-loop qualification. Installed synthetic-microphone recording, simulated permission-denial recovery and keyboard submission now pass. Physical device and ASR qualification remain untested.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "R03",
       "phase": "release",
       "title": "Deliver the full-curriculum release",
-      "status": "planned",
+      "status": "blocked",
       "priority": "P0",
       "dependsOn": [
         "W05",
@@ -1630,7 +1890,16 @@
         "Include M04 verification if a Transformer was selected; no old installer payload may omit the new schema/content.",
         "Report technical release, curriculum coverage and learner-effectiveness status separately."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/automaticity-coverage.json",
+        "docs/automaticity-coverage-backlog.json",
+        "shared/learning-core/content/construction-map.json",
+        "artifacts/installer-cycle/English-20260905-005157-b640f6d5/report.json",
+        "artifacts/installer-cycle/German-20260905-005210-16908e3b/report.json",
+        "artifacts/installed-language-update/20260905-005438/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-04T22-57-06-389Z/report.json"
+      ],
       "required": true,
       "condition": null,
       "conditionalDependencies": [
@@ -1638,13 +1907,15 @@
           "task": "M04",
           "when": "A Transformer adapter is selected for this release."
         }
-      ]
+      ],
+      "progressNote": "Full reviewed curriculum release cannot pass W05 and assessment scope gates. Technical installers are delivered separately.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "X01",
       "phase": "research",
       "title": "Assess readiness for a contextual-bandit experiment",
-      "status": "planned",
+      "status": "deferred",
       "priority": "P3",
       "dependsOn": [
         "P03",
@@ -1662,15 +1933,20 @@
         "Do not assume one learner can supply enough data; default to keeping the useful rule-based policy.",
         "This decision does not delay the core full-curriculum release."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": false,
-      "condition": "Only after measured learning and scheduling evidence justify considering RL."
+      "condition": "Only after measured learning and scheduling evidence justify considering RL.",
+      "progressNote": "Readiness conditions fail without trustworthy delayed outcomes and adequate observations. Deterministic selection remains the deployed policy.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "X02",
       "phase": "research",
       "title": "Compare a bounded practice-selection policy",
-      "status": "planned",
+      "status": "deferred",
       "priority": "P3",
       "dependsOn": [
         "X01",
@@ -1687,15 +1963,20 @@
         "Keep policy-development probes separate from final evaluation; do not reward clicks, copied answers or speed alone.",
         "Constrain exploration to pedagogically eligible options and apply preregistered benefit/non-inferiority criteria."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": false,
-      "condition": "X01 finds sufficient data and a sound design; learner participation is available."
+      "condition": "X01 finds sufficient data and a sound design; learner participation is available.",
+      "progressNote": "No eligible contextual-bandit experiment or participant consent; no exploration or reward learning is activated.",
+      "updatedOn": "2026-09-05"
     },
     {
       "id": "X03",
       "phase": "research",
       "title": "Decide whether sequential RL adds value",
-      "status": "planned",
+      "status": "deferred",
       "priority": "P3",
       "dependsOn": [
         "X02"
@@ -1710,9 +1991,26 @@
         "Simulator results do not count as learner gains.",
         "No training-from-scratch or full-RL project starts merely to satisfy a technology preference."
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+      ],
       "required": false,
-      "condition": "A completed X02 experiment exposes a justified sequential decision problem."
+      "condition": "A completed X02 experiment exposes a justified sequential decision problem.",
+      "progressNote": "No evidence that sequential RL adds value beyond the baseline; no RL training started.",
+      "updatedOn": "2026-09-05"
     }
-  ]
+  ],
+  "delivery": {
+    "technicalIncrement": "installed_verified",
+    "englishVersion": "27.3.24",
+    "germanVersion": "20.8.30",
+    "fullRoadmap": "incomplete",
+    "fullCurriculum": "not_qualified",
+    "learningEffectiveness": "not_measured",
+    "contentReview": "pending",
+    "transformer": "not_qualified",
+    "fsrs": "shadow_only",
+    "reinforcementLearning": "deferred"
+  }
 }

@@ -37,6 +37,9 @@ try{
         await write(teacherDb,"content","id",[["lesson",{id:"lesson",title:"Synthetic teacher fixture",pending:true}]]);
         await write(teacherDb,"audio",null,[["lesson",blob]]);
         const persistence={storage:localStorage,indexedDB};
+        const noLocalSpace={get length(){return localStorage.length;},key:index=>localStorage.key(index),getItem:key=>localStorage.getItem(key),setItem:()=>{throw new DOMException("Synthetic full localStorage","QuotaExceededError");},removeItem:key=>localStorage.removeItem(key)};
+        const durable=await core.preserveLegacyStateDurable({storage:noLocalSpace,indexedDB},language,new Date().toISOString());
+        if(durable.status!=="saved"||durable.keys<2)throw new Error("Legacy migration tried to consume localStorage quota");
         core.preserveLegacyState(localStorage,language,new Date().toISOString());
         const backup=await core.captureCompleteBackup(persistence,language);await core.validateCompleteBackup(backup,language);
         if(backup.localStorage.some(([key])=>key==="oauth-token"))throw new Error("Credential store was included");

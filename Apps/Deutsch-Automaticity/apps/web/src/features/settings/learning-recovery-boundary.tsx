@@ -2,7 +2,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import {
   recoverBeforeMount,
-  preserveLegacyState,
+  preserveLegacyStateDurable,
 } from "@automaticity/learning-core/automaticity";
 export function LearningRecoveryBoundary({
   children,
@@ -15,7 +15,11 @@ export function LearningRecoveryBoundary({
     let active = true;
     void (async () => {
       await recoverBeforeMount({ storage: localStorage, indexedDB }, "de");
-      preserveLegacyState(localStorage, "de", new Date().toISOString());
+      await preserveLegacyStateDurable(
+        { storage: localStorage, indexedDB },
+        "de",
+        new Date().toISOString(),
+      );
       if (active) setReady(true);
     })().catch((reason: unknown) => {
       if (active)

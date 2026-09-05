@@ -246,6 +246,12 @@ export function ReviewCenter() {
 
   return (
     <div className="space-y-6">
+      <a
+        href="/practice?review=1"
+        className="inline-block rounded-xl bg-blue-700 px-4 py-3 text-white"
+      >
+        Antworten aus eigenständigen Übungen prüfen und wiederholen
+      </a>
       <div>
         <p className="section-kicker">Langzeitgedächtnis</p>
         <h1 className="section-title">Wiederholungen</h1>

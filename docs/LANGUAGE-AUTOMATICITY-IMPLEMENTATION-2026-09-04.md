@@ -74,6 +74,8 @@ Local distribution packages contain each installer and its companion payload:
 
 Their manifests are local release artifacts; no public deployment is claimed. Exact installer and payload SHA-256 values are recorded in the lifecycle reports.
 
-**Remaining work**
+**Remaining work at this checkpoint**
+
+This historical checkpoint is followed by the [5 September implementation and installed-release record](LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md). The paragraph below describes the earlier increment, not the current installed feature set.
 
 This increment does not introduce the shared construction/task schema, event reducer, exposure-aware mastery, curriculum crosswalk, model qualification, FSRS activation or RL. The next dependency batch is B02/B03/C01, followed by E01/C02/C03 and E02. F03 and the remaining F04 work depend on those contracts. No lesson, user proficiency level or long-term learning outcome has been marked mastered by this implementation record.

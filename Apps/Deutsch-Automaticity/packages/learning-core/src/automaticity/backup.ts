@@ -43,11 +43,13 @@ export const databaseNames = (language: Language) =>
         "GrammarAutomaticityV27",
         "english-automaticity-teacher-content",
         "automaticity-v2-en",
+        "automaticity-migration-v2-en",
       ]
     : [
         "GrammarAutomaticityV11_de",
         "deutsch-automaticity-teacher-content",
         "automaticity-v2-de",
+        "automaticity-migration-v2-de",
       ];
 const journalName = (language: Language) =>
   `automaticity-recovery-v2-${language}`;

@@ -110,6 +110,7 @@ export function reduceAutomaticityEvents(
         !old ||
         old.type !== "assessment" ||
         old.attemptId !== event.attemptId ||
+        (event.evaluator.kind === "self" && old.evaluator.kind !== "self") ||
         time(old.at) >= time(event.at)
       ) {
         rejected.push({
@@ -139,7 +140,10 @@ export function reduceAutomaticityEvents(
     if (assessment.supersedes) removed.add(assessment.supersedes);
   const reduced: ReducedAttempt[] = attempts.map((attempt) => {
     const candidates = validAssessments.filter(
-      (event) => event.attemptId === attempt.id && !removed.has(event.id),
+      (event) =>
+        event.attemptId === attempt.id &&
+        event.evaluator.kind !== "self" &&
+        !removed.has(event.id),
     );
     // Two competing verdicts require adjudication; never choose a convenient one.
     const assessment = candidates.length === 1 ? candidates[0]! : null;
@@ -166,13 +170,15 @@ export function reduceAutomaticityEvents(
     const exposed = exposure.some(
       (event) =>
         event.type === "exposure" &&
+        time(attempt.at) - time(event.at) < DAY &&
         (event.taskId === attempt.task.id ||
           event.itemFamily === attempt.task.itemFamily),
     );
     const repeatedItem = prior.some(
       (row) =>
-        row.task.id === attempt.task.id ||
-        row.task.itemFamily === attempt.task.itemFamily,
+        time(attempt.at) - time(row.at) < DAY &&
+        (row.task.id === attempt.task.id ||
+          row.task.itemFamily === attempt.task.itemFamily),
     );
     const assisted =
       attempt.assistance.hintCount > 0 ||

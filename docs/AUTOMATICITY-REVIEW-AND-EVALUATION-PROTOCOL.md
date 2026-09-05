@@ -1,0 +1,49 @@
+# Review and evaluation protocol
+
+Updated 5 September 2026. This implements the review gates in the [roadmap](LANGUAGE-AUTOMATICITY-IMPLEMENTATION-ROADMAP.md).
+
+The current release provides practice across the existing English and German catalogs. It does not certify that the learner has mastered them. The construction map and the new spoken tasks are authored material awaiting independent language review.
+
+## Content review
+
+Use `shared/learning-core/content/construction-map.json` as the stable crosswalk. Never regenerate an existing identifier from a title. Review each construction's prerequisites, explanation, examples, accepted alternatives, and writing and speaking tasks at all seven stages. Correct mappings explicitly and keep old lesson aliases.
+
+The executable matrix is `docs/automaticity-coverage.json`. Each cell has a corresponding task in `docs/automaticity-coverage-backlog.json`. “Authored” means there is a task. “Human reviewed” requires a real recorded review. A missing or unreviewed cell cannot be counted as completed coverage. Add constructions found missing during reference review; the original 112 and 144 units are a migration baseline.
+
+For a task to support independent evidence, the reviewer must confirm that the prompt elicits the intended construction, valid alternatives are accepted, examples are not shown before the response, and the task has an approved assessment scope. Keep teaching, calibration and final evaluation item families separate. Do not relabel an exposed exercise as a novel test.
+
+## Assessment qualification
+
+`scripts/qualify-automaticity-model.ts` compares saved predictions with reviewed labels. Input contains a pinned candidate identity, cases, and predictions. It reports each language/construction/rubric scope separately. The validator rejects duplicate cases, item-family overlap across partitions, incomplete human review, missing predictions, and invalid timing or cost values.
+
+The initial engineering gate requires 20 final cases in each category per released scope: correct alternatives, grammar errors, ambiguity, off-target answers, and ASR corruption. These counts are a starting qualification requirement, not a claim of statistical certainty. Two distinct review identifiers and adjudication are required. Final testing must report false corrections, missed errors, meaning changes, abstention, target judgments, latency and known cost. Missing cost remains unknown. A model that abstains on every supported case cannot qualify by avoiding mistakes.
+
+Passing this gate makes a candidate eligible for a separate release review. It never activates the model. Promotion also needs a review of uncertainty, confidence intervals, representative learner samples, deployment privacy, and the exact model version. `validateModelAssessment` accepts only a pinned, approved scope with its benchmark hash. A provider cannot approve itself by returning `scopeApproved: true`.
+
+No Transformer has been qualified by this work. No model was trained on learner responses. Open production is saved for review and does not receive an invented correctness score. A controlled-answer match is useful practice feedback; it does not qualify the entire grammar family.
+
+## Personal baseline and follow-up
+
+1. Record the learner's selected level as a preference. Do not infer speaking ability from the earlier written examples or certify a CEFR level.
+2. Collect original writing and actual recordings across several constructions before changing the learning policy. Record help, exposure, modality, and interruptions. Do not reconstruct an earlier baseline from current results.
+3. Start with one or two daily focuses and at most five active repair priorities. Use short retrieval, variation, original production, repair and transfer tasks. Add complexity after reliable short production.
+4. Use a new task and context to assess transfer. Target-named prompts, elicited target use and free transfer are different conditions and must remain identifiable.
+5. Return on later days. The reducer checks elapsed time since the latest attempt or teaching exposure. A fresh unaided return to a familiar item after at least 24 hours can support retention; it never becomes novel transfer. Hints or model exposure within that interval and linked repair attempts remain assisted practice. The 24-hour interval is an initial engineering rule to evaluate, not a universal learning threshold. A due date, a “return later” button, and repeated copying do not prove retention.
+6. Compare supported accuracy, repair recurrence, independent response timing, new-context performance, and delayed outcomes separately for writing and speaking. Include failed assessed attempts in the denominator. Unassessed responses remain unknown.
+7. Review recordings independently of transcripts. A manually typed transcript is not pronunciation or fluency evidence. Timing after an interrupted session is unavailable; background-tab time is excluded from active writing time.
+
+The learner must produce these samples. The application cannot generate them as evidence of the learner's ability. Real delayed retention therefore remains unmeasured until later practice and review happen.
+
+## Scheduler and reinforcement learning
+
+The deployed policy is an explainable baseline. It gives priority to due practice and observed repair needs, then under-practised constructions. Unobserved skills are not classified as weaknesses. A revisit may be scheduled even when an answer is awaiting assessment; that scheduling decision never adds mastery credit.
+
+The existing FSRS module stays in shadow mode. Its aggregate legacy history is not a reconstruction of memory strength. Qualify prospective original-response histories before comparing candidate dates. Keep the baseline available for rollback.
+
+A contextual-bandit or reinforcement-learning experiment requires reviewed outcomes, a pre-intervention baseline, explicit participation consent, adequate observations, logged action probabilities, and a held-out evaluation. Its reward must reflect later independent retention and transfer, not clicks, time spent, streaks, or immediate model agreement. No adaptive policy is activated merely because its code runs. These conditions cannot be satisfied with synthetic test fixtures.
+
+## Recovery and release
+
+Complete backups preserve language-owned local state and the app's audio/content databases. Restores validate the envelope and media hashes before changing data, save a recovery journal, and roll back on failure. Older backups can restore their text/evidence while keeping existing recordings, but cannot recover recordings they never contained. Close other app tabs before restoring.
+
+Run the focused evidence tests, curriculum generation check, shared mirror check, complete app checks, real browser practice and preservation tests, and isolated installer lifecycle. A passing build verifies software behavior, not learning effectiveness. Preserve the original data and distinguish synthetic preservation fixtures from verification of a real learner profile.

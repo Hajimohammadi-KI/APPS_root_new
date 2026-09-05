@@ -6,3 +6,4 @@ export * from "./curriculum";
 export * from "./selector";
 export * from "./assessment";
 export * from "./media";
+export * from "./migration";

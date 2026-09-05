@@ -164,7 +164,9 @@ async function englishWriting(page, malformed) {
   await expect.poll(async () => (await readWriting()).evidence?.verification.status).toBe(malformed ? "unverified" : "verified");
   const saved = await readWriting();
   assert.deepEqual(saved.attempt, { mode: "writing", verified: !malformed, passed: !malformed });
-  assert.equal(saved.evidence.masteryEligible, !malformed);
+  // A valid grammar check does not establish unaided retrieval. This legacy
+  // route supplies no independent-attempt provenance, even for the control.
+  assert.equal(saved.evidence.masteryEligible, false);
   assert.equal(saved.evidence.automaticityClaim, "insufficient-longitudinal-evidence");
   assert.equal(saved.dailyWriting, malformed ? "unassessed" : "done");
   assert.equal(saved.journal, text, "The learner's synthetic draft must remain saved");

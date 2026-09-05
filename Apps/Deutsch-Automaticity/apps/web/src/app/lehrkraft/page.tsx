@@ -206,6 +206,12 @@ export default function LehrkraftPage() {
   }
   return (
     <main className="teacher-page">
+      <a
+        href="/practice?review=1"
+        className="inline-block rounded-xl bg-blue-700 px-4 py-3 text-white"
+      >
+        Originalantworten und Aufnahmen aus Übungen prüfen
+      </a>
       <header className="teacher-hero">
         <a href="/" className="teacher-back">
           <ArrowLeft /> Zurück zur App

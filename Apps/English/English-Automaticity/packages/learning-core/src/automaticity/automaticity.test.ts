@@ -123,6 +123,28 @@ describe("independent evidence and provenance", () => {
     expect(r.attempts[0]?.novel).toBe(false);
     expect(r.progress[0]?.status).toBe("independent_evidence");
   });
+  test("self-checks cannot replace or conflict with an authoritative assessment", () => {
+    const a = attempt(),
+      judge = assessment(a);
+    const self: AssessmentEvent = {
+      ...judge,
+      id: "self",
+      at: "2026-09-01T11:00:00.000Z",
+      evaluator: {
+        id: "learner",
+        version: "1",
+        kind: "self",
+        scopeApproved: false,
+        reviewId: null,
+      },
+    };
+    expect(reduce([a, judge, self]).attempts[0]?.assessment?.id).toBe(judge.id);
+    expect(
+      reduce([a, judge, { ...self, supersedes: judge.id }]).attempts[0]
+        ?.assessment?.id,
+    ).toBe(judge.id);
+    expect(reduce([a, self]).progress[0]?.accuracy).toBeNull();
+  });
   test("missing assessment stays unknown while a practice revisit can still be scheduled", () => {
     const r = reduce([attempt()]);
     expect(r.progress[0]?.accuracy).toBeNull();
@@ -156,13 +178,41 @@ describe("independent evidence and provenance", () => {
     a.assistance.hintCount = 1;
     expect(reduce([a, assessment(a)]).attempts[0]?.independent).toBe(false);
   });
-  test("repair and repeated item successes are useful practice only", () => {
+  test("immediate repeated item successes are useful practice only", () => {
     const a = attempt();
-    const b = attempt("b", "2026-09-03T10:00:10.000Z");
+    const b = attempt("b", "2026-09-01T10:02:10.000Z");
     b.task.itemFamily = a.task.itemFamily;
     const r = reduce([a, assessment(a), b, assessment(b)]);
     expect(r.attempts[1]?.independent).toBe(false);
     expect(r.progress[0]?.independentAssessed).toBe(1);
+  });
+  test("a fresh unaided return to a known item can establish retention but never novelty", () => {
+    const a = attempt();
+    const b = attempt("b", "2026-09-03T10:00:10.000Z");
+    b.task.id = a.task.id;
+    b.task.itemFamily = a.task.itemFamily;
+    b.task.contextId = a.task.contextId;
+    b.task.stage = "retain";
+    const exposure: AutomaticityEvent = {
+      version: 2,
+      type: "exposure",
+      id: "old-model",
+      language: "en",
+      at: a.timing.startedAt,
+      constructionId: a.task.constructionId,
+      taskId: a.task.id,
+      itemFamily: a.task.itemFamily,
+      kind: "solution",
+    };
+    const result = reduce([exposure, a, assessment(a), b, assessment(b)]);
+    expect(result.attempts[0]?.independent).toBe(false);
+    expect(result.attempts[1]?.independent).toBe(true);
+    expect(result.attempts[1]?.delayed).toBe(true);
+    expect(result.attempts[1]?.novel).toBe(false);
+    b.previousAttemptId = a.id;
+    expect(
+      reduce([a, assessment(a), b, assessment(b)]).attempts[1]?.independent,
+    ).toBe(false);
   });
   test("new task with actual elapsed time and new context supplies separate delay and novelty", () => {
     const a = attempt();

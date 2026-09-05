@@ -70,6 +70,7 @@ export function ErrorsScreen() {
 
   return (
     <div className="page-stack">
+      <a href="/practice?review=1" className="inline-block rounded-xl bg-blue-700 px-4 py-3 text-white">Review and repair responses from independent practice</a>
       <div className="page-heading">
         <div>
           <h1>Error Workshop</h1>

@@ -8,6 +8,7 @@ import {
 import { reduceAutomaticityEvents } from "./evidence";
 import { sha256 } from "./backup";
 import type { CurriculumPack, PracticeTask } from "./curriculum";
+import { appendAutomaticityEvent, type LocalStore } from "./storage";
 
 export interface AssessmentFeedbackCase {
   id: string;
@@ -36,6 +37,16 @@ const identityKeys = [
 ] as const;
 const matchesTask = (a: TaskIdentity, b: TaskIdentity) =>
   identityKeys.every((key) => a[key] === b[key]);
+
+/** Write the abstention first: an interrupted second write cannot leave a disputed pass current. */
+export function persistFeedbackAssessment(storage: LocalStore, proposal: AssessmentEvent, guard: AssessmentEvent | null): void {
+  if (guard) {
+    if (guard.supersedes !== proposal.id || guard.attemptId !== proposal.attemptId || guard.verdict !== "not_assessed")
+      throw new Error("Feedback guard does not match its original judgment.");
+    appendAutomaticityEvent(storage, guard);
+  }
+  appendAutomaticityEvent(storage, proposal);
+}
 
 /** Local reviewer feedback is evidence of a reported disagreement, not a qualified gold label. */
 export async function collectAssessmentFeedback(

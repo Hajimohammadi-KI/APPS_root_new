@@ -22,7 +22,7 @@ import { preserveLegacyStateDurable } from "./migration";
 import { mountReviewPanel } from "./review-panel";
 import { reduceAutomaticityEvents } from "./evidence";
 import { assessControlledTask } from "./assessment";
-import { collectAssessmentFeedback, guardAssessmentWithFeedback } from "./assessment-feedback";
+import { collectAssessmentFeedback, guardAssessmentWithFeedback, persistFeedbackAssessment } from "./assessment-feedback";
 import { createTransformerClient } from "./transformer-client";
 import {
   captureCompleteBackup,
@@ -1411,11 +1411,10 @@ export async function mountPractice(
         session.submittedId = attempt.id;
         saveSession();
         const assessment = assessControlledTask(attempt, task, now(), id());
-        appendAutomaticityEvent(localStorage, assessment);
         const applyFeedback = async (proposal: typeof assessment) => {
           const history = await collectAssessmentFeedback(readAutomaticityEvents(localStorage, language).events, pack, now());
           const guarded = await guardAssessmentWithFeedback(attempt, task, proposal, history, now(), id());
-          if (guarded) appendAutomaticityEvent(localStorage, guarded);
+          persistFeedbackAssessment(localStorage, proposal, guarded);
           return guarded;
         };
         const guarded = await applyFeedback(assessment);
@@ -1426,7 +1425,6 @@ export async function mountPractice(
             assessment,
           );
           if (modelAssessment) {
-            appendAutomaticityEvent(localStorage, modelAssessment);
             const modelGuard = await applyFeedback(modelAssessment);
             feedback.textContent = (modelGuard ?? modelAssessment).feedback;
           }

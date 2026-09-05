@@ -385,14 +385,16 @@ export function representativeTasks(
             ? (en
                 ? "Record your answer aloud. "
                 : "Sprich deine Antwort und nimm sie auf. ") +
-              instructions.replace(
-                en
-                  ? "Write one complete sentence."
-                  : "Formuliere einen vollständigen Satz.",
-                en
-                  ? "Say one complete sentence."
-                  : "Sprich einen vollständigen Satz.",
-              )
+              instructions
+                .replace(
+                  en
+                    ? "Write one complete sentence."
+                    : "Formuliere einen vollständigen Satz.",
+                  en
+                    ? "Say one complete sentence."
+                    : "Sprich einen vollständigen Satz.",
+                )
+                .replace(/\bWrite\b/g, "Say")
             : instructions,
         answerPolicy: stage === "notice" ? "reflection" : "open",
         responseKind:

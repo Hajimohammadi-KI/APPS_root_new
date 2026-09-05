@@ -1,3 +1,7 @@
+import {
+  REPRESENTATIVE_VERSION,
+  resolveRepresentativeTask,
+} from "../shared/learning-core/src/automaticity/representative-tasks";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
@@ -94,7 +98,7 @@ try {
       await readFile(resolve(root, source.path), "utf8"),
     ) as CurriculumPack;
     assert.deepEqual(validateCurriculum(current), []);
-    assert.equal(current.version, "2026-09-05.4");
+    assert.equal(current.version, REPRESENTATIVE_VERSION);
     assert.equal(before.units.length, current.units.length);
     for (const original of before.units) {
       const unit = current.units.find((unit) => unit.id === original.id)!;
@@ -133,6 +137,10 @@ try {
       for (const task of unit.tasks.filter(
         (task) => !originalIds.has(task.id),
       )) {
+        if (task.constructionAssessment) {
+          assert(resolveRepresentativeTask(task));
+          continue;
+        }
         report.newTasks++;
         assert.equal(task.contentReview, "authored");
         assert.equal(task.partition, "practice");
@@ -198,7 +206,7 @@ try {
   assert.equal(report.preservedTasks, 5042);
   assert.equal(report.retiredTasks, 506);
   assert.equal(report.newTasks, 220);
-  assert.equal(report.activeTasks, 4756);
+  assert.equal(report.activeTasks, 4756 + 168);
   report.status = "passed";
 } catch (error) {
   report.status = "failed";

@@ -1,3 +1,4 @@
+import { resolveRepresentativeTask } from "../shared/learning-core/src/automaticity/representative-tasks";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -106,7 +107,8 @@ try {
       );
       for (const task of current.tasks.filter((task) => !ids.has(task.id)))
         assert(
-          retiredTasks?.some((row) => row.replacementTaskId === task.id),
+          retiredTasks?.some((row) => row.replacementTaskId === task.id) ||
+            (task.constructionAssessment && resolveRepresentativeTask(task)),
           `Undeclared replacement ${task.id}`,
         );
     }

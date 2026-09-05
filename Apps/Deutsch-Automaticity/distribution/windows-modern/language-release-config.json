@@ -1,7 +1,7 @@
 {
   "productName": "DeutschFlow",
   "productId": "DeutschFlowDesktop",
-  "version": "20.8.40",
+  "version": "20.8.41",
   "installFolder": "DeutschFlow",
   "dataFolder": "DeutschFlow",
   "mainExecutable": "DeutschFlow.exe",

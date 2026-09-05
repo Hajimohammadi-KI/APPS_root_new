@@ -48,7 +48,27 @@ for (const language of ["en", "de"] as const) {
       tasks.some((task) => !resolveRepresentativeTask(task))
     )
       throw Error(`Stale representative tasks ${scope.constructionId}`);
-    return { ...original, tasks, retiredTasks: [] };
+    // These flags exist only in the projected review view. The shared gate
+    // validates the actual evidence and hashes below before counting a claim.
+    // No full-curriculum source flags or runtime evaluator are modified.
+    const claimed = tasks.map((task) => ({
+      ...task,
+      contentReview: reviews.some(
+        (review) =>
+          review.language === language &&
+          review.constructionId === original.id &&
+          review.stage === task.stage &&
+          review.modality === task.modality,
+      )
+        ? ("human_reviewed" as const)
+        : ("authored" as const),
+    }));
+    return {
+      ...original,
+      review: "human_reviewed" as const,
+      tasks: claimed,
+      retiredTasks: [],
+    };
   });
   packs.set(language, { ...pack, units });
   for (const unit of units)

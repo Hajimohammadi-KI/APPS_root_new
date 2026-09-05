@@ -9,11 +9,7 @@ import {
   resolveRepresentativeTask,
 } from "../shared/learning-core/src/automaticity/representative-tasks";
 import { REPRESENTATIVE_FIXTURES } from "../shared/learning-core/src/automaticity/representative-fixtures";
-import { parseConstruction } from "../shared/learning-core/src/automaticity/construction-rules";
-import type {
-  AttemptEvent,
-  Language,
-} from "../shared/learning-core/src/automaticity/contracts";
+import type { AttemptEvent } from "../shared/learning-core/src/automaticity/contracts";
 import type { CurriculumPack } from "../shared/learning-core/src/automaticity/curriculum";
 import { createContentReviewPacket } from "./lib/curriculum-review-packets";
 const root = resolve(import.meta.dir, ".."),
@@ -22,7 +18,8 @@ const sha = (s: string | Buffer) =>
   createHash("sha256").update(s).digest("hex");
 await mkdir(target, { recursive: true });
 const prepare = Bun.argv.includes("--prepare-review");
-if (prepare) await mkdir(resolve(target, "review")); // exclusive: do not overwrite review work
+const reviewDirectory = `review-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+if (prepare) await mkdir(resolve(target, reviewDirectory)); // exclusive: do not overwrite review work
 const results: unknown[] = [],
   packs: CurriculumPack[] = [];
 let preservedTasks = 0,
@@ -122,10 +119,21 @@ for (const language of ["en", "de"] as const) {
     if (prepare) {
       const packet = createContentReviewPacket(pack, subset);
       await writeFile(
-        resolve(target, `review/${unit.id}.json`),
+        resolve(target, `${reviewDirectory}/${unit.id}.json`),
         JSON.stringify(
           {
             ...packet,
+            instructions: packet.instructions.map((line) =>
+              line
+                .replaceAll(
+                  "docs/automaticity-release-reviews.json",
+                  "docs/automaticity-representative-reviews.json",
+                )
+                .replace(
+                  "Update source review flags through a reviewed content change, then run the coverage gate.",
+                  "Run the representative review gate; approval applies only to this projected subset.",
+                ),
+            ),
             scopeNote:
               "L01 representative subset only. Original tasks and the full curriculum are outside this review.",
             ruleScope: scope,
@@ -178,9 +186,22 @@ await writeFile(
 );
 if (prepare)
   await writeFile(
-    resolve(target, "review/README.md"),
+    resolve(target, `${reviewDirectory}/README.md`),
     `# L01 representative review\n\n12 bilingual construction scopes; 168 tasks. These packets require an actual independent language review. All reviewer names, dates, decisions and judgments remain blank.\n\nEach JSON packet includes the 14 scoped tasks, sources, sample assessment results, manual review procedure and structured content/evaluator review drafts. Check each judgment; test results do not establish that the language labels are correct.\n\nSave completed evidence as new files. Record the exact references in docs/automaticity-representative-reviews.json. This separate ledger cannot approve the full curriculum or activate any runtime evaluator. Run bun scripts/check-representative-review.ts after importing genuine review records.\n\nPackets: ${REPRESENTATIVE_SCOPES.map((s) => s.constructionId + ".json").join(", ")}\n`,
     { flag: "wx" },
+  );
+if (prepare)
+  await writeFile(
+    resolve(target, "review-manifest.json"),
+    JSON.stringify(
+      {
+        directory: reviewDirectory,
+        contentVersion: packs[0]!.version,
+        createdAt: new Date().toISOString(),
+      },
+      null,
+      2,
+    ) + "\n",
   );
 console.log(
   JSON.stringify({

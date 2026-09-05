@@ -58,6 +58,12 @@ const server = createServer(async (req, res) => {
 });
 await new Promise((done) => server.listen(0, "127.0.0.1", done));
 const browser = await chromium.launch({ channel: "msedge", headless: true });
+const reviewManifest = JSON.parse(
+  await readFile(
+    resolve(root, "artifacts/l01-assessment/review-manifest.json"),
+    "utf8",
+  ),
+);
 const report = {
   at: new Date().toISOString(),
   scope: `${installed ? "Installed" : "Compiled source"} app forms; synthetic responses in isolated profiles; no language-review or learner-outcome claim`,
@@ -91,7 +97,10 @@ try {
     )) {
       const packet = JSON.parse(
         await readFile(
-          resolve(root, `artifacts/l01-assessment/review/${unit.id}.json`),
+          resolve(
+            root,
+            `artifacts/l01-assessment/${reviewManifest.directory}/${unit.id}.json`,
+          ),
           "utf8",
         ),
       );
@@ -138,7 +147,10 @@ try {
         );
         await expect(page.locator("#practice-response")).toBeVisible();
         if (await page.locator("#practice-response").isDisabled())
-          await action("Try again as a repair", "Als Korrektur erneut versuchen").click();
+          await action(
+            "Try again as a repair",
+            "Als Korrektur erneut versuchen",
+          ).click();
       };
       const submit = async (text, verdict) => {
         const count = (await events()).filter(

@@ -27,6 +27,9 @@ export interface Task {
   updatedOn?: string;
   engineeringVerification?: string;
   remainingHumanWork?: string[];
+  remainingEngineeringWork?: string[];
+  afterHumanValidation?: string[];
+  engineeringScope?: string;
 }
 export interface Backlog {
   schemaVersion: number;
@@ -116,6 +119,25 @@ export function parseBacklog(raw: string): Backlog {
         (task.status === "verified" && task.remainingHumanWork.length))
     )
       throw new Error(`Invalid remaining human work: ${task.id}`);
+    for (const field of [
+      "remainingEngineeringWork",
+      "afterHumanValidation",
+    ] as const) {
+      const work = task[field];
+      if (
+        work !== undefined &&
+        (!Array.isArray(work) ||
+          work.some((item) => typeof item !== "string" || !item.trim()) ||
+          (task.status === "verified" && work.length))
+      )
+        throw new Error(`Invalid remaining work (${field}): ${task.id}`);
+    }
+    if (
+      task.engineeringScope !== undefined &&
+      (typeof task.engineeringScope !== "string" ||
+        !task.engineeringScope.trim())
+    )
+      throw new Error(`Invalid engineering scope: ${task.id}`);
     if (
       (task.status === "verified" ||
         task.engineeringVerification === "verified_for_recorded_scope") &&

@@ -39,13 +39,13 @@ try {
   assert.equal(snapshot.backlog.technicalRelease.versions.German, "20.8.44");
   await expect(page.locator(".task")).toHaveCount(48);
   await expect(page.locator("#stats .stat strong")).toHaveText([
-    "43 / 43",
     "29 / 43",
+    "43 / 43",
     "14",
     "5",
   ]);
   report.checks.push(
-    "Current source and installed versions match; 43 required engineering scopes, 29 full acceptances and 14 human gates are distinguished",
+    "Current source and installed versions match; full acceptance is shown before partial engineering evidence",
   );
   for (const task of backlog.tasks.filter((task) => task.required)) {
     const card = page.locator(`#task-${task.id}`);
@@ -61,18 +61,36 @@ try {
     } else {
       await expect(card).toHaveAttribute("data-human-validation", "pending");
       await expect(card.locator(".badges .good")).toContainText(
-        "Engineering checks passed",
+        "Recorded checks passed",
       );
       await expect(card.locator(".badges .warning")).toContainText(
-        "Human validation pending",
+        task.remainingEngineeringWork?.length
+          ? "Implementation still open"
+          : "Human validation pending",
       );
       for (const step of task.remainingHumanWork)
+        await expect(card.locator(".task-body")).toContainText(step);
+      for (const step of [
+        ...(task.remainingEngineeringWork || []),
+        ...(task.afterHumanValidation || []),
+      ])
         await expect(card.locator(".task-body")).toContainText(step);
     }
   }
   report.checks.push(
-    "All required cards have green verified engineering evidence; remaining human steps are visible and no incomplete full acceptance is colored complete",
+    "Recorded checks, remaining implementation, human review and later execution are distinguished without promoting incomplete acceptance",
   );
+  await expect(page.locator("#completion-note")).toContainText(
+    "14 required tasks and 5 conditional tasks remain open",
+  );
+  await expect(page.locator("#completion-note")).toContainText(
+    "Required implementation still open: S02",
+  );
+  await expect(page.locator("#task-S02")).toHaveAttribute(
+    "data-implementation",
+    "pending",
+  );
+  await expect(page.locator("#task-S02")).toContainText("Stage A only");
   await expect(page.locator("#task-L01")).toContainText(
     "0/168 representative cells",
   );
@@ -108,8 +126,8 @@ try {
       .href,
   );
   await expect(page.locator("#stats .stat strong")).toHaveText([
-    "43 / 43",
     "29 / 43",
+    "43 / 43",
     "14",
     "5",
   ]);
@@ -120,9 +138,10 @@ try {
   Object.assign(report, {
     status: "verified",
     sourceSha256,
-    requiredEngineeringVerified: 43,
+    tasksWithRecordedEngineeringChecks: 43,
     fullAcceptanceVerified: 29,
     humanValidationPending: 14,
+    requiredImplementationStillOpen: ["S02"],
   });
 } catch (error) {
   report.status = "failed";

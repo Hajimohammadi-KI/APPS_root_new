@@ -5,7 +5,7 @@
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
   "updatedOn": "2026-09-05",
-  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
+  "progressRecord": "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -1407,7 +1407,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -1416,7 +1418,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Independent content review and scoped evaluator approval for the 168 representative cells."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Import the actual independent reviews; regenerate and validate the representative release scope, then verify the resulting installed content."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "L02",
@@ -2061,7 +2067,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2070,7 +2078,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Independent English/German labels and adjudication, including separately reviewed calibration and untouched final evaluation material."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Import the reviewed labels and adjudications; validate partition separation and freeze the actual calibration/final evaluation inputs."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "M02",
@@ -2143,7 +2155,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2152,7 +2166,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Reviewed calibration/final inputs for a qualified candidate comparison. The executed development comparisons cannot supply these human labels."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Run candidates on the reviewed calibration inputs, freeze the selected thresholds, then execute the untouched final comparison and report scope-specific error bounds."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "M03",
@@ -2194,7 +2212,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2203,7 +2223,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Independent acceptance of the measured error bounds and exact supported evaluator scopes."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Compile support decisions from the qualified comparison and approved scopes. Reject unsupported scopes and verify the exact resulting release configuration."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "M04",
@@ -2247,13 +2271,19 @@
         "artifacts/transformer-browser/2026-09-05T12-56-01-185Z/report.json",
         "artifacts/installed-automaticity-browser/2026-09-05T12-55-57-711Z/report.json",
         "artifacts/phase7-browser/2026-09-05T12-55-59-988Z/report.json",
-        "artifacts/language-release-source/20260905-transformer-en34-de38-final/manifest.json"
+        "artifacts/language-release-source/20260905-transformer-en34-de38-final/manifest.json",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": false,
       "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release.",
       "progressNote": "Engineering verified and installed in both apps: pinned local Transformer adapter, original-response preservation, exact canonical task/scope checks, structured minimal corrections, separate style proposals, conservative failure handling, disabled server routes and reviewed-release compiler. 34 adapter tests including retired-task rejection, 16 release safeguards and 10 installed browser/API cases passed. The real Qwen3-8B development run returned 3 accepted proposals and 17 rejected outputs on 20 unreviewed drafts. No model is qualified or enabled; M01-M03 and independent release review remain open.",
       "updatedOn": "2026-09-05",
-      "engineeringVerification": "verified_for_recorded_scope"
+      "engineeringVerification": "verified_for_recorded_scope",
+      "afterHumanValidation": [
+        "If a candidate is selected and independently approved, compile its pinned release, build and verify the enabled runtime, then deliver and test that installer. Disabled-adapter tests do not verify an enabled model release."
+      ],
+      "engineeringScope": "Pinned adapter, disabled routes, output safeguards and isolated transport tests. No qualified enabled Transformer release is verified."
     },
     {
       "id": "M05",
@@ -2367,7 +2397,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2384,7 +2416,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Independent language-content and assessment review of the foundation and reference families."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Apply the reviewed content and evaluator records; repeat generated-content parity and affected route verification."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "W02",
@@ -2445,7 +2481,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2461,7 +2499,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Independent language-content and assessment review of temporal and verb-system families."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Apply the reviewed content and evaluator records; repeat generated-content parity and affected route verification."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "W03",
@@ -2522,7 +2564,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2538,7 +2582,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Independent language-content and assessment review of complex proposition families."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Apply the reviewed content and evaluator records; repeat generated-content parity and affected route verification."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "W04",
@@ -2599,7 +2647,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2615,7 +2665,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Independent language-content and assessment review of discourse, advanced integration and orthography."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Apply the reviewed content and evaluator records; repeat generated-content parity and affected route verification."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "W05",
@@ -2685,7 +2739,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2694,7 +2750,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Actual content reviews and evaluator approvals for all 3,906 required cells. The release gate correctly refuses absent evidence."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Rebuild the reviewed coverage matrix and full-scope support evidence; execute the release gate against the actual approved content and evaluators."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "W06",
@@ -2773,7 +2833,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2782,7 +2844,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Participant consent, independently reviewed unseen probes and learner-authored pre-intervention baseline samples."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Validate and preserve the prospectively declared study, independently reviewed unseen probes and original baseline samples."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "P02",
@@ -2811,7 +2877,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2820,7 +2888,8 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Real daily practice chosen and performed by the learner. Scripted browser sessions are not participation."
-      ]
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "P03",
@@ -2848,7 +2917,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -2857,7 +2928,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Original learner writing/audio, independent scoring and real 24-hour, seven-day and thirty-day follow-up windows."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Run the study evaluator on the actual consented samples after the declared follow-up windows; report missing outcomes and uncertainty."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "S01",
@@ -2985,16 +3060,25 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Exact task-definition binding, explicit qualified ratings, pre-outcome FSRS predictions, Brier/log-loss reporting and read-only candidate dates are implemented and checked. Empty data yields no calibration or benefit claim; the learner schedule stays unchanged.",
+      "progressNote": "Stage A is engineering-tested: exact task-definition binding, eligible ratings, pre-outcome FSRS predictions, Brier/log-loss reporting and read-only candidate dates. Stage B remains open: bounded delivery of candidate dates, enrolment/withdrawal, preserved baseline scheduling and rollback are not implemented and verified. Real consented histories and a reviewed comparison design are also missing.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Consented prospective recall ratings, reviewed delayed outcomes and an observed workload/benefit comparison."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Evaluate real eligible shadow histories, agree the bounded comparison design, verify its delivered implementation, and analyse the actual delayed outcomes and workload."
+      ],
+      "remainingEngineeringWork": [
+        "Implement and verify bounded Stage B delivery of candidate review dates, enrolment and withdrawal controls, a preserved baseline schedule and rollback. Current FSRS code only calculates read-only shadow candidates; this execution path is not delivered."
+      ],
+      "engineeringScope": "Stage A only: eligible history, read-only candidate dates and prediction reporting. No Stage B schedule delivery or rollback is verified."
     },
     {
       "id": "S03",
@@ -3020,7 +3104,9 @@
       ],
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
-        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": false,
       "condition": "S02 supplies sufficient favourable evidence; otherwise leave shadow-only.",
@@ -3285,7 +3371,9 @@
         "artifacts/installed-language-completion/2026-09-05T20-55-38-252Z/report.json",
         "artifacts/language-engineering-completion/20260905-40-44/verification.json",
         "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
-        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md"
+        "docs/AUTOMATICITY-HUMAN-VALIDATION-HANDOFF.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": true,
       "condition": null,
@@ -3300,7 +3388,11 @@
       "engineeringVerification": "verified_for_recorded_scope",
       "remainingHumanWork": [
         "Full-curriculum human qualification and release acceptance. The current installed technical release remains an authored practice release."
-      ]
+      ],
+      "afterHumanValidation": [
+        "Build the final approved content/configuration and repeat install, update, repair, preservation and browser verification. The current practice installer is not that future approved release."
+      ],
+      "engineeringScope": "The source, route and delivery checks listed in Recorded evidence. They do not establish independent language review, learner outcomes or completion of the remaining steps."
     },
     {
       "id": "X01",
@@ -3331,7 +3423,9 @@
         "artifacts/practice-bandit/2026-09-05T19-35-19-018Z/report.json",
         "scripts/lib/practice-bandit.ts",
         "scripts/practice-bandit.test.ts",
-        "scripts/replay-practice-bandit.ts"
+        "scripts/replay-practice-bandit.ts",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": false,
       "condition": "Only after measured learning and scheduling evidence justify considering RL.",
@@ -3366,7 +3460,9 @@
         "artifacts/practice-bandit/2026-09-05T19-35-19-018Z/report.json",
         "scripts/lib/practice-bandit.ts",
         "scripts/practice-bandit.test.ts",
-        "scripts/replay-practice-bandit.ts"
+        "scripts/replay-practice-bandit.ts",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": false,
       "condition": "X01 finds sufficient data and a sound design; learner participation is available.",
@@ -3394,7 +3490,9 @@
       ],
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
-        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md"
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
       ],
       "required": false,
       "condition": "A completed X02 experiment exposes a justified sequential decision problem.",
@@ -3445,7 +3543,7 @@
     "technicalIncrement": "verified",
     "englishVersion": "27.3.40",
     "germanVersion": "20.8.44",
-    "fullRoadmap": "awaiting_human_validation",
+    "fullRoadmap": "incomplete_implementation_and_human_validation",
     "fullCurriculum": "not_qualified",
     "learningEffectiveness": "not_measured",
     "contentReview": "pending",
@@ -3455,7 +3553,9 @@
     "installedEnglishVersion": "27.3.40",
     "installedGermanVersion": "20.8.44",
     "requiredEngineeringScopesVerified": 43,
-    "requiredHumanValidationTasks": 14
+    "requiredHumanValidationTasks": 14,
+    "requiredEngineeringTasksStillOpen": 1,
+    "requiredTasksFullyVerified": 29
   },
   "technicalRelease": {
     "status": "verified",
@@ -3473,7 +3573,7 @@
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-TECHNICAL-COMPLETION-2026-09-05.md",
+  "latestEngineeringUpdate": "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
   "grammarScope": {
     "status": "mapping_verified",
     "report": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
@@ -3484,5 +3584,17 @@
     "missingTaskCells": 0,
     "humanContentReview": "pending",
     "currentUnits": 280
+  },
+  "completionAudit": {
+    "at": "2026-09-05T21:07:02.061Z",
+    "report": "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+    "evidence": "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+    "priorClaimCorrected": "Recorded checks on 43 tasks do not mean all required engineering or acceptance work is complete.",
+    "requiredFullyVerified": 29,
+    "requiredOpen": 14,
+    "conditionalOpen": 5,
+    "knownRequiredImplementationGaps": [
+      "S02"
+    ]
   }
 }

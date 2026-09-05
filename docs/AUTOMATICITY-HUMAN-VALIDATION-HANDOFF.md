@@ -1,6 +1,6 @@
 # Human validation handoff
 
-The remaining decisions require independent language review, learner-authored work or elapsed time. Engineering results do not supply those judgments. The roadmap shows these separately from verified code and delivery checks.
+Independent language review, learner-authored work and elapsed time are still needed. They are not the only remaining work: S02 Stage B also needs an implemented and delivered bounded schedule experiment with withdrawal and rollback, and qualified inputs must still be followed by actual benchmark runs and final release checks. See the [open-work audit](ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md). Engineering results do not supply human judgments.
 
 ## Review the content and assessment procedure
 

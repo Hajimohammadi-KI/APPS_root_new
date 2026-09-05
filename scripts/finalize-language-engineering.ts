@@ -70,6 +70,18 @@ if (sourceArg) {
   );
   process.exit(0);
 }
+const currentBacklog = await json(
+  "docs/language-automaticity-implementation-backlog.json",
+);
+const openImplementation = currentBacklog.tasks.filter(
+  (task: { required: boolean; remainingEngineeringWork?: string[] }) =>
+    task.required && task.remainingEngineeringWork?.length,
+);
+assert.equal(
+  openImplementation.length,
+  0,
+  `Cannot repeat the historical all-engineering-complete claim while implementation remains open: ${openImplementation.map((task: { id: string }) => task.id).join(", ")}`,
+);
 const receipts: { path: string; sha256: string }[] = [];
 const types = Bun.spawn(
   [

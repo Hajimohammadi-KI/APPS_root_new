@@ -34,7 +34,7 @@
       timeStyle: "short",
     }).format(new Date(value));
   const badge = (task) =>
-    `<span class="pill ${task.status === "verified" ? "good" : task.remainingHumanWork?.length || ["in_progress", "blocked"].includes(task.status) ? "warning" : "muted"}">${task.status === "verified" ? "✓ " : ""}${escape(task.remainingHumanWork?.length ? "Human validation pending" : labels[task.status])}</span>${engineering(task) && task.status !== "verified" ? '<span class="pill good">✓ Engineering checks passed</span>' : ""}`;
+    `<span class="pill ${task.status === "verified" ? "good" : task.remainingEngineeringWork?.length || task.remainingHumanWork?.length || ["in_progress", "blocked"].includes(task.status) ? "warning" : "muted"}">${task.status === "verified" ? "✓ " : ""}${escape(task.remainingEngineeringWork?.length ? "Implementation still open" : task.remainingHumanWork?.length ? "Human validation pending" : labels[task.status])}</span>${engineering(task) && task.status !== "verified" ? '<span class="pill good">✓ Recorded checks passed</span>' : ""}`;
   const evidence = (paths) =>
     `<ul class="evidence">${paths.map((path) => `<li><code>${escape(path)}</code></li>`).join("")}</ul>`;
   function render() {
@@ -45,24 +45,29 @@
     );
     const required = tasks.filter((t) => t.required),
       complete = required.filter((t) => t.status === "verified").length;
+    const implementationOpen = required.filter(
+      (task) => task.remainingEngineeringWork?.length,
+    );
     $("stats").innerHTML = [
+      [
+        complete + " / " + required.length,
+        "Required tasks fully verified",
+        "All completion criteria satisfied",
+      ],
       [
         required.filter((t) => engineering(t) || t.status === "verified")
           .length +
           " / " +
           required.length,
-        "Required tasks with engineering evidence",
-        "Human review and outcomes tracked separately",
+        "Tasks with recorded engineering checks",
+        "May cover only part of a task",
       ],
       [
-        complete + " / " + required.length,
-        "Full acceptance verified",
-        "Includes required human validation",
-      ],
-      [
-        required.filter((t) => t.remainingHumanWork?.length).length,
-        "Awaiting human validation",
-        "Specific remaining steps are listed on each card",
+        required.length - complete,
+        "Required tasks still open",
+        implementationOpen.length
+          ? `${implementationOpen.length} also require implementation`
+          : "See remaining steps on each card",
       ],
       [
         tasks.filter((t) => !t.required).length,
@@ -75,6 +80,8 @@
           `<div class="stat"><strong>${number}</strong><span>${title}</span><small>${note}</small></div>`,
       )
       .join("");
+    $("completion-note").textContent =
+      `${complete} of ${required.length} required tasks are fully verified. ${required.length - complete} required tasks and ${tasks.filter((task) => !task.required && task.status !== "verified").length} conditional tasks remain open. Green check badges cover the recorded tests only.${implementationOpen.length ? ` Required implementation still open: ${implementationOpen.map((task) => task.id).join(", ")}.` : ""}`;
     const release = backlog.technicalRelease;
     $("release").innerHTML =
       `<div><span class="pill ${release.status === "verified" ? "good" : "warning"}">${release.status === "verified" ? "✓ Technical release verified" : release.status === "blocked" ? "Desktop release blocked" : "Technical release pending"}</span><p><strong>${Object.entries(
@@ -114,6 +121,9 @@
             task.progressNote,
             task.deliverable,
             ...task.acceptance,
+            ...(task.remainingEngineeringWork || []),
+            ...(task.remainingHumanWork || []),
+            ...(task.afterHumanValidation || []),
           ]
             .join(" ")
             .toLowerCase()
@@ -138,15 +148,26 @@
         .join("") ||
       '<p class="empty">No matching tasks. Try another search or filter.</p>';
     for (const task of visible) {
-      if (!task.remainingHumanWork?.length) continue;
       const card = $("task-" + task.id);
-      card.dataset.humanValidation = "pending";
+      if (task.remainingHumanWork?.length)
+        card.dataset.humanValidation = "pending";
+      if (task.remainingEngineeringWork?.length)
+        card.dataset.implementation = "pending";
+      const lists = [
+        ["Remaining implementation", task.remainingEngineeringWork],
+        ["Remaining human validation", task.remainingHumanWork],
+        ["Work after human evidence arrives", task.afterHumanValidation],
+      ];
+      const details = `${task.engineeringScope ? `<p><strong>Scope of passed checks:</strong> ${escape(task.engineeringScope)}</p>` : ""}${lists
+        .filter(([, items]) => items?.length)
+        .map(
+          ([title, items]) =>
+            `<h3>${escape(title)}</h3><ul>${items.map((item) => `<li>${escape(item)}</li>`).join("")}</ul>`,
+        )
+        .join("")}`;
       card
         .querySelector(".task-body > p")
-        .insertAdjacentHTML(
-          "afterend",
-          `<h3>Remaining human validation</h3><ul>${task.remainingHumanWork.map((item) => `<li>${escape(item)}</li>`).join("")}</ul>`,
-        );
+        .insertAdjacentHTML("afterend", details);
     }
     $("history").innerHTML =
       [...history.changes]

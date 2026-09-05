@@ -23,6 +23,7 @@
     "verify-language-technical-completion.ts",
     "verify-installed-language-completion.ts",
     "finalize-language-engineering.ts",
+    "correct-roadmap-completion-claims.ts",
     "build-completion-release.ts",
     "serve-local-transformer.ts",
     "summarize-model-diagnostics.ts",

@@ -12,6 +12,8 @@
     "typeRoots": ["../Apps/Deutsch-Automaticity/node_modules/@types"]
   },
   "include": [
+    "compile-transformer-release.ts",
+    "serve-local-transformer.ts",
     "summarize-model-diagnostics.ts",
     "prepare-model-benchmark.ts",
     "import-model-benchmark-review.ts",

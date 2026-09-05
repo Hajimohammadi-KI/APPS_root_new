@@ -21,6 +21,7 @@ import { preserveLegacyStateDurable } from "./migration";
 import { mountReviewPanel } from "./review-panel";
 import { reduceAutomaticityEvents } from "./evidence";
 import { assessControlledTask } from "./assessment";
+import { createTransformerClient } from "./transformer-client";
 import {
   captureCompleteBackup,
   recoverBeforeMount,
@@ -62,6 +63,7 @@ const stages: Stage[] = [
 ];
 const now = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
+const qualifiedTransformer = createTransformerClient();
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   text?: string,
@@ -1182,6 +1184,13 @@ export async function mountPractice(
         const assessment = assessControlledTask(attempt, task, now(), id());
         appendAutomaticityEvent(localStorage, assessment);
         feedback.textContent = assessment.feedback;
+        if (typeof navigator === "undefined" || navigator.onLine !== false) {
+          const modelAssessment = await qualifiedTransformer(attempt, assessment);
+          if (modelAssessment) {
+            appendAutomaticityEvent(localStorage, modelAssessment);
+            feedback.textContent = modelAssessment.feedback;
+          }
+        }
         renderTask();
         renderProgress();
         renderFocus();

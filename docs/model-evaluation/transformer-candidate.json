@@ -1,0 +1,9 @@
+{
+  "candidateId": "pretrained-local",
+  "version": "qwen3-8b-q4km-d98cdcbd03e1-p2-b10809",
+  "modelAlias": "qwen3-8b-d98cdcb",
+  "modelSha256": "d98cdcbd03e17ce47681435b5150e34c1417f50b5c0019dd560e4882c5745785",
+  "runtimeFingerprint": "b10809-5266f24da",
+  "endpoint": "http://127.0.0.1:8083/v1/chat/completions",
+  "timeoutMs": 15000
+}

@@ -15,8 +15,12 @@ if(candidateId!=="controlled-answer"){
  if(!endpoint)throw Error("A configured local candidate endpoint is required. The free LanguageTool API must not be batch-tested.");
  const url=new URL(endpoint);if(!["127.0.0.1","localhost","[::1]"].includes(url.hostname)||url.protocol!=="http:"||url.username||url.password)throw Error("This diagnostic runner accepts loopback HTTP candidates only");
 }
-const config={adapterVersion:"2",endpoint:endpoint??null,candidate,normalisation:"NFC, case-preserving, declared final full stop only",providerTimeoutMs:15000};
+const providerConfigurationSha256=arg("provider-config-sha256")??null;
+if(providerConfigurationSha256!==null&&!/^[a-f0-9]{64}$/.test(providerConfigurationSha256))throw Error("Invalid provider configuration hash");
+if(candidateId==="pretrained-local"&&partition!=="development"&&!providerConfigurationSha256)throw Error("Reviewed Transformer runs require a pinned provider configuration hash");
+const config={adapterVersion:"3",endpoint:endpoint??null,candidate,providerConfigurationSha256,normalisation:"NFC, case-preserving, declared final full stop only",providerTimeoutMs:15000};
 const run:PredictionRun={schemaVersion:1,candidate,configurationSha256:digest(JSON.stringify(config)),benchmarkVersion:manifest.version,manifestSha256:digest(JSON.stringify(manifest)),partition:partition as PredictionRun["partition"],startedAt:new Date().toISOString(),finishedAt:"",predictions:[],caseHashes:{},limit:"Development labels are model-authored hypotheses. Diagnostics cannot approve a model. Local compute/energy cost is not measured."};
+run.configuration=config;
 const rows=manifest.cases.filter(row=>row.partition===partition);if(!rows.length)throw Error(`No ${partition} examples have been collected`);
 let freeze:FrozenEvaluation|undefined;
 if(partition!=="development"){
@@ -53,8 +57,9 @@ for(const row of rows){
     if(!isRecord(value.software)||value.software.version!==version||!Array.isArray(value.matches)||value.matches.some(match=>!isRecord(match)||!Number.isInteger(match.offset)||!Number.isInteger(match.length)||Number(match.offset)<0||Number(match.length)<0||Number(match.offset)+Number(match.length)>row.response.length))throw Error("LanguageTool version/annotation mismatch");
     observations.push({caseId:row.id,matches:value.matches,software:value.software,limit:"Proofreading suggestions do not establish target or meaning correctness."});
    }else{
-    if(value.version!==version||!["pass","needs_repair","target_not_observed","not_assessed"].includes(String(value.verdict))||![true,false,null].includes(value.meaningPreserved as boolean|null)||![true,false,null].includes(value.targetObserved as boolean|null))throw Error("Pretrained candidate output/version mismatch");
+    if(value.version!==version||(providerConfigurationSha256&&value.configurationSha256!==providerConfigurationSha256)||!["pass","needs_repair","target_not_observed","not_assessed"].includes(String(value.verdict))||![true,false,null].includes(value.meaningPreserved as boolean|null)||![true,false,null].includes(value.targetObserved as boolean|null))throw Error("Pretrained candidate output/version mismatch");
     verdict=value.verdict as CandidatePrediction["verdict"];meaningPreserved=value.meaningPreserved as boolean|null;targetObserved=value.targetObserved as boolean|null;
+    observations.push({caseId:row.id,proposal:value,...(value.unavailable?{error:"Candidate unavailable or output rejected",fallback:"not_assessed"}:{})});
    }
   }catch(error){observations.push({caseId:row.id,error:String(error),fallback:"not_assessed"});}
  }

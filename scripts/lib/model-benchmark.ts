@@ -16,7 +16,7 @@ export interface BenchmarkDraft extends BenchmarkCase {
 export interface BenchmarkManifest {schemaVersion:1;version:string;createdAt:string;purpose:string;cases:BenchmarkDraft[]}
 export interface FrozenEvaluation {schemaVersion:1;benchmarkVersion:string;manifestSha256:string;policySha256:string;frozenAt:string;
  candidate:{id:string;version:string};configurationSha256:string;calibration:{path:string;sha256:string};finalCaseIds:string[]}
-export interface PredictionRun {schemaVersion:1;candidate:{id:string;version:string};configurationSha256:string;
+export interface PredictionRun {schemaVersion:1;candidate:{id:string;version:string};configurationSha256:string;configuration?:Record<string,unknown>;
  benchmarkVersion:string;manifestSha256:string;partition:"development"|"calibration"|"final";startedAt:string;finishedAt:string;
  predictions:CandidatePrediction[];caseHashes:Record<string,string>;limit:string}
 export function caseDigest(row:BenchmarkDraft):string {
@@ -77,6 +77,7 @@ export async function reviewedManifest(root:string,manifest:BenchmarkManifest,no
  return result;
 }
 export function validateRun(manifest:BenchmarkManifest,run:PredictionRun):void {
+ if(run.configuration&&digest(JSON.stringify(run.configuration))!==run.configurationSha256)throw Error("Changed recorded model configuration");
  if(!run||run.schemaVersion!==1||!date(run.startedAt)||!date(run.finishedAt)||Date.parse(run.finishedAt)<Date.parse(run.startedAt)||Date.parse(run.finishedAt)>Date.now()||
   run.benchmarkVersion!==manifest.version||run.manifestSha256!==digest(JSON.stringify(manifest))||!/^[a-f0-9]{64}$/.test(run.configurationSha256))throw Error("Stale or malformed prediction run");
  const rows=manifest.cases.filter(row=>row.partition===run.partition);

@@ -8,6 +8,7 @@
     "./adherence": "./src/adherence/index.ts",
     "./fsrs-shadow": "./src/fsrs-shadow/index.ts",
     "./automaticity": "./src/automaticity/index.ts",
+    "./transformer-server": "./src/automaticity/transformer-node.ts",
     "./schema": "./schemas/learning-vertical-slice.schema.json",
     "./measurement-schema": "./schemas/measurement-contract.schema.json",
     "./mediation-schema": "./schemas/mediation-content-pilot.schema.json"

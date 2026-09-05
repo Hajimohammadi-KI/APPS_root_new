@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>APPS_root — Phase 6/7 Execution Report</title>
+    <style>
+      :root { color-scheme: light; --ink:#17213d; --muted:#59627a; --paper:#fbfaff; --line:#ded9ed; --purple:#673bc5; --green:#087f5b; --amber:#b35b00; --red:#b42318; }
+      * { box-sizing:border-box; }
+      body { margin:0; background:linear-gradient(120deg,#f5f1ff,#fcfbff 48%,#edf8f5); color:var(--ink); font:16px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+      main { width:min(1000px,calc(100% - 32px)); margin:38px auto 64px; }
+      header,.card { border:1px solid var(--line); background:rgba(255,255,255,.88); }
+      header { padding:30px; border-radius:24px; box-shadow:0 12px 34px #31206412; }
+      h1,h2,h3 { line-height:1.15; margin:0; } h1 { font-size:clamp(1.7rem,4vw,2.6rem); } h2 { font-size:1.3rem; margin-bottom:12px; } h3 { font-size:1rem; }
+      .eyebrow { color:var(--purple); font-weight:800; letter-spacing:.08em; text-transform:uppercase; font-size:.76rem; }
+      .lede,.card p,footer { color:var(--muted); } .lede { max-width:78ch; margin:16px 0 0; }
+      section { margin-top:26px; } .card { border-radius:16px; padding:20px; } .card+.card { margin-top:14px; }
+      .good { border-left:4px solid var(--green); } .blocked { border-left:4px solid var(--red); } .partial { border-left:4px solid var(--amber); }
+      .tag { display:inline-block; font-weight:800; text-transform:uppercase; font-size:.72rem; margin-bottom:8px; }
+      code { background:#f2eeff; padding:1px 6px; border-radius:6px; }
+      footer { font-size:.88rem; margin-top:30px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="eyebrow">APPS_root / measured status</div>
+        <h1>Phase 6–7 execution report</h1>
+        <p class="lede">Updated after real installer lifecycle runs and nine independent CEFR checkpoint/corpus evaluations. Human sessions, NVDA behavior, teacher model review, and portable Windows trust remain explicitly unclaimed.</p>
+      </header>
+
+      <section>
+        <h2>Verified changes</h2>
+        <article class="card good">
+          <div class="tag">Installer lifecycle verified</div>
+          <h3>English 27.3.20 and DeutschFlow 20.8.28 pass the current machine</h3>
+          <p>The real failure was inherited <code>ELECTRON_RUN_AS_NODE=1</code>, not an extraction timeout. Electron exited with code 134 before HTTP startup. The verifier now removes the environment entry around launch and restores it afterward. Fresh exact-artifact runs verified install, web/API startup, update, repair, uninstall, and learner-data preservation. English answered in 1.768 seconds; German in 7.400 seconds. See <code>RELEASE-VERIFICATION-2026-09-01.md</code>.</p>
+        </article>
+        <article class="card good">
+          <div class="tag">Governance resolved</div>
+          <h3>LingoBridge retained; owners formally assigned</h3>
+          <p>LingoBridge is a supported local-first extension companion, not a duplicate prototype and not a sixth Starter/Vercel target. The five active products and LingoBridge now have a machine-readable owner assignment with a 1 December 2026 review date.</p>
+        </article>
+        <article class="card good">
+          <div class="tag">External evaluation measured</div>
+          <h3>All six CEFR catalog model types tested on independent English/German data</h3>
+          <p>UniversalCEFR ELG English and German were pinned at immutable revisions and approved for evaluation only under CC-BY-NC-SA-4.0. Seven saved checkpoints completed nine language/run evaluations: 598 canonical English rows and 509 German rows. Aggregate ordinal and calibration metrics are published in <code>research/cefr-classification/dashboard/external-evaluation-summary.json</code>.</p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Evidence-based stop decisions</h2>
+        <article class="card partial">
+          <div class="tag">Product integration blocked by results</div>
+          <h3>The CEFR abstention UI was not shipped</h3>
+          <p>External accuracy was 11.7–16.1% on English and 21.6–26.9% on German reference documents, with substantial loss from every source-corpus result. None of the nine evaluations can retain 80% accuracy at 30% coverage under the measured confidence-threshold rule. This is cross-domain robustness evidence, not learner-proficiency validation. Exposing an answer/abstain UI now would convert a failed validation gate into a learner-facing feature. The correct product decision is no integration until an independent learner-writing validation set supports it; consequently no responsible teacher behavior review can yet start.</p>
+        </article>
+        <article class="card partial">
+          <div class="tag">Portable trust open</div>
+          <h3>Both setup files remain unsigned</h3>
+          <p>The exact setup files passed here but still report <code>NotSigned</code>. A certificate or administrator allowlist is still required before claiming acceptance under another device's enterprise Application Control policy.</p>
+        </article>
+      </section>
+
+      <section>
+        <h2>Human gates still open</h2>
+        <article class="card blocked"><div class="tag">0 of 7 sessions</div><h3>Five learner and two teacher observations</h3><p>The protocol now requires separate reporting of next-task explanation and multi-select comprehension, but no participant result was invented.</p></article>
+        <article class="card blocked"><div class="tag">NVDA unavailable</div><h3>Five-app screen-reader observation</h3><p>NVDA is not installed on this machine, and automated accessibility checks are not equivalent to listening to actual announcements and reading order.</p></article>
+        <article class="card blocked"><div class="tag">Validation sequence</div><h3>Teacher review of model behavior</h3><p>This remains downstream of acceptable independent learner-writing results. The current reference-domain results fail the product gate, so teacher review is not relabeled as complete.</p></article>
+      </section>
+
+      <footer>Evidence captured 1 September 2026. “Verified” is limited to the exact artifacts, commands, corpora, and current machine named above.</footer>
+    </main>
+  </body>
+</html>

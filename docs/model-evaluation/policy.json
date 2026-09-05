@@ -1,0 +1,7 @@
+{
+  "version": "grammar-qualification-2026-09-05.2",
+  "minimumPerCategory": 20,
+  "maximumConsequentialErrors": 0,
+  "maximumSupportedAbstentionRate": 0.2,
+  "automaticallyApprove": false
+}

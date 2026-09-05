@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "note": "These are overlapping teaching scopes, not automatic proof that either lesson assesses every target. Partial links for new targets are recorded separately in additions.psv. Original prerequisites are retained as suggestions because no mandatory learning dependency has been established.",
+  "reinforcements": [
+    ["en.c.053", "en.c.109"],
+    ["en.c.050", "en.c.110"],
+    ["en.c.097", "en.c.112"],
+    ["en.c.037", "en.c.108"],
+    ["de.c.028", "de.c.091"],
+    ["de.c.031", "de.c.096"],
+    ["de.c.037", "de.c.104"],
+    ["de.c.041", "de.c.095", "de.c.105"],
+    ["de.c.052", "de.c.101"],
+    ["de.c.053", "de.c.115"],
+    ["de.c.054", "de.c.123"],
+    ["de.c.063", "de.c.124", "de.c.132"],
+    ["de.c.059", "de.c.108"],
+    ["de.c.103", "de.c.106"]
+  ]
+}

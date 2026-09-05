@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@import "./styles/00-foundation.css";
+@import "./styles/01-app-shell.css";
+@import "./styles/pages/tracker.css";
+@import "./styles/pages/dashboard.css";
+@import "./projekt-fahrplan/projekt-fahrplan.css";
+@import "./styles/90-responsive.css";
+@import "./styles/components/hover-help-and-course.css";
+@import "./styles/91-accessibility.css";
+@import "./styles/100-interaction-direction.css";

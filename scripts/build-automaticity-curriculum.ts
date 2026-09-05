@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
+import { validateGeneratedPractice } from "./lib/grammar-scope";
+import { readProtectedMaterial } from "./lib/grammar-scope-files";
 import { grammarUnits as en } from "../Apps/English/English-Automaticity/packages/content/src/index";
 import { grammarUnits as de } from "../Apps/Deutsch-Automaticity/packages/content/src/index";
 import {
@@ -104,14 +106,15 @@ const registry = JSON.parse(await readFile(registryPath, "utf8")) as {
   mappings: ConstructionMapping[];
 };
 const checkOnly = Bun.argv.includes("--check");
+const pendingOutputs: { target: string; contents: string }[] = [];
+const generatedPacks: CurriculumPack[] = [];
 async function output(path: string, contents: string) {
   const target = resolve(root, path);
   if (checkOnly) {
     if ((await readFile(target, "utf8")) !== contents)
       throw new Error(`Stale generated curriculum: ${path}`);
   } else {
-    await mkdir(dirname(target), { recursive: true });
-    await writeFile(target, contents);
+    pendingOutputs.push({ target, contents });
   }
 }
 const coverage: unknown[] = [];
@@ -391,6 +394,7 @@ for (const [language, units, project] of [
       }
   }
   const issues = validateCurriculum(pack);
+  generatedPacks.push(pack);
   if (issues.length) throw new Error(issues.join("\n"));
   if (
     registry.mappings.filter((row) => row.language === language).length !==
@@ -440,3 +444,15 @@ await output(
     2,
   ) + "\n",
 );
+// Preflight all languages and protected families before replacing any generated output.
+const protectedPath = Bun.argv
+  .find((arg) => arg.startsWith("--protected-material="))
+  ?.slice("--protected-material=".length);
+validateGeneratedPractice(
+  generatedPacks,
+  await readProtectedMaterial(root, protectedPath),
+);
+for (const { target, contents } of pendingOutputs) {
+  await mkdir(dirname(target), { recursive: true });
+  await writeFile(target, contents);
+}

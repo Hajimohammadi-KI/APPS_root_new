@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { verifyGrammarScope } from "./lib/grammar-scope-files";
 import {
   parseReviewLedger,
   validateReleaseReviews,
@@ -11,6 +12,7 @@ import {
   type CurriculumPack,
 } from "../shared/learning-core/src/automaticity/curriculum";
 const root = resolve(import.meta.dir, "..");
+const grammarScope = await verifyGrammarScope(root);
 const coveragePath = Bun.argv
   .find((arg) => arg.startsWith("--coverage="))
   ?.slice("--coverage=".length);
@@ -115,19 +117,24 @@ const reviewedEvidence = await validateReleaseReviews(
 const blocked = coverage.cells.filter(
   (cell) => cell.humanReview !== "complete" || !cell.releaseEligible,
 );
+const missingScopeCells = grammarScope.summary.missingTaskCells;
+const releaseBlocked = blocked.length > 0 || missingScopeCells > 0;
 console.log(
   JSON.stringify(
     {
       structuralCoverage: "verified",
+      expandedGrammarScope: grammarScope.summary,
       cells: total,
       ...reviewedEvidence,
-      fullCurriculumRelease: blocked.length
+      fullCurriculumRelease: releaseBlocked
         ? "not_qualified"
         : "eligible_for_review",
       unqualifiedCells: blocked.length,
+      missingExpandedScopeCells: missingScopeCells,
+      totalUnqualifiedRequiredCells: blocked.length + missingScopeCells,
     },
     null,
     2,
   ),
 );
-if (Bun.argv.includes("--release") && blocked.length) process.exitCode = 2;
+if (Bun.argv.includes("--release") && releaseBlocked) process.exitCode = 2;

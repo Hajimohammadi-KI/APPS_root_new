@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "scope": "Original model-authored illustrations of the authoring contract. These are not human-reviewed items, held-out learner tests or an automatic equivalence evaluator. Explicit semantic labels require independent review before use in assessment.",
+  "examples": [
+    {
+      "id": "scope-en-voice",
+      "language": "en",
+      "kind": "voice",
+      "input": "We inspected the bridge yesterday.",
+      "output": "The bridge was inspected by us yesterday.",
+      "inputMeaning": {
+        "predicate": "inspect",
+        "agent": "speaker-group",
+        "patient": "bridge",
+        "time": "yesterday",
+        "polarity": "positive",
+        "modality": "asserted"
+      },
+      "outputMeaning": {
+        "predicate": "inspect",
+        "agent": "speaker-group",
+        "patient": "bridge",
+        "time": "yesterday",
+        "polarity": "positive",
+        "modality": "asserted"
+      },
+      "transitive": true,
+      "sameController": true,
+      "changesFocus": true,
+      "status": "model_authored"
+    },
+    {
+      "id": "scope-de-voice",
+      "language": "de",
+      "kind": "voice",
+      "input": "Die Technikerin prüft den Sensor.",
+      "output": "Der Sensor wird von der Technikerin geprüft.",
+      "inputMeaning": {
+        "predicate": "prüfen",
+        "agent": "Technikerin",
+        "patient": "Sensor",
+        "time": "present",
+        "polarity": "positive",
+        "modality": "asserted"
+      },
+      "outputMeaning": {
+        "predicate": "prüfen",
+        "agent": "Technikerin",
+        "patient": "Sensor",
+        "time": "present",
+        "polarity": "positive",
+        "modality": "asserted"
+      },
+      "transitive": true,
+      "sameController": true,
+      "changesFocus": true,
+      "status": "model_authored"
+    },
+    {
+      "id": "scope-en-purpose",
+      "language": "en",
+      "kind": "purpose",
+      "input": "I compare the prices in order to choose an affordable option.",
+      "output": "I compare the prices to choose an affordable option.",
+      "inputMeaning": {
+        "predicate": "compare-for-choice",
+        "agent": "speaker",
+        "patient": "prices",
+        "time": "present",
+        "polarity": "positive",
+        "modality": "intended-purpose"
+      },
+      "outputMeaning": {
+        "predicate": "compare-for-choice",
+        "agent": "speaker",
+        "patient": "prices",
+        "time": "present",
+        "polarity": "positive",
+        "modality": "intended-purpose"
+      },
+      "transitive": true,
+      "sameController": true,
+      "changesFocus": false,
+      "status": "model_authored"
+    },
+    {
+      "id": "scope-de-purpose",
+      "language": "de",
+      "kind": "purpose",
+      "input": "Ich öffne das Fenster, damit ich frische Luft bekomme.",
+      "output": "Ich öffne das Fenster, um frische Luft zu bekommen.",
+      "inputMeaning": {
+        "predicate": "öffnen-für-frische-Luft",
+        "agent": "speaker",
+        "patient": "Fenster",
+        "time": "present",
+        "polarity": "positive",
+        "modality": "intended-purpose"
+      },
+      "outputMeaning": {
+        "predicate": "öffnen-für-frische-Luft",
+        "agent": "speaker",
+        "patient": "Fenster",
+        "time": "present",
+        "polarity": "positive",
+        "modality": "intended-purpose"
+      },
+      "transitive": true,
+      "sameController": true,
+      "changesFocus": false,
+      "status": "model_authored"
+    }
+  ]
+}

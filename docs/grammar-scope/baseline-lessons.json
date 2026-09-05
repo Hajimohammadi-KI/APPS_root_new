@@ -1,0 +1,2567 @@
+{
+  "schemaVersion": 1,
+  "capturedOn": "2026-09-05",
+  "note": "Migration minimum. Preserve IDs, original titles within aliases and content history. Additions do not replace these lessons; explicit source changes require regenerated mapping evidence.",
+  "lessons": [
+    {
+      "id": "en.c.001",
+      "language": "en",
+      "title": "Verb be: am/is/are",
+      "level": "A1",
+      "aliases": [
+        "A1::Verb be: am/is/are"
+      ],
+      "sha256": "1ed5fbf8a799ded84a8c2dcb50fbcf12efcd9e207ba809c12d6b894e8593c4ab"
+    },
+    {
+      "id": "en.c.002",
+      "language": "en",
+      "title": "Subject pronouns",
+      "level": "A1",
+      "aliases": [
+        "A1::Subject pronouns"
+      ],
+      "sha256": "2380415f63b98ace3e26c93abf5d9b63a5ea98a02369f2f2ad1ae81c9914fff2"
+    },
+    {
+      "id": "en.c.003",
+      "language": "en",
+      "title": "Articles a/an/the",
+      "level": "A1",
+      "aliases": [
+        "A1::Articles a/an/the"
+      ],
+      "sha256": "1d8396db9c25b61f3c846808f031e1726524d1896b2de8cd8568bff04315bdfc"
+    },
+    {
+      "id": "en.c.004",
+      "language": "en",
+      "title": "Plural nouns",
+      "level": "A1",
+      "aliases": [
+        "A1::Plural nouns"
+      ],
+      "sha256": "d2829cf879367a9cf69655cac13ad85b2fe1e64de4d5a7af72a7d38f815b8b8e"
+    },
+    {
+      "id": "en.c.005",
+      "language": "en",
+      "title": "Possessive adjectives",
+      "level": "A1",
+      "aliases": [
+        "A1::Possessive adjectives"
+      ],
+      "sha256": "77ac87721f686170f665d574e3542ed257321047c57064eb51b2e5de2a4927a8"
+    },
+    {
+      "id": "en.c.006",
+      "language": "en",
+      "title": "Have/has got",
+      "level": "A1",
+      "aliases": [
+        "A1::Have/has got"
+      ],
+      "sha256": "9b628c0e0a1aa1344050160af2820b5adeb79d28b558434dc6c31032030b0627"
+    },
+    {
+      "id": "en.c.007",
+      "language": "en",
+      "title": "Present simple affirmative",
+      "level": "A1",
+      "aliases": [
+        "A1::Present simple affirmative"
+      ],
+      "sha256": "96676a842f8326ca575a0c5c91143868b0d1fd5291918e747e7a5ebceab73c7d"
+    },
+    {
+      "id": "en.c.008",
+      "language": "en",
+      "title": "Present simple negatives",
+      "level": "A1",
+      "aliases": [
+        "A1::Present simple negatives"
+      ],
+      "sha256": "52c0bca8e8799c46a0fdabd9a508cac9a303839c0c2c987cdebd40f84c849d31"
+    },
+    {
+      "id": "en.c.009",
+      "language": "en",
+      "title": "Present simple questions",
+      "level": "A1",
+      "aliases": [
+        "A1::Present simple questions"
+      ],
+      "sha256": "a98b768a79ed3aac7f777ae0c721c6a7d826bf76f3c9532c81e4bd4c7e966e37"
+    },
+    {
+      "id": "en.c.010",
+      "language": "en",
+      "title": "There is/There are",
+      "level": "A1",
+      "aliases": [
+        "A1::There is/There are"
+      ],
+      "sha256": "7f85e6c3ec3b684eeb6415545410e0c37a3896de9b425b4dd363f1a56422d58e"
+    },
+    {
+      "id": "en.c.011",
+      "language": "en",
+      "title": "Can/can’t",
+      "level": "A1",
+      "aliases": [
+        "A1::Can/can’t"
+      ],
+      "sha256": "e4f4ba369bd447f187385b5990cab502bbf13107d6a99017ee7eb9a65eadf7d8"
+    },
+    {
+      "id": "en.c.012",
+      "language": "en",
+      "title": "Imperatives",
+      "level": "A1",
+      "aliases": [
+        "A1::Imperatives"
+      ],
+      "sha256": "b7f2fa0db11670b67aed73a281f9e8cb138e5fbd9b0bcc2e3e4f6cf3c1dfdd55"
+    },
+    {
+      "id": "en.c.013",
+      "language": "en",
+      "title": "Prepositions of place",
+      "level": "A1",
+      "aliases": [
+        "A1::Prepositions of place"
+      ],
+      "sha256": "cad0d4ed89c66584f78298c999ec3a5bbf926e54c99e1ebf00ea1f275cd0c045"
+    },
+    {
+      "id": "en.c.014",
+      "language": "en",
+      "title": "Countable and uncountable nouns",
+      "level": "A1",
+      "aliases": [
+        "A1::Countable and uncountable nouns"
+      ],
+      "sha256": "54576d5007ba7a3049e85468b46b59b8f6ffe265a27f842c05e59867eda55ddd"
+    },
+    {
+      "id": "en.c.015",
+      "language": "en",
+      "title": "Present continuous",
+      "level": "A2",
+      "aliases": [
+        "A2::Present continuous"
+      ],
+      "sha256": "147972619a1c72c23addb3ca93bcc55f0e25753539b358fc1fd2a24908bfbe4e"
+    },
+    {
+      "id": "en.c.016",
+      "language": "en",
+      "title": "Present simple vs continuous",
+      "level": "A2",
+      "aliases": [
+        "A2::Present simple vs continuous"
+      ],
+      "sha256": "4025ca35ab06f7e7dce55e7b0fce78dddf671bfb527dac869b46220d27acc0fa"
+    },
+    {
+      "id": "en.c.017",
+      "language": "en",
+      "title": "Past simple regular",
+      "level": "A2",
+      "aliases": [
+        "A2::Past simple regular"
+      ],
+      "sha256": "b8597d14a8a5920269deaf9bb17551ade006c1ed59f4cdd9ffdb1b66c6acae71"
+    },
+    {
+      "id": "en.c.018",
+      "language": "en",
+      "title": "Past simple irregular",
+      "level": "A2",
+      "aliases": [
+        "A2::Past simple irregular"
+      ],
+      "sha256": "264b355ad8ddd5b4011376ac0bfd7df391c421a07bdcb56f830d515e02da937a"
+    },
+    {
+      "id": "en.c.019",
+      "language": "en",
+      "title": "Past simple questions and negatives",
+      "level": "A2",
+      "aliases": [
+        "A2::Past simple questions and negatives"
+      ],
+      "sha256": "b320ab38fa0ae2ba3dd06e324aeacdfed03b45c54774463d498b2a8a46540cc9"
+    },
+    {
+      "id": "en.c.020",
+      "language": "en",
+      "title": "Future with will",
+      "level": "A2",
+      "aliases": [
+        "A2::Future with will"
+      ],
+      "sha256": "d7e6d2f034eae73744624810fa640480b7d1105d086e481ba2d9d31131cc5611"
+    },
+    {
+      "id": "en.c.021",
+      "language": "en",
+      "title": "Be going to",
+      "level": "A2",
+      "aliases": [
+        "A2::Be going to"
+      ],
+      "sha256": "d1ce815565af0b09f0304aa4e0793120085dfd5a25cbbae4775a260831cf66e5"
+    },
+    {
+      "id": "en.c.022",
+      "language": "en",
+      "title": "Comparatives",
+      "level": "A2",
+      "aliases": [
+        "A2::Comparatives"
+      ],
+      "sha256": "72957bc19dc2457f0df86abf30a45bbe0b689e2c0b28482d99eb7b2c3b982619"
+    },
+    {
+      "id": "en.c.023",
+      "language": "en",
+      "title": "Superlatives",
+      "level": "A2",
+      "aliases": [
+        "A2::Superlatives"
+      ],
+      "sha256": "da27c1a76a100ec74bdaacde4795b1b027d864332b4e4982abe3a988e4a60c0b"
+    },
+    {
+      "id": "en.c.024",
+      "language": "en",
+      "title": "Some/any/no",
+      "level": "A2",
+      "aliases": [
+        "A2::Some/any/no"
+      ],
+      "sha256": "e341a44c6d722e1139e8e0d22ea7c8b45bd830683d927197702336d800ca0a78"
+    },
+    {
+      "id": "en.c.025",
+      "language": "en",
+      "title": "Much/many/a lot of",
+      "level": "A2",
+      "aliases": [
+        "A2::Much/many/a lot of"
+      ],
+      "sha256": "9d5807847ff49cc1e2df114398ee109627ef1bf99a6244d6a5d7862479eaefb8"
+    },
+    {
+      "id": "en.c.026",
+      "language": "en",
+      "title": "Adverbs of frequency",
+      "level": "A2",
+      "aliases": [
+        "A2::Adverbs of frequency"
+      ],
+      "sha256": "cb72ea29ffb1e01e48054fd3d300d0f8864c894a6d98842b8bf7aec5adaed963"
+    },
+    {
+      "id": "en.c.027",
+      "language": "en",
+      "title": "Object pronouns",
+      "level": "A2",
+      "aliases": [
+        "A2::Object pronouns"
+      ],
+      "sha256": "e0e629b6f7e6a8314ef37e5cc40efbdfc9186b08855094058530bb84639f465d"
+    },
+    {
+      "id": "en.c.028",
+      "language": "en",
+      "title": "Must/have to",
+      "level": "A2",
+      "aliases": [
+        "A2::Must/have to"
+      ],
+      "sha256": "3f8f3dbeb07415c1f6c63ce07bad43977424fc06b96a3bb925c92037dec6ef7a"
+    },
+    {
+      "id": "en.c.029",
+      "language": "en",
+      "title": "Present perfect",
+      "level": "B1",
+      "aliases": [
+        "B1::Present perfect"
+      ],
+      "sha256": "c5eb1fd9f3eeeb80e1027616145f4896a9ad6028ed3cd077a41a8f3695a1de8e"
+    },
+    {
+      "id": "en.c.030",
+      "language": "en",
+      "title": "Present perfect vs past simple",
+      "level": "B1",
+      "aliases": [
+        "B1::Present perfect vs past simple"
+      ],
+      "sha256": "a35ec6051c126e6d91bb6114f2ba4c2200178683b9825cf2587cf358db92fe28"
+    },
+    {
+      "id": "en.c.031",
+      "language": "en",
+      "title": "For and since",
+      "level": "B1",
+      "aliases": [
+        "B1::For and since"
+      ],
+      "sha256": "ee89fe7fc37e64a9b882be03e33f12b98388b0020355a24fee14c0516aca95f1"
+    },
+    {
+      "id": "en.c.032",
+      "language": "en",
+      "title": "Past continuous",
+      "level": "B1",
+      "aliases": [
+        "B1::Past continuous"
+      ],
+      "sha256": "60335d0e22f729f66c0c4d518e27a9add249110ceb1f875df33f04ef6c67fcb2"
+    },
+    {
+      "id": "en.c.033",
+      "language": "en",
+      "title": "Past continuous vs past simple",
+      "level": "B1",
+      "aliases": [
+        "B1::Past continuous vs past simple"
+      ],
+      "sha256": "e9aaff5a9638ebb4bab4f40184cb46e9cb28e73bb6fe423c794bb36e5b456057"
+    },
+    {
+      "id": "en.c.034",
+      "language": "en",
+      "title": "First conditional",
+      "level": "B1",
+      "aliases": [
+        "B1::First conditional"
+      ],
+      "sha256": "cf65ab8a7516fceaee83ba6f61dcbf4084ac7f7ceb0054e70e7ce4f7771b246e"
+    },
+    {
+      "id": "en.c.035",
+      "language": "en",
+      "title": "Second conditional",
+      "level": "B1",
+      "aliases": [
+        "B1::Second conditional"
+      ],
+      "sha256": "2890e2084676c0d56f21d038897c9c6ad253f0f221840f98ec652e9b5310a0a5"
+    },
+    {
+      "id": "en.c.036",
+      "language": "en",
+      "title": "Relative clauses",
+      "level": "B1",
+      "aliases": [
+        "B1::Relative clauses"
+      ],
+      "sha256": "87b5c6757558349ba54a43a31142118d75a5abda38a9465c812727e7c0f22e65"
+    },
+    {
+      "id": "en.c.037",
+      "language": "en",
+      "title": "Gerunds and infinitives",
+      "level": "B1",
+      "aliases": [
+        "B1::Gerunds and infinitives"
+      ],
+      "sha256": "57e4af71ee04c66a3f295804bd0b9ca5d8ae395b96c852b587f06ad38ff115be"
+    },
+    {
+      "id": "en.c.038",
+      "language": "en",
+      "title": "Modal verbs of advice",
+      "level": "B1",
+      "aliases": [
+        "B1::Modal verbs of advice"
+      ],
+      "sha256": "f748e38aa609163d66bd37cd7de742c582bbdcd42772d4a88cd735f9f9e5b051"
+    },
+    {
+      "id": "en.c.039",
+      "language": "en",
+      "title": "Passive present and past",
+      "level": "B1",
+      "aliases": [
+        "B1::Passive present and past"
+      ],
+      "sha256": "6b8c538633d45a069b445045d9b5763dcaa716eb2714088ab6680122c91e56de"
+    },
+    {
+      "id": "en.c.040",
+      "language": "en",
+      "title": "Reported statements",
+      "level": "B1",
+      "aliases": [
+        "B1::Reported statements"
+      ],
+      "sha256": "ee3bf6e782107676f3c7e83e4d446c154cf632d1fad3cbab6ff37f0f1a01af8e"
+    },
+    {
+      "id": "en.c.041",
+      "language": "en",
+      "title": "Question tags",
+      "level": "B1",
+      "aliases": [
+        "B1::Question tags"
+      ],
+      "sha256": "faaaa119e419ef5aad3a7dac613f2df02801ce292e8d55a53aea0cba423707ea"
+    },
+    {
+      "id": "en.c.042",
+      "language": "en",
+      "title": "Too/enough",
+      "level": "B1",
+      "aliases": [
+        "B1::Too/enough"
+      ],
+      "sha256": "52b040d4d5bf2dc17b705cfbc9066a4dcddfc92aabf8872508b40ba7ccf78555"
+    },
+    {
+      "id": "en.c.043",
+      "language": "en",
+      "title": "Present perfect continuous",
+      "level": "B2",
+      "aliases": [
+        "B2::Present perfect continuous"
+      ],
+      "sha256": "c78b92b683fd5a9b29e06c5763d91afae242a82b3d173c3c1b69886636281638"
+    },
+    {
+      "id": "en.c.044",
+      "language": "en",
+      "title": "Past perfect",
+      "level": "B2",
+      "aliases": [
+        "B2::Past perfect"
+      ],
+      "sha256": "ccf5c36c84bf90729afb2d25885317059e15e54a6c0bd30afebb8395df518c11"
+    },
+    {
+      "id": "en.c.045",
+      "language": "en",
+      "title": "Past perfect continuous",
+      "level": "B2",
+      "aliases": [
+        "B2::Past perfect continuous"
+      ],
+      "sha256": "31ecc3024815e1288066cc1c64f5536985b5a8dfef64631643ca6086880a29d9"
+    },
+    {
+      "id": "en.c.046",
+      "language": "en",
+      "title": "Future continuous",
+      "level": "B2",
+      "aliases": [
+        "B2::Future continuous"
+      ],
+      "sha256": "6fd325facdf203c335af6cbf5d283d67c597d6bfe02f01606200aa15788ded25"
+    },
+    {
+      "id": "en.c.047",
+      "language": "en",
+      "title": "Future perfect",
+      "level": "B2",
+      "aliases": [
+        "B2::Future perfect"
+      ],
+      "sha256": "2d23350745952c212e3310a3f87e4ec8dd136d42bcc81449cf12b27a951f3b5a"
+    },
+    {
+      "id": "en.c.048",
+      "language": "en",
+      "title": "Third conditional",
+      "level": "B2",
+      "aliases": [
+        "B2::Third conditional"
+      ],
+      "sha256": "db2aac15362596dbf9b073cf20670c46f8002f366ee8ee16d577767178ee1559"
+    },
+    {
+      "id": "en.c.049",
+      "language": "en",
+      "title": "Mixed conditionals",
+      "level": "B2",
+      "aliases": [
+        "B2::Mixed conditionals"
+      ],
+      "sha256": "e0775a9f163c80ac915b96da4060ae86743981fc5876f6a1e9e891e7c2ee81d6"
+    },
+    {
+      "id": "en.c.050",
+      "language": "en",
+      "title": "Modal deduction present",
+      "level": "B2",
+      "aliases": [
+        "B2::Modal deduction present"
+      ],
+      "sha256": "c936ad2a7588e730ed75278d44d13e320656e2984881655ca968247d1b4037a7"
+    },
+    {
+      "id": "en.c.051",
+      "language": "en",
+      "title": "Modal deduction past",
+      "level": "B2",
+      "aliases": [
+        "B2::Modal deduction past"
+      ],
+      "sha256": "cda5a601163337f0ab3c86daffe6031f846d2a551ab90bc13b1126305100f7e5"
+    },
+    {
+      "id": "en.c.052",
+      "language": "en",
+      "title": "Causative have/get",
+      "level": "B2",
+      "aliases": [
+        "B2::Causative have/get"
+      ],
+      "sha256": "f6a87102ae4b03c3c38471f9e6cdedee760f2d2187115f0c2c7f4587d5ee9944"
+    },
+    {
+      "id": "en.c.053",
+      "language": "en",
+      "title": "Advanced passive",
+      "level": "B2",
+      "aliases": [
+        "B2::Advanced passive"
+      ],
+      "sha256": "48619887423aa92e74edb51c1b7df313b570bae040f026f27a2c974ddee0f1f2"
+    },
+    {
+      "id": "en.c.054",
+      "language": "en",
+      "title": "Participle clauses",
+      "level": "B2",
+      "aliases": [
+        "B2::Participle clauses"
+      ],
+      "sha256": "76dab312a4c07a766fe6e4c9914490a2e33dd45f9a7d2f5c1264061f9036c93c"
+    },
+    {
+      "id": "en.c.055",
+      "language": "en",
+      "title": "Wish and if only",
+      "level": "B2",
+      "aliases": [
+        "B2::Wish and if only"
+      ],
+      "sha256": "34ffee059661f98f234a423771d06fc02fadc24c81d18a55fb3dd815ad3c2337"
+    },
+    {
+      "id": "en.c.056",
+      "language": "en",
+      "title": "Inversion after negative adverbials",
+      "level": "B2",
+      "aliases": [
+        "B2::Inversion after negative adverbials"
+      ],
+      "sha256": "273b233b59b63669f3e579c7b896e07a26c46eeeb37c2602a6a8c8594fa4c549"
+    },
+    {
+      "id": "en.c.057",
+      "language": "en",
+      "title": "Cleft sentences",
+      "level": "C1",
+      "aliases": [
+        "C1::Cleft sentences"
+      ],
+      "sha256": "2063c6d6760f5fb3d09180dd78e23622b60b0ecc6d9eb255285b90f4ae3b2191"
+    },
+    {
+      "id": "en.c.058",
+      "language": "en",
+      "title": "Inversion in conditionals",
+      "level": "C1",
+      "aliases": [
+        "C1::Inversion in conditionals"
+      ],
+      "sha256": "b9efbacb33851fff5112903771f7f07d7958755c639ea2435cc74e8c44c481ec"
+    },
+    {
+      "id": "en.c.059",
+      "language": "en",
+      "title": "Nominalisation",
+      "level": "C1",
+      "aliases": [
+        "C1::Nominalisation"
+      ],
+      "sha256": "328ab598d1d8c019b5d7a6721ce138f8195e75221425af84908185956e6a7e72"
+    },
+    {
+      "id": "en.c.060",
+      "language": "en",
+      "title": "Hedging and stance",
+      "level": "C1",
+      "aliases": [
+        "C1::Hedging and stance"
+      ],
+      "sha256": "7c76aae17cecabe55b21ec4507d32108a217e14650f89c282f44132068bbe3d3"
+    },
+    {
+      "id": "en.c.061",
+      "language": "en",
+      "title": "Advanced discourse markers",
+      "level": "C1",
+      "aliases": [
+        "C1::Advanced discourse markers"
+      ],
+      "sha256": "1a54dc16b270d55792d1b4c6d5abae8e66f82dbcb1b2c65ff3e718a301f384f2"
+    },
+    {
+      "id": "en.c.062",
+      "language": "en",
+      "title": "Substitution and ellipsis",
+      "level": "C1",
+      "aliases": [
+        "C1::Substitution and ellipsis"
+      ],
+      "sha256": "2e59926164b3e5ecc0e62794434d8ab75fb67f33906f706dbbb4c464686167d5"
+    },
+    {
+      "id": "en.c.063",
+      "language": "en",
+      "title": "Complex relative clauses",
+      "level": "C1",
+      "aliases": [
+        "C1::Complex relative clauses"
+      ],
+      "sha256": "99092069845354e3507106ee4042b1dca9573fdd0eb1fc53a9e2b27ef8962492"
+    },
+    {
+      "id": "en.c.064",
+      "language": "en",
+      "title": "Advanced reporting verbs",
+      "level": "C1",
+      "aliases": [
+        "C1::Advanced reporting verbs"
+      ],
+      "sha256": "2a55a01c3b49869837be9e48bb415c3e0767434f39c2b5b3074959adc884479e"
+    },
+    {
+      "id": "en.c.065",
+      "language": "en",
+      "title": "Emphasis with auxiliaries",
+      "level": "C1",
+      "aliases": [
+        "C1::Emphasis with auxiliaries"
+      ],
+      "sha256": "f8682ffea91cdcac08ca4edc3ee3086deba15a5a68be86323bbbc3d2f9c41738"
+    },
+    {
+      "id": "en.c.066",
+      "language": "en",
+      "title": "Fronting",
+      "level": "C1",
+      "aliases": [
+        "C1::Fronting"
+      ],
+      "sha256": "92df6094f7201b8fe7cc7918088d1dcad762d4d8dc97ec0cf0d6212a583bed01"
+    },
+    {
+      "id": "en.c.067",
+      "language": "en",
+      "title": "Complex noun phrases",
+      "level": "C1",
+      "aliases": [
+        "C1::Complex noun phrases"
+      ],
+      "sha256": "e7ac1544d61df9884d692252575de1b5defb14c8c04e341802e7c82e5e45e78a"
+    },
+    {
+      "id": "en.c.068",
+      "language": "en",
+      "title": "Register control",
+      "level": "C1",
+      "aliases": [
+        "C1::Register control"
+      ],
+      "sha256": "9990f718dd9d4ec28cfeaddf127d0b2b9789d47374454b3852232c6757539320"
+    },
+    {
+      "id": "en.c.069",
+      "language": "en",
+      "title": "Advanced tense-aspect choices",
+      "level": "C1",
+      "aliases": [
+        "C1::Advanced tense-aspect choices"
+      ],
+      "sha256": "760d836098c4fd6d9f566d79185339301c856ef30b6f7194270d5e2949521296"
+    },
+    {
+      "id": "en.c.070",
+      "language": "en",
+      "title": "Parallelism",
+      "level": "C1",
+      "aliases": [
+        "C1::Parallelism"
+      ],
+      "sha256": "fb8065f552718fe82fa892cd48f0809b7d6a1ffccec6e027899e80bba9120002"
+    },
+    {
+      "id": "en.c.071",
+      "language": "en",
+      "title": "Marked word order",
+      "level": "C2",
+      "aliases": [
+        "C2::Marked word order"
+      ],
+      "sha256": "9bd7226f7e283fe2aeba44a5eb54c77b32da1628ace9610d84b398eaa1fd681b"
+    },
+    {
+      "id": "en.c.072",
+      "language": "en",
+      "title": "Layered subordination",
+      "level": "C2",
+      "aliases": [
+        "C2::Layered subordination"
+      ],
+      "sha256": "5b6e515355937bb92e7a79bfd62450e99476126409e112654de5aa5f10119650"
+    },
+    {
+      "id": "en.c.073",
+      "language": "en",
+      "title": "Nuanced modality",
+      "level": "C2",
+      "aliases": [
+        "C2::Nuanced modality"
+      ],
+      "sha256": "43d674f5ce518b7ce45df9c3f3e4a699859e66c2ade6480e74acc6cc0a754708"
+    },
+    {
+      "id": "en.c.074",
+      "language": "en",
+      "title": "Counterfactual distance",
+      "level": "C2",
+      "aliases": [
+        "C2::Counterfactual distance"
+      ],
+      "sha256": "4594acdee968621d3a0c6b45d25f063032857017053059f9feede36837e5808e"
+    },
+    {
+      "id": "en.c.075",
+      "language": "en",
+      "title": "Advanced cohesion",
+      "level": "C2",
+      "aliases": [
+        "C2::Advanced cohesion"
+      ],
+      "sha256": "1c30f85c72165315152049587f1cecc64ff494c62038ff342ef1ca8b12db19bf"
+    },
+    {
+      "id": "en.c.076",
+      "language": "en",
+      "title": "Rhetorical grammar",
+      "level": "C2",
+      "aliases": [
+        "C2::Rhetorical grammar"
+      ],
+      "sha256": "cc41dcfe6e35b5641c4104444a92060403696981bd54c09bda7d8b6c09aedbd0"
+    },
+    {
+      "id": "en.c.077",
+      "language": "en",
+      "title": "Compressed academic structures",
+      "level": "C2",
+      "aliases": [
+        "C2::Compressed academic structures"
+      ],
+      "sha256": "7cae80c4d93f0f5f3efd71d9cc98695c2810b4d6753eb07c611530399a55e69b"
+    },
+    {
+      "id": "en.c.078",
+      "language": "en",
+      "title": "Idiomatic clause patterns",
+      "level": "C2",
+      "aliases": [
+        "C2::Idiomatic clause patterns"
+      ],
+      "sha256": "eebb5f388e07c0707515e0c264b8c1cb442daeb4c4b6304d13d28b4255027195"
+    },
+    {
+      "id": "en.c.079",
+      "language": "en",
+      "title": "Ambiguity control",
+      "level": "C2",
+      "aliases": [
+        "C2::Ambiguity control"
+      ],
+      "sha256": "a1deb0c5b5efc400641557a74f0f5e9daa1d371a86080aa8b99ccff3686e328b"
+    },
+    {
+      "id": "en.c.080",
+      "language": "en",
+      "title": "Style shifting",
+      "level": "C2",
+      "aliases": [
+        "C2::Style shifting"
+      ],
+      "sha256": "cfcdd57cabd5e7578b750885b90a9e440ce5097ad4346582d95dcf10901d9336"
+    },
+    {
+      "id": "en.c.081",
+      "language": "en",
+      "title": "Advanced punctuation and grammar",
+      "level": "C2",
+      "aliases": [
+        "C2::Advanced punctuation and grammar"
+      ],
+      "sha256": "bf84808fb8699ac13807e310f383d446c7a55179caab8cb5b65e741c1e8ecca9"
+    },
+    {
+      "id": "en.c.082",
+      "language": "en",
+      "title": "Editing for naturalness",
+      "level": "C2",
+      "aliases": [
+        "C2::Editing for naturalness"
+      ],
+      "sha256": "67032530a65069e6a07a6b0e54dcb47c4d123e5e465d7efa4dbc66d648426fc4"
+    },
+    {
+      "id": "en.c.083",
+      "language": "en",
+      "title": "Genre-specific grammar",
+      "level": "C2",
+      "aliases": [
+        "C2::Genre-specific grammar"
+      ],
+      "sha256": "64535775922ff3277ea9ab931dc35250c99f59f892a452ce9b411c29ce2d2745"
+    },
+    {
+      "id": "en.c.084",
+      "language": "en",
+      "title": "Integrated automatic production",
+      "level": "C2",
+      "aliases": [
+        "C2::Integrated automatic production"
+      ],
+      "sha256": "5ac2d423cdcef49fdd4cae8aa2e774df42ee3f9566c76f2297eb04e5273f40f5"
+    },
+    {
+      "id": "en.c.085",
+      "language": "en",
+      "title": "Possessive ’s and whose",
+      "level": "A1",
+      "aliases": [
+        "A1::Possessive ’s and whose"
+      ],
+      "sha256": "e2156091e8e68e77abff4036b9d5efc556bc63c5cfe5bb6983b7adb9e0ed1de8"
+    },
+    {
+      "id": "en.c.086",
+      "language": "en",
+      "title": "Prepositions of time: at, in, on",
+      "level": "A1",
+      "aliases": [
+        "A1::Prepositions of time: at, in, on"
+      ],
+      "sha256": "2fd95a12e408e127c618347bb8e15ef046bb4c47c95f60511073e3dbc6bcb91b"
+    },
+    {
+      "id": "en.c.087",
+      "language": "en",
+      "title": "Adjectives and prepositions",
+      "level": "A2",
+      "aliases": [
+        "A2::Adjectives and prepositions"
+      ],
+      "sha256": "91d9cd56273e053578b93bbff2557504f2e61e9f01837786233f41ad29693109"
+    },
+    {
+      "id": "en.c.088",
+      "language": "en",
+      "title": "Adjectives ending in -ed and -ing",
+      "level": "A2",
+      "aliases": [
+        "A2::Adjectives ending in -ed and -ing"
+      ],
+      "sha256": "245e7373d7c6e8fbf4958d07186abfa3a9144dd864630d641daaec2b1a2a8169"
+    },
+    {
+      "id": "en.c.089",
+      "language": "en",
+      "title": "Infinitive of purpose",
+      "level": "A2",
+      "aliases": [
+        "A2::Infinitive of purpose"
+      ],
+      "sha256": "80b3ef86b5dfe32b0484ede29d764a064e0aa27b5da20a51b4df404ab34a8e7b"
+    },
+    {
+      "id": "en.c.090",
+      "language": "en",
+      "title": "Quantifiers: few, a few, little, a little",
+      "level": "A2",
+      "aliases": [
+        "A2::Quantifiers: few, a few, little, a little"
+      ],
+      "sha256": "25e8b9a0f513fb4eac73ad3e3fbc961f6670ff3a8a312618d8b8cb4442e6b509"
+    },
+    {
+      "id": "en.c.091",
+      "language": "en",
+      "title": "Capital letters and apostrophes",
+      "level": "B1",
+      "aliases": [
+        "B1::Capital letters and apostrophes"
+      ],
+      "sha256": "fdcca345c77ec77048710fd1b3997e606ba4dac4f83021ae8e41bd8116cfa86e"
+    },
+    {
+      "id": "en.c.092",
+      "language": "en",
+      "title": "Contrasting ideas: although, despite, however",
+      "level": "B1",
+      "aliases": [
+        "B1::Contrasting ideas: although, despite, however"
+      ],
+      "sha256": "53be5ce28a174781f42e76b58e4309513ae168d7880347450281d6536196505f"
+    },
+    {
+      "id": "en.c.093",
+      "language": "en",
+      "title": "Used to, be used to, get used to",
+      "level": "B1",
+      "aliases": [
+        "B1::Used to, be used to, get used to"
+      ],
+      "sha256": "ffbc3d2a0ba49395295cbac762dbcf4e16566194a2c99da3cf69582a660f2d41"
+    },
+    {
+      "id": "en.c.094",
+      "language": "en",
+      "title": "Intensifiers: so and such",
+      "level": "B1",
+      "aliases": [
+        "B1::Intensifiers: so and such"
+      ],
+      "sha256": "c75189b785a388be24611f881879b65703db90e189724d6e060bd0bed6b83508"
+    },
+    {
+      "id": "en.c.095",
+      "language": "en",
+      "title": "Past ability: could, was able to, managed to",
+      "level": "B1",
+      "aliases": [
+        "B1::Past ability: could, was able to, managed to"
+      ],
+      "sha256": "7e4c7d0229317703cde8f9df1f506060b9d8a579dd7fed6d86a5692e35988c30"
+    },
+    {
+      "id": "en.c.096",
+      "language": "en",
+      "title": "Past habits: used to, would, past simple",
+      "level": "B1",
+      "aliases": [
+        "B1::Past habits: used to, would, past simple"
+      ],
+      "sha256": "44dc19d31721cc4359722d81c7619f61d67f2382ddc87d223e486b7a929f0369"
+    },
+    {
+      "id": "en.c.097",
+      "language": "en",
+      "title": "Phrasal verbs",
+      "level": "B1",
+      "aliases": [
+        "B1::Phrasal verbs"
+      ],
+      "sha256": "d2dc8a4eb1130ca4be0fe09bfde34151183ddd63161f0ad969fd203d49aafd79"
+    },
+    {
+      "id": "en.c.098",
+      "language": "en",
+      "title": "Present perfect: just, yet, still, already",
+      "level": "B1",
+      "aliases": [
+        "B1::Present perfect: just, yet, still, already"
+      ],
+      "sha256": "07d47faf76c8f3dffdf1f8a3819b12f0182a669cb6c0e60cd322ae1a1950dc2d"
+    },
+    {
+      "id": "en.c.099",
+      "language": "en",
+      "title": "Reflexive pronouns",
+      "level": "B1",
+      "aliases": [
+        "B1::Reflexive pronouns"
+      ],
+      "sha256": "495fe3c3c4507f65c5076d7388e10161f77a439b200f381c074e366afa5efd27"
+    },
+    {
+      "id": "en.c.100",
+      "language": "en",
+      "title": "Stative and dynamic verbs",
+      "level": "B1",
+      "aliases": [
+        "B1::Stative and dynamic verbs"
+      ],
+      "sha256": "1130d63eba3c3ad57499493a4e06ee137aca6e0546d04d204f43898358bfeedc"
+    },
+    {
+      "id": "en.c.101",
+      "language": "en",
+      "title": "Using as and like",
+      "level": "B1",
+      "aliases": [
+        "B1::Using as and like"
+      ],
+      "sha256": "aa70f73e25916521b9f24c4b7886cf0de217f8ab9e805c04efc2dada91332166"
+    },
+    {
+      "id": "en.c.102",
+      "language": "en",
+      "title": "Verbs and prepositions",
+      "level": "B1",
+      "aliases": [
+        "B1::Verbs and prepositions"
+      ],
+      "sha256": "09289a046b59a50921995c012c3ec9aa2bbe25f5e8055159d51148d53e4c60c8"
+    },
+    {
+      "id": "en.c.103",
+      "language": "en",
+      "title": "Gradable and non-gradable adjectives",
+      "level": "B2",
+      "aliases": [
+        "B2::Gradable and non-gradable adjectives"
+      ],
+      "sha256": "8376c9f0bb1e111c8e0cb1bf74a3bde03602f469eeb6bbd57a145ea248c82ad2"
+    },
+    {
+      "id": "en.c.104",
+      "language": "en",
+      "title": "British and American grammar",
+      "level": "B2",
+      "aliases": [
+        "B2::British and American grammar"
+      ],
+      "sha256": "5b2af2b5810b382b7846c38cb9296170b21994d24f3cdcb6bb53cdae07d301b2"
+    },
+    {
+      "id": "en.c.105",
+      "language": "en",
+      "title": "Modifying comparatives",
+      "level": "B2",
+      "aliases": [
+        "B2::Modifying comparatives"
+      ],
+      "sha256": "de310444ff77fa154e8c1d43cf170693269d303f7a6892a3c2349b93d0012b7e"
+    },
+    {
+      "id": "en.c.106",
+      "language": "en",
+      "title": "Reported speech: questions",
+      "level": "B2",
+      "aliases": [
+        "B2::Reported speech: questions"
+      ],
+      "sha256": "24d4589b550cb97a04956976410b36be332324eb39c518cfcb9e6d41e76de401"
+    },
+    {
+      "id": "en.c.107",
+      "language": "en",
+      "title": "Future degrees of certainty",
+      "level": "B2",
+      "aliases": [
+        "B2::Future degrees of certainty"
+      ],
+      "sha256": "ea2277f14a699bbd752d3b84d0586c3c01fc0e386d709f91a121158f25af77e0"
+    },
+    {
+      "id": "en.c.108",
+      "language": "en",
+      "title": "Gerund or infinitive: change in meaning",
+      "level": "B2",
+      "aliases": [
+        "B2::Gerund or infinitive: change in meaning"
+      ],
+      "sha256": "90cb5ee88dcef1ea61a9efdf755f506cc4c6e3346fefe37e7b544afdb162eb00"
+    },
+    {
+      "id": "en.c.109",
+      "language": "en",
+      "title": "Advanced passives review",
+      "level": "C1",
+      "aliases": [
+        "C1::Advanced passives review"
+      ],
+      "sha256": "36dc0501e7e89904362a639b836cacc04a11fc1f2761b3c28a7126f79c4a9f93"
+    },
+    {
+      "id": "en.c.110",
+      "language": "en",
+      "title": "Modals and expressions of probability",
+      "level": "C1",
+      "aliases": [
+        "C1::Modals and expressions of probability"
+      ],
+      "sha256": "79ecc57e8aeaa9b1d76bbaceaaf5a4e81c91d755c3ee09dff58799a98c8cb09b"
+    },
+    {
+      "id": "en.c.111",
+      "language": "en",
+      "title": "Unreal time",
+      "level": "C1",
+      "aliases": [
+        "C1::Unreal time"
+      ],
+      "sha256": "076d81871c0b3c6ce53af2c1e2f03966d0ef38653947eccc017937b0ca47c7f3"
+    },
+    {
+      "id": "en.c.112",
+      "language": "en",
+      "title": "Word order in phrasal verbs",
+      "level": "C1",
+      "aliases": [
+        "C1::Word order in phrasal verbs"
+      ],
+      "sha256": "7d5fa7a275a9fd5945500abdb46bc0ebd4588409282a1775a9d9c4f0d2712b24"
+    },
+    {
+      "id": "de.c.001",
+      "language": "de",
+      "title": "Personalpronomen und sein",
+      "level": "A1",
+      "aliases": [
+        "A1::Personalpronomen und sein"
+      ],
+      "sha256": "23d3204139a2226734718251b05ca7a8ff2e99029f41782f6cb8be87ae2cde9d"
+    },
+    {
+      "id": "de.c.002",
+      "language": "de",
+      "title": "haben",
+      "level": "A1",
+      "aliases": [
+        "A1::haben"
+      ],
+      "sha256": "287beef26f360a66ea2bc4d3165bb08a8dbdb858910b0f6b26b17a941b82eefe"
+    },
+    {
+      "id": "de.c.003",
+      "language": "de",
+      "title": "Präsens regelmäßiger Verben",
+      "level": "A1",
+      "aliases": [
+        "A1::Präsens regelmäßiger Verben"
+      ],
+      "sha256": "e806d7b4dac4e80caffa46e692e351257b6c59d50c017bf8fe169b330a8d6b39"
+    },
+    {
+      "id": "de.c.004",
+      "language": "de",
+      "title": "Präsens unregelmäßiger Verben",
+      "level": "A1",
+      "aliases": [
+        "A1::Präsens unregelmäßiger Verben"
+      ],
+      "sha256": "80057193f747f047250cfa1c25aa9b9491b2fd1a848ee199be830b55fb6a592c"
+    },
+    {
+      "id": "de.c.005",
+      "language": "de",
+      "title": "W-Fragen",
+      "level": "A1",
+      "aliases": [
+        "A1::W-Fragen"
+      ],
+      "sha256": "45a53997e209d3427da512a1133df5602d422edee8efaa183e02e45703d513cf"
+    },
+    {
+      "id": "de.c.006",
+      "language": "de",
+      "title": "Ja/Nein-Fragen",
+      "level": "A1",
+      "aliases": [
+        "A1::Ja/Nein-Fragen"
+      ],
+      "sha256": "d26a3350781f4d787ee1cac9d27959de2a40b978fce6c60d29cf1fe93962b0f7"
+    },
+    {
+      "id": "de.c.007",
+      "language": "de",
+      "title": "bestimmter und unbestimmter Artikel",
+      "level": "A1",
+      "aliases": [
+        "A1::bestimmter und unbestimmter Artikel"
+      ],
+      "sha256": "8e017cd86a5792cbc5171c3f0f5d1e4a78ec16d075cba777db7fda5a06aa03cc"
+    },
+    {
+      "id": "de.c.008",
+      "language": "de",
+      "title": "Pluralformen",
+      "level": "A1",
+      "aliases": [
+        "A1::Pluralformen"
+      ],
+      "sha256": "11bc7f968090418d7c71b4aca59355c236aa8761e3cf0a9a14aae9ebe5de8cdc"
+    },
+    {
+      "id": "de.c.009",
+      "language": "de",
+      "title": "Akkusativ",
+      "level": "A1",
+      "aliases": [
+        "A1::Akkusativ"
+      ],
+      "sha256": "018f17d6012407df664b854a3e8b04a870108b41ab0f25b2642d0d29c8107afb"
+    },
+    {
+      "id": "de.c.010",
+      "language": "de",
+      "title": "Possessivartikel",
+      "level": "A1",
+      "aliases": [
+        "A1::Possessivartikel"
+      ],
+      "sha256": "449e07350da3f0c513dcd203158840eb79f1f1caf1d8e9eccebe41eaf2042439"
+    },
+    {
+      "id": "de.c.011",
+      "language": "de",
+      "title": "nicht und kein",
+      "level": "A1",
+      "aliases": [
+        "A1::nicht und kein"
+      ],
+      "sha256": "246091051f22f27ebbdf2d60b481de4b3a25b7194f7417102b5fa49a2bdbd490"
+    },
+    {
+      "id": "de.c.012",
+      "language": "de",
+      "title": "Modalverb können",
+      "level": "A1",
+      "aliases": [
+        "A1::Modalverb können"
+      ],
+      "sha256": "541f71bef2ff3803b1f011c1cf6c88946bbe08cab40a50038e21b84ee199bc46"
+    },
+    {
+      "id": "de.c.013",
+      "language": "de",
+      "title": "Trennbare Verben",
+      "level": "A1",
+      "aliases": [
+        "A1::Trennbare Verben"
+      ],
+      "sha256": "0ca312e42790459fe6613a765b0873a0d469c67491e4ec210004521d6448a350"
+    },
+    {
+      "id": "de.c.014",
+      "language": "de",
+      "title": "lokale Präpositionen",
+      "level": "A1",
+      "aliases": [
+        "A1::lokale Präpositionen"
+      ],
+      "sha256": "5b3ee1ae5ccdcd053270abaad9aa5bac3498d8ff34233eda9f5e4b20c622e98e"
+    },
+    {
+      "id": "de.c.015",
+      "language": "de",
+      "title": "Perfekt mit haben",
+      "level": "A2",
+      "aliases": [
+        "A2::Perfekt mit haben"
+      ],
+      "sha256": "f03aeeb161b2df1141c1c64e7ab8e071eceaebee907ffc035ef95b8c12abda06"
+    },
+    {
+      "id": "de.c.016",
+      "language": "de",
+      "title": "Perfekt mit sein",
+      "level": "A2",
+      "aliases": [
+        "A2::Perfekt mit sein"
+      ],
+      "sha256": "494b2e98391df3fbb8b292b5e88fa5344dca19741d276fd9949ae00132dc39ef"
+    },
+    {
+      "id": "de.c.017",
+      "language": "de",
+      "title": "Präteritum von sein/haben/Modalverben",
+      "level": "A2",
+      "aliases": [
+        "A2::Präteritum von sein/haben/Modalverben"
+      ],
+      "sha256": "362de1bba7df59b0681e44b5b099e2cf6bb9adc81a09a64d355f9750fc6a5506"
+    },
+    {
+      "id": "de.c.018",
+      "language": "de",
+      "title": "Dativ",
+      "level": "A2",
+      "aliases": [
+        "A2::Dativ"
+      ],
+      "sha256": "3616fd50d2b6756320e5ea102d3fc5dd3eeae47639ee4c96e4d9c6426e18921a"
+    },
+    {
+      "id": "de.c.019",
+      "language": "de",
+      "title": "Wechselpräpositionen",
+      "level": "A2",
+      "aliases": [
+        "A2::Wechselpräpositionen"
+      ],
+      "sha256": "a2371d0d9d8489bd286584f030b45b49a3f39d33bdb2f43ef788757a443cc999"
+    },
+    {
+      "id": "de.c.020",
+      "language": "de",
+      "title": "Modalverben müssen, dürfen, sollen, wollen",
+      "level": "A2",
+      "aliases": [
+        "A2::Modalverben müssen, dürfen, sollen, wollen"
+      ],
+      "sha256": "03f63110230568f018ad576cd0ac1d5fa5ac751f8b415dfc9d5af16b375bc880"
+    },
+    {
+      "id": "de.c.021",
+      "language": "de",
+      "title": "Komparativ und Superlativ",
+      "level": "A2",
+      "aliases": [
+        "A2::Komparativ und Superlativ"
+      ],
+      "sha256": "198c132ee388574918dfe7ed2f622369028a01abca095375c88b5e3f40865f90"
+    },
+    {
+      "id": "de.c.022",
+      "language": "de",
+      "title": "Nebensatz mit weil",
+      "level": "A2",
+      "aliases": [
+        "A2::Nebensatz mit weil"
+      ],
+      "sha256": "a15f734ee1e77b4f69c168af58de2ffa77433bdac2d6b982086c00bec6b8a256"
+    },
+    {
+      "id": "de.c.023",
+      "language": "de",
+      "title": "Nebensatz mit dass",
+      "level": "A2",
+      "aliases": [
+        "A2::Nebensatz mit dass"
+      ],
+      "sha256": "a90610484657b2244cc72abdf136d05d74b2a93606308213feaf11ddda0f69b0"
+    },
+    {
+      "id": "de.c.024",
+      "language": "de",
+      "title": "wenn und als",
+      "level": "A2",
+      "aliases": [
+        "A2::wenn und als"
+      ],
+      "sha256": "6214dca9d88043ad170e10b07fb63a492ac210808835c741ac55cb014c5211e3"
+    },
+    {
+      "id": "de.c.025",
+      "language": "de",
+      "title": "Reflexive Verben",
+      "level": "A2",
+      "aliases": [
+        "A2::Reflexive Verben"
+      ],
+      "sha256": "8a2a3df907e0c5cf5a7f4b9791056f851847e5045e5d59d4e6390de4094025d8"
+    },
+    {
+      "id": "de.c.026",
+      "language": "de",
+      "title": "Adjektiv nach sein",
+      "level": "A2",
+      "aliases": [
+        "A2::Adjektiv nach sein"
+      ],
+      "sha256": "46c772c3e0deac0184fdb7cf8a5c0771bada441eac25a89d3f325f114bf5572a"
+    },
+    {
+      "id": "de.c.027",
+      "language": "de",
+      "title": "Zeitangaben und Wortstellung",
+      "level": "A2",
+      "aliases": [
+        "A2::Zeitangaben und Wortstellung"
+      ],
+      "sha256": "281cb6a194e57947ef8ec3ac1175d9cc7969c84a2f3c8b4bfb700c10ad919827"
+    },
+    {
+      "id": "de.c.028",
+      "language": "de",
+      "title": "Indefinitpronomen man/jemand/niemand",
+      "level": "A2",
+      "aliases": [
+        "A2::Indefinitpronomen man/jemand/niemand"
+      ],
+      "sha256": "178908040e9597f40c811a18cd37dae6fb8ce9d73a758c20e6206420db6022ef"
+    },
+    {
+      "id": "de.c.029",
+      "language": "de",
+      "title": "Präteritum in Erzählungen",
+      "level": "B1",
+      "aliases": [
+        "B1::Präteritum in Erzählungen"
+      ],
+      "sha256": "5c7be52a0f80a975652487246152c79c73b5d63c5f9e715a3a2f1fd226d413df"
+    },
+    {
+      "id": "de.c.030",
+      "language": "de",
+      "title": "Plusquamperfekt",
+      "level": "B1",
+      "aliases": [
+        "B1::Plusquamperfekt"
+      ],
+      "sha256": "c3b9c05e93272ba5c469af39221ee6e935348ad97151dfc85a95f41048541338"
+    },
+    {
+      "id": "de.c.031",
+      "language": "de",
+      "title": "Relativsätze Nominativ/Akkusativ",
+      "level": "B1",
+      "aliases": [
+        "B1::Relativsätze Nominativ/Akkusativ"
+      ],
+      "sha256": "dcaa68d9e253a3ce1f392b2dd531aac55f961b0dec6f528b4a5b658029e03800"
+    },
+    {
+      "id": "de.c.032",
+      "language": "de",
+      "title": "Relativsätze Dativ",
+      "level": "B1",
+      "aliases": [
+        "B1::Relativsätze Dativ"
+      ],
+      "sha256": "7ee493beb1169110850ac6db5541ac618f9913f666952f775df57b2329d32da0"
+    },
+    {
+      "id": "de.c.033",
+      "language": "de",
+      "title": "Konjunktiv II mit würde",
+      "level": "B1",
+      "aliases": [
+        "B1::Konjunktiv II mit würde"
+      ],
+      "sha256": "34e82caa6a049c90493e1729bedff98165533048a72ea9bce40bf67695b62d24"
+    },
+    {
+      "id": "de.c.034",
+      "language": "de",
+      "title": "Konjunktiv II von sein/haben/Modalverben",
+      "level": "B1",
+      "aliases": [
+        "B1::Konjunktiv II von sein/haben/Modalverben"
+      ],
+      "sha256": "7aab6ca180604902078cb55f3544c337fb06a3419f52624eda1478f04c68b61d"
+    },
+    {
+      "id": "de.c.035",
+      "language": "de",
+      "title": "Passiv Präsens",
+      "level": "B1",
+      "aliases": [
+        "B1::Passiv Präsens"
+      ],
+      "sha256": "244b416051428e0e7380fb582d6e4e9d71a27918527dd03828114b9e1538d55e"
+    },
+    {
+      "id": "de.c.036",
+      "language": "de",
+      "title": "Passiv Präteritum und Perfekt",
+      "level": "B1",
+      "aliases": [
+        "B1::Passiv Präteritum und Perfekt"
+      ],
+      "sha256": "bf0420af1509fe1478c04b5d553368ec905e44a09e17d36bb8bce92108d0c864"
+    },
+    {
+      "id": "de.c.037",
+      "language": "de",
+      "title": "Infinitiv mit zu",
+      "level": "B1",
+      "aliases": [
+        "B1::Infinitiv mit zu"
+      ],
+      "sha256": "76035b90cf1ba1cc010798a8b1c00a84a7d4200b45dfbafd7dc286eea4d5e2e0"
+    },
+    {
+      "id": "de.c.038",
+      "language": "de",
+      "title": "um...zu / damit",
+      "level": "B1",
+      "aliases": [
+        "B1::um...zu / damit"
+      ],
+      "sha256": "ce70eb20bd7811005dbb329a3f4d6c8156be2e2b845cbd450f96c629f1628dd8"
+    },
+    {
+      "id": "de.c.039",
+      "language": "de",
+      "title": "obwohl/trotzdem",
+      "level": "B1",
+      "aliases": [
+        "B1::obwohl/trotzdem"
+      ],
+      "sha256": "d72a488c78f813c26f412360c7f6275bbc4fcf964b6fd2a78cd5f4864d702040"
+    },
+    {
+      "id": "de.c.040",
+      "language": "de",
+      "title": "Genitivgrundlagen",
+      "level": "B1",
+      "aliases": [
+        "B1::Genitivgrundlagen"
+      ],
+      "sha256": "2edf29b934627662392fb2d96c428f0e35752286df2151cfcc76fc7125e67592"
+    },
+    {
+      "id": "de.c.041",
+      "language": "de",
+      "title": "Adjektivdeklination Grundlagen",
+      "level": "B1",
+      "aliases": [
+        "B1::Adjektivdeklination Grundlagen"
+      ],
+      "sha256": "5f7ea18b513e5bdec8451650bbe864326b9226907a7e1b1f4a4fef9b3810f4d8"
+    },
+    {
+      "id": "de.c.042",
+      "language": "de",
+      "title": "indirekte Fragen",
+      "level": "B1",
+      "aliases": [
+        "B1::indirekte Fragen"
+      ],
+      "sha256": "3cfbdc8b19a63c66712cf5f07bf489f348acf7fa92f1fa2caeb18bfec9fbadd3"
+    },
+    {
+      "id": "de.c.043",
+      "language": "de",
+      "title": "Konjunktiv II Vergangenheit",
+      "level": "B2",
+      "aliases": [
+        "B2::Konjunktiv II Vergangenheit"
+      ],
+      "sha256": "ac458e24f711a499735f41c5cc0142ae60f6ada9d5cc4b62f007f6eb532f089e"
+    },
+    {
+      "id": "de.c.044",
+      "language": "de",
+      "title": "Passiv mit Modalverben",
+      "level": "B2",
+      "aliases": [
+        "B2::Passiv mit Modalverben"
+      ],
+      "sha256": "3a57e63a870c372d55d2e4f3ff25012f3bb5155d1079e282b4392ee33ad91da9"
+    },
+    {
+      "id": "de.c.045",
+      "language": "de",
+      "title": "Zustandspassiv",
+      "level": "B2",
+      "aliases": [
+        "B2::Zustandspassiv"
+      ],
+      "sha256": "166feaffaa231525089960fe938283f16637f3df601ea062cf92ce28d37629ed"
+    },
+    {
+      "id": "de.c.046",
+      "language": "de",
+      "title": "Nominalisierung",
+      "level": "B2",
+      "aliases": [
+        "B2::Nominalisierung"
+      ],
+      "sha256": "28449767648032bb5da0312c419c2691bd97a9d4041c8092431832fd530d468e"
+    },
+    {
+      "id": "de.c.047",
+      "language": "de",
+      "title": "N-Deklination",
+      "level": "B2",
+      "aliases": [
+        "B2::N-Deklination"
+      ],
+      "sha256": "3f5e3d67a47393ebd49563a99426f90938b3c5887d51ef65d28a51819857b1c9"
+    },
+    {
+      "id": "de.c.048",
+      "language": "de",
+      "title": "Partizipien als Adjektive",
+      "level": "B2",
+      "aliases": [
+        "B2::Partizipien als Adjektive"
+      ],
+      "sha256": "246a9d3fdcea18d9375fd531dd60db58fabece6f16ac1c4ddd00806d42e2e02c"
+    },
+    {
+      "id": "de.c.049",
+      "language": "de",
+      "title": "je...desto/umso",
+      "level": "B2",
+      "aliases": [
+        "B2::je...desto/umso"
+      ],
+      "sha256": "192989387973e064e0af7c50fc9478f461b1689170722e74d564635697913519"
+    },
+    {
+      "id": "de.c.050",
+      "language": "de",
+      "title": "sowohl...als auch / weder...noch",
+      "level": "B2",
+      "aliases": [
+        "B2::sowohl...als auch / weder...noch"
+      ],
+      "sha256": "8743f23c3b76b18ba3aac077dcafbcd68b3fa1e066f00cadec392244a2a6c21c"
+    },
+    {
+      "id": "de.c.051",
+      "language": "de",
+      "title": "erweiterte Relativsätze",
+      "level": "B2",
+      "aliases": [
+        "B2::erweiterte Relativsätze"
+      ],
+      "sha256": "f4375f442ee7f8362bd4808bd0f44062a7a553fc4ebb08102786bd5a987022fb"
+    },
+    {
+      "id": "de.c.052",
+      "language": "de",
+      "title": "Verben mit Präpositionen",
+      "level": "B2",
+      "aliases": [
+        "B2::Verben mit Präpositionen"
+      ],
+      "sha256": "059825e7bf50e249e1fb5cfe50cf1be09fce428ba681bc41e46f1e1c5eb04baf"
+    },
+    {
+      "id": "de.c.053",
+      "language": "de",
+      "title": "indirekte Rede Grundlagen",
+      "level": "B2",
+      "aliases": [
+        "B2::indirekte Rede Grundlagen"
+      ],
+      "sha256": "79eb0f51c0a62365257c07d8acfb894b5d0c380b71f5c7ce935e9f8f2e593874"
+    },
+    {
+      "id": "de.c.054",
+      "language": "de",
+      "title": "Nomen-Verb-Verbindungen / Funktionsverbgefüge",
+      "level": "B2",
+      "aliases": [
+        "B2::Nomen-Verb-Verbindungen / Funktionsverbgefüge"
+      ],
+      "sha256": "ac9c8e44305200019e217f40c97861c3d6ca2b95de20bf393ca44b2b7c61c596"
+    },
+    {
+      "id": "de.c.055",
+      "language": "de",
+      "title": "Wortstellung im Mittelfeld",
+      "level": "B2",
+      "aliases": [
+        "B2::Wortstellung im Mittelfeld"
+      ],
+      "sha256": "3d321f799064b0eede68192ac34ddedfeaed451309da6b07433205bac231d8bb"
+    },
+    {
+      "id": "de.c.056",
+      "language": "de",
+      "title": "Konnektoren und Satzverknüpfung",
+      "level": "B2",
+      "aliases": [
+        "B2::Konnektoren und Satzverknüpfung"
+      ],
+      "sha256": "cd8f19d5a8993d1760ad3f824e67db2907910582cdbdd36461c663673c3ebd8a"
+    },
+    {
+      "id": "de.c.057",
+      "language": "de",
+      "title": "Konjunktiv I vollständig",
+      "level": "C1",
+      "aliases": [
+        "C1::Konjunktiv I vollständig"
+      ],
+      "sha256": "1e9638adb4c11740cce70ea937cd76269532824a5829caf25fc58846e789cd0f"
+    },
+    {
+      "id": "de.c.058",
+      "language": "de",
+      "title": "Subjektive Bedeutung der Modalverben",
+      "level": "C1",
+      "aliases": [
+        "C1::Subjektive Bedeutung der Modalverben"
+      ],
+      "sha256": "d5fb5672ce127b1cadf7a7003507bc45096cf44baeb2748a199f0cf3107f6817"
+    },
+    {
+      "id": "de.c.059",
+      "language": "de",
+      "title": "Ersatzformen des Passivs",
+      "level": "C1",
+      "aliases": [
+        "C1::Ersatzformen des Passivs"
+      ],
+      "sha256": "e98aadf38d0d3cd7b23d743503b81e2e38eafcdea319325571948644017d5e9d"
+    },
+    {
+      "id": "de.c.060",
+      "language": "de",
+      "title": "Komplexe Nominalgruppen",
+      "level": "C1",
+      "aliases": [
+        "C1::Komplexe Nominalgruppen"
+      ],
+      "sha256": "c4c04bc85e4c1d3aab7fbcda08f115f3da95c45f547cb2f2ad2a2a77be0f2590"
+    },
+    {
+      "id": "de.c.061",
+      "language": "de",
+      "title": "Partizipialkonstruktionen",
+      "level": "C1",
+      "aliases": [
+        "C1::Partizipialkonstruktionen"
+      ],
+      "sha256": "9c84d57370718467767c7225747d78047c2da40cce16e84b43323cdb1f951916"
+    },
+    {
+      "id": "de.c.062",
+      "language": "de",
+      "title": "Appositionen",
+      "level": "C1",
+      "aliases": [
+        "C1::Appositionen"
+      ],
+      "sha256": "ce7a776b138b7fc886a4cac0c8fb755fe51e940b52e5534d7a0e4f817ac77aed"
+    },
+    {
+      "id": "de.c.063",
+      "language": "de",
+      "title": "Informationsstruktur und Vorfeld",
+      "level": "C1",
+      "aliases": [
+        "C1::Informationsstruktur und Vorfeld"
+      ],
+      "sha256": "f36efc559b2ade9d6c24a57fadf3efbe7e6dde7671dac166ae01e8aa9ff803fd"
+    },
+    {
+      "id": "de.c.064",
+      "language": "de",
+      "title": "Ausklammerung und Nachfeld",
+      "level": "C1",
+      "aliases": [
+        "C1::Ausklammerung und Nachfeld"
+      ],
+      "sha256": "a8eed9a6e9d0e525cc1d1486becb33d9fa06e35a43c6850282307eac89f54a09"
+    },
+    {
+      "id": "de.c.065",
+      "language": "de",
+      "title": "Konzessive und adversative Strukturen",
+      "level": "C1",
+      "aliases": [
+        "C1::Konzessive und adversative Strukturen"
+      ],
+      "sha256": "2baa70ba69656ea4ff15b18e65c2e66eb3f56d283e4ab6bc7a9cea465b0df4c9"
+    },
+    {
+      "id": "de.c.066",
+      "language": "de",
+      "title": "Wissenschaftliches Hedging",
+      "level": "C1",
+      "aliases": [
+        "C1::Wissenschaftliches Hedging"
+      ],
+      "sha256": "8ec13fe79cf65c5ec96e9457138c6f32993e7e0a71393044fa52c4c99a19b13c"
+    },
+    {
+      "id": "de.c.067",
+      "language": "de",
+      "title": "Textkohäsion",
+      "level": "C1",
+      "aliases": [
+        "C1::Textkohäsion"
+      ],
+      "sha256": "880eae28eef956e6a6dbb11fc90b60d40d6801195984f809db70b2c2204d1b42"
+    },
+    {
+      "id": "de.c.068",
+      "language": "de",
+      "title": "Register und Stil",
+      "level": "C1",
+      "aliases": [
+        "C1::Register und Stil"
+      ],
+      "sha256": "6ea9e0e21a775662db6ee152fb96371bdc23d79ca3f1237e25a5c484382bb222"
+    },
+    {
+      "id": "de.c.069",
+      "language": "de",
+      "title": "Verbalisierung und Nominalisierung abwägen",
+      "level": "C1",
+      "aliases": [
+        "C1::Verbalisierung und Nominalisierung abwägen"
+      ],
+      "sha256": "1fcdb043b54da10a998863416a3e705064963399bbabcadc373b8716a2cb1c01"
+    },
+    {
+      "id": "de.c.070",
+      "language": "de",
+      "title": "Parallelismus",
+      "level": "C1",
+      "aliases": [
+        "C1::Parallelismus"
+      ],
+      "sha256": "c3a838dc80a7ab98a8e1785c6ee00feb6b8181a2c631d39aea1eb75d3fa37fc4"
+    },
+    {
+      "id": "de.c.071",
+      "language": "de",
+      "title": "Feine Bedeutungsunterschiede im Modus",
+      "level": "C2",
+      "aliases": [
+        "C2::Feine Bedeutungsunterschiede im Modus"
+      ],
+      "sha256": "b47624448e6b43e442dbba3225c08a7d7ae22cb69d2df7cfdb9601bdb1c7b290"
+    },
+    {
+      "id": "de.c.072",
+      "language": "de",
+      "title": "Markierte Wortstellung",
+      "level": "C2",
+      "aliases": [
+        "C2::Markierte Wortstellung"
+      ],
+      "sha256": "8762e0528c21bb6c79f216b124c21ec54ef63d2dbbf847c61d99be6ab13fa360"
+    },
+    {
+      "id": "de.c.073",
+      "language": "de",
+      "title": "Komplexe Einbettung",
+      "level": "C2",
+      "aliases": [
+        "C2::Komplexe Einbettung"
+      ],
+      "sha256": "d97d7ff3fa5de82e6d9f2dfbd304f51077183490f9ce392d9af4ce263b68cdac"
+    },
+    {
+      "id": "de.c.074",
+      "language": "de",
+      "title": "Ellipsen und Substitution",
+      "level": "C2",
+      "aliases": [
+        "C2::Ellipsen und Substitution"
+      ],
+      "sha256": "2cea923d22c76209cdbc10a933477a5362f48c3c1b0407b970116d137a71eaa8"
+    },
+    {
+      "id": "de.c.075",
+      "language": "de",
+      "title": "Rhetorische Syntax",
+      "level": "C2",
+      "aliases": [
+        "C2::Rhetorische Syntax"
+      ],
+      "sha256": "07d9cd0e1253f8ed336125392de984015ae44429ec54a45ba0f971eae6ecac58"
+    },
+    {
+      "id": "de.c.076",
+      "language": "de",
+      "title": "Ambiguitätskontrolle",
+      "level": "C2",
+      "aliases": [
+        "C2::Ambiguitätskontrolle"
+      ],
+      "sha256": "1891e2720694d6e7bf5f248724ac94e317fce53f2aed590d3720cc61c2ab177d"
+    },
+    {
+      "id": "de.c.077",
+      "language": "de",
+      "title": "Idiomatizität und Kollokation",
+      "level": "C2",
+      "aliases": [
+        "C2::Idiomatizität und Kollokation"
+      ],
+      "sha256": "d33618944179828339b2503bb73afd40c4797b7c62cdfd1c74adec225979a2ca"
+    },
+    {
+      "id": "de.c.078",
+      "language": "de",
+      "title": "Textsortenspezifische Grammatik",
+      "level": "C2",
+      "aliases": [
+        "C2::Textsortenspezifische Grammatik"
+      ],
+      "sha256": "b65f3e52a352c596238a91e6eca195113bbeee977b1544fc47f9624b37860090"
+    },
+    {
+      "id": "de.c.079",
+      "language": "de",
+      "title": "Stilistische Verdichtung",
+      "level": "C2",
+      "aliases": [
+        "C2::Stilistische Verdichtung"
+      ],
+      "sha256": "35761a776b8daaaa116f6f5ccf072db0e7f2e29333b0dedccfc565121e6170ee"
+    },
+    {
+      "id": "de.c.080",
+      "language": "de",
+      "title": "Pragmatische Feinsteuerung",
+      "level": "C2",
+      "aliases": [
+        "C2::Pragmatische Feinsteuerung"
+      ],
+      "sha256": "61ddb2d3fc98438cf88c996dd53e7edd5d9e258748c4135c7841007163b11fc3"
+    },
+    {
+      "id": "de.c.081",
+      "language": "de",
+      "title": "Kohärenz langer Beiträge",
+      "level": "C2",
+      "aliases": [
+        "C2::Kohärenz langer Beiträge"
+      ],
+      "sha256": "b626aa1e19b60fdb6c104573d59ee1f6e36a36fd9fcd028d14e47fc20f51c32c"
+    },
+    {
+      "id": "de.c.082",
+      "language": "de",
+      "title": "Selbstreparatur im Sprechen",
+      "level": "C2",
+      "aliases": [
+        "C2::Selbstreparatur im Sprechen"
+      ],
+      "sha256": "1d948765f52eb53140a5aa55321adbf48c09a6356d195e8554652474fdfbff68"
+    },
+    {
+      "id": "de.c.083",
+      "language": "de",
+      "title": "Mehrsprachige Interferenzkontrolle",
+      "level": "C2",
+      "aliases": [
+        "C2::Mehrsprachige Interferenzkontrolle"
+      ],
+      "sha256": "f978218a8a918e5f0e2ea7273222b9ba5838e255aa009c9cca60736ed3a1fb0e"
+    },
+    {
+      "id": "de.c.084",
+      "language": "de",
+      "title": "Integrierte automatische Produktion",
+      "level": "C2",
+      "aliases": [
+        "C2::Integrierte automatische Produktion"
+      ],
+      "sha256": "17bf618b74a4ac659c168202db617bb1218e4329f2fc11a0a4aa21b2f8cfd150"
+    },
+    {
+      "id": "de.c.085",
+      "language": "de",
+      "title": "Imperativ mit du, ihr und Sie",
+      "level": "A1",
+      "aliases": [
+        "A1::Imperativ mit du, ihr und Sie"
+      ],
+      "sha256": "b8d41a87729587a404875966012f349dd629bfa50bccdb1d4191f2692b7a14c7"
+    },
+    {
+      "id": "de.c.086",
+      "language": "de",
+      "title": "Satzklammer im einfachen Hauptsatz",
+      "level": "A1",
+      "aliases": [
+        "A1::Satzklammer im einfachen Hauptsatz"
+      ],
+      "sha256": "2082352882ff3c770e29949c716d6de00d6d58dee5d2498c099b21850bac4d6c"
+    },
+    {
+      "id": "de.c.087",
+      "language": "de",
+      "title": "Uhrzeit, Datum und Reihenfolge",
+      "level": "A1",
+      "aliases": [
+        "A1::Uhrzeit, Datum und Reihenfolge"
+      ],
+      "sha256": "cefe64265d7868c3e03d59d087c04de07e74b2daddd354222f6b0882e829650c"
+    },
+    {
+      "id": "de.c.088",
+      "language": "de",
+      "title": "Temporale Präpositionen am, um und im",
+      "level": "A1",
+      "aliases": [
+        "A1::Temporale Präpositionen am, um und im"
+      ],
+      "sha256": "49b44c18f9c7a844b78ce661abb53b9c0c086da2b653d43e938e57dcc4126f65"
+    },
+    {
+      "id": "de.c.089",
+      "language": "de",
+      "title": "Häufigkeitsadverbien",
+      "level": "A1",
+      "aliases": [
+        "A1::Häufigkeitsadverbien"
+      ],
+      "sha256": "afbeee6d918b1e981007b198617756516a2df12f0d1cd2903f051cb981ec6e0b"
+    },
+    {
+      "id": "de.c.090",
+      "language": "de",
+      "title": "es gibt mit Akkusativ",
+      "level": "A1",
+      "aliases": [
+        "A1::es gibt mit Akkusativ"
+      ],
+      "sha256": "6d553c03dadaa6072b6978c9702b2bf702b811eecd31813d3adf75913f48b450"
+    },
+    {
+      "id": "de.c.091",
+      "language": "de",
+      "title": "man für allgemeine Aussagen",
+      "level": "A1",
+      "aliases": [
+        "A1::man für allgemeine Aussagen"
+      ],
+      "sha256": "e69c0e3272204c85c3a4f7865b6f041fda1b070acb75866eb96d691f95f2256b"
+    },
+    {
+      "id": "de.c.092",
+      "language": "de",
+      "title": "und, aber, denn und oder",
+      "level": "A1",
+      "aliases": [
+        "A1::und, aber, denn und oder"
+      ],
+      "sha256": "6dc1ce702ce77cd247a9ad1475431a13da6d7d1f98080cb79e735ce526f0c5d5"
+    },
+    {
+      "id": "de.c.093",
+      "language": "de",
+      "title": "Mengenwörter viel, wenig und genug",
+      "level": "A1",
+      "aliases": [
+        "A1::Mengenwörter viel, wenig und genug"
+      ],
+      "sha256": "5cbffbae288846f44e59306f661f909b47a8667dccbae14003b0fe9dc1559ec6"
+    },
+    {
+      "id": "de.c.094",
+      "language": "de",
+      "title": "Akkusativpronomen",
+      "level": "A1",
+      "aliases": [
+        "A1::Akkusativpronomen"
+      ],
+      "sha256": "945d955d139d02e866c962a061ffb0f862b847be9e3d5f6b34623e20ead9724d"
+    },
+    {
+      "id": "de.c.095",
+      "language": "de",
+      "title": "Adjektivdeklination nach Artikeln",
+      "level": "A2",
+      "aliases": [
+        "A2::Adjektivdeklination nach Artikeln"
+      ],
+      "sha256": "3ea927de55ccdbb0f62bcff70292b1baeef945a985265078917646a9abfd06cb"
+    },
+    {
+      "id": "de.c.096",
+      "language": "de",
+      "title": "Relativsätze mit der, die und das",
+      "level": "A2",
+      "aliases": [
+        "A2::Relativsätze mit der, die und das"
+      ],
+      "sha256": "b6c5822f365e7e879469a3aac5e2d8c5020dc78692bbd15b018594bcfaf603e8"
+    },
+    {
+      "id": "de.c.097",
+      "language": "de",
+      "title": "Nebensätze mit ob",
+      "level": "A2",
+      "aliases": [
+        "A2::Nebensätze mit ob"
+      ],
+      "sha256": "e01c61ef15df8c65df09eec9f09268197037e772e0425c0e3179cb9e277ed207"
+    },
+    {
+      "id": "de.c.098",
+      "language": "de",
+      "title": "darum, deshalb und deswegen",
+      "level": "A2",
+      "aliases": [
+        "A2::darum, deshalb und deswegen"
+      ],
+      "sha256": "4265499893f019c633df95fa6549609ee553291777e5c6170f16445892e9b547"
+    },
+    {
+      "id": "de.c.099",
+      "language": "de",
+      "title": "denn und sondern",
+      "level": "A2",
+      "aliases": [
+        "A2::denn und sondern"
+      ],
+      "sha256": "2e4f98f2a9e8cd581e99f53e901aaf7843e0a5dd221d71dc7c8a49c3d7f11f2e"
+    },
+    {
+      "id": "de.c.100",
+      "language": "de",
+      "title": "Verben mit Dativ und Akkusativ",
+      "level": "A2",
+      "aliases": [
+        "A2::Verben mit Dativ und Akkusativ"
+      ],
+      "sha256": "b787422f38bf53c52513a89a529c33b88292f51dc61ea41385989690d8809472"
+    },
+    {
+      "id": "de.c.101",
+      "language": "de",
+      "title": "Verben mit Präpositionen Grundlagen",
+      "level": "A2",
+      "aliases": [
+        "A2::Verben mit Präpositionen Grundlagen"
+      ],
+      "sha256": "09cf7806d27aa78467eafdffe4fdbbae74c179e51af9ed7f59e301981c6509d3"
+    },
+    {
+      "id": "de.c.102",
+      "language": "de",
+      "title": "Futur I mit werden",
+      "level": "A2",
+      "aliases": [
+        "A2::Futur I mit werden"
+      ],
+      "sha256": "35a7aee47e4b0594ce10934bfdd8f96fece4273e4675f75318404ceaa577b295"
+    },
+    {
+      "id": "de.c.103",
+      "language": "de",
+      "title": "da- und wo-Komposita Grundlagen",
+      "level": "A2",
+      "aliases": [
+        "A2::da- und wo-Komposita Grundlagen"
+      ],
+      "sha256": "29788e86c5d3ea097dc1183d50fef0f76e51388e7d4a72cdc513d61efb40958b"
+    },
+    {
+      "id": "de.c.104",
+      "language": "de",
+      "title": "Infinitiv mit zu Grundlagen",
+      "level": "A2",
+      "aliases": [
+        "A2::Infinitiv mit zu Grundlagen"
+      ],
+      "sha256": "b50ffbcdf30044999b5cabd9fd0f689afaa807daa367274209b58b090dc5e730"
+    },
+    {
+      "id": "de.c.105",
+      "language": "de",
+      "title": "Adjektivdeklination vollständig",
+      "level": "B1",
+      "aliases": [
+        "B1::Adjektivdeklination vollständig"
+      ],
+      "sha256": "f64aea575a1876e30dfbb0fa9c8abba40fa4bb9d79ac145f268a570da3478077"
+    },
+    {
+      "id": "de.c.106",
+      "language": "de",
+      "title": "Pronominaladverbien",
+      "level": "B1",
+      "aliases": [
+        "B1::Pronominaladverbien"
+      ],
+      "sha256": "1addf43b3ab01a9b34671aef66e76bfcd2d3fbf5d871812806a65ce3268fdcc0"
+    },
+    {
+      "id": "de.c.107",
+      "language": "de",
+      "title": "Futur I für Prognosen und Vermutungen",
+      "level": "B1",
+      "aliases": [
+        "B1::Futur I für Prognosen und Vermutungen"
+      ],
+      "sha256": "fc50986c710b6d1e6b64f26c6d3477c26fdac19f2c1630b1ebed06f3882e0d19"
+    },
+    {
+      "id": "de.c.108",
+      "language": "de",
+      "title": "Vorgangspassiv und Zustandspassiv",
+      "level": "B1",
+      "aliases": [
+        "B1::Vorgangspassiv und Zustandspassiv"
+      ],
+      "sha256": "15f54cc4dac7e36ca73e031d937995c5876a23103c929d6179a7623dfdb6452f"
+    },
+    {
+      "id": "de.c.109",
+      "language": "de",
+      "title": "Temporalsätze mit bevor, nachdem und seitdem",
+      "level": "B1",
+      "aliases": [
+        "B1::Temporalsätze mit bevor, nachdem und seitdem"
+      ],
+      "sha256": "f4a2027ab118598755902149727e9a2c2d8a407969f7dfd90df618221ff0b387"
+    },
+    {
+      "id": "de.c.110",
+      "language": "de",
+      "title": "ohne zu und anstatt zu",
+      "level": "B1",
+      "aliases": [
+        "B1::ohne zu und anstatt zu"
+      ],
+      "sha256": "abbb80b70a77d032478170ed9c9c1fd62d32cacdc79d54afd0aa52c6f76c19b5"
+    },
+    {
+      "id": "de.c.111",
+      "language": "de",
+      "title": "lassen als Vollverb und Hilfsverb",
+      "level": "B1",
+      "aliases": [
+        "B1::lassen als Vollverb und Hilfsverb"
+      ],
+      "sha256": "9b382ef290652357f2ba160dd21b9fe96eef0327faad58bdd1a03542c73c4649"
+    },
+    {
+      "id": "de.c.112",
+      "language": "de",
+      "title": "brauchen nicht zu",
+      "level": "B1",
+      "aliases": [
+        "B1::brauchen nicht zu"
+      ],
+      "sha256": "a85ce0b31c968735d256551acc6352cd2f815d9d6b90d8bba82ece91137b0954"
+    },
+    {
+      "id": "de.c.113",
+      "language": "de",
+      "title": "Zweiteilige Konnektoren",
+      "level": "B1",
+      "aliases": [
+        "B1::Zweiteilige Konnektoren"
+      ],
+      "sha256": "b492e9447cb8e2d5ffae620ab5f52f5aba8fd651046ba752c2e6a93741378dc7"
+    },
+    {
+      "id": "de.c.114",
+      "language": "de",
+      "title": "Genitivpräpositionen",
+      "level": "B1",
+      "aliases": [
+        "B1::Genitivpräpositionen"
+      ],
+      "sha256": "4367a92ea4aa4f072296f09b7ca864256b5e3353961d2e0cdb774243dcf1459d"
+    },
+    {
+      "id": "de.c.115",
+      "language": "de",
+      "title": "Indirekte Rede mit Konjunktiv I",
+      "level": "B2",
+      "aliases": [
+        "B2::Indirekte Rede mit Konjunktiv I"
+      ],
+      "sha256": "67d04a201a840b181562230267e4f56ac50931a65352f83a2053250cf7909725"
+    },
+    {
+      "id": "de.c.116",
+      "language": "de",
+      "title": "Modalpartikeln im Gespräch",
+      "level": "B2",
+      "aliases": [
+        "B2::Modalpartikeln im Gespräch"
+      ],
+      "sha256": "34ec5c41064795c03651762ee790d63369f87adc8d4b8cd0af7c9dba1cafb92f"
+    },
+    {
+      "id": "de.c.117",
+      "language": "de",
+      "title": "Komplexe Temporalsätze",
+      "level": "B2",
+      "aliases": [
+        "B2::Komplexe Temporalsätze"
+      ],
+      "sha256": "8fdb0cada984911317a64ec85158d7b828c68ce814885ad5b19cfc2a4fa1ab6f"
+    },
+    {
+      "id": "de.c.118",
+      "language": "de",
+      "title": "Konzessive Verknüpfung mit dennoch und gleichwohl",
+      "level": "B2",
+      "aliases": [
+        "B2::Konzessive Verknüpfung mit dennoch und gleichwohl"
+      ],
+      "sha256": "f490d872409d8a08161ac0eda0f7506bdaa362544b7d2f25140918266c9c7fac"
+    },
+    {
+      "id": "de.c.119",
+      "language": "de",
+      "title": "Kausale und konsekutive Verknüpfung",
+      "level": "B2",
+      "aliases": [
+        "B2::Kausale und konsekutive Verknüpfung"
+      ],
+      "sha256": "4d496f8041161b02e9731aa80f503358ac59b1f048a8f08a34e99347a37fa80f"
+    },
+    {
+      "id": "de.c.120",
+      "language": "de",
+      "title": "Partizipialattribute erweitern",
+      "level": "B2",
+      "aliases": [
+        "B2::Partizipialattribute erweitern"
+      ],
+      "sha256": "23fe5864ff7a674e20cc0b9b72ea96e251613097f9c6d4aa5e1047ce40fa19d6"
+    },
+    {
+      "id": "de.c.121",
+      "language": "de",
+      "title": "Nominalisierte Adjektive",
+      "level": "B2",
+      "aliases": [
+        "B2::Nominalisierte Adjektive"
+      ],
+      "sha256": "23d738ff672879c8fcca9638c48d0436bd692dca98b2c0cc6703c5f20a7238de"
+    },
+    {
+      "id": "de.c.122",
+      "language": "de",
+      "title": "Erweiterte Genitivpräpositionen",
+      "level": "B2",
+      "aliases": [
+        "B2::Erweiterte Genitivpräpositionen"
+      ],
+      "sha256": "e5ba2775537f0321ffb359df2a6fb930952508ca3d52d1430c8646f29f6e5b64"
+    },
+    {
+      "id": "de.c.123",
+      "language": "de",
+      "title": "Funktionsverbgefüge systematisch",
+      "level": "B2",
+      "aliases": [
+        "B2::Funktionsverbgefüge systematisch"
+      ],
+      "sha256": "8a15be157b493682021015da071ca46d808d57f38cba354b1027d7e86eb945f9"
+    },
+    {
+      "id": "de.c.124",
+      "language": "de",
+      "title": "Informationsstruktur durch Vorfeldbesetzung",
+      "level": "B2",
+      "aliases": [
+        "B2::Informationsstruktur durch Vorfeldbesetzung"
+      ],
+      "sha256": "0bb20ab5c3557346fa5e8272663040dbc57bccc591595b62e64db89594bae204"
+    },
+    {
+      "id": "de.c.125",
+      "language": "de",
+      "title": "Diskurspartikeln und Registersteuerung",
+      "level": "C1",
+      "aliases": [
+        "C1::Diskurspartikeln und Registersteuerung"
+      ],
+      "sha256": "115977853cbf6ae0ff65959c1f08d0e1f837014671f956c90733c61286a58191"
+    },
+    {
+      "id": "de.c.126",
+      "language": "de",
+      "title": "Tempusfolge in Berichten",
+      "level": "C1",
+      "aliases": [
+        "C1::Tempusfolge in Berichten"
+      ],
+      "sha256": "de965eea4d29d6b36528a860c820fa641552f650649b82b6db74c63ab988a590"
+    },
+    {
+      "id": "de.c.127",
+      "language": "de",
+      "title": "Komplexe Verbvalenz und Rektion",
+      "level": "C1",
+      "aliases": [
+        "C1::Komplexe Verbvalenz und Rektion"
+      ],
+      "sha256": "7a5f4801fb6d31b2d9bf34322d5ad282f279e6b698bcc6604074348fb0e22eeb"
+    },
+    {
+      "id": "de.c.128",
+      "language": "de",
+      "title": "Infinitiv- und Partizipialverdichtung",
+      "level": "C1",
+      "aliases": [
+        "C1::Infinitiv- und Partizipialverdichtung"
+      ],
+      "sha256": "728cd8439b2d4e1074a644f82f62c2d47dd2806717e656dfb6566973c6457ee1"
+    },
+    {
+      "id": "de.c.129",
+      "language": "de",
+      "title": "Indirekte Rede mit Tempus und Modalität",
+      "level": "C1",
+      "aliases": [
+        "C1::Indirekte Rede mit Tempus und Modalität"
+      ],
+      "sha256": "98053a390f4041800937452020961c099b06bc001e7b627fdff9e9152bc27ab7"
+    },
+    {
+      "id": "de.c.130",
+      "language": "de",
+      "title": "Komplexe Konditionalstrukturen",
+      "level": "C1",
+      "aliases": [
+        "C1::Komplexe Konditionalstrukturen"
+      ],
+      "sha256": "079cdcbf07322720fdcec69e2a4cc091fb276d4c8cda2e26bba9a155ed713d07"
+    },
+    {
+      "id": "de.c.131",
+      "language": "de",
+      "title": "Kausale Zuschreibung und wissenschaftliche Positionierung",
+      "level": "C1",
+      "aliases": [
+        "C1::Kausale Zuschreibung und wissenschaftliche Positionierung"
+      ],
+      "sha256": "e0bc757584ac704d938e1f30954dab6685be35064232e5045a79e7be978ee9b6"
+    },
+    {
+      "id": "de.c.132",
+      "language": "de",
+      "title": "Thema-Rhema-Gliederung",
+      "level": "C1",
+      "aliases": [
+        "C1::Thema-Rhema-Gliederung"
+      ],
+      "sha256": "97d4edfe45990df03f92fcd1e0b799ce533ab0010bc6cb1ff5a04cdaa80f5d3f"
+    },
+    {
+      "id": "de.c.133",
+      "language": "de",
+      "title": "Interpunktion als Bedeutungssignal",
+      "level": "C1",
+      "aliases": [
+        "C1::Interpunktion als Bedeutungssignal"
+      ],
+      "sha256": "f2f9d5016170ecb47e44887b866f1f60a4ab0a6d251aeb83adbf99db9dff6061"
+    },
+    {
+      "id": "de.c.134",
+      "language": "de",
+      "title": "Syntax wissenschaftlicher Zitate",
+      "level": "C1",
+      "aliases": [
+        "C1::Syntax wissenschaftlicher Zitate"
+      ],
+      "sha256": "9a67b67a03563770fb7d5f0daa227e4960c3ab1f57a2149ce3bb60a4f2d54027"
+    },
+    {
+      "id": "de.c.135",
+      "language": "de",
+      "title": "Deixis und Perspektivsteuerung",
+      "level": "C2",
+      "aliases": [
+        "C2::Deixis und Perspektivsteuerung"
+      ],
+      "sha256": "30cb91dacb6f598963d885f7c087956ab9fa92f7adff0077d63dc2335d3c9411"
+    },
+    {
+      "id": "de.c.136",
+      "language": "de",
+      "title": "Anapher und Katapher",
+      "level": "C2",
+      "aliases": [
+        "C2::Anapher und Katapher"
+      ],
+      "sha256": "095c8ea5ca23959c38aa3d7a09ff9afc9d081e89994fa6aa7402b802a0fb3832"
+    },
+    {
+      "id": "de.c.137",
+      "language": "de",
+      "title": "Skopus und Negation",
+      "level": "C2",
+      "aliases": [
+        "C2::Skopus und Negation"
+      ],
+      "sha256": "fd6a0bf1e3e568d1620e1119905c0ba041a4bcc44aabd64e2901e29d43442feb"
+    },
+    {
+      "id": "de.c.138",
+      "language": "de",
+      "title": "Präsupposition und Implikatur",
+      "level": "C2",
+      "aliases": [
+        "C2::Präsupposition und Implikatur"
+      ],
+      "sha256": "76e236d5def272bfc8e5431f829556136a8a067b06cc8d7b67f28e35e52a73c3"
+    },
+    {
+      "id": "de.c.139",
+      "language": "de",
+      "title": "Informationsdichte kontrollieren",
+      "level": "C2",
+      "aliases": [
+        "C2::Informationsdichte kontrollieren"
+      ],
+      "sha256": "f197ceb0ccd26706c6e433afd61948656b263f4d685485088129574a07c73d7d"
+    },
+    {
+      "id": "de.c.140",
+      "language": "de",
+      "title": "Regionale Variation und Standardregister",
+      "level": "C2",
+      "aliases": [
+        "C2::Regionale Variation und Standardregister"
+      ],
+      "sha256": "20df5e4676a254328cac153ef46b83d2e3d98c8d229d60bddbd113c142a4792d"
+    },
+    {
+      "id": "de.c.141",
+      "language": "de",
+      "title": "Modalität und Evidentialität",
+      "level": "C2",
+      "aliases": [
+        "C2::Modalität und Evidentialität"
+      ],
+      "sha256": "e860987e2c430fd345bb89b4222a432493953758b77130df69318dcc297533b2"
+    },
+    {
+      "id": "de.c.142",
+      "language": "de",
+      "title": "Textsortentransformation",
+      "level": "C2",
+      "aliases": [
+        "C2::Textsortentransformation"
+      ],
+      "sha256": "4379aef3e3ac797b1d5705ab50203226a7a0d00ba89687f295becf1ea08f11c5"
+    },
+    {
+      "id": "de.c.143",
+      "language": "de",
+      "title": "Syntaktischer Rhythmus",
+      "level": "C2",
+      "aliases": [
+        "C2::Syntaktischer Rhythmus"
+      ],
+      "sha256": "752bc23eb55dd3d9208827642ed5d48242697de26a01bfa6af86a4019604c8ad"
+    },
+    {
+      "id": "de.c.144",
+      "language": "de",
+      "title": "Fehlerdiagnose und präzise Reformulierung",
+      "level": "C2",
+      "aliases": [
+        "C2::Fehlerdiagnose und präzise Reformulierung"
+      ],
+      "sha256": "e6a26d322d439884424418df5e42ce7b8b37557bf0e0b011a2662606ed41995a"
+    }
+  ]
+}

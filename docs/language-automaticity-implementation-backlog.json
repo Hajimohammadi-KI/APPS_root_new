@@ -5,7 +5,7 @@
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
   "updatedOn": "2026-09-05",
-  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-DELIVERY-2026-09-05.md",
+  "progressRecord": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -891,7 +891,7 @@
       "id": "C01",
       "phase": "curriculum",
       "title": "Define the grammar-construction inventory",
-      "status": "in_progress",
+      "status": "verified",
       "priority": "P1",
       "dependsOn": [
         "B01"
@@ -912,18 +912,37 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+        "docs/LANGUAGE-GRAMMAR-SCOPE.html",
+        "docs/grammar-scope/inventory.json",
+        "docs/grammar-scope/missing-work.json",
+        "docs/grammar-scope/references.json",
+        "docs/grammar-scope/family-audit.psv",
+        "scripts/build-grammar-scope.ts",
+        "scripts/lib/grammar-scope.ts",
+        "scripts/build-automaticity-curriculum.ts",
+        "artifacts/grammar-scope/2026-09-05T10-23-53-220Z/report.json",
+        "artifacts/grammar-scope-cli/2026-09-05T10-23-53-301Z/report.json",
+        "artifacts/grammar-scope-browser/2026-09-05T10-21-57-912Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T10-23-53-923Z/report.json",
+        "artifacts/coverage-review-gate/2026-09-05T10-18-52-372Z/report.json",
+        "artifacts/phase4-scope/runtime-preservation.json",
+        "artifacts/language-release-source/20260905-phase4/manifest.json",
+        "artifacts/phase4-scope/final-verification.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "256 stable construction drafts span 21 families. Reference review of form, meaning, contrasts, prerequisites and omissions is pending; authored is not human-reviewed.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Phase 4 specification complete: 280 stable records cover 256 existing units and 24 explicit additional targets. Every record has form, meaning, use, contrasts, alternative limits, reference mappings and dated model-author provenance. Legacy prerequisites are suggestions; mandatory edges require reasons and reject cycles. Specifications remain model-authored, with independent human content approval pending.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Phase 4 inventory, mapping and executable authoring/coverage controls. Independent human content approval and full curriculum release are not claimed."
     },
     {
       "id": "C02",
       "phase": "curriculum",
       "title": "Map every existing lesson and identify missing constructions",
-      "status": "in_progress",
+      "status": "verified",
       "priority": "P1",
       "dependsOn": [
         "C01"
@@ -958,18 +977,37 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+        "docs/LANGUAGE-GRAMMAR-SCOPE.html",
+        "docs/grammar-scope/inventory.json",
+        "docs/grammar-scope/missing-work.json",
+        "docs/grammar-scope/references.json",
+        "docs/grammar-scope/family-audit.psv",
+        "scripts/build-grammar-scope.ts",
+        "scripts/lib/grammar-scope.ts",
+        "scripts/build-automaticity-curriculum.ts",
+        "artifacts/grammar-scope/2026-09-05T10-23-53-220Z/report.json",
+        "artifacts/grammar-scope-cli/2026-09-05T10-23-53-301Z/report.json",
+        "artifacts/grammar-scope-browser/2026-09-05T10-21-57-912Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T10-23-53-923Z/report.json",
+        "artifacts/coverage-review-gate/2026-09-05T10-18-52-372Z/report.json",
+        "artifacts/phase4-scope/runtime-preservation.json",
+        "artifacts/language-release-source/20260905-phase4/manifest.json",
+        "artifacts/phase4-scope/final-verification.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "All 112 English and 144 German starting units retain their aliases. Many-to-many lesson mappings, missing-lesson validation and prerequisite-cycle rejection are implemented and tested. Independent reference review and omitted-construction authoring remain open.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Phase 4 crosswalk complete: all 112 English and 144 German lessons and original aliases are retained. Many-to-many primary, reinforcement and partial links are distinct. All 21 families in both languages have dated automated reference checks across 20 sources; 24 explicit targets generate named authoring work. Broad integration lessons and equal level counts do not establish exhaustive grammar coverage or CEFR qualification.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Phase 4 inventory, mapping and executable authoring/coverage controls. Independent human content approval and full curriculum release are not claimed."
     },
     {
       "id": "C03",
       "phase": "curriculum",
       "title": "Define appropriate task types and separate exposed material",
-      "status": "implemented",
+      "status": "verified",
       "priority": "P1",
       "dependsOn": [
         "C01"
@@ -989,18 +1027,36 @@
       "evidence": [
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "shared/learning-core/src/automaticity/curriculum.ts",
-        "scripts/build-automaticity-curriculum.ts"
+        "scripts/build-automaticity-curriculum.ts",
+        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+        "docs/LANGUAGE-GRAMMAR-SCOPE.html",
+        "docs/grammar-scope/inventory.json",
+        "docs/grammar-scope/missing-work.json",
+        "docs/grammar-scope/references.json",
+        "docs/grammar-scope/family-audit.psv",
+        "scripts/build-grammar-scope.ts",
+        "scripts/lib/grammar-scope.ts",
+        "artifacts/grammar-scope/2026-09-05T10-23-53-220Z/report.json",
+        "artifacts/grammar-scope-cli/2026-09-05T10-23-53-301Z/report.json",
+        "artifacts/grammar-scope-browser/2026-09-05T10-21-57-912Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T10-23-53-923Z/report.json",
+        "artifacts/coverage-review-gate/2026-09-05T10-18-52-372Z/report.json",
+        "artifacts/phase4-scope/runtime-preservation.json",
+        "artifacts/language-release-source/20260905-phase4/manifest.json",
+        "artifacts/phase4-scope/final-verification.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Typed task policies, item families, stage/modality metadata and evaluation partition guards are in code. Human review of transformations and actual held-out benchmark material remains pending.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Phase 4 authoring policies complete: seven task types, semantic constraints and four original transformation illustrations are recorded. The real generator preflights both languages before writing and rejects protected calibration/evaluation overlap through global template/scenario families and normalised content hashes. Exposed and transitively related held-out material is quarantined. Illustrations remain model-authored; real benchmark registration, dialogue authoring and human content review remain downstream work.",
+      "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Phase 4 inventory, mapping and executable authoring/coverage controls. Independent human content approval and full curriculum release are not claimed."
     },
     {
       "id": "C04",
       "phase": "curriculum",
       "title": "Build an executable coverage gate",
-      "status": "implemented",
+      "status": "verified",
       "priority": "P1",
       "dependsOn": [
         "C02",
@@ -1049,13 +1105,31 @@
         "artifacts/coverage-review-gate/2026-09-05T05-45-02-698Z/report.json",
         "artifacts/automaticity-coverage-gates/2026-09-05T05-45-20-701Z/report.json",
         "artifacts/coverage-review-gate/2026-09-05T05-49-06-958Z/report.json",
-        "docs/LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md"
+        "docs/LANGUAGE-AUTOMATICITY-ROADMAP-UPDATE-2026-09-05.md",
+        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+        "docs/LANGUAGE-GRAMMAR-SCOPE.html",
+        "docs/grammar-scope/inventory.json",
+        "docs/grammar-scope/missing-work.json",
+        "docs/grammar-scope/references.json",
+        "docs/grammar-scope/family-audit.psv",
+        "scripts/build-grammar-scope.ts",
+        "scripts/lib/grammar-scope.ts",
+        "scripts/build-automaticity-curriculum.ts",
+        "artifacts/grammar-scope/2026-09-05T10-23-53-220Z/report.json",
+        "artifacts/grammar-scope-cli/2026-09-05T10-23-53-301Z/report.json",
+        "artifacts/grammar-scope-browser/2026-09-05T10-21-57-912Z/report.json",
+        "artifacts/automaticity-coverage-gates/2026-09-05T10-23-53-923Z/report.json",
+        "artifacts/coverage-review-gate/2026-09-05T10-18-52-372Z/report.json",
+        "artifacts/phase4-scope/runtime-preservation.json",
+        "artifacts/language-release-source/20260905-phase4/manifest.json",
+        "artifacts/phase4-scope/final-verification.json"
       ],
       "required": true,
       "condition": null,
-      "progressNote": "Coverage gate strengthened after reproducing an accepted invented evaluator mapping. Reviewed claims now require a recorded human review, exact content/mapping versions and a full-content hash. Every released task needs evaluator approval with pinned rubric and evidence; automated approval recomputes the benchmark for the exact scope and candidate version. All 29 focused gate/review-packet checks and four structural gate cases passed. Real human reviews and full curriculum qualification remain open.",
+      "progressNote": "Phase 4 gate complete: 3,920 cells include 3,906 required cells, 322 explicit missing-task cells and 14 reasoned spoken N/A cells for graphic targets. Existing 3,584 authored cells remain unqualified. Every required gap has named work; missing evaluators cannot become N/A. The combined release gate includes new targets and still exits 2. Verification: 54 scope checks, six CLI checks, 11 browser checks, four existing coverage checks and 29 review-gate checks passed.",
       "updatedOn": "2026-09-05",
-      "engineeringVerification": "verified_for_recorded_scope"
+      "engineeringVerification": "verified_for_recorded_scope",
+      "completionScope": "Phase 4 inventory, mapping and executable authoring/coverage controls. Independent human content approval and full curriculum release are not claimed."
     },
     {
       "id": "L01",
@@ -1087,7 +1161,9 @@
         "shared/learning-core/src/automaticity/assessment.ts",
         "docs/automaticity-coverage.json",
         "docs/automaticity-coverage-backlog.json",
-        "shared/learning-core/content/construction-map.json"
+        "shared/learning-core/content/construction-map.json",
+        "docs/grammar-scope/missing-work.json",
+        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
@@ -1190,7 +1266,9 @@
         "artifacts/practice-offline/2026-09-05T05-07-24-406Z/report.json",
         "artifacts/installer-cycle/English-20260905-071144-b6d1b273/report.json",
         "artifacts/installer-cycle/German-20260905-071143-e8c69a32/report.json",
-        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json"
+        "artifacts/automaticity-practice/2026-09-05T04-51-18-356Z/report.json",
+        "docs/grammar-scope/missing-work.json",
+        "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md"
       ],
       "required": true,
       "condition": null,
@@ -2471,5 +2549,15 @@
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-DELIVERY-2026-09-05.md"
+  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+  "grammarScope": {
+    "status": "mapping_verified",
+    "report": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",
+    "viewer": "docs/LANGUAGE-GRAMMAR-SCOPE.html",
+    "existingUnits": 256,
+    "additionalTargets": 24,
+    "requiredCells": 3906,
+    "missingTaskCells": 322,
+    "humanContentReview": "pending"
+  }
 }

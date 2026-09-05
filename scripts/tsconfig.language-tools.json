@@ -12,6 +12,12 @@
     "typeRoots": ["../Apps/Deutsch-Automaticity/node_modules/@types"]
   },
   "include": [
+    "lib/grammar-scope.ts",
+    "lib/grammar-scope-files.ts",
+    "build-grammar-scope.ts",
+    "build-automaticity-curriculum.ts",
+    "capture-language-release-source.ts",
+    "verify-grammar-scope.ts",
     "language-roadmap.ts",
     "roadmap/fixture-server.ts",
     "lib/automaticity-release-reviews.ts",

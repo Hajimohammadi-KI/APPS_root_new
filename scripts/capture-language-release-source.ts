@@ -58,7 +58,7 @@ const paths = [
       path &&
       !path.includes("node_modules") &&
       !path.includes("artifacts/") &&
-      /\.(ts|tsx|js|mjs|cjs|json|md|html|css|ps1|sha256)$/.test(path),
+      /\.(ts|tsx|js|mjs|cjs|json|md|html|css|ps1|psv|sha256)$/.test(path),
   )
   .sort();
 const files = [];

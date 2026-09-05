@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "scope": "Register calibration and final-evaluation family identities here before authoring practice. No real held-out benchmark has yet been registered. Empty does not mean a benchmark was independently checked.",
+  "instructions": "Each item needs id, language, partition (calibration or evaluation), global templateFamily and scenarioFamily, normalised SHA-256 contentFingerprints and an exposed boolean. Declared translations share family IDs. Never copy protected prompts into learner bundles. Quarantined material needs new independently reviewed families; changing IDs alone does not remove exposure.",
+  "items": []
+}

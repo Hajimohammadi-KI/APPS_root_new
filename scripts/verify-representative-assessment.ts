@@ -18,6 +18,18 @@ const sha = (s: string | Buffer) =>
   createHash("sha256").update(s).digest("hex");
 await mkdir(target, { recursive: true });
 const prepare = Bun.argv.includes("--prepare-review");
+const priorDelivery = JSON.parse(
+  await readFile(
+    resolve(root, "artifacts/daily-plan-delivery/verification.json"),
+    "utf8",
+  ),
+) as {
+  products: {
+    language: string;
+    version: string;
+    assets: { path: string; sha256: string }[];
+  }[];
+};
 const reviewDirectory = `review-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 if (prepare) await mkdir(resolve(target, reviewDirectory)); // exclusive: do not overwrite review work
 const results: unknown[] = [],
@@ -32,9 +44,20 @@ for (const language of ["en", "de"] as const) {
   const file = `${app}/apps/web/public/learning-core/curriculum-${language}.json`;
   const bytes = await readFile(resolve(root, file)),
     pack = JSON.parse(bytes.toString("utf8")) as CurriculumPack;
-  const before = JSON.parse(
-    await readFile(resolve(target, `baseline/${language}.json`), "utf8"),
-  ) as CurriculumPack;
+  const baselineBytes = await readFile(
+    resolve(target, `baseline/${language}.json`),
+  );
+  const prior = priorDelivery.products.find(
+    (product) => product.language === language,
+  )!;
+  deepStrictEqual(prior.version, language === "en" ? "27.3.36" : "20.8.40");
+  deepStrictEqual(
+    sha(baselineBytes),
+    prior.assets.find(
+      (asset) => asset.path === `learning-core/curriculum-${language}.json`,
+    )?.sha256,
+  );
+  const before = JSON.parse(baselineBytes.toString("utf8")) as CurriculumPack;
   packs.push(pack);
   deepStrictEqual(
     pack.units.map((u) => u.id),

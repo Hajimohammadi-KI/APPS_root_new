@@ -14,13 +14,24 @@ bun scripts/import-model-benchmark-review.ts docs/model-evaluation/development.j
 
 Original manifests and reviewer files are retained. Each label is bound to the exact task and response hash; changed content invalidates its review. Adjudication uses the same `ReviewRecord` format in `scripts/lib/model-benchmark.ts`, with a third reviewer and a later dated evidence file. Nothing is uploaded by the review page.
 
-The diagnostic runner currently compares the production controlled-answer policy against draft hypotheses:
+The diagnostic runner supports the production controlled-answer policy and the bounded representative construction checkers. The original 20-case manifest still runs the controlled-answer baseline by default:
 
 ```powershell
 bun scripts/evaluate-model-candidates.ts
 ```
 
 Its first run matched the four stored correct alternatives and abstained on the remaining 16 examples. This is expected conservative practice behavior, not evidence that it can grade open grammar. The report includes the small sample denominators, uncertainty, latency, abstention and target contradictions. A reported API cost of zero for local rules excludes device and energy cost.
+
+The separate [representative development manifest](representative-development.json) binds 74 writing cases to the exact current production tasks in 12 English/German construction scopes. It deliberately reuses implementation regression examples. These are adapter diagnostics with model-authored expectations, not independent or unseen evaluation. Its `acceptedAnswers` field supplies one canonical example to the closed-answer comparator; it does not change the open production tasks. The `ambiguous` category includes wording outside the checker's supported patterns, which may be grammatical. The `asr_corruption` category here contains synthetic damaged text and provides no audio or ASR evidence.
+
+```powershell
+bun scripts/evaluate-model-candidates.ts --candidate=representative-construction --manifest=docs/model-evaluation/representative-development.json
+bun scripts/verify-representative-model-candidate.ts
+```
+
+The adapter resolves and hashes the complete production task before assessment, pins source and curriculum hashes in its configuration, and rejects mismatched prompts, content/task/rubric versions, modality and task identities. Explicitly false target or relevance results stay distinct from unknown results. The [recorded comparison](representative-comparison.json) contains 24 passes, 24 repair judgments, two missing-target judgments and 24 abstentions for the bounded checker; the one-answer comparator passes its 12 canonical forms and abstains on 62 other cases. Those counts describe these known examples, not population accuracy. Neither run qualifies a scope or activates a model. The older LanguageTool/Qwen results remain on their original 20-case manifest and are not directly comparable with this new set.
+
+To summarize another development manifest, pass both `--manifest` and a separate `--output` to `scripts/summarize-model-diagnostics.ts`, followed by its run directories. The original comparison is preserved. The support-matrix builder verifies the new run against the current source and curriculum before recording its bounded practice availability. Independent labels and separately collected calibration/final cases remain required.
 
 Two additional adapters are implemented and require an explicitly configured, version-pinned loopback endpoint:
 

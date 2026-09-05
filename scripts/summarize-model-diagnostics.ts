@@ -1,12 +1,16 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { relative, resolve } from "node:path";
 import { digest, parseManifest, validateRun, type PredictionRun } from "./lib/model-benchmark";
 import { isRecord } from "../shared/learning-core/src/automaticity/contracts";
 
 const root = resolve(import.meta.dir, "..");
-const folders = Bun.argv.slice(2);
+const args=Bun.argv.slice(2),arg=(name:string)=>args.find(value=>value.startsWith(`--${name}=`))?.slice(name.length+3);
+if(args.some(value=>value.startsWith("--")&&!value.startsWith("--manifest=")&&!value.startsWith("--output=")))throw Error("Unknown diagnostic summary option");
+if(arg("manifest")&&!arg("output"))throw Error("An alternate manifest requires a separate --output path to preserve the original comparison");
+const folders = args.filter(value=>!value.startsWith("--"));
 if (!folders.length) throw Error("Pass the directories containing the real development runs.");
-const manifest = parseManifest(JSON.parse(await readFile(resolve(root, "docs/model-evaluation/development.json"), "utf8")));
+const manifestPath=arg("manifest")??"docs/model-evaluation/development.json",outputPath=arg("output")??"docs/model-evaluation/development-comparison.json";
+const manifest = parseManifest(JSON.parse(await readFile(resolve(root, manifestPath), "utf8")));
 const candidates = [];
 for (const folder of folders) {
   const runText = await readFile(resolve(root, folder, "run.json"), "utf8");
@@ -29,6 +33,8 @@ for (const folder of folders) {
     return {
       language, cases: rows.length,
       pass: predictions.filter(row => row.verdict === "pass").length,
+      needsRepair: predictions.filter(row => row.verdict === "needs_repair").length,
+      targetNotObserved: predictions.filter(row => row.verdict === "target_not_observed").length,
       abstentions: predictions.filter(row => row.verdict === "not_assessed").length,
       annotationCases: annotated.length,
       providerFailures: observations.filter(row => typeof row.caseId === "string" && ids.has(row.caseId) && typeof row.error === "string").length,
@@ -39,12 +45,13 @@ for (const folder of folders) {
       suggestedSpans,
     };
   });
-  candidates.push({candidate: run.candidate, startedAt: run.startedAt, finishedAt: run.finishedAt, source: {folder, runSha256: digest(runText), reportSha256: digest(reportText)}, languages});
+  candidates.push({candidate: run.candidate, startedAt: run.startedAt, finishedAt: run.finishedAt, source: {folder:relative(root,resolve(root,folder)).replace(/\\/g,"/"), runSha256: digest(runText), reportSha256: digest(reportText)}, languages});
 }
 const result = {
   schemaVersion: 1, benchmarkVersion: manifest.version, partition: "development", approved: false,
+  manifestPath,manifestSha256:digest(JSON.stringify(manifest)),manifestPurpose:manifest.purpose,
   limit: "Original model-authored drafts, no independent human labels. Counts against draft categories are diagnostics, not accuracy estimates. Latency includes cold language initialization and adapter work. Local device and energy costs are unmeasured. LanguageTool suggestions do not assess task target or meaning; zero suggestions cannot award success.",
   candidates,
 };
-await writeFile(resolve(root, "docs/model-evaluation/development-comparison.json"), JSON.stringify(result, null, 2) + "\n");
+await writeFile(resolve(root, outputPath), JSON.stringify(result, null, 2) + "\n");
 console.log(JSON.stringify(result));

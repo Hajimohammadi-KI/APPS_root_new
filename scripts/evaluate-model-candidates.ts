@@ -3,22 +3,27 @@ import {resolve} from "node:path";
 import {isRecord} from "../shared/learning-core/src/automaticity/contracts";
 import {qualifyCandidate,type CandidatePrediction} from "../shared/learning-core/src/automaticity/qualification";
 import {caseDigest,digest,parseManifest,reviewedManifest,validateRun,validateFreeze,evidenceFile,policy,type PredictionRun,type FrozenEvaluation} from "./lib/model-benchmark";
+import {representativeCandidate,loadRepresentativeRuntime,resolveBoundBenchmarkTask,assessBoundBenchmark} from "./lib/representative-model-candidate";
 const root=resolve(import.meta.dir,".."),arg=(name:string)=>Bun.argv.find(value=>value.startsWith(`--${name}=`))?.slice(name.length+3);
 const manifestPath=resolve(root,arg("manifest")??"docs/model-evaluation/development.json");
 const manifest=parseManifest(JSON.parse(await readFile(manifestPath,"utf8")));
 const partition=arg("partition")??"development";
 if(!["development","calibration","final"].includes(partition))throw Error("Unknown benchmark partition");
-const candidateId=arg("candidate")??"controlled-answer",version=arg("version")??(candidateId==="controlled-answer"?"1.0.0":null);
-if(!["controlled-answer","languagetool","pretrained-local"].includes(candidateId)||!version)throw Error("Select a known adapter and pin --version before evaluation");
+const candidateId=arg("candidate")??"controlled-answer",version=arg("version")??(candidateId==="controlled-answer"?"1.0.0":candidateId===representativeCandidate.id?representativeCandidate.version:null);
+if(!["controlled-answer",representativeCandidate.id,"languagetool","pretrained-local"].includes(candidateId)||!version)throw Error("Select a known adapter and pin --version before evaluation");
+if(candidateId===representativeCandidate.id&&version!==representativeCandidate.version)throw Error("Representative candidate version does not match the production implementation");
 const endpoint=arg("endpoint"),candidate={id:candidateId,version};
-if(candidateId!=="controlled-answer"){
+if(candidateId==="languagetool"||candidateId==="pretrained-local"){
  if(!endpoint)throw Error("A configured local candidate endpoint is required. The free LanguageTool API must not be batch-tested.");
  const url=new URL(endpoint);if(!["127.0.0.1","localhost","[::1]"].includes(url.hostname)||url.protocol!=="http:"||url.username||url.password)throw Error("This diagnostic runner accepts loopback HTTP candidates only");
 }
 const providerConfigurationSha256=arg("provider-config-sha256")??null;
 if(providerConfigurationSha256!==null&&!/^[a-f0-9]{64}$/.test(providerConfigurationSha256))throw Error("Invalid provider configuration hash");
 if(candidateId==="pretrained-local"&&partition!=="development"&&!providerConfigurationSha256)throw Error("Reviewed Transformer runs require a pinned provider configuration hash");
-const config={adapterVersion:"3",endpoint:endpoint??null,candidate,providerConfigurationSha256,normalisation:"NFC, case-preserving, declared final full stop only",providerTimeoutMs:15000};
+const runtime=candidateId===representativeCandidate.id?await loadRepresentativeRuntime(root):null;
+const boundTasks=new Map(runtime?manifest.cases.filter(row=>row.partition===partition).map(row=>[row.id,resolveBoundBenchmarkTask(row,runtime)]):[]);
+const config={adapterVersion:runtime?"4":"3",endpoint:endpoint??null,candidate,providerConfigurationSha256,normalisation:"NFC, case-preserving, declared final full stop only",providerTimeoutMs:15000,
+ ...(runtime?{sourceHashes:runtime.sourceHashes,packHashes:runtime.packHashes}:{} )};
 const run:PredictionRun={schemaVersion:1,candidate,configurationSha256:digest(JSON.stringify(config)),benchmarkVersion:manifest.version,manifestSha256:digest(JSON.stringify(manifest)),partition:partition as PredictionRun["partition"],startedAt:new Date().toISOString(),finishedAt:"",predictions:[],caseHashes:{},limit:"Development labels are model-authored hypotheses. Diagnostics cannot approve a model. Local compute/energy cost is not measured."};
 run.configuration=config;
 const rows=manifest.cases.filter(row=>row.partition===partition);if(!rows.length)throw Error(`No ${partition} examples have been collected`);
@@ -46,6 +51,12 @@ for(const row of rows){
   const task={id:row.id,version:row.taskVersion,constructionId:row.constructionId,familyId:"G01",itemFamily:row.itemFamily,contextId:row.id,rubricVersion:row.rubricVersion,stage:"retrieve" as const,modality:row.modality,partition:"practice" as const,transferCondition:"none" as const,contentReview:"authored" as const,prompt:row.prompt,answerPolicy:row.modality==="writing"?"closed" as const:"open" as const,responseKind:"free_output" as const,acceptedAnswers:row.acceptedAnswers,hints:[],solution:null,normalisation:{nfc:true as const,whitespace:true as const,preserveCase:true as const,terminalFullStop:row.normalisation.terminalFullStop},sourceId:row.sourceId};
   const assessment=assessControlledTask({version:2,type:"attempt",id:row.id,language:row.language,at:run.startedAt,task,response:{text:row.response,sha256:await sha256(row.response),originalTranscriptSha256:null,transcriptEdited:false},timing:{startedAt:run.startedAt,activeMs:null,firstInputMs:null,source:"unavailable"},assistance:{hintCount:0,solutionRevealed:false,exampleSeen:false,selfReportedAssistance:false},audio:null,previousAttemptId:null},task,new Date().toISOString(),`assessment-${row.id}`);
   verdict=assessment.verdict;targetObserved=assessment.dimensions.target==="observed"?true:null;meaningPreserved=assessment.dimensions.relevance==="pass"?true:null;cost=0;
+ }else if(candidateId===representativeCandidate.id){
+  const assessment=assessBoundBenchmark(row,boundTasks.get(row.id)!,new Date().toISOString());
+  verdict=assessment.verdict;
+  targetObserved=assessment.dimensions.target==="observed"?true:assessment.dimensions.target==="not_observed"?false:null;
+  meaningPreserved=assessment.dimensions.relevance==="pass"?true:assessment.dimensions.relevance==="fail"?false:null;
+  cost=0;observations.push({caseId:row.id,taskBinding:row.taskBinding,assessment});
  }else{
   try{
    const request=candidateId==="languagetool"?{headers:{"Content-Type":"application/x-www-form-urlencoded"},body:new URLSearchParams({language:row.language==="en"?"en-US":"de-DE",text:row.response}).toString()}:{headers:{"Content-Type":"application/json"},body:JSON.stringify({model:version,language:row.language,modality:row.modality,prompt:row.prompt,response:row.response,constructionId:row.constructionId})};

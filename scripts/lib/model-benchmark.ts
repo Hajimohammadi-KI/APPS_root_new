@@ -10,6 +10,8 @@ export interface ReviewLabel {verdict:Verdict;targetObserved:boolean|null;meanin
 export interface ReviewRecord {reviewerId:string;role:string;reviewedAt:string;caseSha256:string;label:ReviewLabel;evidence:{path:string;sha256:string}}
 export interface BenchmarkDraft extends BenchmarkCase {
   prompt:string;response:string;acceptedAnswers:string[];taskVersion:string;normalisation:{terminalFullStop:boolean};
+  /** Optional binding to the complete production task. Accepted answers remain a separate closed-answer baseline. */
+  taskBinding?:{taskId:string;taskSha256:string};
   authoredBy:string;reviewStatus:"pending"|"reviewed";reviews:ReviewRecord[];
   adjudication:ReviewRecord|null;audioSha256:string|null;
 }
@@ -34,6 +36,7 @@ export function parseManifest(value:unknown):BenchmarkManifest {
    !(row.audioSha256===null||typeof row.audioSha256==="string"&&/^[a-f0-9]{64}$/.test(row.audioSha256)))throw Error("Invalid benchmark response/provenance");
   const fingerprint=digest(JSON.stringify([row.language,String(row.prompt).normalize("NFC").trim().replace(/\s+/gu," ").toLowerCase(),String(row.response).normalize("NFC").trim().replace(/\s+/gu," ").toLowerCase()]));
   if(row.contentFingerprint!==fingerprint)throw Error(`Stale response fingerprint ${row.id}`);
+  if(row.taskBinding!==undefined&&(!isRecord(row.taskBinding)||typeof row.taskBinding.taskId!=="string"||!row.taskBinding.taskId.trim()||typeof row.taskBinding.taskSha256!=="string"||!/^[a-f0-9]{64}$/.test(row.taskBinding.taskSha256)))throw Error(`Invalid production task binding ${row.id}`);
  }
  const parsed=value as unknown as BenchmarkManifest;
  const structural=qualifyCandidate(parsed.cases,[],{id:"manifest-validation",version:"1"}).reasons.filter(reason=>/leakage|Duplicate|provenance|source rights/.test(reason));

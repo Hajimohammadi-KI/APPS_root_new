@@ -6,6 +6,7 @@ export * from "./curriculum";
 export * from "./selector";
 export * from "./daily-plan";
 export * from "./assessment";
+export * from "./assessment-feedback";
 export * from "./media";
 export * from "./migration";
 export * from "./legacy";

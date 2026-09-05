@@ -4,6 +4,7 @@ import { readAutomaticityEvents, appendAutomaticityEvent } from "./storage";
 import { reduceAutomaticityEvents } from "./evidence";
 import { readRecording } from "./media";
 import { sha256 } from "./backup";
+import { mountAssessmentFeedbackPanel } from "./assessment-feedback-panel";
 import {
   parseReviewDraft,
   reviewDraftKey,
@@ -176,6 +177,7 @@ export function mountReviewPanel(
   exportDraft.type = "button";
   form.append(currentReview, compare, draftStatus, exportDraft);
   details.append(form);
+  const refreshFeedbackMemory = mountAssessmentFeedbackPanel(details, pack);
   root.append(details);
   let selectedId = "",
     audioUrl: string | null = null,
@@ -414,6 +416,7 @@ export function mountReviewPanel(
     }
   };
   const refresh = () => {
+    refreshFeedbackMemory();
     const available = rows().reverse();
     select.replaceChildren();
     for (const row of available) {

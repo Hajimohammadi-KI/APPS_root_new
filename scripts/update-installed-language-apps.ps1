@@ -9,14 +9,14 @@ $ErrorActionPreference = 'Stop'
 $workspace = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $output = Join-Path $workspace ('artifacts\installed-language-update\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 $products = @(
-  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.34'; Source='Apps\English\English-Automaticity'; Port=3202 },
-  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.38'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
+  @{ Name='English'; Prefix='ENGLISH_GRAMMAR'; Directory='English Grammar Automaticity Desktop'; Profile='English Grammar Automaticity'; Setup='EnglishGrammar-Setup'; Executable='English Grammar Automaticity.exe'; Version='27.3.41'; Source='Apps\English\English-Automaticity'; Port=3202 },
+  @{ Name='German'; Prefix='DEUTSCHFLOW'; Directory='DeutschFlow'; Profile='DeutschFlow'; Setup='DeutschFlow-Setup'; Executable='DeutschFlow.exe'; Version='20.8.45'; Source='Apps\Deutsch-Automaticity'; Port=3210 }
 )
 $products = @($products | Where-Object { $ProductSelection -eq 'All' -or $_.Name -eq $ProductSelection })
 function Assert-VerifiedInstaller($ProductSpec, [string]$SetupPath, [string]$PayloadPath, [array]$Receipts) {
   $setupHash = (Get-FileHash -LiteralPath $SetupPath -Algorithm SHA256).Hash
   $payloadHash = (Get-FileHash -LiteralPath $PayloadPath -Algorithm SHA256).Hash
-  $required = @('product','version','setupSha256','payloadSha256','install','upgrade','startup','update','repair','uninstall','learnerDataPreserved')
+  $required = @('product','version','setupSha256','payloadSha256','install','upgrade','startup','update','repair','uninstall','learnerDataPreserved','transformerOrigin')
   $qualified = @($Receipts | Where-Object {
     $row = $_
     $row -is [Collections.IDictionary] -and @($required | Where-Object { -not $row.Contains($_) }).Count -eq 0 -and
@@ -24,7 +24,7 @@ function Assert-VerifiedInstaller($ProductSpec, [string]$SetupPath, [string]$Pay
     $row.setupSha256 -eq $setupHash -and $row.payloadSha256 -eq $payloadHash -and
     $row.install -eq 'verified' -and $row.upgrade -eq 'verified' -and
     $row.startup -eq 'verified' -and $row.update -eq 'verified' -and
-    $row.repair -eq 'verified' -and $row.uninstall -eq 'verified' -and $row.learnerDataPreserved -eq $true
+    $row.repair -eq 'verified' -and $row.uninstall -eq 'verified' -and $row.learnerDataPreserved -eq $true -and $row.transformerOrigin -eq 'verified'
   })
   if (-not $qualified.Count) { throw "No complete verified installer lifecycle for the exact $($ProductSpec.Name) $($ProductSpec.Version) setup and payload. Normal installations and profiles have not been changed." }
 }

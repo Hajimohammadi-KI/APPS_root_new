@@ -4,7 +4,7 @@ import type {
   ConstructionUnit,
   PracticeTask,
 } from "../../shared/learning-core/src/automaticity/curriculum";
-import { validateCurriculum } from "../../shared/learning-core/src/automaticity/curriculum";
+import { activePracticeTasks, validateCurriculum } from "../../shared/learning-core/src/automaticity/curriculum";
 
 export const STAGES = [
   "notice",
@@ -585,7 +585,7 @@ export function buildCoverage(
         const pack = packs.find((pack) => pack.language === row.language)!;
         const unit = pack.units.find((unit) => unit.id === row.id);
         const tasks =
-          unit?.tasks.filter(
+          (unit ? activePracticeTasks(unit) : []).filter(
             (task) => task.stage === stage && task.modality === mode,
           ) ?? [];
         const required = row.applicability[mode].required;

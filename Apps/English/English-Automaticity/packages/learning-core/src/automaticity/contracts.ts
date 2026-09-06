@@ -9,6 +9,8 @@ export type ReviewStatus = "authored" | "machine_checked" | "human_reviewed";
 export type TransferCondition = "none" | "target_named" | "elicited" | "free";
 
 export interface TaskIdentity {
+  /** Exact authored prompt/rubric/task definition, absent on older saved attempts. */
+  definitionSha256?: string;
   id: string;
   version: string;
   constructionId: string;
@@ -170,6 +172,10 @@ export function parseAutomaticityEvent(
   if (value.type === "attempt") {
     const task = value.task;
     assert(isRecord(task), "Missing task identity");
+    assert(
+      task.definitionSha256 === undefined || validHash(task.definitionSha256),
+      "Invalid task definition hash",
+    );
     for (const key of [
       "id",
       "version",

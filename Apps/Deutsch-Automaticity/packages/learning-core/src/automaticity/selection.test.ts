@@ -5,7 +5,7 @@ import {
   validateModelAssessment,
 } from "./assessment";
 import { ResponseTimer } from "./media";
-import { selectDailyFocus } from "./selector";
+import { selectDailyFocus, selectDailyTask } from "./selector";
 import { type CurriculumPack, type PracticeTask } from "./curriculum";
 import { constructionsForLesson, validateCurriculum } from "./curriculum";
 import { type AttemptEvent } from "./contracts";
@@ -369,5 +369,155 @@ describe("scoped feedback and task selection", () => {
     expect(selectDailyFocus(pack, [due], at, "A1").focus[0]?.id).toBe(
       due.constructionId,
     );
+  });
+  test("changing level cannot hide an outstanding repair", () => {
+    const progress = reduceAutomaticityEvents([attempt], "de", at).progress[0]!;
+    const mixed = {
+      ...pack,
+      units: pack.units.map((unit, index) => ({
+        ...unit,
+        level: index ? "B1" : "A1",
+      })),
+    };
+    const selected = selectDailyFocus(
+      mixed,
+      [{ ...progress, repairNeeded: true, nextReviewAt: null }],
+      at,
+      "B1",
+    );
+    expect(selected.reason).toBe("repair");
+    expect(selected.focus[0]?.id).toBe(attempt.task.constructionId);
+    expect(
+      selectDailyFocus(
+        mixed,
+        [{ ...progress, repairNeeded: false }],
+        at,
+        "B1",
+      ).focus.every((unit) => unit.level === "B1"),
+    ).toBe(true);
+  });
+  test("unknown and other-language constructions cannot fill the repair queue", () => {
+    const progress = reduceAutomaticityEvents([attempt], "de", at).progress[0]!;
+    const foreign = ["en.c.001", "missing"].map((constructionId) => ({
+      ...progress,
+      constructionId,
+      repairNeeded: true,
+      practiceFailures: 999,
+    }));
+    const selected = selectDailyFocus(pack, foreign, at, "A1");
+    expect(selected.repairs).toEqual([]);
+    expect(selected.reason).toBe("diagnostic");
+  });
+  test("accumulated reviews replace new work and the oldest due review comes first", () => {
+    const progress = reduceAutomaticityEvents([attempt], "de", at).progress[0]!;
+    const reviews = [
+      {
+        ...progress,
+        constructionId: "de.c.001",
+        nextReviewAt: "2026-09-04T10:00:00Z",
+      },
+      {
+        ...progress,
+        constructionId: "de.c.002",
+        attempts: 999999,
+        nextReviewAt: "2026-09-02T10:00:00Z",
+      },
+    ];
+    expect(
+      selectDailyFocus(pack, reviews, at, "A1").focus.map((unit) => unit.id),
+    ).toEqual(["de.c.002", "de.c.001"]);
+  });
+  test("suggested prerequisites do not lock an unassessed advanced topic", () => {
+    const advanced = {
+      ...pack,
+      units: pack.units.map((unit, index) =>
+        index === 2
+          ? { ...unit, level: "C1", prerequisites: ["de.c.001"] }
+          : unit,
+      ),
+    };
+    expect(
+      selectDailyFocus(advanced, [], at, "C1").focus.map((unit) => unit.id),
+    ).toEqual(["de.c.003"]);
+  });
+  test("a due speaking review opens an active speaking return task, never a held-out probe", () => {
+    const progress = reduceAutomaticityEvents([attempt], "de", at).progress[0]!;
+    const unit = {
+      ...pack.units[0]!,
+      tasks: [
+        task,
+        {
+          ...task,
+          id: "held-out",
+          stage: "retain" as const,
+          modality: "speaking" as const,
+          partition: "evaluation" as const,
+        },
+        {
+          ...task,
+          id: "retired",
+          stage: "retain" as const,
+          modality: "speaking" as const,
+        },
+        {
+          ...task,
+          id: "active-return",
+          stage: "retain" as const,
+          modality: "speaking" as const,
+        },
+      ],
+      retiredTasks: [
+        {
+          taskId: "retired",
+          replacementTaskId: "active-return",
+          retiredOn: "2026-09-05",
+          reason: "Synthetic revision",
+        },
+      ],
+    };
+    const selected = selectDailyTask(
+      unit,
+      {
+        attempts: [],
+        rejected: [],
+        progress: [
+          {
+            ...progress,
+            modality: "speaking",
+            nextReviewAt: "2026-09-04T10:00:00Z",
+          },
+        ],
+      },
+      at,
+    );
+    expect(selected.task?.id).toBe("active-return");
+    expect(selected.reason).toBe("due_review");
+    expect(selected.previousAttemptId).toBeNull();
+  });
+  test("daily repair opens the failed task with its original response identity", () => {
+    const failure = assessControlledTask(
+      {
+        ...attempt,
+        response: { ...attempt.response, text: "ich bin bereit." },
+      },
+      task,
+      at,
+      "repair",
+    );
+    const state = reduceAutomaticityEvents([attempt, failure], "de", at);
+    state.progress.push({
+      ...state.progress[0]!,
+      modality: "speaking",
+      repairNeeded: false,
+      nextReviewAt: "2026-09-04T10:00:00Z",
+    });
+    const selected = selectDailyTask(
+      { ...pack.units[0]!, tasks: [task] },
+      state,
+      at,
+    );
+    expect(selected.reason).toBe("repair");
+    expect(selected.task?.id).toBe(task.id);
+    expect(selected.previousAttemptId).toBe(attempt.id);
   });
 });

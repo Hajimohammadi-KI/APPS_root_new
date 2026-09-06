@@ -98,6 +98,47 @@ export async function buildReviewedTransformerRelease(
   const rows = input.cases.filter(
     (row) => row.partition === "final",
   ) as BenchmarkDraft[];
+  // Verdict scores do not establish the accuracy of an explanation or correction.
+  // Require actual human judgments bound to every retained final model output.
+  if (
+    !Array.isArray(run.outputObservations) ||
+    run.outputObservations.length !== rows.length ||
+    !Array.isArray(review.outputReviews) ||
+    review.outputReviews.length !== rows.length ||
+    new Set(
+      review.outputReviews.map((row: unknown) =>
+        isRecord(row) ? row.caseId : null,
+      ),
+    ).size !== rows.length
+  )
+    throw Error(
+      "Every final model output needs an independent feedback review",
+    );
+  for (const row of rows) {
+    const output = run.outputObservations.find(
+      (value: unknown) => isRecord(value) && value.caseId === row.id,
+    );
+    const judgment = review.outputReviews.find(
+      (value: unknown) => isRecord(value) && value.caseId === row.id,
+    );
+    const repair =
+      isRecord(output) &&
+      isRecord(output.proposal) &&
+      output.proposal.verdict === "needs_repair";
+    if (
+      !output ||
+      !isRecord(judgment) ||
+      judgment.outputSha256 !== digest(JSON.stringify(output)) ||
+      judgment.verdictAppropriate !== true ||
+      judgment.explanationAccurate !== true ||
+      judgment.styleSeparated !== true ||
+      judgment.correctionCorrect !== (repair ? true : null) ||
+      judgment.correctionPreservesMeaning !== (repair ? true : null) ||
+      typeof judgment.note !== "string" ||
+      judgment.note.trim().length < 20
+    )
+      throw Error(`Unreviewed or unsuitable model feedback: ${row.id}`);
+  }
   const approvals = ["en", "de"].flatMap((language) => {
     const selected = rows.filter((row) => row.language === language);
     if (!selected.length) return [];

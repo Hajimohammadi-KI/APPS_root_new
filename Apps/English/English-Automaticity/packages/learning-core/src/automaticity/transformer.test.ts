@@ -499,6 +499,50 @@ test("installed client and route bind a qualified proposal to the original saved
   expect(result?.supersedes).toBe(baseline.id);
   expect(result?.correction).toBe("I like tea.");
 });
+test("a retired task cannot invoke a qualified model through an old link", async () => {
+  let calls = 0;
+  const original = await attempt(),
+    before = JSON.stringify(original);
+  const handler = createTransformerRoute({
+    language: "en",
+    loadRelease: release,
+    loadPack: async () => {
+      const current = pack();
+      return {
+        ...current,
+        units: current.units.map((unit) => ({
+          ...unit,
+          tasks: [task, { ...task, id: "replacement" }],
+          retiredTasks: [
+            {
+              taskId: task.id,
+              replacementTaskId: "replacement",
+              reason: "Old prompt exposed its answer",
+              retiredOn: "2026-09-05",
+            },
+          ],
+        })),
+      };
+    },
+    transport: (async () => {
+      calls++;
+      return new Response();
+    }) as typeof fetch,
+  });
+  const response = await handler(
+    new Request("http://localhost/api/automaticity/transformer", {
+      method: "POST",
+      body: JSON.stringify({ attempt: original }),
+    }),
+  );
+  expect(await response.json()).toEqual({
+    assessment: null,
+    reason: "unsupported_task",
+  });
+  expect(calls).toBe(0);
+  expect(JSON.stringify(original)).toBe(before);
+});
+
 test("offline discovery and provider errors preserve the local result", async () => {
   const record = await attempt(),
     baseline = assessControlledTask(record, task, at, "baseline"),

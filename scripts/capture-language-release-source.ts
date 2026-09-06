@@ -4,6 +4,7 @@ import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 const root = resolve(import.meta.dir, "..");
+const filesystemOnly = Bun.argv.includes("--filesystem");
 const outputArgument = Bun.argv
   .find((arg) => arg.startsWith("--output="))
   ?.slice("--output=".length);
@@ -28,31 +29,77 @@ const git = (args: string[]) =>
     stdio: ["ignore", "pipe", "pipe"],
   });
 await mkdir(output, { recursive: true });
-const revision = git(["rev-parse", "HEAD"]).trim();
-const status = git(["status", "--short"]);
+const revision = filesystemOnly ? null : git(["rev-parse", "HEAD"]).trim();
+const status = filesystemOnly
+  ? "Filesystem capture requested; Git revision and working-tree status are not asserted.\n"
+  : git(["status", "--short"]);
 await writeFile(resolve(output, "status.txt"), status);
-const patch = Bun.spawn(["git", "-c", "core.safecrlf=false", "diff", "HEAD", "--binary"], {
-  cwd: root,
-  stdout: Bun.file(resolve(output, "tracked.patch")),
-  stderr: Bun.file(resolve(output, "git-diff.stderr.log")),
-});
-if ((await patch.exited) !== 0) throw new Error("Source patch capture failed; see git-diff.stderr.log.");
-const untracked = git(["ls-files", "--others", "--exclude-standard"])
+if (!filesystemOnly) {
+  const patch = Bun.spawn(
+    ["git", "-c", "core.safecrlf=false", "diff", "HEAD", "--binary"],
+    {
+      cwd: root,
+      stdout: Bun.file(resolve(output, "tracked.patch")),
+      stderr: Bun.file(resolve(output, "git-diff.stderr.log")),
+    },
+  );
+  if ((await patch.exited) !== 0)
+    throw new Error("Source patch capture failed; see git-diff.stderr.log.");
+}
+const untracked = (
+  filesystemOnly ? "" : git(["ls-files", "--others", "--exclude-standard"])
+)
   .split(/\r?\n/)
   .filter(Boolean);
-const paths = [
-  ...new Set([
-    ...git([
-      "ls-files",
-      "--cached",
-      "shared/learning-core",
-      "scripts",
-      "docs",
-    ]).split(/\r?\n/),
-    ...git(["diff", "HEAD", "--name-only"]).split(/\r?\n/),
-    ...untracked,
-  ]),
-]
+const filesystemPaths = filesystemOnly
+  ? execFileSync(
+      "rg",
+      [
+        "--files",
+        ...[
+          "node_modules",
+          ".bun-install-cache",
+          ".git",
+          ".next",
+          ".turbo",
+          "artifacts",
+          "releases",
+          "dist",
+          "out",
+          "downloads",
+          "build",
+          "coverage",
+          "playwright-report",
+          "test-results",
+        ].flatMap((name) => ["-g", `!**/${name}/**`]),
+        "shared/learning-core",
+        "scripts",
+        "docs",
+        "Apps/English/English-Automaticity",
+        "Apps/Deutsch-Automaticity",
+      ],
+      { cwd: root, encoding: "utf8", maxBuffer: 16 * 1024 * 1024 },
+    )
+      .split(/\r?\n/)
+      .map((path) => path.replaceAll("\\", "/"))
+  : [];
+const paths = (
+  filesystemOnly
+    ? filesystemPaths
+    : [
+        ...new Set([
+          ...git([
+            "ls-files",
+            "--cached",
+            "shared/learning-core",
+            "scripts",
+            "docs",
+          ]).split(/\r?\n/),
+          ...git(["diff", "HEAD", "--name-only"]).split(/\r?\n/),
+          ...untracked,
+        ]),
+      ]
+)
   .filter(
     (path) =>
       path &&
@@ -71,8 +118,12 @@ for (const path of paths) {
       bytes: bytes.length,
       sha256: createHash("sha256").update(bytes).digest("hex"),
     });
-    if (untracked.includes(path)) {
-      const copy = resolve(output, "untracked", path);
+    if (filesystemOnly || untracked.includes(path)) {
+      const copy = resolve(
+        output,
+        filesystemOnly ? "source" : "untracked",
+        path,
+      );
       await mkdir(dirname(copy), { recursive: true });
       await writeFile(copy, bytes);
     }
@@ -83,8 +134,10 @@ for (const path of paths) {
 const record = {
   capturedAt: new Date().toISOString(),
   sourceRevision: revision,
-  scope:
-    "Git revision plus tracked patch, implementation hashes and exact untracked source copies; not a clean-commit claim",
+  captureMode: filesystemOnly ? "filesystem" : "git",
+  scope: filesystemOnly
+    ? "Exact source copies and SHA-256 hashes for the shared core, implementation scripts/docs and both language apps; excludes dependencies, generated build directories, downloads, artifacts and unrelated projects. Git metadata unavailable; no revision or clean-commit claim."
+    : "Git revision plus tracked patch, implementation hashes and exact untracked source copies; not a clean-commit claim",
   files,
 };
 await writeFile(

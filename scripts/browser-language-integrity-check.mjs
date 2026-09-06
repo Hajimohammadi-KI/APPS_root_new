@@ -37,6 +37,7 @@ async function runCase(id, check) {
   const context = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1440, height: 1000 } });
   const page = await context.newPage();
   page.setDefaultTimeout(15_000);
+  page.setDefaultNavigationTimeout(30_000);
   await context.route("**/*", (route) => {
     const url = new URL(route.request().url());
     return ["data:", "blob:"].includes(url.protocol) || allowedOrigins.has(url.origin)

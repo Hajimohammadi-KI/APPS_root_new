@@ -1,9 +1,81 @@
-import type { CurriculumPack, ConstructionUnit } from "./curriculum";
-import type { ConstructionProgress } from "./evidence";
+import {
+  activePracticeTasks,
+  type CurriculumPack,
+  type ConstructionUnit,
+  type PracticeTask,
+} from "./curriculum";
+import type { ConstructionProgress, EvidenceReduction } from "./evidence";
 export interface DailySelection {
   focus: ConstructionUnit[];
   repairs: ConstructionProgress[];
   reason: "due_review" | "repair" | "diagnostic" | "continued_practice";
+}
+/** Open the recommended mode and stage; held-out evaluation items stay out of daily practice. */
+export function selectDailyTask(
+  unit: ConstructionUnit,
+  state: EvidenceReduction,
+  now: string,
+): {
+  task: PracticeTask | null;
+  previousAttemptId: string | null;
+  reason: "due_review" | "repair" | "diagnostic";
+} {
+  const tasks = activePracticeTasks(unit).filter(
+    (task) => task.partition === "practice",
+  );
+  const rows = state.progress.filter((row) => row.constructionId === unit.id);
+  const due = rows
+    .filter(
+      (row) =>
+        row.nextReviewAt && Date.parse(row.nextReviewAt) <= Date.parse(now),
+    )
+    .sort(
+      (a, b) => Date.parse(a.nextReviewAt!) - Date.parse(b.nextReviewAt!),
+    )[0];
+  const repair = rows.find((row) => row.repairNeeded);
+  // Repair the current error first within a construction, then return to its due mode.
+  const mode = (repair ?? due)?.modality ?? "writing";
+  const needsRepair = rows.some(
+    (row) => row.modality === mode && row.repairNeeded,
+  );
+  const original = needsRepair
+    ? state.attempts
+        .filter(
+          (row) =>
+            row.attempt.task.constructionId === unit.id &&
+            row.attempt.task.modality === mode &&
+            ["needs_repair", "target_not_observed"].includes(
+              row.assessment?.verdict ?? "",
+            ),
+        )
+        .sort((a, b) => Date.parse(b.attempt.at) - Date.parse(a.attempt.at))[0]
+        ?.attempt
+    : undefined;
+  const originalTask = original
+    ? tasks.find(
+        (task) =>
+          task.id === original.task.id &&
+          task.version === original.task.version,
+      )
+    : undefined;
+  const reason = needsRepair ? "repair" : due ? "due_review" : "diagnostic";
+  const stage =
+    reason === "repair"
+      ? "repair"
+      : reason === "due_review"
+        ? "retain"
+        : "retrieve";
+  return {
+    task:
+      originalTask ??
+      tasks.find((task) => task.modality === mode && task.stage === stage) ??
+      tasks.find(
+        (task) => task.modality === mode && task.stage === "retrieve",
+      ) ??
+      null,
+    previousAttemptId: original?.id ?? null,
+    reason,
+  };
 }
 const seed = (value: string) =>
   [...value].reduce(
@@ -18,7 +90,15 @@ export function selectDailyFocus(
   level: string,
   limit = 2,
 ): DailySelection {
-  const repairs = progress
+  const known = new Set(
+    pack.units
+      .filter((unit) => unit.language === pack.language)
+      .map((unit) => unit.id),
+  );
+  const scopedProgress = progress.filter((row) =>
+    known.has(row.constructionId),
+  );
+  const repairs = scopedProgress
     .filter(
       (row) =>
         row.repairNeeded ??
@@ -38,7 +118,7 @@ export function selectDailyFocus(
     )
     .slice(0, 5);
   const byId = new Map<string, ConstructionProgress[]>();
-  for (const row of progress)
+  for (const row of scopedProgress)
     byId.set(row.constructionId, [
       ...(byId.get(row.constructionId) ?? []),
       row,
@@ -54,6 +134,7 @@ export function selectDailyFocus(
   const eligible = pack.units.filter(
     (unit) =>
       unit.level === level ||
+      repairs.some((row) => row.constructionId === unit.id) ||
       byId
         .get(unit.id)
         ?.some(
@@ -64,17 +145,27 @@ export function selectDailyFocus(
   const ranked = (eligible.length ? eligible : pack.units)
     .map((unit) => {
       const rows = byId.get(unit.id) ?? [];
-      const due = rows.some(
-        (row) =>
-          row.nextReviewAt && Date.parse(row.nextReviewAt) <= Date.parse(now),
+      const dueDates = rows.flatMap((row) =>
+        row.nextReviewAt && Date.parse(row.nextReviewAt) <= Date.parse(now)
+          ? [Date.parse(row.nextReviewAt)]
+          : [],
       );
+      const dueAt = dueDates.length ? Math.min(...dueDates) : null;
+      const due = dueAt !== null;
       const repair = repairs.some((row) => row.constructionId === unit.id);
       const tried = rows.reduce((n, row) => n + row.attempts, 0);
       return {
         unit,
         due,
+        dueAt,
         repair,
         tried,
+        // Suggestions guide a cold start; they never require a mastery claim or lock a topic.
+        unexploredPreparation: tried
+          ? 0
+          : unit.prerequisites.filter(
+              (id) => !(byId.get(id) ?? []).some((row) => row.attempts > 0),
+            ).length,
         score:
           tried * 50 +
           Math.min(...unit.familyIds.map((id) => familyCounts.get(id) ?? 0)) *
@@ -85,7 +176,9 @@ export function selectDailyFocus(
     .sort(
       (a, b) =>
         Number(b.due) - Number(a.due) ||
+        (a.dueAt !== null && b.dueAt !== null ? a.dueAt - b.dueAt : 0) ||
         Number(b.repair) - Number(a.repair) ||
+        a.unexploredPreparation - b.unexploredPreparation ||
         a.score - b.score ||
         a.unit.id.localeCompare(b.unit.id),
     );

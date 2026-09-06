@@ -77,6 +77,16 @@ const run: PredictionRun = {
   predictions,
   caseHashes: {},
   limit: "Unit test only; not a real evaluation",
+  outputObservations: rows.map((row) => ({
+    caseId: row.id,
+    proposal: {
+      verdict: row.expected,
+      minimalCorrection:
+        row.expected === "needs_repair" ? row.acceptedAnswers[0] : null,
+      feedback:
+        "Synthetic explanation for a compiler fixture; not a real assessment.",
+    },
+  })),
 };
 const review = {
   schemaVersion: 1,
@@ -87,6 +97,20 @@ const review = {
   qualificationSha256: digest(inputText),
   configurationSha256: hash,
   reviewedAt: "2026-09-04T13:00:00Z",
+  outputReviews: run.outputObservations!.map((output) => {
+    const row = output as { caseId: string; proposal: { verdict: string } };
+    const repair = row.proposal.verdict === "needs_repair";
+    return {
+      caseId: row.caseId,
+      outputSha256: digest(JSON.stringify(output)),
+      verdictAppropriate: true,
+      explanationAccurate: true,
+      styleSeparated: true,
+      correctionCorrect: repair ? true : null,
+      correctionPreservesMeaning: repair ? true : null,
+      note: "Synthetic output-review fixture, not a human judgment.",
+    };
+  }),
 };
 let status = "running",
   error: string | undefined;
@@ -108,6 +132,31 @@ try {
     ["review before evaluation", { reviewedAt: "2026-09-04T10:00:00Z" }],
     ["missing judgment", { decision: "pending" }],
     ["empty justification", { note: "" }],
+    ["missing output review", { outputReviews: [] }],
+    [
+      "changed model feedback",
+      {
+        outputReviews: review.outputReviews.map((row, index) =>
+          index ? row : { ...row, outputSha256: "0".repeat(64) },
+        ),
+      },
+    ],
+    [
+      "inaccurate explanation",
+      {
+        outputReviews: review.outputReviews.map((row, index) =>
+          index ? row : { ...row, explanationAccurate: false },
+        ),
+      },
+    ],
+    [
+      "meaning-changing correction",
+      {
+        outputReviews: review.outputReviews.map((row, index) =>
+          index !== 1 ? row : { ...row, correctionPreservesMeaning: false },
+        ),
+      },
+    ],
   ] as const) {
     await assert.rejects(() =>
       buildReviewedTransformerRelease(

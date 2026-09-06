@@ -7,7 +7,7 @@ const root=resolve(import.meta.dirname,'..'),require=createRequire(resolve(root,
 const {chromium,expect}=require('@playwright/test');
 const folder=resolve(root,`artifacts/transformer-browser/${new Date().toISOString().replace(/[:.]/g,'-')}`);await mkdir(folder,{recursive:true});
 const clientOnly=process.argv.includes('--client-only');
-const report={status:'running',scope:clientOnly?'Client-only synthetic transport checks; installed same-origin POST gate excluded':'Installed app endpoints and isolated synthetic browser transport fixtures; no human approval or learner profile changes',cases:[]};
+const report={createdAt:new Date().toISOString(),status:'running',scope:clientOnly?'Client-only synthetic transport checks; installed same-origin POST gate excluded':'Installed app endpoints and isolated synthetic browser transport fixtures; no human approval or learner profile changes',cases:[]};
 const browser=await chromium.launch({channel:'msedge',headless:true});
 const hash=value=>createHash('sha256').update(value).digest('hex');
 try{

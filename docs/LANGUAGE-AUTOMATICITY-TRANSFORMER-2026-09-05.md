@@ -34,7 +34,7 @@ Evidence:
 - `artifacts/transformer-local/development-debug-response.json`
 - `artifacts/transformer-local/verified-downloads.json`
 - `docs/model-evaluation/development-comparison.json`
-- `artifacts/transformer-release-gates/2026-09-05T12-25-14-910Z/report.json` — 12 release safeguards passed.
+- `artifacts/transformer-release-gates/2026-09-05T12-55-21-395Z/report.json` — 16 release safeguards passed.
 - `artifacts/model-evaluation-gates/2026-09-05T12-23-48-862Z/report.json` — 24 evidence-chain safeguards passed.
 - `artifacts/model-adapter-gates/2026-09-05T12-25-15-231Z/report.json` — five isolated transport scenarios passed.
 
@@ -48,10 +48,19 @@ Stop the diagnostic services with `powershell.exe -NoProfile -ExecutionPolicy By
 
 M01–M03 still require independent labels, reviewed calibration and final benchmark data, sufficient supported scope coverage, and an actual release decision. The current candidate needs better development results before that evaluation. The compiler consumes the resulting qualification input and independent review JSON; it writes a new release file only if all gates pass.
 
-Deployment then pins both `AUTOMATICITY_TRANSFORMER_RELEASE` and `AUTOMATICITY_TRANSFORMER_RELEASE_SHA256` in the app server's environment. The review JSON must record schema version 1, `decision`, `reviewerId`, `role`, `note`, `reviewedAt`, `qualificationSha256` and `configurationSha256`. No completed approval file has been created. Reviewer identities are recorded locally; the system does not authenticate professional qualifications.
+Deployment then pins both `AUTOMATICITY_TRANSFORMER_RELEASE` and `AUTOMATICITY_TRANSFORMER_RELEASE_SHA256` in the app server's environment. The review JSON must record schema version 1, `decision`, `reviewerId`, `role`, `note`, `reviewedAt`, `qualificationSha256` and `configurationSha256`. It also needs one hash-bound `outputReviews` entry for every final model output: verdict appropriateness, explanation accuracy, correction correctness and meaning preservation, separation of style, and a specific note. A correct verdict cannot hide an inaccurate explanation or correction. `scripts/prepare-transformer-release-review.ts` creates the review packet with these fields blank and the task, original response and exact model output included. No completed approval file has been created. Reviewer identities are recorded locally; the system does not authenticate professional qualifications.
 
 The app update can be installed and used with model assessment disabled. Content review and learner evidence remain separate requirements for full-curriculum completion.
 
 ## Delivery verification
 
-English 27.3.34 and DeutschFlow 20.8.38 are being packaged. Full English checks and full DeutschFlow verification passed. Installer lifecycle, normal-profile preservation and installed browser verification will be recorded here after execution.
+Both final versions are installed and running. Full app checks, isolated installer lifecycle, exact normal-profile preservation before startup, installed API/browser behavior, all 13 evidence routes, offline practice and audio export/restore passed. Temporary model services are stopped.
+
+- English **27.3.34**: 585 profile files (51,973,918 bytes) preserved before startup. Setup SHA-256: `badf0f66391be6d92c792120c21bb384674e1af00cd242fe6e76c733c3d5a336`. Lifecycle: `artifacts/installer-cycle/English-20260905-145258-513f4ce3/report.json`; update: `artifacts/installed-language-update/20260905-145420/report.json`.
+- German **20.8.38**: 809 profile files (49,329,016 bytes) preserved before startup. Setup SHA-256: `1bcff61fe77e0e7ee61a02428333005605bce59bb60f75ab78d7c3313acde9ed`. Lifecycle: `artifacts/installer-cycle/German-20260905-144955-605d7eea/report.json`; update: `artifacts/installed-language-update/20260905-145055/report.json`.
+- Final hashes and receipts: `artifacts/transformer-delivery/final-verification.json`.
+- Transformer browser checks: `artifacts/transformer-browser/2026-09-05T12-56-01-185Z/report.json`; shared routes: `artifacts/phase7-browser/2026-09-05T12-55-59-988Z/report.json`; offline and restore: `artifacts/installed-automaticity-browser/2026-09-05T12-55-57-711Z/report.json`.
+- Source capture: `artifacts/language-release-source/20260905-transformer-en34-de38-final/manifest.json`.
+- Shared adapter: 33 tests passed; release compiler: 16 safeguards passed. English: `artifacts/transformer-origin-check.log`; DeutschFlow: `artifacts/transformer-origin-verify.log` in the respective app directories.
+
+These are local unsigned packages, not published download links. Engineering verification does not qualify the model or complete the curriculum's independent reviews.

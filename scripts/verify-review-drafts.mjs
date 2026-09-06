@@ -80,6 +80,7 @@ try {
       }),
       page = await context.newPage();
     page.setDefaultTimeout(15000);
+    page.setDefaultNavigationTimeout(30000);
     const row = { language, status: "running", checks: [] };
     report.cases.push(row);
     try {

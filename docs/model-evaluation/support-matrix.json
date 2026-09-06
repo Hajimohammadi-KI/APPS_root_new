@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "2026-09-05.2",
+  "version": "2026-09-05.3",
   "policy": {
     "version": "grammar-qualification-2026-09-05.2",
     "minimumPerCategory": 20,
@@ -8,16 +8,30 @@
     "maximumSupportedAbstentionRate": 0.2,
     "automaticallyApprove": false
   },
-  "scopeSha256": "6c34fe1911b9e7c7c29d25d6c6a6c58bb3dfb34c2c73254c366e2ccb1ec7a455",
+  "scopeSha256": "b447b6d26e269b67ccfee238f4b83796dd34d0077d60da6299d040a015c7af8f",
   "benchmarkVersion": "grammar-development-2026-09-05.1",
   "benchmarkSha256": "8326b74fb3414d62b1d04013f0ac5028560d1ac2ea9daa61d88eb8efe4f7b4af",
-  "decision": "No automatic grammar evaluator is qualified. Closed-answer matching remains practice feedback; open work is saved for manual review.",
+  "representativeBenchmark": {
+    "version": "representative-development-2026-09-05.1",
+    "manifestSha256": "b3fdf156e14c0ec41d32a26632671400df442db8c97f6ae3a9d07ec0fbe58e01",
+    "reviewed": false,
+    "evidence": "docs/model-evaluation/representative-comparison.json"
+  },
+  "decision": "No automatic grammar evaluator is qualified. Closed-answer matching and 12 bounded construction checkers provide practice feedback; unsupported and free production need manual review.",
   "candidateAvailability": [
     {
       "id": "controlled-answer",
       "version": "1.0.0",
       "status": "development_diagnostic_run",
       "deployment": "controlled_practice_only"
+    },
+    {
+      "id": "representative-construction",
+      "version": "1.0.0",
+      "status": "development_diagnostic_run",
+      "deployment": "bounded_practice_only",
+      "evidence": "docs/model-evaluation/representative-comparison.json",
+      "reason": "74 implementation-authored writing regressions in 12 construction scopes. Exact production task and source hashes are checked. No independent labels or untouched calibration/final evidence; no mastery qualification."
     },
     {
       "id": "languagetool",
@@ -39,6 +53,10 @@
   "functions": [
     {
       "id": "closed-answer-match",
+      "status": "practice_feedback_only"
+    },
+    {
+      "id": "bounded-construction-assessment",
       "status": "practice_feedback_only"
     },
     {
@@ -106,11 +124,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.001.retrieve.1.writing",
-        "en.c.001.retrieve.2.writing",
-        "en.c.001.retrieve.3.writing",
-        "en.c.001.retrieve.4.writing",
-        "en.c.001.retrieve.5.writing"
+        "en.c.001.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -124,7 +138,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.001.retrieve.98.speaking"
+        "en.c.001.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -307,11 +321,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.002.retrieve.1.writing",
-        "en.c.002.retrieve.2.writing",
-        "en.c.002.retrieve.3.writing",
-        "en.c.002.retrieve.4.writing",
-        "en.c.002.retrieve.5.writing"
+        "en.c.002.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -325,7 +335,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.002.retrieve.98.speaking"
+        "en.c.002.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -508,11 +518,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.003.retrieve.1.writing",
-        "en.c.003.retrieve.2.writing",
-        "en.c.003.retrieve.3.writing",
-        "en.c.003.retrieve.4.writing",
-        "en.c.003.retrieve.5.writing"
+        "en.c.003.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -526,7 +532,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.003.retrieve.98.speaking"
+        "en.c.003.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -709,11 +715,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.004.retrieve.1.writing",
         "en.c.004.retrieve.2.writing",
-        "en.c.004.retrieve.3.writing",
-        "en.c.004.retrieve.4.writing",
-        "en.c.004.retrieve.5.writing"
+        "en.c.004.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -727,7 +730,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.004.retrieve.98.speaking"
+        "en.c.004.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -910,11 +913,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.005.retrieve.1.writing",
-        "en.c.005.retrieve.2.writing",
-        "en.c.005.retrieve.3.writing",
-        "en.c.005.retrieve.4.writing",
-        "en.c.005.retrieve.5.writing"
+        "en.c.005.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -928,7 +927,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.005.retrieve.98.speaking"
+        "en.c.005.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1111,11 +1110,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.006.retrieve.1.writing",
-        "en.c.006.retrieve.2.writing",
-        "en.c.006.retrieve.3.writing",
-        "en.c.006.retrieve.4.writing",
-        "en.c.006.retrieve.5.writing"
+        "en.c.006.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1129,7 +1124,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.006.retrieve.98.speaking"
+        "en.c.006.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1284,6 +1279,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "en.c.007.representative.notice.writing",
         "en.c.007.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -1298,6 +1294,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "en.c.007.representative.notice.speaking",
         "en.c.007.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -1312,11 +1309,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.007.retrieve.1.writing",
-        "en.c.007.retrieve.2.writing",
-        "en.c.007.retrieve.3.writing",
-        "en.c.007.retrieve.4.writing",
-        "en.c.007.retrieve.5.writing"
+        "en.c.007.representative.retrieve.writing",
+        "en.c.007.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1330,7 +1324,8 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.007.retrieve.98.speaking"
+        "en.c.007.representative.retrieve.speaking",
+        "en.c.007.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1344,6 +1339,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "en.c.007.representative.vary.writing",
         "en.c.007.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -1358,6 +1354,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "en.c.007.representative.vary.speaking",
         "en.c.007.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -1372,6 +1369,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "en.c.007.representative.produce.writing",
         "en.c.007.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -1386,6 +1384,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "en.c.007.representative.produce.speaking",
         "en.c.007.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -1400,6 +1399,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "en.c.007.representative.repair.writing",
         "en.c.007.repair.0.writing",
         "en.c.007.repair.99.writing"
       ],
@@ -1415,6 +1415,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "en.c.007.representative.repair.speaking",
         "en.c.007.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -1429,6 +1430,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "en.c.007.representative.transfer.writing",
         "en.c.007.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -1443,6 +1445,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "en.c.007.representative.transfer.speaking",
         "en.c.007.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -1457,6 +1460,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "en.c.007.representative.retain.writing",
         "en.c.007.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -1471,6 +1475,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "en.c.007.representative.retain.speaking",
         "en.c.007.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -1513,11 +1518,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.008.retrieve.1.writing",
-        "en.c.008.retrieve.2.writing",
-        "en.c.008.retrieve.3.writing",
-        "en.c.008.retrieve.4.writing",
-        "en.c.008.retrieve.5.writing"
+        "en.c.008.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1531,7 +1532,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.008.retrieve.98.speaking"
+        "en.c.008.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1714,11 +1715,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.009.retrieve.1.writing",
-        "en.c.009.retrieve.2.writing",
-        "en.c.009.retrieve.3.writing",
-        "en.c.009.retrieve.4.writing",
-        "en.c.009.retrieve.5.writing"
+        "en.c.009.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1732,7 +1729,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.009.retrieve.98.speaking"
+        "en.c.009.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1915,11 +1912,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.010.retrieve.1.writing",
-        "en.c.010.retrieve.2.writing",
-        "en.c.010.retrieve.3.writing",
-        "en.c.010.retrieve.4.writing",
-        "en.c.010.retrieve.5.writing"
+        "en.c.010.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -1933,7 +1926,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.010.retrieve.98.speaking"
+        "en.c.010.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2116,11 +2109,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.011.retrieve.1.writing",
-        "en.c.011.retrieve.2.writing",
-        "en.c.011.retrieve.3.writing",
-        "en.c.011.retrieve.4.writing",
-        "en.c.011.retrieve.5.writing"
+        "en.c.011.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2134,7 +2123,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.011.retrieve.98.speaking"
+        "en.c.011.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2317,11 +2306,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.012.retrieve.1.writing",
-        "en.c.012.retrieve.2.writing",
-        "en.c.012.retrieve.3.writing",
-        "en.c.012.retrieve.4.writing",
-        "en.c.012.retrieve.5.writing"
+        "en.c.012.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2335,7 +2320,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.012.retrieve.98.speaking"
+        "en.c.012.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2518,11 +2503,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.013.retrieve.1.writing",
         "en.c.013.retrieve.2.writing",
-        "en.c.013.retrieve.3.writing",
-        "en.c.013.retrieve.4.writing",
-        "en.c.013.retrieve.5.writing"
+        "en.c.013.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2536,7 +2518,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.013.retrieve.98.speaking"
+        "en.c.013.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2719,11 +2701,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.014.retrieve.1.writing",
         "en.c.014.retrieve.2.writing",
-        "en.c.014.retrieve.3.writing",
-        "en.c.014.retrieve.4.writing",
-        "en.c.014.retrieve.5.writing"
+        "en.c.014.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2737,7 +2716,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.014.retrieve.98.speaking"
+        "en.c.014.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2920,11 +2899,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.015.retrieve.1.writing",
-        "en.c.015.retrieve.2.writing",
-        "en.c.015.retrieve.3.writing",
-        "en.c.015.retrieve.4.writing",
-        "en.c.015.retrieve.5.writing"
+        "en.c.015.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -2938,7 +2913,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.015.retrieve.98.speaking"
+        "en.c.015.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3121,11 +3096,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.016.retrieve.1.writing",
         "en.c.016.retrieve.2.writing",
-        "en.c.016.retrieve.3.writing",
-        "en.c.016.retrieve.4.writing",
-        "en.c.016.retrieve.5.writing"
+        "en.c.016.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3139,7 +3111,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.016.retrieve.98.speaking"
+        "en.c.016.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3322,11 +3294,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.017.retrieve.1.writing",
         "en.c.017.retrieve.2.writing",
-        "en.c.017.retrieve.3.writing",
-        "en.c.017.retrieve.4.writing",
-        "en.c.017.retrieve.5.writing"
+        "en.c.017.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3340,7 +3309,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.017.retrieve.98.speaking"
+        "en.c.017.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3523,11 +3492,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.018.retrieve.1.writing",
         "en.c.018.retrieve.2.writing",
-        "en.c.018.retrieve.3.writing",
-        "en.c.018.retrieve.4.writing",
-        "en.c.018.retrieve.5.writing"
+        "en.c.018.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3541,7 +3507,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.018.retrieve.98.speaking"
+        "en.c.018.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3724,11 +3690,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.019.retrieve.1.writing",
-        "en.c.019.retrieve.2.writing",
-        "en.c.019.retrieve.3.writing",
-        "en.c.019.retrieve.4.writing",
-        "en.c.019.retrieve.5.writing"
+        "en.c.019.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3742,7 +3704,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.019.retrieve.98.speaking"
+        "en.c.019.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3925,11 +3887,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.020.retrieve.1.writing",
-        "en.c.020.retrieve.2.writing",
-        "en.c.020.retrieve.3.writing",
-        "en.c.020.retrieve.4.writing",
-        "en.c.020.retrieve.5.writing"
+        "en.c.020.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -3943,7 +3901,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.020.retrieve.98.speaking"
+        "en.c.020.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4126,11 +4084,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.021.retrieve.1.writing",
         "en.c.021.retrieve.2.writing",
-        "en.c.021.retrieve.3.writing",
-        "en.c.021.retrieve.4.writing",
-        "en.c.021.retrieve.5.writing"
+        "en.c.021.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4144,7 +4099,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.021.retrieve.98.speaking"
+        "en.c.021.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4327,11 +4282,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.022.retrieve.1.writing",
         "en.c.022.retrieve.2.writing",
-        "en.c.022.retrieve.3.writing",
-        "en.c.022.retrieve.4.writing",
-        "en.c.022.retrieve.5.writing"
+        "en.c.022.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4345,7 +4297,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.022.retrieve.98.speaking"
+        "en.c.022.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4528,11 +4480,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.023.retrieve.1.writing",
         "en.c.023.retrieve.2.writing",
-        "en.c.023.retrieve.3.writing",
-        "en.c.023.retrieve.4.writing",
-        "en.c.023.retrieve.5.writing"
+        "en.c.023.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4546,7 +4495,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.023.retrieve.98.speaking"
+        "en.c.023.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4729,11 +4678,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.024.retrieve.1.writing",
-        "en.c.024.retrieve.2.writing",
-        "en.c.024.retrieve.3.writing",
-        "en.c.024.retrieve.4.writing",
-        "en.c.024.retrieve.5.writing"
+        "en.c.024.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4747,7 +4692,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.024.retrieve.98.speaking"
+        "en.c.024.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4930,11 +4875,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.025.retrieve.1.writing",
         "en.c.025.retrieve.2.writing",
-        "en.c.025.retrieve.3.writing",
-        "en.c.025.retrieve.4.writing",
-        "en.c.025.retrieve.5.writing"
+        "en.c.025.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -4948,7 +4890,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.025.retrieve.98.speaking"
+        "en.c.025.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5131,11 +5073,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.026.retrieve.1.writing",
-        "en.c.026.retrieve.2.writing",
-        "en.c.026.retrieve.3.writing",
-        "en.c.026.retrieve.4.writing",
-        "en.c.026.retrieve.5.writing"
+        "en.c.026.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5149,7 +5087,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.026.retrieve.98.speaking"
+        "en.c.026.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5332,11 +5270,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.027.retrieve.1.writing",
-        "en.c.027.retrieve.2.writing",
-        "en.c.027.retrieve.3.writing",
-        "en.c.027.retrieve.4.writing",
-        "en.c.027.retrieve.5.writing"
+        "en.c.027.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5350,7 +5284,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.027.retrieve.98.speaking"
+        "en.c.027.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5533,11 +5467,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.028.retrieve.1.writing",
-        "en.c.028.retrieve.2.writing",
-        "en.c.028.retrieve.3.writing",
-        "en.c.028.retrieve.4.writing",
-        "en.c.028.retrieve.5.writing"
+        "en.c.028.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5551,7 +5481,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.028.retrieve.98.speaking"
+        "en.c.028.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5734,11 +5664,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.029.retrieve.1.writing",
         "en.c.029.retrieve.2.writing",
-        "en.c.029.retrieve.3.writing",
-        "en.c.029.retrieve.4.writing",
-        "en.c.029.retrieve.5.writing"
+        "en.c.029.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5752,7 +5679,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.029.retrieve.98.speaking"
+        "en.c.029.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5907,6 +5834,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "en.c.030.representative.notice.writing",
         "en.c.030.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -5921,6 +5849,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "en.c.030.representative.notice.speaking",
         "en.c.030.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -5935,11 +5864,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.030.retrieve.1.writing",
-        "en.c.030.retrieve.2.writing",
-        "en.c.030.retrieve.3.writing",
-        "en.c.030.retrieve.4.writing",
-        "en.c.030.retrieve.5.writing"
+        "en.c.030.representative.retrieve.writing",
+        "en.c.030.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5953,7 +5879,8 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.030.retrieve.98.speaking"
+        "en.c.030.representative.retrieve.speaking",
+        "en.c.030.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -5967,6 +5894,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "en.c.030.representative.vary.writing",
         "en.c.030.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -5981,6 +5909,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "en.c.030.representative.vary.speaking",
         "en.c.030.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -5995,6 +5924,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "en.c.030.representative.produce.writing",
         "en.c.030.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -6009,6 +5939,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "en.c.030.representative.produce.speaking",
         "en.c.030.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -6023,6 +5954,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "en.c.030.representative.repair.writing",
         "en.c.030.repair.0.writing",
         "en.c.030.repair.99.writing"
       ],
@@ -6038,6 +5970,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "en.c.030.representative.repair.speaking",
         "en.c.030.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -6052,6 +5985,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "en.c.030.representative.transfer.writing",
         "en.c.030.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -6066,6 +6000,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "en.c.030.representative.transfer.speaking",
         "en.c.030.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -6080,6 +6015,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "en.c.030.representative.retain.writing",
         "en.c.030.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -6094,6 +6030,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "en.c.030.representative.retain.speaking",
         "en.c.030.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -6136,11 +6073,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.031.retrieve.1.writing",
         "en.c.031.retrieve.2.writing",
-        "en.c.031.retrieve.3.writing",
-        "en.c.031.retrieve.4.writing",
-        "en.c.031.retrieve.5.writing"
+        "en.c.031.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6154,7 +6088,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.031.retrieve.98.speaking"
+        "en.c.031.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6337,11 +6271,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.032.retrieve.1.writing",
         "en.c.032.retrieve.2.writing",
-        "en.c.032.retrieve.3.writing",
-        "en.c.032.retrieve.4.writing",
-        "en.c.032.retrieve.5.writing"
+        "en.c.032.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6355,7 +6286,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.032.retrieve.98.speaking"
+        "en.c.032.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6538,11 +6469,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.033.retrieve.1.writing",
         "en.c.033.retrieve.2.writing",
-        "en.c.033.retrieve.3.writing",
-        "en.c.033.retrieve.4.writing",
-        "en.c.033.retrieve.5.writing"
+        "en.c.033.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6556,7 +6484,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.033.retrieve.98.speaking"
+        "en.c.033.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6739,11 +6667,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.034.retrieve.1.writing",
         "en.c.034.retrieve.2.writing",
-        "en.c.034.retrieve.3.writing",
-        "en.c.034.retrieve.4.writing",
-        "en.c.034.retrieve.5.writing"
+        "en.c.034.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6757,7 +6682,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.034.retrieve.98.speaking"
+        "en.c.034.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6940,11 +6865,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.035.retrieve.1.writing",
         "en.c.035.retrieve.2.writing",
-        "en.c.035.retrieve.3.writing",
-        "en.c.035.retrieve.4.writing",
-        "en.c.035.retrieve.5.writing"
+        "en.c.035.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -6958,7 +6880,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.035.retrieve.98.speaking"
+        "en.c.035.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7141,11 +7063,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.036.retrieve.1.writing",
         "en.c.036.retrieve.2.writing",
-        "en.c.036.retrieve.3.writing",
-        "en.c.036.retrieve.4.writing",
-        "en.c.036.retrieve.5.writing"
+        "en.c.036.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7159,7 +7078,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.036.retrieve.98.speaking"
+        "en.c.036.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7342,11 +7261,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.037.retrieve.1.writing",
-        "en.c.037.retrieve.2.writing",
-        "en.c.037.retrieve.3.writing",
-        "en.c.037.retrieve.4.writing",
-        "en.c.037.retrieve.5.writing"
+        "en.c.037.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7360,7 +7275,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.037.retrieve.98.speaking"
+        "en.c.037.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7543,11 +7458,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.038.retrieve.1.writing",
         "en.c.038.retrieve.2.writing",
-        "en.c.038.retrieve.3.writing",
-        "en.c.038.retrieve.4.writing",
-        "en.c.038.retrieve.5.writing"
+        "en.c.038.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7561,7 +7473,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.038.retrieve.98.speaking"
+        "en.c.038.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7744,11 +7656,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.039.retrieve.1.writing",
-        "en.c.039.retrieve.2.writing",
-        "en.c.039.retrieve.3.writing",
-        "en.c.039.retrieve.4.writing",
-        "en.c.039.retrieve.5.writing"
+        "en.c.039.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7762,7 +7670,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.039.retrieve.98.speaking"
+        "en.c.039.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7917,6 +7825,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "en.c.040.representative.notice.writing",
         "en.c.040.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -7931,6 +7840,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "en.c.040.representative.notice.speaking",
         "en.c.040.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -7945,11 +7855,9 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.040.retrieve.1.writing",
+        "en.c.040.representative.retrieve.writing",
         "en.c.040.retrieve.2.writing",
-        "en.c.040.retrieve.3.writing",
-        "en.c.040.retrieve.4.writing",
-        "en.c.040.retrieve.5.writing"
+        "en.c.040.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7963,7 +7871,8 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.040.retrieve.98.speaking"
+        "en.c.040.representative.retrieve.speaking",
+        "en.c.040.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -7977,6 +7886,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "en.c.040.representative.vary.writing",
         "en.c.040.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -7991,6 +7901,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "en.c.040.representative.vary.speaking",
         "en.c.040.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -8005,6 +7916,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "en.c.040.representative.produce.writing",
         "en.c.040.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -8019,6 +7931,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "en.c.040.representative.produce.speaking",
         "en.c.040.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -8033,6 +7946,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "en.c.040.representative.repair.writing",
         "en.c.040.repair.0.writing",
         "en.c.040.repair.99.writing"
       ],
@@ -8048,6 +7962,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "en.c.040.representative.repair.speaking",
         "en.c.040.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -8062,6 +7977,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "en.c.040.representative.transfer.writing",
         "en.c.040.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -8076,6 +7992,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "en.c.040.representative.transfer.speaking",
         "en.c.040.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -8090,6 +8007,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "en.c.040.representative.retain.writing",
         "en.c.040.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -8104,6 +8022,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "en.c.040.representative.retain.speaking",
         "en.c.040.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -8146,11 +8065,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.041.retrieve.1.writing",
         "en.c.041.retrieve.2.writing",
-        "en.c.041.retrieve.3.writing",
-        "en.c.041.retrieve.4.writing",
-        "en.c.041.retrieve.5.writing"
+        "en.c.041.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8164,7 +8080,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.041.retrieve.98.speaking"
+        "en.c.041.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8347,11 +8263,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.042.retrieve.1.writing",
-        "en.c.042.retrieve.2.writing",
-        "en.c.042.retrieve.3.writing",
-        "en.c.042.retrieve.4.writing",
-        "en.c.042.retrieve.5.writing"
+        "en.c.042.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8365,7 +8277,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.042.retrieve.98.speaking"
+        "en.c.042.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8548,11 +8460,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.043.retrieve.1.writing",
         "en.c.043.retrieve.2.writing",
-        "en.c.043.retrieve.3.writing",
-        "en.c.043.retrieve.4.writing",
-        "en.c.043.retrieve.5.writing"
+        "en.c.043.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8566,7 +8475,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.043.retrieve.98.speaking"
+        "en.c.043.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8749,11 +8658,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.044.retrieve.1.writing",
         "en.c.044.retrieve.2.writing",
-        "en.c.044.retrieve.3.writing",
-        "en.c.044.retrieve.4.writing",
-        "en.c.044.retrieve.5.writing"
+        "en.c.044.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8767,7 +8673,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.044.retrieve.98.speaking"
+        "en.c.044.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8950,11 +8856,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.045.retrieve.1.writing",
         "en.c.045.retrieve.2.writing",
-        "en.c.045.retrieve.3.writing",
-        "en.c.045.retrieve.4.writing",
-        "en.c.045.retrieve.5.writing"
+        "en.c.045.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -8968,7 +8871,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.045.retrieve.98.speaking"
+        "en.c.045.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9151,11 +9054,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.046.retrieve.1.writing",
         "en.c.046.retrieve.2.writing",
-        "en.c.046.retrieve.3.writing",
-        "en.c.046.retrieve.4.writing",
-        "en.c.046.retrieve.5.writing"
+        "en.c.046.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9169,7 +9069,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.046.retrieve.98.speaking"
+        "en.c.046.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9352,11 +9252,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.047.retrieve.1.writing",
         "en.c.047.retrieve.2.writing",
-        "en.c.047.retrieve.3.writing",
-        "en.c.047.retrieve.4.writing",
-        "en.c.047.retrieve.5.writing"
+        "en.c.047.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9370,7 +9267,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.047.retrieve.98.speaking"
+        "en.c.047.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9553,11 +9450,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.048.retrieve.1.writing",
         "en.c.048.retrieve.2.writing",
-        "en.c.048.retrieve.3.writing",
-        "en.c.048.retrieve.4.writing",
-        "en.c.048.retrieve.5.writing"
+        "en.c.048.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9571,7 +9465,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.048.retrieve.98.speaking"
+        "en.c.048.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9754,11 +9648,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.049.retrieve.1.writing",
         "en.c.049.retrieve.2.writing",
-        "en.c.049.retrieve.3.writing",
-        "en.c.049.retrieve.4.writing",
-        "en.c.049.retrieve.5.writing"
+        "en.c.049.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9772,7 +9663,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.049.retrieve.98.speaking"
+        "en.c.049.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9955,11 +9846,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.050.retrieve.1.writing",
-        "en.c.050.retrieve.2.writing",
-        "en.c.050.retrieve.3.writing",
-        "en.c.050.retrieve.4.writing",
-        "en.c.050.retrieve.5.writing"
+        "en.c.050.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -9973,7 +9860,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.050.retrieve.98.speaking"
+        "en.c.050.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10156,11 +10043,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.051.retrieve.1.writing",
         "en.c.051.retrieve.2.writing",
-        "en.c.051.retrieve.3.writing",
-        "en.c.051.retrieve.4.writing",
-        "en.c.051.retrieve.5.writing"
+        "en.c.051.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10174,7 +10058,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.051.retrieve.98.speaking"
+        "en.c.051.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10357,11 +10241,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.052.retrieve.1.writing",
         "en.c.052.retrieve.2.writing",
-        "en.c.052.retrieve.3.writing",
-        "en.c.052.retrieve.4.writing",
-        "en.c.052.retrieve.5.writing"
+        "en.c.052.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10375,7 +10256,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.052.retrieve.98.speaking"
+        "en.c.052.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10530,6 +10411,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "en.c.053.representative.notice.writing",
         "en.c.053.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -10544,6 +10426,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "en.c.053.representative.notice.speaking",
         "en.c.053.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -10558,11 +10441,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.053.retrieve.1.writing",
-        "en.c.053.retrieve.2.writing",
-        "en.c.053.retrieve.3.writing",
-        "en.c.053.retrieve.4.writing",
-        "en.c.053.retrieve.5.writing"
+        "en.c.053.representative.retrieve.writing",
+        "en.c.053.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10576,7 +10456,8 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.053.retrieve.98.speaking"
+        "en.c.053.representative.retrieve.speaking",
+        "en.c.053.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10590,6 +10471,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "en.c.053.representative.vary.writing",
         "en.c.053.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -10604,6 +10486,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "en.c.053.representative.vary.speaking",
         "en.c.053.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -10618,6 +10501,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "en.c.053.representative.produce.writing",
         "en.c.053.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -10632,6 +10516,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "en.c.053.representative.produce.speaking",
         "en.c.053.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -10646,6 +10531,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "en.c.053.representative.repair.writing",
         "en.c.053.repair.0.writing",
         "en.c.053.repair.99.writing"
       ],
@@ -10661,6 +10547,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "en.c.053.representative.repair.speaking",
         "en.c.053.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -10675,6 +10562,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "en.c.053.representative.transfer.writing",
         "en.c.053.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -10689,6 +10577,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "en.c.053.representative.transfer.speaking",
         "en.c.053.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -10703,6 +10592,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "en.c.053.representative.retain.writing",
         "en.c.053.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -10717,6 +10607,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "en.c.053.representative.retain.speaking",
         "en.c.053.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -10759,11 +10650,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.054.retrieve.1.writing",
         "en.c.054.retrieve.2.writing",
-        "en.c.054.retrieve.3.writing",
-        "en.c.054.retrieve.4.writing",
-        "en.c.054.retrieve.5.writing"
+        "en.c.054.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10777,7 +10665,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.054.retrieve.98.speaking"
+        "en.c.054.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10960,11 +10848,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.055.retrieve.1.writing",
-        "en.c.055.retrieve.2.writing",
-        "en.c.055.retrieve.3.writing",
-        "en.c.055.retrieve.4.writing",
-        "en.c.055.retrieve.5.writing"
+        "en.c.055.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -10978,7 +10862,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.055.retrieve.98.speaking"
+        "en.c.055.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11161,11 +11045,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.056.retrieve.1.writing",
         "en.c.056.retrieve.2.writing",
-        "en.c.056.retrieve.3.writing",
-        "en.c.056.retrieve.4.writing",
-        "en.c.056.retrieve.5.writing"
+        "en.c.056.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11179,7 +11060,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.056.retrieve.98.speaking"
+        "en.c.056.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11362,11 +11243,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.057.retrieve.1.writing",
-        "en.c.057.retrieve.2.writing",
-        "en.c.057.retrieve.3.writing",
-        "en.c.057.retrieve.4.writing",
-        "en.c.057.retrieve.5.writing"
+        "en.c.057.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11380,7 +11257,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.057.retrieve.98.speaking"
+        "en.c.057.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11563,11 +11440,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.058.retrieve.1.writing",
         "en.c.058.retrieve.2.writing",
-        "en.c.058.retrieve.3.writing",
-        "en.c.058.retrieve.4.writing",
-        "en.c.058.retrieve.5.writing"
+        "en.c.058.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11581,7 +11455,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.058.retrieve.98.speaking"
+        "en.c.058.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11764,11 +11638,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.059.retrieve.1.writing",
         "en.c.059.retrieve.2.writing",
-        "en.c.059.retrieve.3.writing",
-        "en.c.059.retrieve.4.writing",
-        "en.c.059.retrieve.5.writing"
+        "en.c.059.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11782,7 +11653,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.059.retrieve.98.speaking"
+        "en.c.059.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11965,11 +11836,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.060.retrieve.1.writing",
         "en.c.060.retrieve.2.writing",
-        "en.c.060.retrieve.3.writing",
-        "en.c.060.retrieve.4.writing",
-        "en.c.060.retrieve.5.writing"
+        "en.c.060.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -11983,7 +11851,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.060.retrieve.98.speaking"
+        "en.c.060.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12166,11 +12034,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.061.retrieve.1.writing",
         "en.c.061.retrieve.2.writing",
-        "en.c.061.retrieve.3.writing",
-        "en.c.061.retrieve.4.writing",
-        "en.c.061.retrieve.5.writing"
+        "en.c.061.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12184,7 +12049,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.061.retrieve.98.speaking"
+        "en.c.061.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12367,11 +12232,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.062.retrieve.1.writing",
         "en.c.062.retrieve.2.writing",
-        "en.c.062.retrieve.3.writing",
-        "en.c.062.retrieve.4.writing",
-        "en.c.062.retrieve.5.writing"
+        "en.c.062.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12385,7 +12247,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.062.retrieve.98.speaking"
+        "en.c.062.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12568,11 +12430,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.063.retrieve.1.writing",
         "en.c.063.retrieve.2.writing",
-        "en.c.063.retrieve.3.writing",
-        "en.c.063.retrieve.4.writing",
-        "en.c.063.retrieve.5.writing"
+        "en.c.063.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12586,7 +12445,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.063.retrieve.98.speaking"
+        "en.c.063.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12769,11 +12628,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.064.retrieve.1.writing",
         "en.c.064.retrieve.2.writing",
-        "en.c.064.retrieve.3.writing",
-        "en.c.064.retrieve.4.writing",
-        "en.c.064.retrieve.5.writing"
+        "en.c.064.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12787,7 +12643,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.064.retrieve.98.speaking"
+        "en.c.064.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12970,11 +12826,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.065.retrieve.1.writing",
         "en.c.065.retrieve.2.writing",
-        "en.c.065.retrieve.3.writing",
-        "en.c.065.retrieve.4.writing",
-        "en.c.065.retrieve.5.writing"
+        "en.c.065.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -12988,7 +12841,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.065.retrieve.98.speaking"
+        "en.c.065.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13171,11 +13024,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.066.retrieve.1.writing",
         "en.c.066.retrieve.2.writing",
-        "en.c.066.retrieve.3.writing",
-        "en.c.066.retrieve.4.writing",
-        "en.c.066.retrieve.5.writing"
+        "en.c.066.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13189,7 +13039,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.066.retrieve.98.speaking"
+        "en.c.066.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13372,11 +13222,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.067.retrieve.1.writing",
         "en.c.067.retrieve.2.writing",
-        "en.c.067.retrieve.3.writing",
-        "en.c.067.retrieve.4.writing",
-        "en.c.067.retrieve.5.writing"
+        "en.c.067.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13390,7 +13237,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.067.retrieve.98.speaking"
+        "en.c.067.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13573,11 +13420,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.068.retrieve.1.writing",
-        "en.c.068.retrieve.2.writing",
-        "en.c.068.retrieve.3.writing",
-        "en.c.068.retrieve.4.writing",
-        "en.c.068.retrieve.5.writing"
+        "en.c.068.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13591,7 +13434,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.068.retrieve.98.speaking"
+        "en.c.068.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13774,11 +13617,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.069.retrieve.1.writing",
-        "en.c.069.retrieve.2.writing",
-        "en.c.069.retrieve.3.writing",
-        "en.c.069.retrieve.4.writing",
-        "en.c.069.retrieve.5.writing"
+        "en.c.069.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13792,7 +13631,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.069.retrieve.98.speaking"
+        "en.c.069.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13975,11 +13814,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.070.retrieve.1.writing",
         "en.c.070.retrieve.2.writing",
-        "en.c.070.retrieve.3.writing",
-        "en.c.070.retrieve.4.writing",
-        "en.c.070.retrieve.5.writing"
+        "en.c.070.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -13993,7 +13829,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.070.retrieve.98.speaking"
+        "en.c.070.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14176,11 +14012,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.071.retrieve.1.writing",
         "en.c.071.retrieve.2.writing",
-        "en.c.071.retrieve.3.writing",
-        "en.c.071.retrieve.4.writing",
-        "en.c.071.retrieve.5.writing"
+        "en.c.071.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14194,7 +14027,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.071.retrieve.98.speaking"
+        "en.c.071.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14377,11 +14210,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.072.retrieve.1.writing",
         "en.c.072.retrieve.2.writing",
-        "en.c.072.retrieve.3.writing",
-        "en.c.072.retrieve.4.writing",
-        "en.c.072.retrieve.5.writing"
+        "en.c.072.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14395,7 +14225,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.072.retrieve.98.speaking"
+        "en.c.072.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14578,11 +14408,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.073.retrieve.1.writing",
         "en.c.073.retrieve.2.writing",
-        "en.c.073.retrieve.3.writing",
-        "en.c.073.retrieve.4.writing",
-        "en.c.073.retrieve.5.writing"
+        "en.c.073.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14596,7 +14423,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.073.retrieve.98.speaking"
+        "en.c.073.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14779,11 +14606,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.074.retrieve.1.writing",
         "en.c.074.retrieve.2.writing",
-        "en.c.074.retrieve.3.writing",
-        "en.c.074.retrieve.4.writing",
-        "en.c.074.retrieve.5.writing"
+        "en.c.074.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14797,7 +14621,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.074.retrieve.98.speaking"
+        "en.c.074.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14980,11 +14804,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.075.retrieve.1.writing",
-        "en.c.075.retrieve.2.writing",
-        "en.c.075.retrieve.3.writing",
-        "en.c.075.retrieve.4.writing",
-        "en.c.075.retrieve.5.writing"
+        "en.c.075.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -14998,7 +14818,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.075.retrieve.98.speaking"
+        "en.c.075.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15181,11 +15001,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.076.retrieve.1.writing",
         "en.c.076.retrieve.2.writing",
-        "en.c.076.retrieve.3.writing",
-        "en.c.076.retrieve.4.writing",
-        "en.c.076.retrieve.5.writing"
+        "en.c.076.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15199,7 +15016,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.076.retrieve.98.speaking"
+        "en.c.076.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15382,11 +15199,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.077.retrieve.1.writing",
         "en.c.077.retrieve.2.writing",
-        "en.c.077.retrieve.3.writing",
-        "en.c.077.retrieve.4.writing",
-        "en.c.077.retrieve.5.writing"
+        "en.c.077.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15400,7 +15214,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.077.retrieve.98.speaking"
+        "en.c.077.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15583,11 +15397,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.078.retrieve.1.writing",
         "en.c.078.retrieve.2.writing",
-        "en.c.078.retrieve.3.writing",
-        "en.c.078.retrieve.4.writing",
-        "en.c.078.retrieve.5.writing"
+        "en.c.078.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15601,7 +15412,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.078.retrieve.98.speaking"
+        "en.c.078.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15784,11 +15595,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.079.retrieve.1.writing",
         "en.c.079.retrieve.2.writing",
-        "en.c.079.retrieve.3.writing",
-        "en.c.079.retrieve.4.writing",
-        "en.c.079.retrieve.5.writing"
+        "en.c.079.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15802,7 +15610,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.079.retrieve.98.speaking"
+        "en.c.079.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -15985,11 +15793,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.080.retrieve.1.writing",
-        "en.c.080.retrieve.2.writing",
-        "en.c.080.retrieve.3.writing",
-        "en.c.080.retrieve.4.writing",
-        "en.c.080.retrieve.5.writing"
+        "en.c.080.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16003,7 +15807,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.080.retrieve.98.speaking"
+        "en.c.080.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16186,11 +15990,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.081.retrieve.1.writing",
         "en.c.081.retrieve.2.writing",
-        "en.c.081.retrieve.3.writing",
-        "en.c.081.retrieve.4.writing",
-        "en.c.081.retrieve.5.writing"
+        "en.c.081.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16204,7 +16005,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.081.retrieve.98.speaking"
+        "en.c.081.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16387,11 +16188,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.082.retrieve.1.writing",
         "en.c.082.retrieve.2.writing",
-        "en.c.082.retrieve.3.writing",
-        "en.c.082.retrieve.4.writing",
-        "en.c.082.retrieve.5.writing"
+        "en.c.082.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16405,7 +16203,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.082.retrieve.98.speaking"
+        "en.c.082.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16588,11 +16386,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.083.retrieve.1.writing",
         "en.c.083.retrieve.2.writing",
-        "en.c.083.retrieve.3.writing",
-        "en.c.083.retrieve.4.writing",
-        "en.c.083.retrieve.5.writing"
+        "en.c.083.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16606,7 +16401,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.083.retrieve.98.speaking"
+        "en.c.083.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16789,11 +16584,8 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "en.c.084.retrieve.1.writing",
         "en.c.084.retrieve.2.writing",
-        "en.c.084.retrieve.3.writing",
-        "en.c.084.retrieve.4.writing",
-        "en.c.084.retrieve.5.writing"
+        "en.c.084.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16807,7 +16599,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "en.c.084.retrieve.98.speaking"
+        "en.c.084.retrieve.revision1-meaning-recall.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -16994,7 +16786,7 @@
         "en.c.085.retrieve.2.writing",
         "en.c.085.retrieve.3.writing",
         "en.c.085.retrieve.4.writing",
-        "en.c.085.retrieve.5.writing"
+        "en.c.085.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -17195,7 +16987,7 @@
         "en.c.086.retrieve.2.writing",
         "en.c.086.retrieve.3.writing",
         "en.c.086.retrieve.4.writing",
-        "en.c.086.retrieve.5.writing"
+        "en.c.086.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -17396,7 +17188,7 @@
         "en.c.087.retrieve.2.writing",
         "en.c.087.retrieve.3.writing",
         "en.c.087.retrieve.4.writing",
-        "en.c.087.retrieve.5.writing"
+        "en.c.087.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -17597,7 +17389,7 @@
         "en.c.088.retrieve.2.writing",
         "en.c.088.retrieve.3.writing",
         "en.c.088.retrieve.4.writing",
-        "en.c.088.retrieve.5.writing"
+        "en.c.088.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -17798,7 +17590,7 @@
         "en.c.089.retrieve.2.writing",
         "en.c.089.retrieve.3.writing",
         "en.c.089.retrieve.4.writing",
-        "en.c.089.retrieve.5.writing"
+        "en.c.089.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -17999,7 +17791,7 @@
         "en.c.090.retrieve.2.writing",
         "en.c.090.retrieve.3.writing",
         "en.c.090.retrieve.4.writing",
-        "en.c.090.retrieve.5.writing"
+        "en.c.090.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -18200,7 +17992,7 @@
         "en.c.091.retrieve.2.writing",
         "en.c.091.retrieve.3.writing",
         "en.c.091.retrieve.4.writing",
-        "en.c.091.retrieve.5.writing"
+        "en.c.091.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -18369,6 +18161,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "en.c.092.representative.notice.writing",
         "en.c.092.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -18383,6 +18176,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "en.c.092.representative.notice.speaking",
         "en.c.092.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -18397,11 +18191,12 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
+        "en.c.092.representative.retrieve.writing",
         "en.c.092.retrieve.1.writing",
         "en.c.092.retrieve.2.writing",
         "en.c.092.retrieve.3.writing",
         "en.c.092.retrieve.4.writing",
-        "en.c.092.retrieve.5.writing"
+        "en.c.092.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -18415,6 +18210,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
+        "en.c.092.representative.retrieve.speaking",
         "en.c.092.retrieve.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -18429,6 +18225,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "en.c.092.representative.vary.writing",
         "en.c.092.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -18443,6 +18240,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "en.c.092.representative.vary.speaking",
         "en.c.092.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -18457,6 +18255,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "en.c.092.representative.produce.writing",
         "en.c.092.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -18471,6 +18270,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "en.c.092.representative.produce.speaking",
         "en.c.092.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -18485,6 +18285,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "en.c.092.representative.repair.writing",
         "en.c.092.repair.0.writing",
         "en.c.092.repair.99.writing"
       ],
@@ -18500,6 +18301,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "en.c.092.representative.repair.speaking",
         "en.c.092.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -18514,6 +18316,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "en.c.092.representative.transfer.writing",
         "en.c.092.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -18528,6 +18331,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "en.c.092.representative.transfer.speaking",
         "en.c.092.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -18542,6 +18346,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "en.c.092.representative.retain.writing",
         "en.c.092.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -18556,6 +18361,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "en.c.092.representative.retain.speaking",
         "en.c.092.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -18602,7 +18408,7 @@
         "en.c.093.retrieve.2.writing",
         "en.c.093.retrieve.3.writing",
         "en.c.093.retrieve.4.writing",
-        "en.c.093.retrieve.5.writing"
+        "en.c.093.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -18803,7 +18609,7 @@
         "en.c.094.retrieve.2.writing",
         "en.c.094.retrieve.3.writing",
         "en.c.094.retrieve.4.writing",
-        "en.c.094.retrieve.5.writing"
+        "en.c.094.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -19004,7 +18810,7 @@
         "en.c.095.retrieve.2.writing",
         "en.c.095.retrieve.3.writing",
         "en.c.095.retrieve.4.writing",
-        "en.c.095.retrieve.5.writing"
+        "en.c.095.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -19205,7 +19011,7 @@
         "en.c.096.retrieve.2.writing",
         "en.c.096.retrieve.3.writing",
         "en.c.096.retrieve.4.writing",
-        "en.c.096.retrieve.5.writing"
+        "en.c.096.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -19406,7 +19212,7 @@
         "en.c.097.retrieve.2.writing",
         "en.c.097.retrieve.3.writing",
         "en.c.097.retrieve.4.writing",
-        "en.c.097.retrieve.5.writing"
+        "en.c.097.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -19607,7 +19413,7 @@
         "en.c.098.retrieve.2.writing",
         "en.c.098.retrieve.3.writing",
         "en.c.098.retrieve.4.writing",
-        "en.c.098.retrieve.5.writing"
+        "en.c.098.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -19808,7 +19614,7 @@
         "en.c.099.retrieve.2.writing",
         "en.c.099.retrieve.3.writing",
         "en.c.099.retrieve.4.writing",
-        "en.c.099.retrieve.5.writing"
+        "en.c.099.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -20009,7 +19815,7 @@
         "en.c.100.retrieve.2.writing",
         "en.c.100.retrieve.3.writing",
         "en.c.100.retrieve.4.writing",
-        "en.c.100.retrieve.5.writing"
+        "en.c.100.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -20210,7 +20016,7 @@
         "en.c.101.retrieve.2.writing",
         "en.c.101.retrieve.3.writing",
         "en.c.101.retrieve.4.writing",
-        "en.c.101.retrieve.5.writing"
+        "en.c.101.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -20379,6 +20185,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "en.c.102.representative.notice.writing",
         "en.c.102.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -20393,6 +20200,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "en.c.102.representative.notice.speaking",
         "en.c.102.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -20407,11 +20215,12 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
+        "en.c.102.representative.retrieve.writing",
         "en.c.102.retrieve.1.writing",
         "en.c.102.retrieve.2.writing",
         "en.c.102.retrieve.3.writing",
         "en.c.102.retrieve.4.writing",
-        "en.c.102.retrieve.5.writing"
+        "en.c.102.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -20425,6 +20234,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
+        "en.c.102.representative.retrieve.speaking",
         "en.c.102.retrieve.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -20439,6 +20249,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "en.c.102.representative.vary.writing",
         "en.c.102.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -20453,6 +20264,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "en.c.102.representative.vary.speaking",
         "en.c.102.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -20467,6 +20279,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "en.c.102.representative.produce.writing",
         "en.c.102.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -20481,6 +20294,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "en.c.102.representative.produce.speaking",
         "en.c.102.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -20495,6 +20309,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "en.c.102.representative.repair.writing",
         "en.c.102.repair.0.writing",
         "en.c.102.repair.99.writing"
       ],
@@ -20510,6 +20325,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "en.c.102.representative.repair.speaking",
         "en.c.102.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -20524,6 +20340,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "en.c.102.representative.transfer.writing",
         "en.c.102.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -20538,6 +20355,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "en.c.102.representative.transfer.speaking",
         "en.c.102.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -20552,6 +20370,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "en.c.102.representative.retain.writing",
         "en.c.102.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -20566,6 +20385,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "en.c.102.representative.retain.speaking",
         "en.c.102.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -20612,7 +20432,7 @@
         "en.c.103.retrieve.2.writing",
         "en.c.103.retrieve.3.writing",
         "en.c.103.retrieve.4.writing",
-        "en.c.103.retrieve.5.writing"
+        "en.c.103.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -20813,7 +20633,7 @@
         "en.c.104.retrieve.2.writing",
         "en.c.104.retrieve.3.writing",
         "en.c.104.retrieve.4.writing",
-        "en.c.104.retrieve.5.writing"
+        "en.c.104.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -21014,7 +20834,7 @@
         "en.c.105.retrieve.2.writing",
         "en.c.105.retrieve.3.writing",
         "en.c.105.retrieve.4.writing",
-        "en.c.105.retrieve.5.writing"
+        "en.c.105.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -21215,7 +21035,7 @@
         "en.c.106.retrieve.2.writing",
         "en.c.106.retrieve.3.writing",
         "en.c.106.retrieve.4.writing",
-        "en.c.106.retrieve.5.writing"
+        "en.c.106.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -21416,7 +21236,7 @@
         "en.c.107.retrieve.2.writing",
         "en.c.107.retrieve.3.writing",
         "en.c.107.retrieve.4.writing",
-        "en.c.107.retrieve.5.writing"
+        "en.c.107.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -21617,7 +21437,7 @@
         "en.c.108.retrieve.2.writing",
         "en.c.108.retrieve.3.writing",
         "en.c.108.retrieve.4.writing",
-        "en.c.108.retrieve.5.writing"
+        "en.c.108.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -21818,7 +21638,7 @@
         "en.c.109.retrieve.2.writing",
         "en.c.109.retrieve.3.writing",
         "en.c.109.retrieve.4.writing",
-        "en.c.109.retrieve.5.writing"
+        "en.c.109.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -22019,7 +21839,7 @@
         "en.c.110.retrieve.2.writing",
         "en.c.110.retrieve.3.writing",
         "en.c.110.retrieve.4.writing",
-        "en.c.110.retrieve.5.writing"
+        "en.c.110.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -22220,7 +22040,7 @@
         "en.c.111.retrieve.2.writing",
         "en.c.111.retrieve.3.writing",
         "en.c.111.retrieve.4.writing",
-        "en.c.111.retrieve.5.writing"
+        "en.c.111.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -22421,7 +22241,7 @@
         "en.c.112.retrieve.2.writing",
         "en.c.112.retrieve.3.writing",
         "en.c.112.retrieve.4.writing",
-        "en.c.112.retrieve.5.writing"
+        "en.c.112.retrieve.revision1-meaning-recall.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -22818,10 +22638,10 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "de.c.002.retrieve.1.writing",
         "de.c.002.retrieve.2.writing",
-        "de.c.002.retrieve.3.writing",
-        "de.c.002.retrieve.4.writing"
+        "de.c.002.retrieve.4.writing",
+        "de.c.002.retrieve.revision1-haben-ich.writing",
+        "de.c.002.retrieve.revision1-haben-sie.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -22835,7 +22655,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "de.c.002.retrieve.98.speaking"
+        "de.c.002.retrieve.revision1-haben-ich.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -24818,10 +24638,10 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "de.c.012.retrieve.1.writing",
         "de.c.012.retrieve.2.writing",
         "de.c.012.retrieve.3.writing",
-        "de.c.012.retrieve.4.writing"
+        "de.c.012.retrieve.4.writing",
+        "de.c.012.retrieve.revision1-koennen-ich.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -24835,7 +24655,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "de.c.012.retrieve.98.speaking"
+        "de.c.012.retrieve.revision1-koennen-ich.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -24905,8 +24725,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
-        "de.c.012.repair.0.writing",
-        "de.c.012.repair.99.writing"
+        "de.c.012.repair.revision1-koennen-infinitiv.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -24920,7 +24739,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
-        "de.c.012.repair.98.speaking"
+        "de.c.012.repair.revision1-koennen-infinitiv.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -25390,6 +25209,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "de.c.015.representative.notice.writing",
         "de.c.015.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -25404,6 +25224,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "de.c.015.representative.notice.speaking",
         "de.c.015.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -25418,6 +25239,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
+        "de.c.015.representative.retrieve.writing",
         "de.c.015.retrieve.1.writing",
         "de.c.015.retrieve.2.writing",
         "de.c.015.retrieve.3.writing",
@@ -25435,6 +25257,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
+        "de.c.015.representative.retrieve.speaking",
         "de.c.015.retrieve.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -25449,6 +25272,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "de.c.015.representative.vary.writing",
         "de.c.015.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -25463,6 +25287,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "de.c.015.representative.vary.speaking",
         "de.c.015.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -25477,6 +25302,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "de.c.015.representative.produce.writing",
         "de.c.015.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -25491,6 +25317,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "de.c.015.representative.produce.speaking",
         "de.c.015.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -25505,6 +25332,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "de.c.015.representative.repair.writing",
         "de.c.015.repair.0.writing",
         "de.c.015.repair.99.writing"
       ],
@@ -25520,6 +25348,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "de.c.015.representative.repair.speaking",
         "de.c.015.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -25534,6 +25363,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "de.c.015.representative.transfer.writing",
         "de.c.015.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -25548,6 +25378,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "de.c.015.representative.transfer.speaking",
         "de.c.015.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -25562,6 +25393,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "de.c.015.representative.retain.writing",
         "de.c.015.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -25576,6 +25408,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "de.c.015.representative.retain.speaking",
         "de.c.015.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -26790,6 +26623,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "de.c.022.representative.notice.writing",
         "de.c.022.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -26804,6 +26638,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "de.c.022.representative.notice.speaking",
         "de.c.022.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -26818,10 +26653,11 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "de.c.022.retrieve.1.writing",
+        "de.c.022.representative.retrieve.writing",
         "de.c.022.retrieve.2.writing",
-        "de.c.022.retrieve.3.writing",
-        "de.c.022.retrieve.4.writing"
+        "de.c.022.retrieve.4.writing",
+        "de.c.022.retrieve.revision1-weil-finite.writing",
+        "de.c.022.retrieve.revision1-weil-modal.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -26835,7 +26671,8 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "de.c.022.retrieve.98.speaking"
+        "de.c.022.representative.retrieve.speaking",
+        "de.c.022.retrieve.revision1-weil-finite.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -26849,6 +26686,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "de.c.022.representative.vary.writing",
         "de.c.022.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -26863,6 +26701,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "de.c.022.representative.vary.speaking",
         "de.c.022.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -26877,6 +26716,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "de.c.022.representative.produce.writing",
         "de.c.022.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -26891,6 +26731,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "de.c.022.representative.produce.speaking",
         "de.c.022.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -26905,6 +26746,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "de.c.022.representative.repair.writing",
         "de.c.022.repair.0.writing",
         "de.c.022.repair.99.writing"
       ],
@@ -26920,6 +26762,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "de.c.022.representative.repair.speaking",
         "de.c.022.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -26934,6 +26777,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "de.c.022.representative.transfer.writing",
         "de.c.022.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -26948,6 +26792,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "de.c.022.representative.transfer.speaking",
         "de.c.022.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -26962,6 +26807,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "de.c.022.representative.retain.writing",
         "de.c.022.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -26976,6 +26822,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "de.c.022.representative.retain.speaking",
         "de.c.022.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -28618,10 +28465,10 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "de.c.031.retrieve.1.writing",
         "de.c.031.retrieve.2.writing",
-        "de.c.031.retrieve.3.writing",
-        "de.c.031.retrieve.4.writing"
+        "de.c.031.retrieve.4.writing",
+        "de.c.031.retrieve.revision1-relative-nominative.writing",
+        "de.c.031.retrieve.revision1-relative-accusative.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -28635,7 +28482,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "de.c.031.retrieve.98.speaking"
+        "de.c.031.retrieve.revision1-relative-nominative.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -28705,8 +28552,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
-        "de.c.031.repair.0.writing",
-        "de.c.031.repair.99.writing"
+        "de.c.031.repair.revision1-relative-repair.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -28720,7 +28566,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
-        "de.c.031.repair.98.speaking"
+        "de.c.031.repair.revision1-relative-repair.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -30190,6 +30036,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "de.c.039.representative.notice.writing",
         "de.c.039.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30204,6 +30051,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "de.c.039.representative.notice.speaking",
         "de.c.039.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30218,6 +30066,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
+        "de.c.039.representative.retrieve.writing",
         "de.c.039.retrieve.1.writing",
         "de.c.039.retrieve.2.writing",
         "de.c.039.retrieve.3.writing",
@@ -30235,6 +30084,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
+        "de.c.039.representative.retrieve.speaking",
         "de.c.039.retrieve.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30249,6 +30099,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "de.c.039.representative.vary.writing",
         "de.c.039.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -30263,6 +30114,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "de.c.039.representative.vary.speaking",
         "de.c.039.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30277,6 +30129,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "de.c.039.representative.produce.writing",
         "de.c.039.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30291,6 +30144,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "de.c.039.representative.produce.speaking",
         "de.c.039.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30305,6 +30159,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "de.c.039.representative.repair.writing",
         "de.c.039.repair.0.writing",
         "de.c.039.repair.99.writing"
       ],
@@ -30320,6 +30175,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "de.c.039.representative.repair.speaking",
         "de.c.039.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30334,6 +30190,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "de.c.039.representative.transfer.writing",
         "de.c.039.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30348,6 +30205,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "de.c.039.representative.transfer.speaking",
         "de.c.039.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30362,6 +30220,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "de.c.039.representative.retain.writing",
         "de.c.039.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30376,6 +30235,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "de.c.039.representative.retain.speaking",
         "de.c.039.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30590,6 +30450,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "de.c.041.representative.notice.writing",
         "de.c.041.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30604,6 +30465,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "de.c.041.representative.notice.speaking",
         "de.c.041.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30618,6 +30480,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
+        "de.c.041.representative.retrieve.writing",
         "de.c.041.retrieve.1.writing",
         "de.c.041.retrieve.2.writing",
         "de.c.041.retrieve.3.writing",
@@ -30635,6 +30498,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
+        "de.c.041.representative.retrieve.speaking",
         "de.c.041.retrieve.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30649,6 +30513,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "de.c.041.representative.vary.writing",
         "de.c.041.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -30663,6 +30528,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "de.c.041.representative.vary.speaking",
         "de.c.041.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30677,6 +30543,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "de.c.041.representative.produce.writing",
         "de.c.041.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30691,6 +30558,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "de.c.041.representative.produce.speaking",
         "de.c.041.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30705,6 +30573,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "de.c.041.representative.repair.writing",
         "de.c.041.repair.0.writing",
         "de.c.041.repair.99.writing"
       ],
@@ -30720,6 +30589,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "de.c.041.representative.repair.speaking",
         "de.c.041.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30734,6 +30604,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "de.c.041.representative.transfer.writing",
         "de.c.041.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30748,6 +30619,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "de.c.041.representative.transfer.speaking",
         "de.c.041.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -30762,6 +30634,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "de.c.041.representative.retain.writing",
         "de.c.041.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -30776,6 +30649,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "de.c.041.representative.retain.speaking",
         "de.c.041.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -31190,6 +31064,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "de.c.044.representative.notice.writing",
         "de.c.044.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -31204,6 +31079,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "de.c.044.representative.notice.speaking",
         "de.c.044.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -31218,6 +31094,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
+        "de.c.044.representative.retrieve.writing",
         "de.c.044.retrieve.1.writing",
         "de.c.044.retrieve.2.writing",
         "de.c.044.retrieve.3.writing",
@@ -31235,6 +31112,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
+        "de.c.044.representative.retrieve.speaking",
         "de.c.044.retrieve.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -31249,6 +31127,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "de.c.044.representative.vary.writing",
         "de.c.044.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -31263,6 +31142,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "de.c.044.representative.vary.speaking",
         "de.c.044.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -31277,6 +31157,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "de.c.044.representative.produce.writing",
         "de.c.044.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -31291,6 +31172,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "de.c.044.representative.produce.speaking",
         "de.c.044.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -31305,6 +31187,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "de.c.044.representative.repair.writing",
         "de.c.044.repair.0.writing",
         "de.c.044.repair.99.writing"
       ],
@@ -31320,6 +31203,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "de.c.044.representative.repair.speaking",
         "de.c.044.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -31334,6 +31218,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "de.c.044.representative.transfer.writing",
         "de.c.044.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -31348,6 +31233,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "de.c.044.representative.transfer.speaking",
         "de.c.044.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -31362,6 +31248,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "de.c.044.representative.retain.writing",
         "de.c.044.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -31376,6 +31263,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "de.c.044.representative.retain.speaking",
         "de.c.044.retain.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -36218,10 +36106,9 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
-        "de.c.069.retrieve.1.writing",
-        "de.c.069.retrieve.2.writing",
-        "de.c.069.retrieve.3.writing",
-        "de.c.069.retrieve.4.writing"
+        "de.c.069.retrieve.4.writing",
+        "de.c.069.retrieve.revision1-nominalise.writing",
+        "de.c.069.retrieve.revision1-verbalise.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -36235,7 +36122,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
-        "de.c.069.retrieve.98.speaking"
+        "de.c.069.retrieve.revision1-nominalise.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -36305,8 +36192,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
-        "de.c.069.repair.0.writing",
-        "de.c.069.repair.99.writing"
+        "de.c.069.repair.revision1-preserve-meaning.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -36320,7 +36206,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
-        "de.c.069.repair.98.speaking"
+        "de.c.069.repair.revision1-preserve-meaning.speaking"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -39619,9 +39505,9 @@
       "modality": "writing",
       "taskIds": [
         "de.c.086.retrieve.1.writing",
-        "de.c.086.retrieve.2.writing",
-        "de.c.086.retrieve.3.writing",
-        "de.c.086.retrieve.4.writing"
+        "de.c.086.retrieve.4.writing",
+        "de.c.086.retrieve.revision1-bracket-order.writing",
+        "de.c.086.retrieve.revision1-bracket-particle.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -39819,9 +39705,9 @@
       "modality": "writing",
       "taskIds": [
         "de.c.087.retrieve.1.writing",
-        "de.c.087.retrieve.2.writing",
-        "de.c.087.retrieve.3.writing",
-        "de.c.087.retrieve.4.writing"
+        "de.c.087.retrieve.4.writing",
+        "de.c.087.retrieve.revision1-time-prepositions.writing",
+        "de.c.087.retrieve.revision1-time-sequence.writing"
       ],
       "automaticScopeApproved": false,
       "humanAssessmentPath": "/practice?review=1",
@@ -47790,6 +47676,7 @@
       "stage": "notice",
       "modality": "writing",
       "taskIds": [
+        "de.c.127.representative.notice.writing",
         "de.c.127.notice.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -47804,6 +47691,7 @@
       "stage": "notice",
       "modality": "speaking",
       "taskIds": [
+        "de.c.127.representative.notice.speaking",
         "de.c.127.notice.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -47818,6 +47706,7 @@
       "stage": "retrieve",
       "modality": "writing",
       "taskIds": [
+        "de.c.127.representative.retrieve.writing",
         "de.c.127.retrieve.1.writing",
         "de.c.127.retrieve.2.writing",
         "de.c.127.retrieve.3.writing",
@@ -47835,6 +47724,7 @@
       "stage": "retrieve",
       "modality": "speaking",
       "taskIds": [
+        "de.c.127.representative.retrieve.speaking",
         "de.c.127.retrieve.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -47849,6 +47739,7 @@
       "stage": "vary",
       "modality": "writing",
       "taskIds": [
+        "de.c.127.representative.vary.writing",
         "de.c.127.vary.99.writing"
       ],
       "automaticScopeApproved": false,
@@ -47863,6 +47754,7 @@
       "stage": "vary",
       "modality": "speaking",
       "taskIds": [
+        "de.c.127.representative.vary.speaking",
         "de.c.127.vary.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -47877,6 +47769,7 @@
       "stage": "produce",
       "modality": "writing",
       "taskIds": [
+        "de.c.127.representative.produce.writing",
         "de.c.127.produce.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -47891,6 +47784,7 @@
       "stage": "produce",
       "modality": "speaking",
       "taskIds": [
+        "de.c.127.representative.produce.speaking",
         "de.c.127.produce.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -47905,6 +47799,7 @@
       "stage": "repair",
       "modality": "writing",
       "taskIds": [
+        "de.c.127.representative.repair.writing",
         "de.c.127.repair.0.writing",
         "de.c.127.repair.99.writing"
       ],
@@ -47920,6 +47815,7 @@
       "stage": "repair",
       "modality": "speaking",
       "taskIds": [
+        "de.c.127.representative.repair.speaking",
         "de.c.127.repair.98.speaking"
       ],
       "automaticScopeApproved": false,
@@ -47934,6 +47830,7 @@
       "stage": "transfer",
       "modality": "writing",
       "taskIds": [
+        "de.c.127.representative.transfer.writing",
         "de.c.127.transfer.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -47948,6 +47845,7 @@
       "stage": "transfer",
       "modality": "speaking",
       "taskIds": [
+        "de.c.127.representative.transfer.speaking",
         "de.c.127.transfer.1.speaking"
       ],
       "automaticScopeApproved": false,
@@ -47962,6 +47860,7 @@
       "stage": "retain",
       "modality": "writing",
       "taskIds": [
+        "de.c.127.representative.retain.writing",
         "de.c.127.retain.0.writing"
       ],
       "automaticScopeApproved": false,
@@ -47976,6 +47875,7 @@
       "stage": "retain",
       "modality": "speaking",
       "taskIds": [
+        "de.c.127.representative.retain.speaking",
         "de.c.127.retain.98.speaking"
       ],
       "automaticScopeApproved": false,

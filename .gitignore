@@ -32,6 +32,7 @@ runtime-logs/
 
 # Recoverable files intentionally kept outside the active source tree
 deleted/
+DELETE/
 
 # Local educational source library (large and potentially licensed material)
 Sources/
@@ -63,3 +64,7 @@ release/
 *.msi
 .vercel
 .env*
+!.env.example
+
+# Interrupted atomic document writes are disposable local intermediates.
+*.html.*.tmp

@@ -205,6 +205,17 @@ try {
     await buildRoadmap(paths);
   }, /Verified task needs evidence/);
   pass("green-needs-evidence-reference");
+  for (const field of ["remainingEngineeringWork", "afterHumanValidation"]) {
+    fixture.tasks.at(-1).evidence = ["synthetic-test-evidence"];
+    fixture.tasks.at(-1)[field] = [
+      "Unfinished work must prevent full verification",
+    ];
+    await writeFile(paths.backlog, JSON.stringify(fixture));
+    await assert.rejects(() => buildRoadmap(paths), /Invalid remaining work/);
+    assert.equal(await readFile(paths.output, "utf8"), before);
+    delete fixture.tasks.at(-1)[field];
+  }
+  pass("open-implementation-and-follow-up-prevent-full-verification");
   assert.deepEqual(errors, []);
   pass("no-browser-page-errors");
   if (process.argv.includes("--live")) {

@@ -32,6 +32,7 @@ function attempt(
     language: "en",
     at,
     task: {
+      definitionSha256: "b".repeat(64),
       id: "familiar-item",
       version: "1",
       constructionId: "en.c.001",
@@ -114,6 +115,20 @@ function rating(a: AttemptEvent): ExplicitRecallRating {
 const first = attempt("first", 2),
   later = attempt("later", 4, { stage: "retain" });
 const events = [first, judge(first), later, judge(later)];
+test("a changed same-version task definition and unpinned legacy task cannot borrow recall history", () => {
+  for (const definitionSha256 of ["c".repeat(64), undefined]) {
+    const changed = attempt("changed-definition", 6, { definitionSha256 });
+    const result = qualifyProspectiveReviews(
+      [...events, changed, judge(changed)],
+      "en",
+      now,
+      consent,
+      [rating(changed)],
+    );
+    expect(result.eligible).toHaveLength(0);
+    expect(result.excluded).toHaveLength(1);
+  }
+});
 const qualify = (
   ratings: readonly unknown[] = [rating(later)],
   permission: unknown = consent,

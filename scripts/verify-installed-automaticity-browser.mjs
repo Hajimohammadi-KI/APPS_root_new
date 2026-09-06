@@ -66,6 +66,10 @@ try {
       const exportButton=page.getByRole("button",{name:language==="en"?"Export data":"Lerndaten exportieren",exact:true});
       await expect(exportButton).toBeVisible();
       await page.addScriptTag({url:base+"/learning-core/automaticity-v2.js"});
+      const savedDailyPlan=await page.evaluate(language=>{
+        const core=window.AutomaticityV2,plan={...core.loadDailyPlan(localStorage,language,new Date().toISOString()).plan,responseGoal:8,paused:true};
+        core.saveDailyPlan(localStorage,language,plan);const key=core.dailyPlanKey(language,plan.day);return {key,value:localStorage.getItem(key)};
+      },language);
       const marker=`automaticity:v2:${language}:draft:installed-fixture`;
       const audioHash=await page.evaluate(async({language,marker})=>{
         localStorage.setItem(marker,"Preserve synthetic unfinished answer");
@@ -76,6 +80,7 @@ try {
       const downloaded=page.waitForEvent("download");await exportButton.click();const download=await downloaded;
       const file=resolve(output,`${language}-settings-backup.json`);await download.saveAs(file);
       const backup=JSON.parse(await readFile(file,"utf8"));assert.equal(backup.kind,"automaticity.complete-backup");assert.equal(backup.language,language);assert(backup.localStorage.some(([key])=>key===marker));
+      assert.equal(backup.localStorage.find(([key])=>key===savedDailyPlan.key)?.[1],savedDailyPlan.value);
       assert(backup.databases.some(db=>db.name===`automaticity-v2-${language}`&&db.stores.some(store=>store.records.length>0)));
       const fileInput=page.locator('input[type="file"][accept="application/json,.json"]');
       const corrupted=structuredClone(backup);corrupted.sha256="0".repeat(64);
@@ -84,9 +89,11 @@ try {
       await expect(page.getByRole("status").filter({hasText:/checksum/i})).toBeVisible();assert.equal(dialogs,0);
       assert.equal(await page.evaluate(marker=>localStorage.getItem(marker),marker),"Preserve synthetic unfinished answer");
       await page.evaluate(marker=>localStorage.setItem(marker,"Changed synthetic draft"),marker);
+      await page.evaluate(key=>localStorage.setItem(key,"Changed synthetic plan"),savedDailyPlan.key);
       const navigation=page.waitForEvent("domcontentloaded");await fileInput.setInputFiles(file);await navigation;
       await expect(exportButton).toBeVisible();assert.equal(dialogs,1);
       assert.equal(await page.evaluate(marker=>localStorage.getItem(marker),marker),"Preserve synthetic unfinished answer");
+      assert.equal(await page.evaluate(key=>localStorage.getItem(key),savedDailyPlan.key),savedDailyPlan.value);row.dailyPlanPreserved=true;
       await page.addScriptTag({url:base+"/learning-core/automaticity-v2.js"});
       const restored=await page.evaluate(async language=>{const core=window.AutomaticityV2;const audio=await core.readRecording(indexedDB,language,"installed-synthetic-audio");const player=document.createElement("audio");player.src=URL.createObjectURL(audio.blob);document.body.append(player);await new Promise((resolve,reject)=>{player.onloadedmetadata=resolve;player.onerror=()=>reject(Error("Restored audio unavailable"));});const result={hash:await core.sha256(await audio.blob.arrayBuffer()),duration:player.duration};URL.revokeObjectURL(player.src);return result;},language);
       assert.equal(restored.hash,audioHash);assert(Math.abs(restored.duration-1)<0.05);row.settingsExportRestore={corruptionRejected:true,confirmedRestore:true,audioSha256:audioHash,audioDuration:restored.duration};

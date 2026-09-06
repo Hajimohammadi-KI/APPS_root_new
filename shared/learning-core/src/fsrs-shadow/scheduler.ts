@@ -143,6 +143,86 @@ export function compareFsrsShadowDueCounts(
   };
 }
 
+/** Predict each later familiar-item review before observing that review's rating. */
+export function evaluateFsrsShadowHistory(
+  events: readonly Pick<
+    FsrsShadowReviewEvent,
+    "eventId" | "reviewedAt" | "rating"
+  >[],
+) {
+  const ordered = [...events].sort(
+    (a, b) =>
+      Date.parse(a.reviewedAt) - Date.parse(b.reviewedAt) ||
+      a.eventId.localeCompare(b.eventId),
+  );
+  const scheduler = createScheduler(),
+    seen = new Set<string>();
+  let card: Card | null = null,
+    previous = -Infinity;
+  const predictions: {
+    eventId: string;
+    at: string;
+    probability: number;
+    outcome: 0 | 1;
+    squaredError: number;
+    logLoss: number;
+  }[] = [];
+  for (const event of ordered) {
+    const at = requireDate(event.reviewedAt),
+      stamp = at.getTime();
+    if (
+      !event.eventId.trim() ||
+      seen.has(event.eventId) ||
+      stamp <= previous ||
+      ![1, 2, 3, 4].includes(event.rating)
+    )
+      throw Error("Invalid, repeated or simultaneous shadow review");
+    seen.add(event.eventId);
+    previous = stamp;
+    if (card) {
+      const probability = Math.max(
+          0,
+          Math.min(1, scheduler.get_retrievability(card, at, false)),
+        ),
+        outcome = event.rating === 1 ? 0 : 1;
+      if (!Number.isFinite(probability))
+        throw Error("Invalid FSRS recall prediction");
+      const bounded = Math.max(1e-15, Math.min(1 - 1e-15, probability));
+      predictions.push({
+        eventId: event.eventId,
+        at: at.toISOString(),
+        probability,
+        outcome,
+        squaredError: (probability - outcome) ** 2,
+        logLoss: -(
+          outcome * Math.log(bounded) +
+          (1 - outcome) * Math.log(1 - bounded)
+        ),
+      });
+    }
+    card = scheduler.next(
+      card ?? createEmptyCard(at),
+      at,
+      toGrade(event.rating),
+    ).card;
+  }
+  return {
+    algorithm: FSRS_SHADOW_ALGORITHM,
+    predictions,
+    predictedBeforeOutcome: true as const,
+    learnerScheduleApplied: false as const,
+    learnerBenefitEstablished: false as const,
+    brierScore: predictions.length
+      ? predictions.reduce((sum, row) => sum + row.squaredError, 0) /
+        predictions.length
+      : null,
+    logLoss: predictions.length
+      ? predictions.reduce((sum, row) => sum + row.logLoss, 0) /
+        predictions.length
+      : null,
+  };
+}
+
 export function fsrsShadowRatingFromResult(
   successful: boolean,
   confidence: "hard" | "good" | "easy" = "good",

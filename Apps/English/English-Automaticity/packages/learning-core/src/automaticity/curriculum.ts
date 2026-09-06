@@ -1,4 +1,5 @@
 import type { Language, ReviewStatus, TaskIdentity } from "./contracts";
+import type { RuleId } from "./construction-rules";
 export const GRAMMAR_FAMILIES = [
   ["G01", "Basic clause structure", "Satzgrundstruktur"],
   ["G02", "Nouns and reference", "Nomen und Referenz"],
@@ -37,6 +38,12 @@ export interface ConstructionMapping {
   review: ReviewStatus;
 }
 export interface PracticeTask extends TaskIdentity {
+  constructionAssessment?: {
+    rule: RuleId;
+    version: string;
+    scenario: 0 | 1;
+    route: "bounded_rule" | "human_review";
+  };
   prompt: string;
   answerPolicy: "closed" | "open" | "reflection";
   responseKind:
@@ -72,6 +79,17 @@ export interface ConstructionUnit {
   review: ReviewStatus;
   sources: { title: string; url: string }[];
   tasks: PracticeTask[];
+  retiredTasks?: {
+    taskId: string;
+    replacementTaskId: string;
+    reason: string;
+    retiredOn: string;
+  }[];
+}
+/** Keep retired definitions available for old links and drafts, but never select them for new work. */
+export function activePracticeTasks(unit: ConstructionUnit): PracticeTask[] {
+  const retired = new Set(unit.retiredTasks?.map((row) => row.taskId) ?? []);
+  return unit.tasks.filter((task) => !retired.has(task.id));
 }
 export interface CurriculumPack {
   version: string;
@@ -116,6 +134,26 @@ export function validateCurriculum(pack: CurriculumPack): string[] {
         task.contentReview !== "human_reviewed"
       )
         issues.push(`Unreviewed evaluation task ${task.id}`);
+    }
+    const retiredIds = new Set<string>();
+    for (const retired of unit.retiredTasks ?? []) {
+      const original = unit.tasks.find((task) => task.id === retired.taskId);
+      const replacement = unit.tasks.find(
+        (task) => task.id === retired.replacementTaskId,
+      );
+      if (
+        retiredIds.has(retired.taskId) ||
+        !original ||
+        !replacement ||
+        original.id === replacement.id ||
+        original.stage !== replacement.stage ||
+        original.modality !== replacement.modality ||
+        !retired.reason?.trim() ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(retired.retiredOn) ||
+        unit.retiredTasks?.some((row) => row.taskId === replacement.id)
+      )
+        issues.push(`Invalid retired task ${unit.id}:${retired.taskId}`);
+      retiredIds.add(retired.taskId);
     }
   }
   const visiting = new Set<string>(),

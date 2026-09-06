@@ -4,6 +4,12 @@ import {
   type AttemptEvent,
 } from "./contracts";
 import type { PracticeTask } from "./curriculum";
+import { resolveRepresentativeTask } from "./representative-tasks";
+import {
+  CONSTRUCTION_RULE_VERSION,
+  constructionFeedback,
+  parseConstruction,
+} from "./construction-rules";
 export function normaliseAnswer(text: string, task: PracticeTask): string {
   let value = text.normalize("NFC").trim().replace(/\s+/gu, " ");
   if (task.normalisation.terminalFullStop)
@@ -51,11 +57,94 @@ export function assessControlledTask(
     spans: [],
     supersedes: null,
   };
+  const identityKeys = [
+    "id",
+    "version",
+    "constructionId",
+    "familyId",
+    "rubricVersion",
+    "stage",
+    "modality",
+    "partition",
+    "itemFamily",
+    "contextId",
+    "transferCondition",
+    "contentReview",
+  ] as const;
+  if (
+    !task.constructionId.startsWith(attempt.language + ".") ||
+    identityKeys.some((key) => attempt.task[key] !== task[key])
+  ) {
+    base.feedback = english
+      ? "Saved without a score: the response and task identities do not match. Request a review."
+      : "Ohne Bewertung gespeichert: Antwort und Aufgabenkennung passen nicht zusammen. Bitte prüfen lassen.";
+    return base;
+  }
+  if (task.modality === "speaking") {
+    base.feedback = english
+      ? "Saved for review of the original recording. Typed text cannot establish spoken accuracy."
+      : "Zur Prüfung der Originalaufnahme gespeichert. Getippter Text belegt keine mündliche Richtigkeit.";
+    return base;
+  }
   if (!attempt.response.text.trim()) {
     base.feedback = english
       ? "Add your own response before checking."
       : "Ergänze zuerst deine eigene Antwort.";
     return base;
+  }
+  if (task.constructionAssessment) {
+    const resolved = resolveRepresentativeTask(task);
+    base.evaluator = {
+      id: "representative-construction",
+      version: CONSTRUCTION_RULE_VERSION,
+      kind: "rule",
+      scopeApproved: false,
+      reviewId: null,
+    };
+    if (!resolved || !resolved.scope.rule.startsWith(attempt.language + ".")) {
+      base.feedback = english
+        ? "Saved without a score: this task does not match the checker version. Request a review."
+        : "Ohne Bewertung gespeichert: Diese Aufgabe passt nicht zur Prüfer-Version. Bitte prüfen lassen.";
+      return base;
+    }
+    if (task.constructionAssessment.route === "human_review") {
+      base.feedback = english
+        ? "Saved for review. Check the requested pattern, who does what, and whether the meaning fits the situation. For speech, a reviewer must listen to the original recording; typed text cannot establish spoken accuracy."
+        : "Zur Prüfung gespeichert. Prüfe das gefragte Muster, die Rollen und die Bedeutung im Kontext. Bei einer Sprechaufgabe muss eine prüfende Person die Originalaufnahme anhören; getippter Text belegt keine mündliche Richtigkeit.";
+      return base;
+    }
+    const value = normaliseAnswer(attempt.response.text, task);
+    const parsed = parseConstruction(resolved.scope.rule, value);
+    if (!parsed) {
+      base.feedback = english
+        ? "This wording is outside the checker's supported sentence patterns. It may be correct. Saved without a score; request a review."
+        : "Diese Formulierung liegt außerhalb der unterstützten Satzmuster. Sie kann richtig sein. Ohne Bewertung gespeichert; bitte prüfen lassen.";
+      return base;
+    }
+    const relevant =
+      JSON.stringify(parsed.frame) ===
+      JSON.stringify(resolved.scope.scenarios[resolved.scenario].frame);
+    const error =
+      parsed.grammarError ??
+      (value !== parsed.canonical ? "capitalization" : null);
+    base.dimensions = {
+      grammar: error ? "fail" : "pass",
+      target: parsed.target ? "observed" : "not_observed",
+      relevance: relevant ? "pass" : "fail",
+      opportunities: 1,
+    };
+    base.verdict =
+      error || !relevant
+        ? "needs_repair"
+        : parsed.target
+          ? "pass"
+          : "target_not_observed";
+    base.uncertainty = false;
+    base.feedback = constructionFeedback(
+      error ?? (!relevant ? "relevance" : !parsed.target ? "target" : "pass"),
+      attempt.language,
+    );
+    return parseAutomaticityEvent(base, attempt.language) as AssessmentEvent;
   }
   if (task.answerPolicy !== "closed") return base;
   const value = normaliseAnswer(attempt.response.text, task);

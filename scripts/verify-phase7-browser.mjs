@@ -15,8 +15,9 @@ const server=createServer(async(req,res)=>{try{const path=new URL(req.url,"http:
  else if(["/learning-core/practice.js","/learning-core/practice.css","/learning-core/overview.js"].includes(path))file=resolve(root,"shared/learning-core/browser",path.split("/").at(-1));
  else {res.writeHead(404);res.end();return;}res.setHeader("Content-Type",file.endsWith(".js")?"text/javascript; charset=utf-8":file.endsWith(".css")?"text/css":file.endsWith(".json")?"application/json":"text/html; charset=utf-8");res.end(await readFile(file));}catch(error){res.writeHead(500);res.end(String(error));}});
 await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));const local=`http://127.0.0.1:${server.address().port}`;
-const browser=await chromium.launch({channel:"msedge",headless:true});const report={status:"running",scope:installed?"Installed apps; isolated synthetic browser profiles":"Compiled source assets; isolated synthetic browser profiles",cases:[]};
+const browser=await chromium.launch({channel:"msedge",headless:true});const report={createdAt:new Date().toISOString(),status:"running",scope:installed?"Installed apps; isolated synthetic browser profiles":"Compiled source assets; isolated synthetic browser profiles",cases:[]};
 try{
+ if(!process.argv.includes("--routes-only")){
  const context=await browser.newContext({acceptDownloads:true,viewport:{width:1280,height:900}}),page=await context.newPage();
  await page.goto(local+"/review");await expect(page.locator("details")).toHaveCount(20);
  await page.getByRole("button",{name:"Download my review"}).click();await expect(page.locator("#status")).toContainText("Enter your name");
@@ -29,6 +30,7 @@ try{
  await page.locator("#language").selectOption("de");await expect(page.locator("details:visible")).toHaveCount(10);
  await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:resolve(folder,"review-mobile.png"),fullPage:true});
  report.cases.push("offline review interface: blank labels, keyboard, saved draft, partial export and mobile layout");await context.close();
+ }
  for(language of (process.argv.includes("--german-only")?["de"]:["en","de"])){
   const base=installed?`http://127.0.0.1:${language==="en"?3202:3210}`:local;
   const context=await browser.newContext({viewport:{width:1365,height:950},serviceWorkers:"block"}),page=await context.newPage(),errors=[];page.on("pageerror",error=>errors.push(error.message));

@@ -10,6 +10,8 @@ import {
   type CoverageCell,
 } from "./lib/automaticity-release-reviews";
 import type { CurriculumPack } from "../shared/learning-core/src/automaticity/curriculum";
+import { createReviewEvidenceDraft } from "./lib/curriculum-review-evidence";
+import { isRecord } from "../shared/learning-core/src/automaticity/contracts";
 import type {
   BenchmarkCase,
   CandidatePrediction,
@@ -47,9 +49,10 @@ const selected = rawCoverage.cells.find(
   (cell) =>
     cell.language === "en" &&
     cell.stage === "retrieve" &&
-    cell.modality === "writing",
+    cell.modality === "writing" && cell.taskIds.length > 1,
 )!;
-function fixture() {
+let fixtureId = 0;
+async function fixture() {
   const pack = structuredClone(rawPack),
     cell = structuredClone(selected),
     unit = pack.units.find((unit) => unit.id === cell.constructionId)!;
@@ -67,7 +70,7 @@ function fixture() {
     mappingVersion: pack.mappingVersion,
     unitSha256: unitDigest(unit),
     contentReview: {
-      reviewerId: "synthetic-person-1",
+      reviewerId: "reviewer-a",
       role: "Synthetic content reviewer",
       reviewedAt: "2026-09-04T09:00:00Z",
       decision: "approved",
@@ -83,7 +86,7 @@ function fixture() {
           ...new Set(unit.tasks.map((task) => task.rubricVersion)),
         ],
         review: {
-          reviewerId: "synthetic-person-2",
+          reviewerId: "reviewer-b",
           role: "Synthetic assessment reviewer",
           reviewedAt: "2026-09-04T10:00:00Z",
           decision: "approved",
@@ -93,9 +96,38 @@ function fixture() {
       },
     ],
   };
-  return { pack, cell, unit, review };
+  const result = { pack, cell, unit, review };
+  const scopedTasks = unit.tasks.filter((task) =>
+    cell.taskIds.includes(task.id),
+  );
+  // Positive fixtures simulate the record shape; these identities are not real people.
+  for (const approval of [null, ...review.evaluators]) {
+    const reviewer = approval?.review ?? review.contentReview;
+    const draft = createReviewEvidenceDraft(review, scopedTasks, approval);
+    const completed = {
+      ...draft,
+      ...reviewer,
+      provenance: "human_review",
+      note: "Synthetic schema fixture only; never use as actual curriculum approval.",
+      checks:
+        draft.checks &&
+        Object.fromEntries(Object.keys(draft.checks).map((key) => [key, true])),
+      taskReviews: draft.taskReviews.map((row) => ({
+        ...row,
+        checks: Object.fromEntries(
+          Object.keys(row.checks).map((key) => [key, true]),
+        ),
+        note: "Synthetic task judgment exercises exact task and rubric binding.",
+      })),
+    };
+    const file = resolve(output, `schema-fixture-${fixtureId++}.json`);
+    const bytes = JSON.stringify(completed);
+    await writeFile(file, bytes);
+    reviewer.evidence = { path: relative(root, file), sha256: sha256(bytes) };
+  }
+  return result;
 }
-type Fixture = ReturnType<typeof fixture>;
+type Fixture = Awaited<ReturnType<typeof fixture>>;
 const report: {
   createdAt: string;
   status: string;
@@ -123,21 +155,229 @@ const check = (f: Fixture) =>
   );
 async function rejected(
   name: string,
-  change: (f: Fixture) => void,
+  change: (f: Fixture) => unknown | Promise<unknown>,
   pattern: RegExp,
 ) {
-  const f = fixture();
-  change(f);
+  const f = await fixture();
+  await change(f);
   await assert.rejects(() => check(f), pattern);
   pass(name);
 }
+const record = (value: unknown) => {
+  assert(isRecord(value));
+  return value;
+};
+async function alterEvidence(
+  f: Fixture,
+  kind: "content" | "evaluator",
+  change: (value: Record<string, unknown>) => void,
+) {
+  const reviewer =
+    kind === "content"
+      ? f.review.contentReview
+      : f.review.evaluators[0]!.review;
+  const value = record(
+    JSON.parse(await readFile(resolve(root, reviewer.evidence.path), "utf8")),
+  );
+  change(value);
+  const bytes = JSON.stringify(value),
+    file = resolve(output, `altered-schema-fixture-${fixtureId++}.json`);
+  await writeFile(file, bytes);
+  reviewer.evidence = { path: relative(root, file), sha256: sha256(bytes) };
+}
+const firstJudgment = (value: Record<string, unknown>) => {
+  assert(Array.isArray(value.taskReviews));
+  return record(value.taskReviews[0]);
+};
 try {
-  const f = fixture();
+  const f = await fixture();
   assert.deepEqual(await check(f), {
     reviewedCells: 1,
     evaluatorApprovedCells: 1,
   });
   pass("complete-manual-evaluator-scope-with-pinned-evidence");
+  await rejected(
+    "nonempty-note-is-not-content-review",
+    (f) => {
+      f.review.contentReview.evidence = evidence;
+    },
+    /Structured human review/,
+  );
+  await rejected(
+    "nonempty-note-is-not-evaluator-review",
+    (f) => {
+      f.review.evaluators[0]!.review.evidence = evidence;
+    },
+    /Structured human review/,
+  );
+  await rejected(
+    "generated-draft-is-not-human-review",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        value.provenance = null;
+      }),
+    /Structured human review/,
+  );
+  await rejected(
+    "review-file-identity-must-match-ledger",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        value.reviewerId = "someone-else";
+      }),
+    /identity does not match/,
+  );
+  await rejected(
+    "review-file-date-must-match-ledger",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        value.reviewedAt = "2026-09-04T08:00:00Z";
+      }),
+    /identity does not match/,
+  );
+  await rejected(
+    "ai-label-cannot-claim-human-review",
+    async (f) => {
+      f.review.contentReview.reviewerId = "Codex";
+      await alterEvidence(f, "content", (value) => {
+        value.reviewerId = "Codex";
+      });
+    },
+    /recorded human reviewer/,
+  );
+  await rejected(
+    "another-cell-review-cannot-be-reused",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        record(value.scope).modality = "speaking";
+      }),
+    /exact cell and content hash/,
+  );
+  await rejected(
+    "stale-artifact-content-hash",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        record(value.scope).unitSha256 = "0".repeat(64);
+      }),
+    /exact cell and content hash/,
+  );
+  await rejected(
+    "unresolved-construction-meaning",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        record(value.checks).meaningAccurate = false;
+      }),
+    /unresolved construction checks/,
+  );
+  await rejected(
+    "missing-task-judgments",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        value.taskReviews = [];
+      }),
+    /every scoped task exactly once/,
+  );
+  await rejected(
+    "duplicate-task-judgment",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        assert(
+          Array.isArray(value.taskReviews) && value.taskReviews.length > 1,
+        );
+        value.taskReviews[1] = value.taskReviews[0];
+      }),
+    /Duplicate or invalid reviewed task/,
+  );
+  await rejected(
+    "stale-task-version-in-review",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        firstJudgment(value).taskVersion = "older";
+      }),
+    /Stale or unrelated task identity/,
+  );
+  await rejected(
+    "stale-task-rubric-in-review",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        firstJudgment(value).rubricVersion = "older";
+      }),
+    /Stale or unrelated task identity/,
+  );
+  await rejected(
+    "unresolved-target-elicitation",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        record(firstJudgment(value).checks).targetElicited = false;
+      }),
+    /Unresolved task review judgments/,
+  );
+  await rejected(
+    "copying-cannot-pass-as-reviewed-retrieval",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        record(firstJudgment(value).checks).stageAppropriate = false;
+      }),
+    /Unresolved task review judgments/,
+  );
+  await rejected(
+    "incorrect-accepted-answers-block-review",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        record(firstJudgment(value).checks).acceptedAnswersAccurate = false;
+      }),
+    /Unresolved task review judgments/,
+  );
+  await rejected(
+    "unsuitable-modality-blocks-review",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        record(firstJudgment(value).checks).modalityAppropriate = false;
+      }),
+    /Unresolved task review judgments/,
+  );
+  await rejected(
+    "empty-task-findings-block-review",
+    (f) =>
+      alterEvidence(f, "content", (value) => {
+        firstJudgment(value).note = "OK";
+      }),
+    /Unresolved task review judgments/,
+  );
+  await rejected(
+    "evaluator-review-is-pinned-to-version",
+    (f) =>
+      alterEvidence(f, "evaluator", (value) => {
+        record(value.evaluator).version = "older";
+      }),
+    /does not cover this evaluator/,
+  );
+  await rejected(
+    "evaluator-review-cannot-borrow-benchmark",
+    (f) =>
+      alterEvidence(f, "evaluator", (value) => {
+        record(value.evaluator).benchmarkInput = {
+          path: "unrelated.json",
+          sha256: "0".repeat(64),
+        };
+      }),
+    /does not cover this evaluator/,
+  );
+  await rejected(
+    "unresolved-assessment-meaning-check",
+    (f) =>
+      alterEvidence(f, "evaluator", (value) => {
+        record(firstJudgment(value).checks).meaningChecked = false;
+      }),
+    /Unresolved task review judgments/,
+  );
+  await rejected(
+    "unresolved-assessment-abstention",
+    (f) =>
+      alterEvidence(f, "evaluator", (value) => {
+        record(firstJudgment(value).checks).abstentionHandled = false;
+      }),
+    /Unresolved task review judgments/,
+  );
   await assert.rejects(
     () => validateReleaseReviews(root, [f.cell], new Map([["en", f.pack]]), []),
     /Missing recorded human review/,
@@ -208,7 +448,7 @@ try {
   await rejected(
     "missing-task-approval",
     (f) => f.review.evaluators[0]!.taskIds.pop(),
-    /Invalid evaluator approval|missing for tasks/,
+    /Invalid evaluator approval|missing for tasks|does not cover this evaluator/,
   );
   await rejected(
     "missing-rubric-approval",
@@ -293,7 +533,7 @@ try {
   };
   const benchmarkPath = resolve(output, "synthetic-benchmark.json");
   await writeFile(benchmarkPath, JSON.stringify(input));
-  const model = fixture(),
+  const model = await fixture(),
     approval = model.review.evaluators[0]!;
   approval.kind = "transformer";
   approval.id = input.candidate.id;
@@ -336,6 +576,21 @@ try {
       packet = JSON.parse(before);
     assert.equal(packet.content.id, id);
     assert.equal(packet.reviewDrafts.length, 14);
+    assert.equal(packet.schemaVersion, 2);
+    for (const draft of packet.reviewDrafts) {
+      assert.equal(draft.contentEvidenceDraft.provenance, null);
+      assert.equal(draft.manualEvaluatorEvidenceDraft.provenance, null);
+      assert.equal(
+        draft.contentEvidenceDraft.taskReviews.length,
+        draft.tasksNeedingEvaluatorApproval.length,
+      );
+      assert(
+        draft.contentEvidenceDraft.taskReviews.every(
+          (row: { checks: Record<string, unknown> }) =>
+            Object.values(row.checks).every((value) => value === null),
+        ),
+      );
+    }
     assert(
       packet.reviewDrafts.every(
         (row: {

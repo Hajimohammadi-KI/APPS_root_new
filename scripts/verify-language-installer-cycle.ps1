@@ -261,6 +261,7 @@ $report = [ordered]@{
   evidenceRoot = $evidenceRoot
   install = 'not-run'
   startup = 'not-run'
+  transformerOrigin = 'not-run'
   startupError = $null
   startupElapsedMs = $null
   startupProcessExited = $null
@@ -361,6 +362,16 @@ try {
       ) -join '; '
       throw "Installed application did not satisfy its HTTP readiness contracts. $failedContracts"
     }
+    $appOrigin = ([string]$profile.WebUrl).TrimEnd('/')
+    $modelEndpoint = $appOrigin + '/api/automaticity/transformer'
+    $capabilities = Invoke-RestMethod -Uri $modelEndpoint -TimeoutSec 5
+    if ($capabilities.enabled -ne $false -or @($capabilities.approvals).Count -ne 0) { throw 'Isolated installation unexpectedly enabled model assessment.' }
+    $modelResponse = Invoke-WebRequest -Uri $modelEndpoint -Method Post -Headers @{Origin=$appOrigin} -ContentType 'application/json' -Body '{}' -UseBasicParsing -TimeoutSec 5
+    if ($modelResponse.StatusCode -ne 200 -or ($modelResponse.Content | ConvertFrom-Json).reason -ne 'no_qualified_scope') { throw 'Valid app-origin request did not return the disabled assessment fallback.' }
+    $unrelatedStatus = $null
+    try { $unrelatedResponse=Invoke-WebRequest -Uri $modelEndpoint -Method Post -Headers @{Origin='https://unrelated.example'} -ContentType 'application/json' -Body '{}' -UseBasicParsing -TimeoutSec 5; $unrelatedStatus=[int]$unrelatedResponse.StatusCode } catch { if ($_.Exception.Response) { $unrelatedStatus=[int]$_.Exception.Response.StatusCode } else { throw } }
+    if ($unrelatedStatus -ne 403) { throw 'Unrelated request origin was not rejected.' }
+    $report.transformerOrigin = 'verified'
     Start-Sleep -Seconds 2
     $desktopProcess.Refresh()
     if ($desktopProcess.HasExited) {

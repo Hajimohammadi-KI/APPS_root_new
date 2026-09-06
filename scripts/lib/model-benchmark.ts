@@ -10,13 +10,15 @@ export interface ReviewLabel {verdict:Verdict;targetObserved:boolean|null;meanin
 export interface ReviewRecord {reviewerId:string;role:string;reviewedAt:string;caseSha256:string;label:ReviewLabel;evidence:{path:string;sha256:string}}
 export interface BenchmarkDraft extends BenchmarkCase {
   prompt:string;response:string;acceptedAnswers:string[];taskVersion:string;normalisation:{terminalFullStop:boolean};
+  /** Optional binding to the complete production task. Accepted answers remain a separate closed-answer baseline. */
+  taskBinding?:{taskId:string;taskSha256:string};
   authoredBy:string;reviewStatus:"pending"|"reviewed";reviews:ReviewRecord[];
   adjudication:ReviewRecord|null;audioSha256:string|null;
 }
 export interface BenchmarkManifest {schemaVersion:1;version:string;createdAt:string;purpose:string;cases:BenchmarkDraft[]}
 export interface FrozenEvaluation {schemaVersion:1;benchmarkVersion:string;manifestSha256:string;policySha256:string;frozenAt:string;
  candidate:{id:string;version:string};configurationSha256:string;calibration:{path:string;sha256:string};finalCaseIds:string[]}
-export interface PredictionRun {schemaVersion:1;candidate:{id:string;version:string};configurationSha256:string;configuration?:Record<string,unknown>;
+export interface PredictionRun {schemaVersion:1;candidate:{id:string;version:string};configurationSha256:string;configuration?:Record<string,unknown>;outputObservations?:unknown[];
  benchmarkVersion:string;manifestSha256:string;partition:"development"|"calibration"|"final";startedAt:string;finishedAt:string;
  predictions:CandidatePrediction[];caseHashes:Record<string,string>;limit:string}
 export function caseDigest(row:BenchmarkDraft):string {
@@ -34,6 +36,7 @@ export function parseManifest(value:unknown):BenchmarkManifest {
    !(row.audioSha256===null||typeof row.audioSha256==="string"&&/^[a-f0-9]{64}$/.test(row.audioSha256)))throw Error("Invalid benchmark response/provenance");
   const fingerprint=digest(JSON.stringify([row.language,String(row.prompt).normalize("NFC").trim().replace(/\s+/gu," ").toLowerCase(),String(row.response).normalize("NFC").trim().replace(/\s+/gu," ").toLowerCase()]));
   if(row.contentFingerprint!==fingerprint)throw Error(`Stale response fingerprint ${row.id}`);
+  if(row.taskBinding!==undefined&&(!isRecord(row.taskBinding)||typeof row.taskBinding.taskId!=="string"||!row.taskBinding.taskId.trim()||typeof row.taskBinding.taskSha256!=="string"||!/^[a-f0-9]{64}$/.test(row.taskBinding.taskSha256)))throw Error(`Invalid production task binding ${row.id}`);
  }
  const parsed=value as unknown as BenchmarkManifest;
  const structural=qualifyCandidate(parsed.cases,[],{id:"manifest-validation",version:"1"}).reasons.filter(reason=>/leakage|Duplicate|provenance|source rights/.test(reason));
@@ -81,6 +84,10 @@ export function validateRun(manifest:BenchmarkManifest,run:PredictionRun):void {
  if(!run||run.schemaVersion!==1||!date(run.startedAt)||!date(run.finishedAt)||Date.parse(run.finishedAt)<Date.parse(run.startedAt)||Date.parse(run.finishedAt)>Date.now()||
   run.benchmarkVersion!==manifest.version||run.manifestSha256!==digest(JSON.stringify(manifest))||!/^[a-f0-9]{64}$/.test(run.configurationSha256))throw Error("Stale or malformed prediction run");
  const rows=manifest.cases.filter(row=>row.partition===run.partition);
+ if(run.outputObservations){
+  if(!Array.isArray(run.outputObservations)||run.outputObservations.length!==rows.length||run.outputObservations.some(row=>!isRecord(row)||typeof row.caseId!=="string")||new Set(run.outputObservations.map(row=>(row as {caseId:string}).caseId)).size!==rows.length)throw Error("Missing or repeated model output observations");
+  for(const output of run.outputObservations){if(!isRecord(output))throw Error("Invalid model observation");const prediction=run.predictions.find(row=>row.caseId===output.caseId);if(!prediction||!rows.some(row=>row.id===output.caseId)||(isRecord(output.proposal)?output.proposal.verdict!==prediction.verdict:prediction.verdict!=="not_assessed"))throw Error("Model output does not match the recorded prediction");}
+ }
  if(!rows.length||run.predictions.length!==rows.length||new Set(run.predictions.map(row=>row.caseId)).size!==rows.length||Object.keys(run.caseHashes).length!==rows.length)throw Error("Missing or duplicate prediction cases");
  for(const row of rows)if(run.caseHashes[row.id]!==caseDigest(row)||!run.predictions.some(prediction=>prediction.caseId===row.id))throw Error("Prediction is not bound to exact case content");
  const parsed=parseBenchmarkInput({candidate:run.candidate,cases:rows,predictions:run.predictions});

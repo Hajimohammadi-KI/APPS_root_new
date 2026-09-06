@@ -1,5 +1,5 @@
 import { isRecord, parseAutomaticityEvent, type Language } from "./contracts";
-import type { CurriculumPack } from "./curriculum";
+import { activePracticeTasks, type CurriculumPack } from "./curriculum";
 import {
   assessWithQualifiedTransformer,
   readBoundedJson,
@@ -148,7 +148,7 @@ export function createTransformerRoute(options: {
       if (pack.language !== options.language)
         throw Error("Wrong curriculum language");
       const task = pack.units
-        .flatMap((unit) => unit.tasks)
+        .flatMap(activePracticeTasks)
         .find((task) => task.id === attempt.task.id);
       const approval = approvals.find((row) =>
         row.scopes.some(

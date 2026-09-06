@@ -11,6 +11,7 @@ import {
   type PracticeTask,
   GRAMMAR_FAMILIES,
   validateCurriculum,
+  activePracticeTasks,
 } from "./curriculum";
 import {
   appendAutomaticityEvent,
@@ -21,6 +22,11 @@ import { preserveLegacyStateDurable } from "./migration";
 import { mountReviewPanel } from "./review-panel";
 import { reduceAutomaticityEvents } from "./evidence";
 import { assessControlledTask } from "./assessment";
+import {
+  collectAssessmentFeedback,
+  guardAssessmentWithFeedback,
+  persistFeedbackAssessment,
+} from "./assessment-feedback";
 import { createTransformerClient } from "./transformer-client";
 import {
   captureCompleteBackup,
@@ -35,8 +41,24 @@ import {
   storeRecording,
   type StoredRecording,
 } from "./media";
-import { selectDailyFocus } from "./selector";
+import { selectDailyFocus, selectDailyTask } from "./selector";
+import {
+  loadDailyPlan,
+  saveDailyPlan,
+  dailyResponseCount,
+  RESPONSE_GOALS,
+  type DailyPracticePlan,
+} from "./daily-plan";
 import { syncLegacyPractice } from "./legacy";
+import {
+  loadSchedulerPilot,
+  mountSchedulerPilotPanel,
+} from "./scheduler-pilot-panel";
+import {
+  outsidePilotPack,
+  schedulerPilotCards,
+  readPilotEnrollment,
+} from "./scheduler-pilot";
 
 interface Session {
   version: 2;
@@ -129,6 +151,20 @@ export async function mountPractice(
   )
     throw new Error("Invalid curriculum");
   const unitById = new Map(pack.units.map((unit) => [unit.id, unit]));
+  const pilot = await loadSchedulerPilot(pack, localStorage);
+  const recommendationPack = () =>
+    pilot
+      ? outsidePilotPack(
+          pack,
+          schedulerPilotCards(
+            pilot.plan,
+            readPilotEnrollment(localStorage, pilot.plan, pilot.sha256),
+            readAutomaticityEvents(localStorage, language).events,
+            now(),
+          ),
+        )
+      : pack;
+  let refreshPilot = () => {};
   await syncLegacyPractice(localStorage, language, pack, now());
   const taskById = new Map(
     pack.units.flatMap((unit) =>
@@ -148,7 +184,7 @@ export async function mountPractice(
         (!requested.get("level") || row.level === requested.get("level")),
     ) ??
     selectDailyFocus(
-      pack,
+      recommendationPack(),
       reduceAutomaticityEvents(
         readAutomaticityEvents(localStorage, language).events,
         language,
@@ -159,9 +195,19 @@ export async function mountPractice(
     ).focus[0] ??
     pack.units[0]!;
   let task: PracticeTask =
-    unit.tasks.find(
+    selectDailyTask(
+      unit,
+      reduceAutomaticityEvents(
+        readAutomaticityEvents(localStorage, language).events,
+        language,
+        now(),
+      ),
+      now(),
+    ).task ??
+    activePracticeTasks(unit).find(
       (row) => row.stage === "retrieve" && row.modality === "writing",
-    ) ?? unit.tasks[0]!;
+    ) ??
+    activePracticeTasks(unit)[0]!;
   const requestedTask = taskById.get(requested.get("task") ?? "");
   if (requestedTask) {
     task = requestedTask;
@@ -186,16 +232,22 @@ export async function mountPractice(
   const taskPanel = element("section", undefined, "card task-panel");
   const progressPanel = element("section", undefined, "card");
   const focusPanel = element("div", undefined, "focus-list");
+  const dailyPanel = element("div", undefined, "daily-plan");
   const historyPanel = element("section", undefined, "card");
   const controls = element("div", undefined, "toolbar");
   const writeError = (error: unknown) => {
     errorBox.textContent =
-      error instanceof Error
-        ? error.message
-        : t(
-            "The action failed. Your saved records were kept.",
-            "Die Aktion ist fehlgeschlagen. Gespeicherte Daten bleiben erhalten.",
-          );
+      error instanceof Error && error.name === "QuotaExceededError"
+        ? t(
+            "Storage is full. Keep this tab open and copy any unsaved response. Export a backup below before freeing space, then try again. Your earlier saved work is kept.",
+            "Der Speicher ist voll. Lass diesen Tab geöffnet und kopiere eine noch nicht gespeicherte Antwort. Exportiere unten eine Sicherung, bevor du Speicherplatz freigibst, und versuche es erneut. Deine bisher gespeicherte Arbeit bleibt erhalten.",
+          )
+        : error instanceof Error
+          ? error.message
+          : t(
+              "The action failed. Your saved records were kept.",
+              "Die Aktion ist fehlgeschlagen. Gespeicherte Daten bleiben erhalten.",
+            );
   };
   window.addEventListener("practice-error", (event) =>
     writeError((event as CustomEvent<unknown>).detail),
@@ -273,6 +325,11 @@ export async function mountPractice(
           "Beende die Aufnahme, bevor du die Aufgabe wechselst.",
         ),
       );
+    if (loadDailyPlan(localStorage, language, now()).plan.paused)
+      saveDailyPlan(localStorage, language, {
+        ...loadDailyPlan(localStorage, language, now()).plan,
+        paused: false,
+      });
     if (session && !session.submittedId && (session.draft || session.audioId))
       localStorage.setItem(
         `automaticity:v2:${language}:archived-session:${id()}`,
@@ -306,6 +363,7 @@ export async function mountPractice(
     feedback.textContent = "";
     renderTask();
     renderProgress();
+    renderFocus();
   };
   const raw = requestedTask
     ? localStorage.getItem(
@@ -422,9 +480,9 @@ export async function mountPractice(
   topicSelect.onchange = () => {
     const selected = unitById.get(topicSelect.value)!;
     fresh(
-      selected.tasks.find(
+      activePracticeTasks(selected).find(
         (row) => row.stage === "retrieve" && row.modality === "writing",
-      ) ?? selected.tasks[0]!,
+      ) ?? activePracticeTasks(selected)[0]!,
     );
   };
   controls.append(levelSelect, topicSelect);
@@ -458,7 +516,12 @@ export async function mountPractice(
   persianHelp.append(guide);
   controls.append(persianHelp);
   const recordChoice = (reason: string) => {
-    const selection = selectDailyFocus(pack, ledger().progress, now(), level);
+    const selection = selectDailyFocus(
+      recommendationPack(),
+      ledger().progress,
+      now(),
+      level,
+    );
     const key = `automaticity:v2:${language}:selection:${id()}`;
     localStorage.setItem(
       key,
@@ -466,7 +529,7 @@ export async function mountPractice(
         version: 1,
         at: now(),
         language,
-        policy: "baseline-2",
+        policy: "baseline-3",
         reason,
         level,
         selectedTaskId: task.id,
@@ -484,6 +547,7 @@ export async function mountPractice(
   const focusSection = element("section", undefined, "card");
   focusSection.append(
     element("h2", t("Today's focus", "Dein Fokus heute")),
+    dailyPanel,
     controls,
     focusPanel,
   );
@@ -572,6 +636,15 @@ export async function mountPractice(
     ),
   );
   root.replaceChildren(header, errorBox, focusSection, grid, tools);
+  refreshPilot = mountSchedulerPilotPanel(
+    tools,
+    pack,
+    localStorage,
+    pilot,
+    () => renderFocus(),
+    (task) => fresh(task),
+    () => editing,
+  );
   if (!editing) {
     errorBox.textContent = t(
       "Another practice tab is open. You can view progress here; close the other tab and reload to continue.",
@@ -579,7 +652,14 @@ export async function mountPractice(
     );
   }
   function renderFocus(): void {
-    const selection = selectDailyFocus(pack, ledger().progress, now(), level);
+    renderDailyPlan();
+    refreshPilot();
+    const selection = selectDailyFocus(
+      recommendationPack(),
+      ledger().progress,
+      now(),
+      level,
+    );
     focusPanel.replaceChildren(
       element(
         "p",
@@ -599,16 +679,144 @@ export async function mountPractice(
               ),
       ),
     );
-    for (const selected of selection.focus)
+    for (const selected of selection.focus) {
+      const recommendation = selectDailyTask(selected, ledger(), now());
       focusPanel.append(
-        button(`${selected.title}`, () =>
-          fresh(
-            selected.tasks.find(
-              (row) => row.stage === "retrieve" && row.modality === "writing",
-            ) ?? selected.tasks[0]!,
+        button(`${selected.title}`, () => {
+          if (!recommendation.task)
+            throw new Error(
+              t(
+                "No practice task is available for this mode yet. Choose another topic.",
+                "Für diese Übungsart ist noch keine Aufgabe verfügbar. Wähle ein anderes Thema.",
+              ),
+            );
+          fresh(recommendation.task, recommendation.previousAttemptId);
+        }),
+      );
+      if (recommendation.task)
+        focusPanel.append(
+          element(
+            "p",
+            `${recommendation.task.modality === "speaking" ? t("Speaking", "Sprechen") : t("Writing", "Schreiben")} · ${recommendation.reason === "repair" ? t("Repair your earlier response", "Deine frühere Antwort korrigieren") : recommendation.reason === "due_review" ? t("Return to this pattern", "Dieses Muster wiederholen") : t("Try a fresh response", "Eine neue Antwort versuchen")}`,
+            "muted",
+          ),
+        );
+      const preparation = selected.prerequisites
+        .map((id) => unitById.get(id)?.title)
+        .filter(Boolean);
+      if (preparation.length)
+        focusPanel.append(
+          element(
+            "p",
+            `${t("Suggested preparation", "Empfohlene Vorbereitung")}: ${preparation.join(", ")}. ${t("You can still choose any topic.", "Du kannst trotzdem jedes Thema wählen.")}`,
+            "muted",
+          ),
+        );
+    }
+  }
+  function renderDailyPlan(): void {
+    const focusedControl = document.activeElement?.id;
+    const { plan, unreadable } = loadDailyPlan(localStorage, language, now());
+    const count = dailyResponseCount(
+      ledger().attempts.map((row) => row.attempt),
+      language,
+      now(),
+    );
+    const goal = element("select");
+    goal.id = "daily-response-goal";
+    const label = element(
+      "label",
+      t("Today's response goal", "Dein Antwortziel heute"),
+    );
+    label.htmlFor = goal.id;
+    for (const value of RESPONSE_GOALS) {
+      const option = element("option", String(value));
+      option.value = String(value);
+      goal.append(option);
+    }
+    goal.value = String(plan.responseGoal);
+    goal.disabled = !editing;
+    goal.onchange = () => {
+      try {
+        assertEditable();
+        saveDailyPlan(localStorage, language, {
+          ...loadDailyPlan(localStorage, language, now()).plan,
+          responseGoal: Number(goal.value) as DailyPracticePlan["responseGoal"],
+        });
+        renderDailyPlan();
+      } catch (error) {
+        goal.value = String(plan.responseGoal);
+        writeError(error);
+      }
+    };
+    const status = element(
+      "p",
+      `${count} / ${plan.responseGoal} ${t("responses saved today", "Antworten heute gespeichert")}`,
+    );
+    status.setAttribute("role", "status");
+    status.dataset.dailyResponses = String(count);
+    const pause = button(
+      plan.paused
+        ? t("Resume practice", "Weiterüben")
+        : t("Finish for now", "Für heute pausieren"),
+      () => {
+        assertEditable();
+        if (busy || recordingPending || recorder?.state === "recording")
+          throw new Error(
+            t(
+              "Stop your recording and wait for it to save before pausing.",
+              "Beende die Aufnahme und warte, bis sie gespeichert ist, bevor du pausierst.",
+            ),
+          );
+        saveSession();
+        const current = loadDailyPlan(localStorage, language, now()).plan;
+        saveDailyPlan(localStorage, language, {
+          ...current,
+          paused: !current.paused,
+        });
+        // An interrupted response has no trustworthy continuous latency.
+        timer = null;
+        renderTask();
+        renderDailyPlan();
+      },
+    );
+    pause.disabled = !editing;
+    pause.id = "daily-practice-toggle";
+    dailyPanel.replaceChildren(
+      label,
+      goal,
+      status,
+      element(
+        "p",
+        t(
+          "This counts practice effort, including help and repairs. It does not measure mastery.",
+          "Hier zählt dein Übungsaufwand, auch mit Hilfe und Korrekturen. Das ist kein Nachweis für sichere Beherrschung.",
+        ),
+      ),
+      pause,
+    );
+    if (count >= plan.responseGoal && !plan.paused)
+      dailyPanel.append(
+        element(
+          "p",
+          t(
+            "Today's goal is reached. Finish here or keep practising when you feel ready.",
+            "Dein Tagesziel ist erreicht. Du kannst hier aufhören oder weiterüben, wenn du möchtest.",
           ),
         ),
       );
+    if (unreadable)
+      dailyPanel.append(
+        element(
+          "p",
+          t(
+            "Your saved daily goal could not be read. Its original data is kept; a goal of 3 is shown for now.",
+            "Dein gespeichertes Tagesziel ist nicht lesbar. Die Originaldaten bleiben erhalten; vorläufig wird ein Ziel von 3 angezeigt.",
+          ),
+        ),
+      );
+    if (focusedControl === goal.id) goal.focus();
+    else if (focusedControl === pause.id) pause.focus();
   }
   function expose(kind: "example" | "hint" | "solution"): void {
     assertEditable();
@@ -795,6 +1003,8 @@ export async function mountPractice(
     }
   }
   function renderTask(): void {
+    const activeTasks = activePracticeTasks(unit);
+    const retirement = unit.retiredTasks?.find((row) => row.taskId === task.id);
     topicSelect.value = unit.id;
     taskPanel.replaceChildren(
       element(
@@ -804,6 +1014,21 @@ export async function mountPractice(
       ),
       element("h2", unit.title),
     );
+    if (
+      !retirement &&
+      loadDailyPlan(localStorage, language, now()).plan.paused
+    ) {
+      taskPanel.append(
+        element(
+          "p",
+          t(
+            "Paused for now. Your draft is saved. Choose Resume practice above to continue.",
+            "Du machst gerade Pause. Dein Entwurf ist gespeichert. Wähle oben Weiterüben, um fortzufahren.",
+          ),
+        ),
+      );
+      return;
+    }
     const stageNames = en
       ? [
           "Notice",
@@ -835,7 +1060,7 @@ export async function mountPractice(
       session.previousAttemptId !== requestedRepair.attempt.id
     ) {
       const sourceTask = taskById.get(requestedRepair.attempt.task.id);
-      if (sourceTask)
+      if (sourceTask && activeTasks.some((row) => row.id === sourceTask.id))
         taskPanel.append(
           button(
             t(
@@ -850,9 +1075,9 @@ export async function mountPractice(
     stageNav.setAttribute("aria-label", t("Learning cycle", "Lernzyklus"));
     stages.forEach((stage, index) => {
       const available =
-        unit.tasks.find(
+        activeTasks.find(
           (row) => row.stage === stage && row.modality === task.modality,
-        ) ?? unit.tasks.find((row) => row.stage === stage);
+        ) ?? activeTasks.find((row) => row.stage === stage);
       if (!available) return;
       const btn = button(
         stageNames[index]!,
@@ -865,7 +1090,7 @@ export async function mountPractice(
     taskPanel.append(stageNav);
     const modalityNav = element("div", undefined, "toolbar");
     for (const mode of ["writing", "speaking"] as Modality[]) {
-      const other = unit.tasks.find(
+      const other = activeTasks.find(
         (row) => row.stage === task.stage && row.modality === mode,
       );
       if (other)
@@ -883,6 +1108,40 @@ export async function mountPractice(
     const prompt = element("p", task.prompt, "task-prompt");
     prompt.id = "practice-prompt";
     taskPanel.append(prompt);
+    if (retirement) {
+      const message = element(
+        "p",
+        t(
+          "This exercise has been replaced because its prompt did not reliably test the intended grammar. Your earlier work is kept below.",
+          "Diese Übung wurde ersetzt, weil ihre Aufgabenstellung die vorgesehene Grammatik nicht zuverlässig geprüft hat. Deine bisherige Arbeit bleibt unten erhalten.",
+        ),
+      );
+      message.setAttribute("role", "status");
+      const saved = element("textarea");
+      saved.value = session.draft;
+      saved.rows = 5;
+      saved.readOnly = true;
+      saved.setAttribute(
+        "aria-label",
+        t("Archived response", "Archivierte Antwort"),
+      );
+      taskPanel.append(message, saved);
+      if (recording) {
+        if (audioUrl) URL.revokeObjectURL(audioUrl);
+        audioUrl = URL.createObjectURL(recording.blob);
+        const audio = element("audio");
+        audio.controls = true;
+        audio.src = audioUrl;
+        taskPanel.append(audio);
+      }
+      const replacement = taskById.get(retirement.replacementTaskId)!;
+      taskPanel.append(
+        button(t("Open replacement exercise", "Neue Übung öffnen"), () =>
+          fresh(replacement),
+        ),
+      );
+      return;
+    }
     if (task.stage === "retain")
       taskPanel.append(
         element(
@@ -978,7 +1237,7 @@ export async function mountPractice(
         t("Start recording", "Aufnahme starten"),
         async () => {
           assertEditable();
-          if (session.submittedId) return;
+          if (session.submittedId || busy || recordingPending) return;
           if (recorder?.state === "recording") {
             recorder.stop();
             return;
@@ -993,64 +1252,81 @@ export async function mountPractice(
                 "Aufnahmen sind in diesem Browser nicht verfügbar. Du kannst weiterhin schriftlich üben.",
               ),
             );
+          recordingPending = true;
+          recordButton.disabled = true;
           try {
-            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          } catch {
-            throw new Error(
-              t(
-                "The microphone is unavailable or permission was denied. Your draft is kept. Allow microphone access or continue with writing.",
-                "Das Mikrofon ist nicht verfügbar oder der Zugriff wurde abgelehnt. Dein Entwurf bleibt erhalten. Erlaube den Mikrofonzugriff oder übe schriftlich weiter.",
-              ),
-            );
-          }
-          const parts: Blob[] = [];
-          recorder = new MediaRecorder(stream);
-          recordingStart = performance.now();
-          recorder.ondataavailable = (event) => {
-            if (event.data.size) parts.push(event.data);
-          };
-          recorder.onerror = () => {
-            stream?.getTracks().forEach((track) => track.stop());
-            recordButton.textContent = t("Start recording", "Aufnahme starten");
-            writeError(
-              t(
-                "Recording failed. Please try again.",
-                "Die Aufnahme ist fehlgeschlagen. Bitte versuche es erneut.",
-              ),
-            );
-          };
-          recorder.onstop = () => {
-            recordingPending = true;
-            const mime = recorder?.mimeType ?? "audio/webm";
+            try {
+              stream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+              });
+            } catch {
+              throw new Error(
+                t(
+                  "The microphone is unavailable or permission was denied. Your draft is kept. Allow microphone access or continue with writing.",
+                  "Das Mikrofon ist nicht verfügbar oder der Zugriff wurde abgelehnt. Dein Entwurf bleibt erhalten. Erlaube den Mikrofonzugriff oder übe schriftlich weiter.",
+                ),
+              );
+            }
+            const parts: Blob[] = [];
+            recorder = new MediaRecorder(stream);
+            recordingStart = performance.now();
+            recorder.ondataavailable = (event) => {
+              if (event.data.size) parts.push(event.data);
+            };
+            recorder.onerror = () => {
+              stream?.getTracks().forEach((track) => track.stop());
+              recordButton.textContent = t(
+                "Start recording",
+                "Aufnahme starten",
+              );
+              writeError(
+                t(
+                  "Recording failed. Please try again.",
+                  "Die Aufnahme ist fehlgeschlagen. Bitte versuche es erneut.",
+                ),
+              );
+            };
+            recorder.onstop = () => {
+              recordingPending = true;
+              const mime = recorder?.mimeType ?? "audio/webm";
+              stream?.getTracks().forEach((track) => track.stop());
+              stream = null;
+              recordButton.textContent = t("Record again", "Erneut aufnehmen");
+              recordButton.disabled = true;
+              void (async () => {
+                recording = await storeRecording(indexedDB, {
+                  id: id(),
+                  language,
+                  taskId: task.id,
+                  createdAt: now(),
+                  durationMs: Math.round(performance.now() - recordingStart),
+                  blob: new Blob(parts, { type: mime }),
+                });
+                session.audioId = recording.id;
+                saveSession();
+                drawAudio();
+                feedback.textContent = t(
+                  "Recording saved. Listen and add a transcript. Speech quality needs a separate review.",
+                  "Aufnahme gespeichert. Höre sie an und ergänze ein Transkript. Die Sprachqualität benötigt eine eigene Prüfung.",
+                );
+              })()
+                .catch(writeError)
+                .finally(() => {
+                  recordingPending = false;
+                  recordButton.disabled = false;
+                });
+            };
+            recorder.start();
+            recordButton.textContent = t("Stop recording", "Aufnahme beenden");
+          } catch (error) {
             stream?.getTracks().forEach((track) => track.stop());
             stream = null;
-            recordButton.textContent = t("Record again", "Erneut aufnehmen");
-            recordButton.disabled = true;
-            void (async () => {
-              recording = await storeRecording(indexedDB, {
-                id: id(),
-                language,
-                taskId: task.id,
-                createdAt: now(),
-                durationMs: Math.round(performance.now() - recordingStart),
-                blob: new Blob(parts, { type: mime }),
-              });
-              session.audioId = recording.id;
-              saveSession();
-              drawAudio();
-              feedback.textContent = t(
-                "Recording saved. Listen and add a transcript. Speech quality needs a separate review.",
-                "Aufnahme gespeichert. Höre sie an und ergänze ein Transkript. Die Sprachqualität benötigt eine eigene Prüfung.",
-              );
-            })()
-              .catch(writeError)
-              .finally(() => {
-                recordingPending = false;
-                recordButton.disabled = false;
-              });
-          };
-          recorder.start();
-          recordButton.textContent = t("Stop recording", "Aufnahme beenden");
+            recorder = null;
+            throw error;
+          } finally {
+            recordingPending = false;
+            recordButton.disabled = false;
+          }
         },
       );
       recordButton.disabled = !!session.submittedId || !editing;
@@ -1131,6 +1407,7 @@ export async function mountPractice(
           language,
           at: capturedAt,
           task: {
+            definitionSha256: await sha256(JSON.stringify(task)),
             id: task.id,
             version: task.version,
             constructionId: task.constructionId,
@@ -1182,16 +1459,36 @@ export async function mountPractice(
         session.submittedId = attempt.id;
         saveSession();
         const assessment = assessControlledTask(attempt, task, now(), id());
-        appendAutomaticityEvent(localStorage, assessment);
-        feedback.textContent = assessment.feedback;
-        if (typeof navigator === "undefined" || navigator.onLine !== false) {
+        const applyFeedback = async (proposal: typeof assessment) => {
+          const history = await collectAssessmentFeedback(
+            readAutomaticityEvents(localStorage, language).events,
+            pack,
+            now(),
+          );
+          const guarded = await guardAssessmentWithFeedback(
+            attempt,
+            task,
+            proposal,
+            history,
+            now(),
+            id(),
+          );
+          persistFeedbackAssessment(localStorage, proposal, guarded);
+          return guarded;
+        };
+        const guarded = await applyFeedback(assessment);
+        feedback.textContent = (guarded ?? assessment).feedback;
+        if (
+          !guarded &&
+          (typeof navigator === "undefined" || navigator.onLine !== false)
+        ) {
           const modelAssessment = await qualifiedTransformer(
             attempt,
             assessment,
           );
           if (modelAssessment) {
-            appendAutomaticityEvent(localStorage, modelAssessment);
-            feedback.textContent = modelAssessment.feedback;
+            const modelGuard = await applyFeedback(modelAssessment);
+            feedback.textContent = (modelGuard ?? modelAssessment).feedback;
           }
         }
         renderTask();
@@ -1202,6 +1499,11 @@ export async function mountPractice(
         .finally(() => {
           busy = false;
           submit.disabled = !!session.submittedId || !editing;
+          try {
+            refreshReviews();
+          } catch (error) {
+            writeError(error);
+          }
         });
     };
     taskPanel.append(form, feedback);
@@ -1222,12 +1524,12 @@ export async function mountPractice(
         ),
       );
     }
-    const current = unit.tasks.findIndex((row) => row.id === task.id),
+    const current = activeTasks.findIndex((row) => row.id === task.id),
       next =
-        unit.tasks
+        activeTasks
           .slice(current + 1)
           .find((row) => row.modality === task.modality) ??
-        unit.tasks.find((row) => row.modality === task.modality)!;
+        activeTasks.find((row) => row.modality === task.modality)!;
     taskPanel.append(
       button(t("Next task", "Nächste Aufgabe"), () => fresh(next)),
     );
@@ -1236,7 +1538,10 @@ export async function mountPractice(
     timer?.visibility(!document.hidden),
   );
   window.addEventListener("storage", (event) => {
-    if (event.key?.startsWith(`automaticity:v2:${language}:event:`)) {
+    if (
+      event.key?.startsWith(`automaticity:v2:${language}:event:`) ||
+      event.key?.startsWith(`automaticity:v2:${language}:scheduler-pilot:`)
+    ) {
       renderProgress();
       renderFocus();
     }
@@ -1263,8 +1568,15 @@ export async function mountPractice(
       "Your draft was restored. Timing is unavailable for this interrupted attempt.",
       "Dein Entwurf wurde wiederhergestellt. Für diesen unterbrochenen Versuch ist keine Zeitmessung verfügbar.",
     );
-  } else if (editing) fresh(task);
-  else {
+  } else if (editing) {
+    const recommendation = selectDailyTask(unit, ledger(), now());
+    fresh(
+      task,
+      recommendation.task?.id === task.id
+        ? recommendation.previousAttemptId
+        : null,
+    );
+  } else {
     session = {
       version: 2,
       taskId: task.id,
@@ -1285,7 +1597,7 @@ export async function mountPractice(
   renderFocus();
   const reviews = element("section", undefined, "card");
   root.append(reviews);
-  mountReviewPanel(
+  const refreshReviews = mountReviewPanel(
     reviews,
     language,
     pack,

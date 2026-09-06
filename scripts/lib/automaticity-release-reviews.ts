@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { activePracticeTasks } from "../../shared/learning-core/src/automaticity/curriculum";
 import { readFile, realpath } from "node:fs/promises";
 import { isAbsolute, relative, resolve } from "node:path";
 import type {
@@ -6,6 +7,12 @@ import type {
   CurriculumPack,
 } from "../../shared/learning-core/src/automaticity/curriculum";
 import { validateEvaluationEvidence } from "./model-benchmark";
+import {
+  validateReviewEvidence,
+  type ReviewScope,
+  type EvaluatorScope,
+} from "./curriculum-review-evidence";
+import type { PracticeTask } from "../../shared/learning-core/src/automaticity/curriculum";
 import {
   isRecord,
   validDate,
@@ -152,6 +159,9 @@ async function humanReview(
   root: string,
   value: HumanReview,
   now: string,
+  scope: ReviewScope,
+  tasks: readonly PracticeTask[],
+  evaluator: EvaluatorScope | null = null,
 ): Promise<void> {
   if (
     !isRecord(value) ||
@@ -165,8 +175,13 @@ async function humanReview(
       "A dated, approved human review with reviewer identity and role is required",
     );
   const bytes = await artifact(root, value.evidence);
-  if (!bytes.toString("utf8").trim())
-    throw new Error("Empty human review evidence");
+  let evidence: unknown;
+  try {
+    evidence = JSON.parse(bytes.toString("utf8"));
+  } catch {
+    throw new Error("Structured human review evidence version 2 is required");
+  }
+  validateReviewEvidence(evidence, value, scope, tasks, evaluator);
 }
 
 /** Check each claimed cell, including every task's approved evaluator. Never activates a runtime model. */
@@ -191,7 +206,7 @@ export async function validateReleaseReviews(
       key = cellKey(cell);
     if (!pack || !unit)
       throw new Error(`Review cell has no construction ${key}`);
-    const tasks = unit.tasks.filter(
+    const tasks = activePracticeTasks(unit).filter(
       (task) => task.stage === cell.stage && task.modality === cell.modality,
     );
     if (
@@ -235,7 +250,7 @@ export async function validateReleaseReviews(
       review.unitSha256 !== unitDigest(unit)
     )
       throw new Error(`Stale reviewed content or mapping ${key}`);
-    await humanReview(root, review.contentReview, now);
+    await humanReview(root, review.contentReview, now, review, tasks);
     if (cell.humanReview === "complete") reviewedCells++;
     const taskIds = new Set(tasks.map((task) => task.id)),
       approvedTasks = new Set<string>();
@@ -250,7 +265,6 @@ export async function validateReleaseReviews(
         !Array.isArray(evaluator.rubricVersions)
       )
         throw new Error(`Invalid evaluator approval ${key}`);
-      await humanReview(root, evaluator.review, now);
       if (
         Date.parse(evaluator.review.reviewedAt) <
         Date.parse(review.contentReview.reviewedAt)
@@ -310,6 +324,14 @@ export async function validateReleaseReviews(
         throw new Error(
           `Human evaluator must not imply automated benchmark approval ${key}`,
         );
+      await humanReview(
+        root,
+        evaluator.review,
+        now,
+        review,
+        tasks.filter((task) => evaluator.taskIds.includes(task.id)),
+        evaluator,
+      );
     }
     if (cell.releaseEligible && approvedTasks.size !== taskIds.size)
       throw new Error(`Evaluator approval missing for tasks ${key}`);

@@ -9,6 +9,7 @@ import {
 import {
   GRAMMAR_FAMILIES,
   validateCurriculum,
+  activePracticeTasks,
   type CurriculumPack,
 } from "../shared/learning-core/src/automaticity/curriculum";
 const root = resolve(import.meta.dir, "..");
@@ -88,7 +89,7 @@ for (const [language, app] of [
         if (
           (cells[0]!.humanReview === "complete" || cells[0]!.releaseEligible) &&
           (unit.review !== "human_reviewed" ||
-            unit.tasks.some(
+            activePracticeTasks(unit).some(
               (task) =>
                 task.stage === stage &&
                 task.modality === modality &&
@@ -98,7 +99,7 @@ for (const [language, app] of [
           throw new Error(
             `Coverage claims review absent from the content pack: ${key}`,
           );
-        const actual = unit.tasks
+        const actual = activePracticeTasks(unit)
           .filter((task) => task.stage === stage && task.modality === modality)
           .map((task) => task.id)
           .sort();

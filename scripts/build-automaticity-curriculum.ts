@@ -4,11 +4,17 @@ import { dirname, resolve } from "node:path";
 import { validateGeneratedPractice } from "./lib/grammar-scope";
 import { readProtectedMaterial } from "./lib/grammar-scope-files";
 import { buildSupplementaryUnits } from "./lib/supplementary-curriculum";
+import { applyTaskRevisions } from "./lib/curriculum-task-revisions";
+import { applyCurriculumReviews } from "./lib/reviewed-curriculum";
+import { buildHumanReviewManifest } from "./lib/human-review-manifest";
+import { parseReviewLedger, type CoverageCell } from "./lib/automaticity-release-reviews";
+import { REPRESENTATIVE_SCOPES, REPRESENTATIVE_VERSION, representativeTasks } from "../shared/learning-core/src/automaticity/representative-tasks";
 import { grammarUnits as en } from "../Apps/English/English-Automaticity/packages/content/src/index";
 import { grammarUnits as de } from "../Apps/Deutsch-Automaticity/packages/content/src/index";
 import {
   GRAMMAR_FAMILIES,
   validateCurriculum,
+  activePracticeTasks,
   type ConstructionMapping,
   type CurriculumPack,
   type PracticeTask,
@@ -124,7 +130,7 @@ for (const [language, units, project] of [
   ["de", de, "Apps/Deutsch-Automaticity"],
 ] as const) {
   const pack: CurriculumPack = {
-    version: "2026-09-05.3",
+    version: REPRESENTATIVE_VERSION,
     mappingVersion: `${registry.version}+supplement-1`,
     language,
     units: [],
@@ -400,25 +406,41 @@ for (const [language, units, project] of [
     pack.units.length
   )
     throw new Error(`Orphan ${language} mapping`);
-  const supplemental = await buildSupplementaryUnits(root, language, pack.version);
+  // Unchanged supplementary tasks retain their original task versions.
+  const supplemental = await buildSupplementaryUnits(root, language, "2026-09-05.3");
   pack.units.push(...supplemental);
-  for (const unit of supplemental) for (const stage of ["notice","retrieve","vary","produce","repair","transfer","retain"] as const)
+  await applyTaskRevisions(root, pack);
+  for (const scope of REPRESENTATIVE_SCOPES.filter(row => row.rule.startsWith(language + "."))) {
+    const unit = pack.units.find(row => row.id === scope.constructionId);
+    if (!unit) throw new Error(`Missing representative construction ${scope.constructionId}`);
+    // Prior definitions stay byte-equivalent. New tasks are first for actual Daily/Grammar selection.
+    unit.tasks.unshift(...representativeTasks(scope));
+  }
+  // Replace the preliminary legacy cells with the current active task set.
+  for (let index = coverage.length - 1; index >= 0; index--) if ((coverage[index] as {language:string}).language === language) coverage.splice(index, 1);
+  for (const unit of pack.units) for (const stage of ["notice","retrieve","vary","produce","repair","transfer","retain"] as const)
     for (const modality of ["writing","speaking"] as const) {
       if (modality === "speaking" && ["en.c.124","de.c.156"].includes(unit.id)) continue;
-      const matching = unit.tasks.filter(task => task.stage === stage && task.modality === modality);
+      const matching = activePracticeTasks(unit).filter(task => task.stage === stage && task.modality === modality);
       coverage.push({language,contentVersion:pack.version,mappingVersion:pack.mappingVersion,constructionId:unit.id,families:unit.familyIds,stage,modality,
         status:matching.length?"authored":"missing",taskIds:matching.map(task=>task.id),humanReview:"pending",evaluator:matching.some(task=>task.answerPolicy==="closed")?"closed-nfc-case-v1":"human-review-required",releaseEligible:false});
     }
   const issues = validateCurriculum(pack);
   generatedPacks.push(pack);
   if (issues.length) throw new Error(issues.join("\n"));
-  await output(
-    `${project}/apps/web/public/learning-core/curriculum-${language}.json`,
-    JSON.stringify(pack) + "\n",
-  );
   console.log(
     `${language}: ${pack.units.length} stable construction mappings, ${pack.units.reduce((n, unit) => n + unit.tasks.length, 0)} typed practice tasks`,
   );
+}
+const reviewLedgerPath = Bun.argv.find(arg => arg.startsWith("--reviews="))?.slice(10) ?? "docs/automaticity-release-reviews.json";
+const reviewLedger = parseReviewLedger(JSON.parse(await readFile(resolve(root, reviewLedgerPath), "utf8")));
+const reviewed = await applyCurriculumReviews(root, new Map(generatedPacks.map(pack => [pack.language, pack])), coverage as CoverageCell[], reviewLedger);
+generatedPacks.splice(0, generatedPacks.length, ...reviewed.packs.values());
+coverage.splice(0, coverage.length, ...reviewed.cells);
+for (const pack of generatedPacks) {
+  const project = pack.language === "en" ? "Apps/English/English-Automaticity" : "Apps/Deutsch-Automaticity";
+  await output(`${project}/apps/web/public/learning-core/curriculum-${pack.language}.json`, JSON.stringify(pack) + "\n");
+  await output(`${project}/apps/web/public/learning-core/review-approvals-${pack.language}.json`, JSON.stringify(buildHumanReviewManifest(pack,reviewLedger),null,2)+"\n");
 }
 const gaps = coverage.filter(
   (row) => (row as { status: string }).status === "missing",
@@ -427,7 +449,7 @@ await output(
   "docs/automaticity-coverage.json",
   JSON.stringify(
     {
-      version: "2026-09-05.3",
+      version: REPRESENTATIVE_VERSION,
       scope:
         "Current catalog crosswalk. Reference review may add constructions. Authored tasks are not curriculum completion.",
       families: GRAMMAR_FAMILIES,
@@ -435,8 +457,8 @@ await output(
       summary: {
         cells: coverage.length,
         missing: gaps.length,
-        reviewed: 0,
-        releaseEligible: 0,
+        reviewed: reviewed.reviewedCells,
+        releaseEligible: reviewed.evaluatorApprovedCells,
       },
     },
     null,

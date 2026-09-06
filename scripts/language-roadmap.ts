@@ -30,6 +30,17 @@ export interface Task {
   remainingEngineeringWork?: string[];
   afterHumanValidation?: string[];
   engineeringScope?: string;
+  conditionalDecision?: {
+    taskId: string;
+    record: string;
+    sha256: string;
+    recordedAt: string;
+    outcome: "defer";
+    activationVerified: false;
+    summary: string;
+    reasons: string[];
+    reopenWhen: string[];
+  };
 }
 export interface Backlog {
   schemaVersion: number;
@@ -81,7 +92,17 @@ const states = new Set([
   "blocked",
   "deferred",
 ]);
-const hash = (text: string) => createHash("sha256").update(text).digest("hex");
+const hash = (text: string | Uint8Array) =>
+  createHash("sha256").update(text).digest("hex");
+// Git may check text out with CRLF on Windows and LF in hosted builds.
+// Evidence hashes ignore only that transport difference, never content edits.
+export const hashDecisionText = (text: string | Uint8Array) =>
+  hash(
+    (typeof text === "string" ? text : new TextDecoder().decode(text)).replace(
+      /\r\n/g,
+      "\n",
+    ),
+  );
 const same = (a: unknown, b: unknown) =>
   JSON.stringify(a) === JSON.stringify(b);
 
@@ -97,6 +118,26 @@ export function parseBacklog(raw: string): Backlog {
   const ids = new Set<string>(),
     phases = new Set(value.phases.map((p) => p.id));
   for (const task of value.tasks) {
+    const decision = task.conditionalDecision;
+    if (
+      decision &&
+      (task.required ||
+        task.status === "verified" ||
+        decision.taskId !== task.id ||
+        decision.outcome !== "defer" ||
+        decision.activationVerified !== false ||
+        !/^docs\/roadmap-decisions\/[a-z0-9.-]+\.json$/.test(decision.record) ||
+        !/^[a-f0-9]{64}$/.test(decision.sha256) ||
+        !Number.isFinite(Date.parse(decision.recordedAt)) ||
+        !decision.summary?.trim() ||
+        ![decision.reasons, decision.reopenWhen].every(
+          (rows) =>
+            Array.isArray(rows) &&
+            rows.length > 0 &&
+            rows.every((row) => typeof row === "string" && row.trim()),
+        ))
+    )
+      throw Error(`Invalid conditional decision: ${task.id}`);
     if (
       !task.id ||
       ids.has(task.id) ||
@@ -230,6 +271,55 @@ export async function buildRoadmap(
   const raw = await readFile(paths.backlog, "utf8"),
     backlog = parseBacklog(raw),
     sourceSha256 = hash(raw);
+  const checkedRecords = new Map<
+    string,
+    { decisions: unknown[]; recordedAt: string }
+  >();
+  for (const task of backlog.tasks) {
+    const decision = task.conditionalDecision;
+    if (!decision) continue;
+    const recordKey = decision.record + ":" + decision.sha256;
+    let record = checkedRecords.get(recordKey);
+    if (!record) {
+      const bytes = await readFile(resolve(root, decision.record));
+      if (hashDecisionText(bytes) !== decision.sha256)
+        throw Error(`Changed decision evidence: ${task.id}`);
+      const parsed = JSON.parse(bytes.toString("utf8"));
+      if (
+        parsed.schemaVersion !== 1 ||
+        parsed.hashEncoding !== "utf8-lf" ||
+        parsed.recordedBy !== "automated_engineering_check" ||
+        !Array.isArray(parsed.inputs) ||
+        !parsed.inputs.length ||
+        !Array.isArray(parsed.checks) ||
+        !parsed.checks.length ||
+        parsed.checks.some(
+          (row: { status: string; exit: number }) =>
+            row.status !== "passed" || row.exit !== 0,
+        )
+      )
+        throw Error("Invalid decision verification record");
+      for (const input of parsed.inputs) {
+        if (
+          typeof input.path !== "string" ||
+          !/^(docs|scripts|shared|Apps)\//.test(input.path) ||
+          input.path.split(/[\\/]/).includes("..") ||
+          hashDecisionText(await readFile(resolve(root, input.path))) !==
+            input.sha256
+        )
+          throw Error(`Conditional decision inputs changed: ${input.path}`);
+      }
+      record = parsed;
+      checkedRecords.set(recordKey, parsed);
+    }
+    const { record: _path, sha256: _sha, recordedAt, ...payload } = decision;
+    if (
+      !record ||
+      recordedAt !== record.recordedAt ||
+      !record.decisions.some((row) => same(row, payload))
+    )
+      throw Error(`Decision does not match its recorded evidence: ${task.id}`);
+  }
   let previous: History | null = null;
   try {
     previous = JSON.parse(await readFile(paths.history, "utf8")) as History;

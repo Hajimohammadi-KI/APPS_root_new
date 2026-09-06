@@ -19,7 +19,10 @@ import { buildHumanReviewManifest } from "./lib/human-review-manifest";
 // All approvals in this file are synthetic transport fixtures in isolated roots.
 const now = "2026-09-05T20:00:00.000Z",
   folder = "artifacts/curriculum-review-import/test";
-function fixture(privateProbe = false) {
+function fixture(
+  privateProbe = false,
+  partition: "evaluation" | "calibration" = "evaluation",
+) {
   const task: PracticeTask = {
     id: "en.c.001.retrieve.1.writing",
     version: "1",
@@ -77,7 +80,7 @@ function fixture(privateProbe = false) {
       {
         ...task,
         id: "private-probe",
-        partition: "evaluation",
+        partition,
         itemFamily: "private-unseen",
       },
     ];
@@ -326,4 +329,51 @@ test("private study probes require recorded content and evaluator review and can
   await expect(loadStudyProbeCatalog(root, changed, [], now)).rejects.toThrow(
     /Stale/,
   );
+});
+test("development calibration probes require their own exact reviews and cannot borrow final evaluation material", async () => {
+  const f = fixture(true, "calibration");
+  const prepared = prepareCurriculumReviewImport(
+    f.input,
+    f.packs,
+    f.cells,
+    [],
+    folder,
+    now,
+  );
+  const root = await materialize(prepared);
+  const applied = await applyCurriculumReviews(
+    root,
+    f.packs,
+    f.cells,
+    prepared.reviews,
+    now,
+  );
+  const catalog = {
+    schemaVersion: 1,
+    packs: [...applied.packs.values()],
+    reviews: prepared.reviews,
+  };
+  const result = await loadStudyProbeCatalog(
+    root,
+    catalog,
+    [fixture().pack],
+    now,
+    "calibration",
+  );
+  expect(result.reviewedCells).toBe(1);
+  await expect(loadStudyProbeCatalog(root, catalog, [], now)).rejects.toThrow();
+  const changed = structuredClone(catalog);
+  changed.packs[0]!.units[0]!.tasks[0]!.partition = "evaluation";
+  await expect(
+    loadStudyProbeCatalog(root, changed, [], now, "calibration"),
+  ).rejects.toThrow();
+  await expect(
+    loadStudyProbeCatalog(
+      root,
+      { ...catalog, reviews: [] },
+      [],
+      now,
+      "calibration",
+    ),
+  ).rejects.toThrow();
 });

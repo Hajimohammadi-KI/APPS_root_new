@@ -7,6 +7,13 @@ import {
 import { digest } from "./lib/model-benchmark";
 import { loadRepresentativeRuntime } from "./lib/representative-model-candidate";
 import { replayPracticeBandit } from "./lib/practice-bandit";
+import {
+  parseReviewLedger,
+  validateReleaseReviews,
+  type CoverageCell,
+} from "./lib/automaticity-release-reviews";
+import { buildHumanReviewManifest } from "./lib/human-review-manifest";
+import { loadStudyProbeCatalog } from "./lib/study-probe-catalog";
 const root = resolve(import.meta.dir, ".."),
   input = Bun.argv.find((arg) => arg.startsWith("--input="))?.slice(8);
 if (!input && !Bun.argv.includes("--empty"))
@@ -26,11 +33,44 @@ if (
   throw Error("Expected decisions and immutable evidence events");
 const runtime = await loadRepresentativeRuntime(root),
   now = new Date().toISOString();
+const ledger = parseReviewLedger(
+  JSON.parse(
+    await readFile(
+      resolve(root, "docs/automaticity-release-reviews.json"),
+      "utf8",
+    ),
+  ),
+);
+const coverage = JSON.parse(
+  await readFile(resolve(root, "docs/automaticity-coverage.json"), "utf8"),
+) as { cells: CoverageCell[] };
+await validateReleaseReviews(
+  root,
+  coverage.cells,
+  new Map(runtime.packs.map((pack) => [pack.language, pack])),
+  ledger,
+  now,
+);
+const probes =
+  value.probeCatalog === undefined
+    ? null
+    : await loadStudyProbeCatalog(
+        root,
+        value.probeCatalog,
+        runtime.packs,
+        now,
+        "calibration",
+      );
+const packs = probes?.packs ?? runtime.packs;
+const approvals = packs.map((pack) =>
+  buildHumanReviewManifest(pack, [...ledger, ...(probes?.reviews ?? [])]),
+);
 const replay = await replayPracticeBandit(
   value.decisions,
   value.events.map((event) => parseAutomaticityEvent(event)),
-  runtime.packs,
+  packs,
   now,
+  approvals,
 );
 const folder = resolve(
   root,
@@ -44,6 +84,17 @@ await writeFile(
       ...replay,
       at: now,
       inputSha256: digest(bytes),
+      inputMode: input ? "explicit_export" : "no_export_submitted",
+      reviewLedgerSha256: digest(
+        await readFile(
+          resolve(root, "docs/automaticity-release-reviews.json"),
+          "utf8",
+        ),
+      ),
+      privateProbeCatalogSha256:
+        value.probeCatalog === undefined
+          ? null
+          : digest(JSON.stringify(value.probeCatalog)),
       sourceSha256: digest(
         await readFile(resolve(root, "scripts/lib/practice-bandit.ts"), "utf8"),
       ),

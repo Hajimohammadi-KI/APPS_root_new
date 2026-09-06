@@ -124,6 +124,39 @@ try {
   report.checks.push(
     "Missing independent review and inactive reinforcement learning remain explicit",
   );
+  const conditionalIds = ["M04", "S03", "X01", "X02", "X03"];
+  const checkConditionalCards = async () => {
+    await expect(page.locator(".decision-badge")).toHaveCount(5);
+    for (const id of conditionalIds) {
+      const task = backlog.tasks.find((row) => row.id === id);
+      const card = page.locator(`#task-${id}`);
+      assert.notEqual(task.status, "verified");
+      await expect(card).toHaveAttribute("data-status", task.status);
+      await expect(card).toHaveAttribute("data-decision", "defer");
+      await expect(card.locator(".decision-badge")).toHaveText(
+        "✓ Deferral decision verified",
+      );
+      await expect(card.locator(".decision-badge")).toHaveClass(/\bgood\b/);
+      await card.locator(":scope > summary").click();
+      await expect(card.locator(".conditional-decision")).toBeVisible();
+      await expect(card.locator(".conditional-decision")).toContainText(
+        "Activation and learner benefit are unverified",
+      );
+      for (const step of [
+        ...task.conditionalDecision.reasons,
+        ...task.conditionalDecision.reopenWhen,
+      ])
+        await expect(card.locator(".conditional-decision")).toContainText(step);
+    }
+    await page.locator("#status").selectOption("verified");
+    await expect(page.locator(".task")).toHaveCount(29);
+    await expect(page.locator(".decision-badge")).toHaveCount(0);
+    await page.locator("#status").selectOption("all");
+  };
+  await checkConditionalCards();
+  report.checks.push(
+    "Five checked deferrals have green decision badges, explicit reopening criteria and unchanged incomplete activation states; verified-only filter excludes them",
+  );
   await page.screenshot({
     path: resolve(folder, "desktop.png"),
     fullPage: true,
@@ -152,6 +185,7 @@ try {
     "5",
   ]);
   await expect(page.locator(".task")).toHaveCount(48);
+  await checkConditionalCards();
   report.checks.push(
     "Standalone HTML contains the same final evidence and human gates",
   );
@@ -162,6 +196,8 @@ try {
     fullAcceptanceVerified: 29,
     humanValidationPending: 14,
     requiredImplementationStillOpen: [],
+    conditionalDeferralDecisionsVerified: conditionalIds,
+    conditionalActivationsVerified: 0,
   });
 } catch (error) {
   report.status = "failed";

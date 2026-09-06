@@ -1,8 +1,8 @@
 {
   "version": 1,
   "firstObservedAt": "2026-09-05T05:39:47.639Z",
-  "updatedAt": "2026-09-05T22:28:47.818Z",
-  "sourceSha256": "35452378b8d5d44644cf73fcf00d8c3b9d60cede9f67b926f4860fa22e8ae09d",
+  "updatedAt": "2026-09-06T06:24:48.047Z",
+  "sourceSha256": "458c406c5e1f8413352e2f21a2774497d6c580ca4c2f71e84db70c5c850096cf",
   "taskSnapshots": {
     "B01": {
       "id": "B01",
@@ -2004,17 +2004,37 @@
         "artifacts/phase7-browser/2026-09-05T12-55-59-988Z/report.json",
         "artifacts/language-release-source/20260905-transformer-en34-de38-final/manifest.json",
         "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
-        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
       ],
       "required": false,
       "condition": "A candidate passes M03 and its deployment is selected; if selected, required before model-assisted release.",
-      "progressNote": "Engineering verified and installed in both apps: pinned local Transformer adapter, original-response preservation, exact canonical task/scope checks, structured minimal corrections, separate style proposals, conservative failure handling, disabled server routes and reviewed-release compiler. 34 adapter tests including retired-task rejection, 16 release safeguards and 10 installed browser/API cases passed. The real Qwen3-8B development run returned 3 accepted proposals and 17 rejected outputs on 20 unreviewed drafts. No model is qualified or enabled; M01-M03 and independent release review remain open.",
-      "updatedOn": "2026-09-05",
+      "progressNote": "Integration checked; qualified model activation is deferred. No independently approved automatic evaluator scope is available. The installed adapter's recorded checks cover disabled routes and synthetic transport, not a qualified enabled release.",
+      "updatedOn": "2026-09-06",
       "engineeringVerification": "verified_for_recorded_scope",
       "afterHumanValidation": [
         "If a candidate is selected and independently approved, compile its pinned release, build and verify the enabled runtime, then deliver and test that installer. Disabled-adapter tests do not verify an enabled model release."
       ],
-      "engineeringScope": "Pinned adapter, disabled routes, output safeguards and isolated transport tests. No qualified enabled Transformer release is verified."
+      "engineeringScope": "Pinned adapter, disabled routes, output safeguards and isolated transport tests. No qualified enabled Transformer release is verified.",
+      "conditionalDecision": {
+        "record": "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json",
+        "sha256": "abe77156dad3422fa387b207cf7d4c8811dc78bf2ad024e4763ffdbb7d1d3d95",
+        "recordedAt": "2026-09-06T06:24:43.873Z",
+        "taskId": "M04",
+        "summary": "Integration checked; qualified model activation is deferred.",
+        "reasons": [
+          "No independently approved automatic evaluator scope is available.",
+          "The installed adapter's recorded checks cover disabled routes and synthetic transport, not a qualified enabled release."
+        ],
+        "reopenWhen": [
+          "Complete M01–M03 with independently reviewed calibration/final evidence.",
+          "Review the exact selected model and output corrections; compile and verify its enabled versioned release."
+        ],
+        "outcome": "defer",
+        "activationVerified": false
+      }
     },
     "M05": {
       "id": "M05",
@@ -2888,12 +2908,32 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
         "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
-        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
       ],
       "required": false,
       "condition": "S02 supplies sufficient favourable evidence; otherwise leave shadow-only.",
-      "progressNote": "Baseline due dates remain in use; no qualified scheduler benefit or non-inferiority evidence exists.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Activation eligibility checked; the baseline scheduler remains active. S02 has no submitted qualified learner comparison showing benefit or non-inferiority. Both shipped pilot declarations are empty. Bounded-pilot rollback tests do not establish broad scheduler qualification.",
+      "updatedOn": "2026-09-06",
+      "conditionalDecision": {
+        "record": "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json",
+        "sha256": "abe77156dad3422fa387b207cf7d4c8811dc78bf2ad024e4763ffdbb7d1d3d95",
+        "recordedAt": "2026-09-06T06:24:43.873Z",
+        "taskId": "S03",
+        "summary": "Activation eligibility checked; the baseline scheduler remains active.",
+        "reasons": [
+          "S02 has no submitted qualified learner comparison showing benefit or non-inferiority.",
+          "Both shipped pilot declarations are empty. Bounded-pilot rollback tests do not establish broad scheduler qualification."
+        ],
+        "reopenWhen": [
+          "Complete the consented S02 comparison and independent analysis against predeclared benefit criteria.",
+          "Complete R03, then implement and verify the selected broader rollout with due-review preservation and rollback."
+        ],
+        "outcome": "defer",
+        "activationVerified": false
+      }
     },
     "R01": {
       "id": "R01",
@@ -3219,12 +3259,32 @@
         "scripts/practice-bandit.test.ts",
         "scripts/replay-practice-bandit.ts",
         "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
-        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
       ],
       "required": false,
       "condition": "Only after measured learning and scheduling evidence justify considering RL.",
-      "progressNote": "Executable offline readiness check is implemented. Current replay has zero qualified delayed rewards and remains unready. A reviewed prospective design, adequate observations and benefit/non-inferiority evidence are still required; Daily uses the existing rule policy.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Readiness assessed: a live bandit experiment is not justified by the submitted evidence. No consented development export was submitted to this assessment; empty replay yields no qualified delayed rewards. M03, P03 and S02 do not yet supply the reviewed outcome, uncertainty and scheduling evidence required for an experiment.",
+      "updatedOn": "2026-09-06",
+      "conditionalDecision": {
+        "record": "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json",
+        "sha256": "abe77156dad3422fa387b207cf7d4c8811dc78bf2ad024e4763ffdbb7d1d3d95",
+        "recordedAt": "2026-09-06T06:24:43.873Z",
+        "taskId": "X01",
+        "summary": "Readiness assessed: a live bandit experiment is not justified by the submitted evidence.",
+        "reasons": [
+          "No consented development export was submitted to this assessment; empty replay yields no qualified delayed rewards.",
+          "M03, P03 and S02 do not yet supply the reviewed outcome, uncertainty and scheduling evidence required for an experiment."
+        ],
+        "reopenWhen": [
+          "Submit qualified delayed outcome logs with eligible actions, recorded probabilities and independent human procedures.",
+          "Review a prospective comparison and a justified sample/uncertainty plan; one learner is not assumed sufficient."
+        ],
+        "outcome": "defer",
+        "activationVerified": false
+      }
     },
     "X02": {
       "id": "X02",
@@ -3256,12 +3316,32 @@
         "scripts/practice-bandit.test.ts",
         "scripts/replay-practice-bandit.ts",
         "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
-        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
       ],
       "required": false,
       "condition": "X01 finds sufficient data and a sound design; learner participation is available.",
-      "progressNote": "An offline contextual-bandit prototype now replays logged choices and qualified delayed outcomes, excludes contaminated evidence, balances exploration across eligible strategies and rejects unsupported off-policy comparisons. Eight synthetic tests pass. No live exploration, real reward dataset or learner experiment has been activated; the actual comparison remains deferred.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Offline prototype checked; the conditional learner experiment remains deferred. X01 readiness has not opened a justified experiment; there is no actual frozen prospective comparison to execute. Synthetic replay and IPS arithmetic do not establish learner benefit. Final evaluation material is excluded from development imports.",
+      "updatedOn": "2026-09-06",
+      "conditionalDecision": {
+        "record": "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json",
+        "sha256": "abe77156dad3422fa387b207cf7d4c8811dc78bf2ad024e4763ffdbb7d1d3d95",
+        "recordedAt": "2026-09-06T06:24:43.873Z",
+        "taskId": "X02",
+        "summary": "Offline prototype checked; the conditional learner experiment remains deferred.",
+        "reasons": [
+          "X01 readiness has not opened a justified experiment; there is no actual frozen prospective comparison to execute.",
+          "Synthetic replay and IPS arithmetic do not establish learner benefit. Final evaluation material is excluded from development imports."
+        ],
+        "reopenWhen": [
+          "Satisfy X01 and R03 and obtain actual participant opt-in.",
+          "Implement the approved live protocol and frozen final evaluation, verify its delivery, and collect independent delayed outcomes."
+        ],
+        "outcome": "defer",
+        "activationVerified": false
+      }
     },
     "X03": {
       "id": "X03",
@@ -3286,12 +3366,32 @@
         "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
         "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
         "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
-        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json"
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
       ],
       "required": false,
       "condition": "A completed X02 experiment exposes a justified sequential decision problem.",
-      "progressNote": "No evidence that sequential RL adds value beyond the baseline; no RL training started.",
-      "updatedOn": "2026-09-05"
+      "progressNote": "Current decision: defer sequential RL; its added value is unmeasured. No completed X02 comparison exposes a justified sequential decision problem. Simulation, test counts and immediate model agreement cannot demonstrate additional learning benefit.",
+      "updatedOn": "2026-09-06",
+      "conditionalDecision": {
+        "record": "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json",
+        "sha256": "abe77156dad3422fa387b207cf7d4c8811dc78bf2ad024e4763ffdbb7d1d3d95",
+        "recordedAt": "2026-09-06T06:24:43.873Z",
+        "taskId": "X03",
+        "summary": "Current decision: defer sequential RL; its added value is unmeasured.",
+        "reasons": [
+          "No completed X02 comparison exposes a justified sequential decision problem.",
+          "Simulation, test counts and immediate model agreement cannot demonstrate additional learning benefit."
+        ],
+        "reopenWhen": [
+          "Complete X02 with qualified longitudinal evidence.",
+          "Document a sequential decision problem and measurable benefit beyond the rule policy and bandit before proposing training."
+        ],
+        "outcome": "defer",
+        "activationVerified": false
+      }
     },
     "U05": {
       "id": "U05",
@@ -12542,6 +12642,243 @@
         "artifacts/installed-language-completion/2026-09-05T22-25-47-810Z/report.json",
         "docs/LANGUAGE-AUTOMATICITY-DELIVERY-2026-09-06.md",
         "artifacts/language-engineering-completion/20260906-41-45/verification.json"
+      ]
+    },
+    {
+      "id": "dd23b2719a999943d58f32e299501dbc39da115c9f59a0313cf33462c01aa7ba",
+      "at": "2026-09-06T06:21:23.352Z",
+      "taskId": "M04",
+      "title": "Integrate a qualified Transformer through the shared contract",
+      "from": "implemented",
+      "to": "implemented",
+      "note": "Integration checked; qualified model activation is deferred. No independently approved automatic evaluator scope is available. The installed adapter's recorded checks cover disabled routes and synthetic transport, not a qualified enabled release.",
+      "engineeringVerified": true,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/assessment.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md",
+        "docs/LANGUAGE-AUTOMATICITY-TRANSFORMER-2026-09-05.md",
+        "shared/learning-core/src/automaticity/transformer.ts",
+        "scripts/compile-transformer-release.ts",
+        "scripts/verify-transformer-browser.mjs",
+        "artifacts/transformer-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-145258-513f4ce3/report.json",
+        "artifacts/installer-cycle/German-20260905-144955-605d7eea/report.json",
+        "artifacts/installed-language-update/20260905-145420/report.json",
+        "artifacts/installed-language-update/20260905-145055/report.json",
+        "artifacts/transformer-browser/2026-09-05T12-56-01-185Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T12-55-57-711Z/report.json",
+        "artifacts/phase7-browser/2026-09-05T12-55-59-988Z/report.json",
+        "artifacts/language-release-source/20260905-transformer-en34-de38-final/manifest.json",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md"
+      ]
+    },
+    {
+      "id": "e353b825344e311b7d19430641a4560bf335cb8fee2becb8b87cdbc3d5752b91",
+      "at": "2026-09-06T06:21:23.352Z",
+      "taskId": "S03",
+      "title": "Activate a qualified scheduler reversibly",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Activation eligibility checked; the baseline scheduler remains active. S02 has no submitted qualified learner comparison showing benefit or non-inferiority. Both shipped pilot declarations are empty. Bounded-pilot rollback tests do not establish broad scheduler qualification.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md"
+      ]
+    },
+    {
+      "id": "688430dd3d5a16149761c1f9786ce0c0ecba26719848746d748a9dd89c0cc081",
+      "at": "2026-09-06T06:21:23.352Z",
+      "taskId": "X01",
+      "title": "Assess readiness for a contextual-bandit experiment",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Readiness assessed: a live bandit experiment is not justified by the submitted evidence. No consented development export was submitted to this assessment; empty replay yields no qualified delayed rewards. M03, P03 and S02 do not yet supply the reviewed outcome, uncertainty and scheduling evidence required for an experiment.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-FEEDBACK-2026-09-05.md",
+        "artifacts/practice-bandit/2026-09-05T19-35-19-018Z/report.json",
+        "scripts/lib/practice-bandit.ts",
+        "scripts/practice-bandit.test.ts",
+        "scripts/replay-practice-bandit.ts",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md"
+      ]
+    },
+    {
+      "id": "c4840b7a54a5004bf86bbceed48e6f77b8a0796b9640be2fbd5aa00ac7751eda",
+      "at": "2026-09-06T06:21:23.352Z",
+      "taskId": "X02",
+      "title": "Compare a bounded practice-selection policy",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Offline prototype checked; the conditional learner experiment remains deferred. X01 readiness has not opened a justified experiment; there is no actual frozen prospective comparison to execute. Synthetic replay and IPS arithmetic do not establish learner benefit. Final evaluation material is excluded from development imports.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-FEEDBACK-2026-09-05.md",
+        "artifacts/practice-bandit/2026-09-05T19-35-19-018Z/report.json",
+        "scripts/lib/practice-bandit.ts",
+        "scripts/practice-bandit.test.ts",
+        "scripts/replay-practice-bandit.ts",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md"
+      ]
+    },
+    {
+      "id": "3889c43c53918189fed1c3b8b250f2ba58faf2790bf1b35e3c5ef6a6dbcc72c4",
+      "at": "2026-09-06T06:21:23.352Z",
+      "taskId": "X03",
+      "title": "Decide whether sequential RL adds value",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Current decision: defer sequential RL; its added value is unmeasured. No completed X02 comparison exposes a justified sequential decision problem. Simulation, test counts and immediate model agreement cannot demonstrate additional learning benefit.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md"
+      ]
+    },
+    {
+      "id": "d4481e6b676538faf0cdea6872b20d0d19982a96d9cba68ee8acff8a65f14a56",
+      "at": "2026-09-06T06:24:48.047Z",
+      "taskId": "M04",
+      "title": "Integrate a qualified Transformer through the shared contract",
+      "from": "implemented",
+      "to": "implemented",
+      "note": "Integration checked; qualified model activation is deferred. No independently approved automatic evaluator scope is available. The installed adapter's recorded checks cover disabled routes and synthetic transport, not a qualified enabled release.",
+      "engineeringVerified": true,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "shared/learning-core/src/automaticity/assessment.ts",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-MODELS-2026-09-05.md",
+        "docs/model-evaluation/README.md",
+        "docs/LANGUAGE-AUTOMATICITY-TRANSFORMER-2026-09-05.md",
+        "shared/learning-core/src/automaticity/transformer.ts",
+        "scripts/compile-transformer-release.ts",
+        "scripts/verify-transformer-browser.mjs",
+        "artifacts/transformer-delivery/final-verification.json",
+        "artifacts/installer-cycle/English-20260905-145258-513f4ce3/report.json",
+        "artifacts/installer-cycle/German-20260905-144955-605d7eea/report.json",
+        "artifacts/installed-language-update/20260905-145420/report.json",
+        "artifacts/installed-language-update/20260905-145055/report.json",
+        "artifacts/transformer-browser/2026-09-05T12-56-01-185Z/report.json",
+        "artifacts/installed-automaticity-browser/2026-09-05T12-55-57-711Z/report.json",
+        "artifacts/phase7-browser/2026-09-05T12-55-59-988Z/report.json",
+        "artifacts/language-release-source/20260905-transformer-en34-de38-final/manifest.json",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
+      ]
+    },
+    {
+      "id": "6e2a6da2631dc34c0ec5c4eb0ef93a1b260236efa026d8a5140479c2eb1076fc",
+      "at": "2026-09-06T06:24:48.047Z",
+      "taskId": "S03",
+      "title": "Activate a qualified scheduler reversibly",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Activation eligibility checked; the baseline scheduler remains active. S02 has no submitted qualified learner comparison showing benefit or non-inferiority. Both shipped pilot declarations are empty. Bounded-pilot rollback tests do not establish broad scheduler qualification.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
+      ]
+    },
+    {
+      "id": "0ab5d277be901233cdb3eea0c104ca547400a5e27518ee2a6d6ab21728233bc9",
+      "at": "2026-09-06T06:24:48.047Z",
+      "taskId": "X01",
+      "title": "Assess readiness for a contextual-bandit experiment",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Readiness assessed: a live bandit experiment is not justified by the submitted evidence. No consented development export was submitted to this assessment; empty replay yields no qualified delayed rewards. M03, P03 and S02 do not yet supply the reviewed outcome, uncertainty and scheduling evidence required for an experiment.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-FEEDBACK-2026-09-05.md",
+        "artifacts/practice-bandit/2026-09-05T19-35-19-018Z/report.json",
+        "scripts/lib/practice-bandit.ts",
+        "scripts/practice-bandit.test.ts",
+        "scripts/replay-practice-bandit.ts",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
+      ]
+    },
+    {
+      "id": "1793be7e4a9198f89f4607977461a68d153896f56ee4f2b195136f2a1e3ab4e3",
+      "at": "2026-09-06T06:24:48.047Z",
+      "taskId": "X02",
+      "title": "Compare a bounded practice-selection policy",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Offline prototype checked; the conditional learner experiment remains deferred. X01 readiness has not opened a justified experiment; there is no actual frozen prospective comparison to execute. Synthetic replay and IPS arithmetic do not establish learner benefit. Final evaluation material is excluded from development imports.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/LANGUAGE-AUTOMATICITY-FEEDBACK-2026-09-05.md",
+        "artifacts/practice-bandit/2026-09-05T19-35-19-018Z/report.json",
+        "scripts/lib/practice-bandit.ts",
+        "scripts/practice-bandit.test.ts",
+        "scripts/replay-practice-bandit.ts",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
+      ]
+    },
+    {
+      "id": "face24bf90d5280b0da3fdec869a18b83fff3c55cc800c7a3ec1afdd35ad0f8f",
+      "at": "2026-09-06T06:24:48.047Z",
+      "taskId": "X03",
+      "title": "Decide whether sequential RL adds value",
+      "from": "deferred",
+      "to": "deferred",
+      "note": "Current decision: defer sequential RL; its added value is unmeasured. No completed X02 comparison exposes a justified sequential decision problem. Simulation, test counts and immediate model agreement cannot demonstrate additional learning benefit.",
+      "engineeringVerified": false,
+      "evidence": [
+        "docs/LANGUAGE-AUTOMATICITY-IMPLEMENTATION-2026-09-05.md",
+        "docs/AUTOMATICITY-REVIEW-AND-EVALUATION-PROTOCOL.md",
+        "docs/ROADMAP-OPEN-WORK-AUDIT-2026-09-05.md",
+        "artifacts/roadmap-completion-audit/2026-09-05T21-07-02-061Z/report.json",
+        "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
+        "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
+        "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
       ]
     }
   ]

@@ -12,12 +12,13 @@ import {
   validateReleaseReviews,
   type CoverageCell,
 } from "./automaticity-release-reviews";
-/** Private reviewed evaluation material stays out of shipped practice and model training. */
+/** Private probes stay out of shipped practice; final evaluation is the default, with calibration permitted only for explicit development imports. */
 export async function loadStudyProbeCatalog(
   root: string,
   value: unknown,
   practice: readonly CurriculumPack[],
   now: string,
+  partition: "evaluation" | "calibration" = "evaluation",
 ) {
   if (
     !isRecord(value) ||
@@ -58,7 +59,7 @@ export async function loadStudyProbeCatalog(
       for (const task of tasks) {
         if (
           !unit.id.startsWith(pack.language + ".") ||
-          task.partition !== "evaluation" ||
+          task.partition !== partition ||
           task.contentReview !== "human_reviewed" ||
           ids.has(task.id) ||
           families.has(`${task.constructionId}:${task.itemFamily}`) ||

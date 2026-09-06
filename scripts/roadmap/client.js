@@ -34,7 +34,7 @@
       timeStyle: "short",
     }).format(new Date(value));
   const badge = (task) =>
-    `<span class="pill ${task.status === "verified" ? "good" : task.remainingEngineeringWork?.length || task.remainingHumanWork?.length || ["in_progress", "blocked"].includes(task.status) ? "warning" : "muted"}">${task.status === "verified" ? "✓ " : ""}${escape(task.remainingEngineeringWork?.length ? "Implementation still open" : task.remainingHumanWork?.length ? "Human validation pending" : labels[task.status])}</span>${engineering(task) && task.status !== "verified" ? '<span class="pill good">✓ Recorded checks passed</span>' : ""}`;
+    `<span class="pill ${task.status === "verified" ? "good" : task.remainingEngineeringWork?.length || task.remainingHumanWork?.length || ["in_progress", "blocked"].includes(task.status) ? "warning" : "muted"}">${task.status === "verified" ? "✓ " : ""}${escape(task.remainingEngineeringWork?.length ? "Implementation still open" : task.remainingHumanWork?.length ? "Human validation pending" : labels[task.status])}</span>${engineering(task) && task.status !== "verified" ? '<span class="pill good">✓ Recorded checks passed</span>' : ""}${task.conditionalDecision ? '<span class="pill good decision-badge">✓ Deferral decision verified</span>' : ""}`;
   const evidence = (paths) =>
     `<ul class="evidence">${paths.map((path) => `<li><code>${escape(path)}</code></li>`).join("")}</ul>`;
   function render() {
@@ -82,6 +82,10 @@
       .join("");
     $("completion-note").textContent =
       `${complete} of ${required.length} required tasks are fully verified. ${required.length - complete} required tasks and ${tasks.filter((task) => !task.required && task.status !== "verified").length} conditional tasks remain open. Green check badges cover the recorded tests only.${implementationOpen.length ? ` Required implementation still open: ${implementationOpen.map((task) => task.id).join(", ")}.` : ""}`;
+    const decisions = tasks.filter((task) => task.conditionalDecision).length;
+    if (decisions)
+      $("completion-note").textContent +=
+        ` Eligibility was checked for ${decisions} conditional tasks; their activation or experiment remains deferred.`;
     const release = backlog.technicalRelease;
     $("release").innerHTML =
       `<div><span class="pill ${release.status === "verified" ? "good" : "warning"}">${release.status === "verified" ? "✓ Technical release verified" : release.status === "blocked" ? "Desktop release blocked" : "Technical release pending"}</span><p><strong>${Object.entries(
@@ -124,6 +128,8 @@
             ...(task.remainingEngineeringWork || []),
             ...(task.remainingHumanWork || []),
             ...(task.afterHumanValidation || []),
+            ...(task.conditionalDecision?.reasons || []),
+            ...(task.conditionalDecision?.reopenWhen || []),
           ]
             .join(" ")
             .toLowerCase()
@@ -149,6 +155,7 @@
       '<p class="empty">No matching tasks. Try another search or filter.</p>';
     for (const task of visible) {
       const card = $("task-" + task.id);
+      if (task.conditionalDecision) card.dataset.decision = "defer";
       if (task.remainingHumanWork?.length)
         card.dataset.humanValidation = "pending";
       if (task.remainingEngineeringWork?.length)
@@ -158,7 +165,8 @@
         ["Remaining human validation", task.remainingHumanWork],
         ["Work after human evidence arrives", task.afterHumanValidation],
       ];
-      const details = `${task.engineeringScope ? `<p><strong>Scope of passed checks:</strong> ${escape(task.engineeringScope)}</p>` : ""}${lists
+      const decision = task.conditionalDecision;
+      const details = `${decision ? `<section class="conditional-decision"><h3>Current eligibility decision</h3><p>Checked ${escape(date(decision.recordedAt))}. The green badge verifies this deferral decision. Activation and learner benefit are unverified.</p><ul>${decision.reasons.map((reason) => `<li>${escape(reason)}</li>`).join("")}</ul><h3>Reopen when</h3><ul>${decision.reopenWhen.map((step) => `<li>${escape(step)}</li>`).join("")}</ul></section>` : ""}${task.engineeringScope ? `<p><strong>Scope of passed checks:</strong> ${escape(task.engineeringScope)}</p>` : ""}${lists
         .filter(([, items]) => items?.length)
         .map(
           ([title, items]) =>

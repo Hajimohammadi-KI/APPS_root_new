@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "hashEncoding": "utf8-lf",
+  "recordedAt": "2026-09-06T06:24:43.873Z",
+  "recordedBy": "automated_engineering_check",
+  "scope": "Verification of present conditional eligibility and deferral reasons; not human approval, experiment completion or proof of benefit.",
+  "facts": {
+    "reviewedCurriculumCells": 0,
+    "approvedAutomaticScopes": 0,
+    "submittedDevelopmentExport": false,
+    "shippedPilots": 0,
+    "learnerBenefit": "unmeasured"
+  },
+  "inputs": [
+    {
+      "path": "docs/automaticity-release-reviews.json",
+      "sha256": "9c0f416de460f5832b02b727a744dc5b0d447bb184f73f075bb20c7c725244b9"
+    },
+    {
+      "path": "docs/model-evaluation/support-matrix.json",
+      "sha256": "0ce919e2f78120b342ab2f70009e7f3d821902893a9700efb90ef92a9d6efcda"
+    },
+    {
+      "path": "scripts/lib/practice-bandit.ts",
+      "sha256": "36b41bbdf4cb1d22429149d88be085fb290c03792dad54788d94b81c2fffa105"
+    },
+    {
+      "path": "scripts/lib/study-probe-catalog.ts",
+      "sha256": "4192a1cd71c3f4b3f8b98b80f705e93c921deef52d8426955d45fb711cab29f1"
+    },
+    {
+      "path": "scripts/replay-practice-bandit.ts",
+      "sha256": "606fbb0d7fad8fb015b8e55f71613475505f33d96b0cf9010a503d9d81d90dc5"
+    },
+    {
+      "path": "scripts/assess-conditional-roadmap.ts",
+      "sha256": "5266bc35f9aa0d173033165932a8239fd48aca23c53624fdd76fc4d30658c8aa"
+    },
+    {
+      "path": "scripts/language-roadmap.ts",
+      "sha256": "c8d133f8add9154ae46cf38ccf0c7fedaf7bb9a117e01ef744dd20e7585e7e21"
+    },
+    {
+      "path": "scripts/conditional-roadmap.test.ts",
+      "sha256": "04fc99889b45a55abae11f8a102d971626420dbcb5de0d4d789421e5c463ff78"
+    },
+    {
+      "path": "scripts/practice-bandit.test.ts",
+      "sha256": "002e335d7801aef802bf17540d20c0ea0cfd61bfda23debb64ae0166339d5ddc"
+    },
+    {
+      "path": "scripts/reviewed-curriculum.test.ts",
+      "sha256": "74d84afedfe589855556b7531bd0666abec16ad2c19c949a8ed945c8a7fde92f"
+    },
+    {
+      "path": "Apps/English/English-Automaticity/apps/web/public/learning-core/scheduler-pilot-en.json",
+      "sha256": "865230646c561ffe4847bf64c0b43081a72808fd3868dccb6ce6da33ff68a2d0"
+    },
+    {
+      "path": "Apps/Deutsch-Automaticity/apps/web/public/learning-core/scheduler-pilot-de.json",
+      "sha256": "865230646c561ffe4847bf64c0b43081a72808fd3868dccb6ce6da33ff68a2d0"
+    }
+  ],
+  "checks": [
+    {
+      "id": "reward-and-probe-boundaries",
+      "command": [
+        "bun",
+        "test",
+        "./scripts/practice-bandit.test.ts",
+        "./scripts/reviewed-curriculum.test.ts",
+        "./scripts/learning-study.test.ts",
+        "./scripts/conditional-roadmap.test.ts"
+      ],
+      "exit": 0,
+      "status": "passed",
+      "log": "artifacts/conditional-roadmap/2026-09-06T06-24-43-873Z/reward-and-probe-boundaries.log",
+      "logSha256": "9d48aaf1321cb908a48c545a236e3271bb02c6eeb3e0e629f4c489cb901511f6"
+    },
+    {
+      "id": "scheduler-rollback",
+      "command": [
+        "bun",
+        "test",
+        "./shared/learning-core/src/automaticity/scheduler-pilot.test.ts",
+        "./scripts/scheduler-pilot-evaluation.test.ts"
+      ],
+      "exit": 0,
+      "status": "passed",
+      "log": "artifacts/conditional-roadmap/2026-09-06T06-24-43-873Z/scheduler-rollback.log",
+      "logSha256": "3cd982ecbb793f6c4bd1ddc9e437e497ba651c1a1a4ef028ca65cb08b6c502db"
+    },
+    {
+      "id": "transformer-release",
+      "command": [
+        "bun",
+        "scripts/verify-transformer-release.ts"
+      ],
+      "exit": 0,
+      "status": "passed",
+      "log": "artifacts/conditional-roadmap/2026-09-06T06-24-43-873Z/transformer-release.log",
+      "logSha256": "c65e751269abd5bdeeda334effb36e9ba77101846ebd91bd22a3ef1de3e3356b"
+    },
+    {
+      "id": "bandit-no-submitted-data",
+      "command": [
+        "bun",
+        "scripts/replay-practice-bandit.ts",
+        "--empty"
+      ],
+      "exit": 0,
+      "status": "passed",
+      "log": "artifacts/conditional-roadmap/2026-09-06T06-24-43-873Z/bandit-no-submitted-data.log",
+      "logSha256": "394c208ac963bd1bb3a4dfe21a29a158f40a645f39660ead2ff33c139aec2526"
+    },
+    {
+      "id": "review-integrity",
+      "command": [
+        "bun",
+        "scripts/verify-automaticity-release-reviews.ts"
+      ],
+      "exit": 0,
+      "status": "passed",
+      "log": "artifacts/conditional-roadmap/2026-09-06T06-24-43-873Z/review-integrity.log",
+      "logSha256": "57d9057784cd8746f255587f6402f698d3c9065b4230dbf14b9664b0579c0aa0"
+    },
+    {
+      "id": "tool-types",
+      "command": [
+        "node",
+        "Apps/Deutsch-Automaticity/node_modules/typescript/bin/tsc",
+        "-p",
+        "scripts/tsconfig.language-tools.json"
+      ],
+      "exit": 0,
+      "status": "passed",
+      "log": "artifacts/conditional-roadmap/2026-09-06T06-24-43-873Z/tool-types.log",
+      "logSha256": "a3680b6601c39b586ea892ad2bbaa58a7f72b62a64f73917b09aa8c5f188110e"
+    }
+  ],
+  "decisions": [
+    {
+      "taskId": "M04",
+      "summary": "Integration checked; qualified model activation is deferred.",
+      "reasons": [
+        "No independently approved automatic evaluator scope is available.",
+        "The installed adapter's recorded checks cover disabled routes and synthetic transport, not a qualified enabled release."
+      ],
+      "reopenWhen": [
+        "Complete M01–M03 with independently reviewed calibration/final evidence.",
+        "Review the exact selected model and output corrections; compile and verify its enabled versioned release."
+      ],
+      "outcome": "defer",
+      "activationVerified": false
+    },
+    {
+      "taskId": "S03",
+      "summary": "Activation eligibility checked; the baseline scheduler remains active.",
+      "reasons": [
+        "S02 has no submitted qualified learner comparison showing benefit or non-inferiority.",
+        "Both shipped pilot declarations are empty. Bounded-pilot rollback tests do not establish broad scheduler qualification."
+      ],
+      "reopenWhen": [
+        "Complete the consented S02 comparison and independent analysis against predeclared benefit criteria.",
+        "Complete R03, then implement and verify the selected broader rollout with due-review preservation and rollback."
+      ],
+      "outcome": "defer",
+      "activationVerified": false
+    },
+    {
+      "taskId": "X01",
+      "summary": "Readiness assessed: a live bandit experiment is not justified by the submitted evidence.",
+      "reasons": [
+        "No consented development export was submitted to this assessment; empty replay yields no qualified delayed rewards.",
+        "M03, P03 and S02 do not yet supply the reviewed outcome, uncertainty and scheduling evidence required for an experiment."
+      ],
+      "reopenWhen": [
+        "Submit qualified delayed outcome logs with eligible actions, recorded probabilities and independent human procedures.",
+        "Review a prospective comparison and a justified sample/uncertainty plan; one learner is not assumed sufficient."
+      ],
+      "outcome": "defer",
+      "activationVerified": false
+    },
+    {
+      "taskId": "X02",
+      "summary": "Offline prototype checked; the conditional learner experiment remains deferred.",
+      "reasons": [
+        "X01 readiness has not opened a justified experiment; there is no actual frozen prospective comparison to execute.",
+        "Synthetic replay and IPS arithmetic do not establish learner benefit. Final evaluation material is excluded from development imports."
+      ],
+      "reopenWhen": [
+        "Satisfy X01 and R03 and obtain actual participant opt-in.",
+        "Implement the approved live protocol and frozen final evaluation, verify its delivery, and collect independent delayed outcomes."
+      ],
+      "outcome": "defer",
+      "activationVerified": false
+    },
+    {
+      "taskId": "X03",
+      "summary": "Current decision: defer sequential RL; its added value is unmeasured.",
+      "reasons": [
+        "No completed X02 comparison exposes a justified sequential decision problem.",
+        "Simulation, test counts and immediate model agreement cannot demonstrate additional learning benefit."
+      ],
+      "reopenWhen": [
+        "Complete X02 with qualified longitudinal evidence.",
+        "Document a sequential decision problem and measurable benefit beyond the rule policy and bandit before proposing training."
+      ],
+      "outcome": "defer",
+      "activationVerified": false
+    }
+  ]
+}

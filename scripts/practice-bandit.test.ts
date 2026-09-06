@@ -8,6 +8,7 @@ import {
   type PracticeDecision,
 } from "./lib/practice-bandit";
 import { sha256 } from "../shared/learning-core/src/automaticity/backup";
+import type { HumanReviewManifest } from "../shared/learning-core/src/automaticity/human-review";
 import type {
   AttemptEvent,
   AssessmentEvent,
@@ -40,6 +41,7 @@ async function fixture() {
   const pack = {
     language: "en",
     version: "synthetic-bandit",
+    mappingVersion: "synthetic-bandit",
     units: [{ id: retrieve.constructionId, tasks }],
   } as CurriculumPack;
   const attempt = async (
@@ -131,7 +133,30 @@ async function fixture() {
     practiceAttemptId: practice.id,
     probeAttemptId: delayed.id,
   };
+  const approvals: HumanReviewManifest[] = [
+    {
+      schemaVersion: 1,
+      language: "en",
+      contentVersion: pack.version,
+      mappingVersion: pack.mappingVersion,
+      curriculumSha256: await sha256(JSON.stringify(pack) + "\n"),
+      scopes: [
+        {
+          taskId: probe.id,
+          taskVersion: probe.version,
+          rubricVersion: probe.rubricVersion,
+          definitionSha256: delayed.task.definitionSha256!,
+          reviewerName: "Synthetic reviewer",
+          evaluatorId: assessment.evaluator.id,
+          evaluatorVersion: assessment.evaluator.version,
+          reviewId: assessment.evaluator.reviewId!,
+          approvedAt: "2025-01-01T00:00:00.000Z",
+        },
+      ],
+    },
+  ];
   return {
+    approvals,
     pack,
     retrieve,
     vary,
@@ -145,7 +170,13 @@ async function fixture() {
 }
 test("a linked reviewed delayed reward updates the contextual action value only in shadow", async () => {
   const f = await fixture(),
-    replay = await replayPracticeBandit([f.decision], f.events, [f.pack], now);
+    replay = await replayPracticeBandit(
+      [f.decision],
+      f.events,
+      [f.pack],
+      now,
+      f.approvals,
+    );
   expect(replay.observations).toHaveLength(1);
   expect(replay.observations[0]?.reward).toBe(1);
   expect(replay.active).toBe(false);
@@ -184,6 +215,7 @@ test("confirmed errors and missing targets are negative rewards, not missing fol
       [f.practice, f.delayed, assessment],
       [f.pack],
       now,
+      f.approvals,
     );
     expect(replay.observations[0]?.reward).toBe(0);
   }
@@ -192,6 +224,7 @@ test("confirmed errors and missing targets are negative rewards, not missing fol
     f.events,
     [f.pack],
     now,
+    f.approvals,
   );
   expect(missing.observations).toHaveLength(0);
   expect(missing.excluded[0]?.reason).toContain("not a zero reward");
@@ -216,6 +249,7 @@ test("self-grading, unapproved reviewers, uncertainty and an invalidated reward 
           [f.practice, f.delayed, assessment],
           [f.pack],
           now,
+          f.approvals,
         )
       ).observations,
     ).toHaveLength(0);
@@ -232,8 +266,15 @@ test("self-grading, unapproved reviewers, uncertainty and an invalidated reward 
     },
   ];
   expect(
-    (await replayPracticeBandit([f.decision], events, [f.pack], now))
-      .observations,
+    (
+      await replayPracticeBandit(
+        [f.decision],
+        events,
+        [f.pack],
+        now,
+        f.approvals,
+      )
+    ).observations,
   ).toHaveLength(0);
 });
 test("assistance, short delays, repeated contexts and intervening exposure cannot reward a decision", async () => {
@@ -260,6 +301,7 @@ test("assistance, short delays, repeated contexts and intervening exposure canno
           [f.practice, delayed, f.assessment],
           [f.pack],
           now,
+          f.approvals,
         )
       ).observations,
     ).toHaveLength(0);
@@ -281,6 +323,7 @@ test("assistance, short delays, repeated contexts and intervening exposure canno
         [...f.events, exposure],
         [f.pack],
         now,
+        f.approvals,
       )
     ).observations,
   ).toHaveLength(0);
@@ -311,6 +354,7 @@ test("final tests, stale task bindings, unauthorised decisions and invalid prope
           [f.practice, delayed, f.assessment],
           [f.pack],
           now,
+          f.approvals,
         )
       ).observations,
     ).toHaveLength(0);
@@ -318,8 +362,15 @@ test("final tests, stale task bindings, unauthorised decisions and invalid prope
     task.contentReview = "authored";
   });
   expect(
-    (await replayPracticeBandit([f.decision], f.events, [f.pack], now))
-      .observations,
+    (
+      await replayPracticeBandit(
+        [f.decision],
+        f.events,
+        [f.pack],
+        now,
+        f.approvals,
+      )
+    ).observations,
   ).toHaveLength(0);
 });
 test("idempotent replay does not double-count rewards, and conflicting attribution is excluded", async () => {
@@ -331,6 +382,7 @@ test("idempotent replay does not double-count rewards, and conflicting attributi
         f.events,
         [f.pack],
         now,
+        f.approvals,
       )
     ).observations,
   ).toHaveLength(1);
@@ -341,6 +393,7 @@ test("idempotent replay does not double-count rewards, and conflicting attributi
         f.events,
         [f.pack],
         now,
+        f.approvals,
       )
     ).observations,
   ).toHaveLength(0);
@@ -351,6 +404,7 @@ test("idempotent replay does not double-count rewards, and conflicting attributi
         f.events,
         [f.pack],
         now,
+        f.approvals,
       )
     ).observations,
   ).toHaveLength(0);
@@ -364,6 +418,7 @@ test("deterministic history cannot evaluate an alternative that was never tried"
     f.events,
     [f.pack],
     now,
+    f.approvals,
   );
   const result = evaluatePracticePolicy(replay.observations, (row) =>
     row.options.map((option) => ({ ...option, probability: 0.5 })),
@@ -394,4 +449,63 @@ test("extra copies of a task cannot increase its strategy's exploration share", 
       0.5,
     ),
   ).toThrow();
+});
+test("a bare approval flag, model self-approval and stale human scope cannot create a reward", async () => {
+  const f = await fixture();
+  expect(
+    (await replayPracticeBandit([f.decision], f.events, [f.pack], now))
+      .observations,
+  ).toHaveLength(0);
+  for (const patch of [
+    { kind: "transformer" as const },
+    { id: "invented-procedure" },
+    { reviewId: "invented-review" },
+  ]) {
+    const events = [
+      f.practice,
+      f.delayed,
+      { ...f.assessment, evaluator: { ...f.assessment.evaluator, ...patch } },
+    ];
+    expect(
+      (
+        await replayPracticeBandit(
+          [f.decision],
+          events,
+          [f.pack],
+          now,
+          f.approvals,
+        )
+      ).observations,
+    ).toHaveLength(0);
+  }
+  const changed = structuredClone(f.approvals);
+  changed[0]!.scopes[0]!.definitionSha256 = "0".repeat(64);
+  expect(
+    (await replayPracticeBandit([f.decision], f.events, [f.pack], now, changed))
+      .observations,
+  ).toHaveLength(0);
+});
+test("retired choices and probes cannot reward an offline policy", async () => {
+  for (const target of ["choice", "probe"]) {
+    const f = await fixture();
+    f.pack.units[0]!.retiredTasks = [
+      {
+        taskId: target === "choice" ? f.vary.id : f.probe.id,
+        reason: "Synthetic retirement",
+        replacementTaskId: "synthetic-replacement",
+        retiredOn: "2025-01-04",
+      },
+    ];
+    expect(
+      (
+        await replayPracticeBandit(
+          [f.decision],
+          f.events,
+          [f.pack],
+          now,
+          f.approvals,
+        )
+      ).observations,
+    ).toHaveLength(0);
+  }
 });

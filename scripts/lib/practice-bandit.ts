@@ -5,12 +5,17 @@ import {
 } from "../../shared/learning-core/src/automaticity/contracts";
 import { reduceAutomaticityEvents } from "../../shared/learning-core/src/automaticity/evidence";
 import { sha256 } from "../../shared/learning-core/src/automaticity/backup";
-import type {
-  CurriculumPack,
-  PracticeTask,
+import {
+  activePracticeTasks,
+  type CurriculumPack,
+  type PracticeTask,
 } from "../../shared/learning-core/src/automaticity/curriculum";
+import {
+  qualifyHumanReview,
+  type HumanReviewManifest,
+} from "../../shared/learning-core/src/automaticity/human-review";
 
-export const BANDIT_VERSION = "practice-bandit-development-1";
+export const BANDIT_VERSION = "practice-bandit-development-2";
 export type PracticeArm = "retrieve" | "vary" | "produce";
 export interface PracticeDecision {
   id: string;
@@ -116,6 +121,7 @@ export async function replayPracticeBandit(
   events: readonly AutomaticityEvent[],
   packs: readonly CurriculumPack[],
   now: string,
+  approvals: readonly HumanReviewManifest[] = [],
 ): Promise<BanditReplay> {
   if (!validDate(now)) throw Error("Invalid replay time");
   const result: BanditReplay = {
@@ -197,7 +203,7 @@ export async function replayPracticeBandit(
     }
     const pack = packs.find((pack) => pack.language === decision.language),
       unit = pack?.units.find((unit) => unit.id === decision.constructionId);
-    const tasks = unit?.tasks ?? [],
+    const tasks = unit ? activePracticeTasks(unit) : [],
       options = decision.options.map((option) => ({
         option,
         task: tasks.find((task) => task.id === option.taskId),
@@ -278,6 +284,34 @@ export async function replayPracticeBandit(
       continue;
     }
     const quality = probe.assessment;
+    const manifest = approvals.find(
+      (row) => row.language === decision.language,
+    );
+    const scope = manifest?.scopes.find(
+      (row) =>
+        row.taskId === probe.attempt.task.id &&
+        row.evaluatorId === quality?.evaluator.id &&
+        row.evaluatorVersion === quality?.evaluator.version &&
+        row.reviewId === quality?.evaluator.reviewId,
+    );
+    if (
+      !quality ||
+      quality.evaluator.kind !== "human" ||
+      !manifest ||
+      !scope ||
+      !(await qualifyHumanReview(
+        probe.attempt,
+        pack!,
+        manifest,
+        scope.reviewerName,
+        quality.at,
+      ))
+    ) {
+      exclude(
+        "Reward lacks an independently approved procedure for this exact original response and task",
+      );
+      continue;
+    }
     const novel =
       probe.attempt.task.transferCondition !== "none" &&
       !reduced.attempts.some(

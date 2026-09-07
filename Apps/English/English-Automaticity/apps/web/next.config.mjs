@@ -2,7 +2,7 @@ import path from "node:path";
 
 // Vercel validates output at the English project root; standalone remains necessary only for the Windows installer.
 const nextConfig = {
-  allowedDevOrigins: ["127.0.0.1"],
+  allowedDevOrigins: ["127.0.0.1", "192.168.178.24"],
   ...(process.env.VERCEL ? { distDir: "../../.next" } : { output: "standalone" }),
   outputFileTracingRoot: path.resolve(process.cwd(), "../.."),
   reactStrictMode: true,

@@ -54,6 +54,33 @@ function normalizeAnswer(text: string): string {
     .toLocaleLowerCase("de");
 }
 
+const repairFocuses = [
+  {
+    key: "verb",
+    title: "Verben & Verbformen",
+    description: "Verbform, Hilfsverb und Übereinstimmung mit dem Subjekt.",
+    classes: ["auxiliary", "tense", "agreement"] as const,
+  },
+  {
+    key: "case",
+    title: "Kasus & Präpositionen",
+    description: "Artikel, Präposition und der geforderte Kasus zusammen.",
+    classes: ["case", "article"] as const,
+  },
+  {
+    key: "spelling",
+    title: "Rechtschreibung",
+    description: "Wortschreibung, Großschreibung und Tippfehler.",
+    classes: ["spelling"] as const,
+  },
+  {
+    key: "ending",
+    title: "Adjektive & Endungen",
+    description: "Adjektivendung und andere formabhängige Endungen.",
+    classes: ["ending"] as const,
+  },
+] as const;
+
 function HighlightedCorrection({
   original,
   corrected,
@@ -137,6 +164,41 @@ export function ErrorEngine() {
         <Summary value={fixed} label="Stabil repariert" />
       </div>
 
+      <section aria-labelledby="focus-heading" className="space-y-3">
+        <div>
+          <h2 id="focus-heading" className="text-sm font-semibold text-sky-900">
+            Deine vier Fehler-Schwerpunkte
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Wiederkehrende Fehler werden nach Muster gebündelt, damit die nächste Übung gezielt bleibt.
+          </p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {repairFocuses.map((focus) => {
+            const count = rows.filter((error) =>
+              (focus.classes as readonly string[]).includes(error.errorClass),
+            ).length;
+            return (
+              <a
+                key={focus.key}
+                href="#reparaturen"
+                className="min-h-32 rounded-xl border bg-card p-4 transition-colors hover:border-sky-400 hover:bg-sky-50/40"
+              >
+                <span className="flex items-start justify-between gap-3">
+                  <strong className="text-sm leading-5">{focus.title}</strong>
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-sky-100 text-sm font-semibold text-sky-900">
+                    {count}
+                  </span>
+                </span>
+                <span className="mt-3 block text-xs leading-5 text-muted-foreground">
+                  {focus.description}
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
       <section aria-label="Reparaturmissionen" className="space-y-2">
         <h2 className="text-sm font-semibold text-sky-900">Schnellmissionen</h2>
         <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
@@ -191,7 +253,7 @@ export function ErrorEngine() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-4">
+      <div id="reparaturen" className="grid gap-4">
         {rows.map((error) => (
           <ErrorRepairCard key={error.id} error={error} />
         ))}

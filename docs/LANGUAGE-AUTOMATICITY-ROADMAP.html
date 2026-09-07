@@ -181,6 +181,45 @@
       .release strong {
         color: var(--green);
       }
+      .review {
+        margin: 28px 0 36px;
+        padding: 22px;
+        border: 1px solid #d8c9a6;
+        border-radius: 14px;
+        background: #fffaf0;
+      }
+      .review h2 {
+        margin-bottom: 8px;
+      }
+      .review-intro {
+        max-width: 860px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .review-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-top: 16px;
+      }
+      .review-card {
+        min-height: 132px;
+        padding: 14px;
+        border: 1px solid #eadcbf;
+        border-radius: 10px;
+        background: #fff;
+      }
+      .review-card strong {
+        display: block;
+        color: #704416;
+        font-size: 0.92rem;
+      }
+      .review-card span {
+        display: block;
+        margin-top: 7px;
+        color: #5f5a4c;
+        font-size: 0.82rem;
+      }
       .section-head {
         margin: 36px 0 18px;
       }
@@ -394,7 +433,7 @@
         overflow: hidden;
         clip: rect(0, 0, 0, 0);
       }
-      @media (max-width: 720px) {
+      @media (max-width: 900px) {
         main {
           padding: 22px 14px 40px;
         }
@@ -407,6 +446,12 @@
         }
         .release {
           display: block;
+        }
+        .review {
+          padding: 16px;
+        }
+        .review-grid {
+          grid-template-columns: repeat(2, 1fr);
         }
         .controls {
           position: static;
@@ -435,6 +480,11 @@
         }
         .phase-title {
           gap: 10px;
+        }
+      }
+      @media (max-width: 430px) {
+        .review-grid {
+          grid-template-columns: 1fr;
         }
       }
       @media print {
@@ -550,6 +600,34 @@
         <div class="section-head">
           <div class="eyebrow">Dated progress</div>
           <h2 id="history-heading">What changed</h2>
+      <section class="review" aria-labelledby="german-review-heading">
+        <div class="eyebrow">German program review</div>
+        <h2 id="german-review-heading">Prioritize recurring error patterns</h2>
+        <p class="review-intro">
+          Current evaluation can classify these errors, but the roadmap must also
+          measure recurrence and repair by pattern. German practice now groups
+          feedback into four focused loops instead of treating every correction
+          as an isolated mistake.
+        </p>
+        <div class="review-grid">
+          <article class="review-card">
+            <strong>Verben &amp; Verbformen</strong>
+            <span>Subject agreement, conjugation, auxiliary and tense choices.</span>
+          </article>
+          <article class="review-card">
+            <strong>Kasus &amp; Präpositionen</strong>
+            <span>Preposition government, article choice and case in one unit.</span>
+          </article>
+          <article class="review-card">
+            <strong>Rechtschreibung</strong>
+            <span>Spelling and capitalization stay meaningful, not cosmetic.</span>
+          </article>
+          <article class="review-card">
+            <strong>Adjektive &amp; Endungen</strong>
+            <span>Adjective endings and other form-dependent endings.</span>
+          </article>
+        </div>
+      </section>
           <p>
             Updates appear here when the backlog changes. Verified work receives
             a green badge. Earlier changes remain in the journal if a task is

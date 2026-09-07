@@ -392,6 +392,13 @@ export function classifyError(
     return "word_order";
   }
   if (
+    /\b(präposition|preposition|präpositional|rektion|verbpräposition)\b/.test(
+      text,
+    )
+  ) {
+    return "case";
+  }
+  if (
     /\b(kasus|akkusativ|dativ|genitiv|nominativ|case|deklination)\b/.test(text)
   ) {
     return "case";
@@ -405,7 +412,11 @@ export function classifyError(
   if (/\b(tempus|zeitform|tense|präteritum|perfekt|futur)\b/.test(text)) {
     return "tense";
   }
-  if (/\b(kongruenz|agreement|übereinstimmung)\b/.test(text)) {
+  if (
+    /\b(kongruenz|agreement|übereinstimmung|konjugation|verbform|subjekt-?verb|verbendung)\b/.test(
+      text,
+    )
+  ) {
     return "agreement";
   }
   if (/\b(rechtschreibung|spelling|misspelling|tippfehler)\b/.test(text)) {

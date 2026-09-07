@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["127.0.0.1", "192.168.178.24"],
   // The Vercel project root is two levels above this nested web app, so its framework adapter must find .next there.
   // Local and Windows builds keep standalone output inside the web workspace through the same configured path.
   ...(process.env.VERCEL

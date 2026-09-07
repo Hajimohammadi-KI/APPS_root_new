@@ -1,8 +1,8 @@
 {
   "version": 1,
   "firstObservedAt": "2026-09-05T05:39:47.639Z",
-  "updatedAt": "2026-09-06T06:24:48.047Z",
-  "sourceSha256": "458c406c5e1f8413352e2f21a2774497d6c580ca4c2f71e84db70c5c850096cf",
+  "updatedAt": "2026-09-07T17:19:15.833Z",
+  "sourceSha256": "d459c3810da48f736c3e1274032f7e3595338bbec2dcadf3d1ccffd0a84a17cf",
   "taskSnapshots": {
     "B01": {
       "id": "B01",
@@ -12880,6 +12880,16 @@
         "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
         "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
       ]
+    }
+  ],
+  "updates": [
+    {
+      "id": "62869197836703b876047f98e38e566496a815755b813917809f0b3372a08880",
+      "at": "2026-09-07T17:19:15.833Z",
+      "summary": "Roadmap details updated.",
+      "taskIds": [],
+      "sourceSha256": "d459c3810da48f736c3e1274032f7e3595338bbec2dcadf3d1ccffd0a84a17cf",
+      "webApps": []
     }
   ]
 }

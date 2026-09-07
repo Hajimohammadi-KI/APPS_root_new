@@ -334,6 +334,7 @@
     @media(hover:hover){:where(button:not(:disabled),summary,select:not(:disabled),[role="button"]:not([aria-disabled="true"]),nav a[href],a[class*="button"],a[class*="card"],a.action):hover{border-color:#9f83c4;box-shadow:0 7px 18px #49346524;transform:translateY(-1px)}}
     :where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action):focus-visible{outline:3px solid #7546b76b;outline-offset:3px}
   </style>
+  <link rel="stylesheet" href="/replacements/de/grammar-worksheets.css?v=20260908-2" />
 </head>
 <body>
 <aside aria-label="Eigenständiges Üben" style="background:#eef4ff;border-bottom:1px solid #bfcee8;padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;color:#173d7a;font:500 15px/1.5 system-ui"><span>Übe den Abruf mit eigenen Antworten, gespeicherten Entwürfen und Aufnahmen.</span><a href="/practice" style="background:#2258c0;border-radius:9px;padding:10px 16px;color:white;text-decoration:none">Eigenständig üben</a></aside>
@@ -442,6 +443,8 @@
             <button class="use-btn" data-action="use-today"><svg class="icon" style="vertical-align:middle;margin-right:6px"><use href="#i-calendar"/></svg>Heute verwenden</button>
           </div>
 
+          <!-- Authored worksheets share the catalog; the existing assessed practice remains available. -->
+          <section id="grammarWorksheets" aria-label="Grammatik in drei Arbeitsblättern" hidden></section>
           <div class="lesson-stack">
             <section class="learning-controls" aria-label="Lernunterstützung einstellen">
               <details class="learning-control">
@@ -510,7 +513,11 @@
   </dialog>
 
   <script src="/replacements/de/grammar-catalog.js?v=20260902-valency-1"></script>
-  <script src="/replacements/de/grammar-runtime.js?v=20260902-valency-1"></script>
+  <script>window.GrammarWorksheetConfig = {"language": "de", "assetBase": "/replacements/de", "brand": "DeutschFlow", "storage": "deutsch-automaticity"};</script>
+  <script src="/replacements/de/grammar-worksheets.js?v=20260908-2"></script>
+  <script src="/replacements/de/grammar-worksheet-ink.js?v=20260908-2"></script>
+  <script src="/replacements/de/grammar-worksheet-runtime.js?v=20260908-2"></script>
+  <script src="/replacements/de/grammar-runtime.js?v=20260908-worksheets-1"></script>
   <script>
     if (!window.GERMAN_GRAMMAR_RUNTIME) (() => {
       const $ = (selector, root = document) => root.querySelector(selector);

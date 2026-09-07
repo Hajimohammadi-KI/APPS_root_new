@@ -266,7 +266,8 @@ describe("Windows installation roadmap", () => {
   });
 
   test("packages and health-gates Research PDF Studio", () => {
-    expect(setupConfig.version).toBe("27.3.41");
+    // Desktop and setup must ship the same release; unrelated features should not pin an old patch.
+    expect(setupConfig.version).toBe(desktopPackage.version);
     expect(setupConfig.readerProject).toContain("Reader-PDF-App");
     expect(buildScript).toContain(
       "Building the deterministic local PDF Reader",

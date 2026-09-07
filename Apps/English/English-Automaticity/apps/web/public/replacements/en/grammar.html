@@ -331,6 +331,7 @@
     @media(hover:hover){:where(button:not(:disabled),summary,select:not(:disabled),[role="button"]:not([aria-disabled="true"]),nav a[href],a[class*="button"],a[class*="card"],a.action):hover{border-color:#9f83c4;box-shadow:0 7px 18px #49346524;transform:translateY(-1px)}}
     :where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action):focus-visible{outline:3px solid #7546b76b;outline-offset:3px}
   </style>
+<link rel="stylesheet" href="/replacements/en/grammar-worksheets.css?v=20260908-2">
 </head>
 <body>
 <aside aria-label="Independent practice" style="background:#eef4ff;border-bottom:1px solid #bfcee8;padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;color:#173d7a;font:500 15px/1.5 system-ui"><span>Build recall with your own answers, saved drafts, and recordings.</span><a href="/practice" style="background:#2258c0;border-radius:9px;padding:10px 16px;color:white;text-decoration:none">Start independent practice</a></aside>
@@ -441,6 +442,7 @@
             <button class="use-btn" data-action="use-today"><svg class="icon" style="vertical-align:middle;margin-right:6px"><use href="#i-calendar"/></svg>Use today</button>
           </div>
 
+          <section id="grammarWorksheets" aria-label="Grammar worksheets" hidden></section>
           <div class="lesson-stack">
             <article class="goal-card">
               <div class="goal-star"><svg class="icon"><use href="#i-star"/></svg></div>
@@ -504,6 +506,10 @@
   </dialog>
 
   <script src="/replacements/en/grammar-curriculum.js"></script>
+  <script>window.GrammarWorksheetConfig = {"language": "en", "assetBase": "/replacements/en", "brand": "English Automaticity", "storage": "english-automaticity"};</script>
+  <script src="/replacements/en/grammar-worksheets.js?v=20260908-2"></script>
+  <script src="/replacements/en/grammar-worksheet-ink.js?v=20260908-2"></script>
+  <script src="/replacements/en/grammar-worksheet-runtime.js?v=20260908-2"></script>
   <script>
     (() => {
       const $ = (selector, root = document) => root.querySelector(selector);
@@ -593,6 +599,7 @@
       const renderLesson = () => {
         const current = lessonProfile(progress.activeTopic);
         const unit = grammarUnit();
+        window.GrammarWorksheetUI?.render(unit);
         $('#lessonTitle').textContent = progress.activeTopic;
         $('.badge').textContent = progress.activeLevel;
         $('.foundations').textContent = current.family;

@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "english-automaticity-automaticity-v2-20260905e-models-20260905";
+const CACHE = "english-automaticity-automaticity-v2-20260908-worksheets-ink";
 const PRECACHE = [
   "/practice",
   "/learning-core/practice.js",
@@ -10,6 +10,20 @@ const PRECACHE = [
   "/daily",
   "/studio",
   "/grammar",
+  "/replacements/en/grammar-worksheets.css?v=20260908-2",
+  "/replacements/en/grammar-worksheet-ink.js?v=20260908-2",
+  "/replacements/en/grammar-worksheets.js?v=20260908-2",
+  "/replacements/en/grammar-worksheet-runtime.js?v=20260908-2",
+  "/replacements/en/worksheet-icons/book.svg",
+  "/replacements/en/worksheet-icons/repeat.svg",
+  "/replacements/en/worksheet-icons/timer.svg",
+  "/replacements/en/worksheet-icons/pencil.svg",
+  "/replacements/en/worksheet-icons/search.svg",
+  "/replacements/en/worksheet-icons/clipboard.svg",
+  "/replacements/en/worksheet-icons/calendar.svg",
+  "/replacements/en/worksheet-icons/arrow.svg",
+  "/replacements/en/worksheet-icons/printer.svg",
+
   "/replacements/en/grammar-curriculum.js",
   "/offline",
   "/manifest.webmanifest",
@@ -51,8 +65,8 @@ self.addEventListener("fetch", (event) => {
       })
       .catch(async () => {
         // Task selection lives in the query string; every task uses this same shell.
-        if (event.request.mode === "navigate" && new URL(event.request.url).pathname === "/practice") {
-          const practice = await caches.match("/practice");
+        if (event.request.mode === "navigate" && ["/practice", "/grammar"].includes(new URL(event.request.url).pathname)) {
+          const practice = await caches.match(new URL(event.request.url).pathname);
           if (practice) return practice;
         }
         return (

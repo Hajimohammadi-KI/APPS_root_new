@@ -20,6 +20,7 @@
     "db:schema:check": "bun test scripts/supabase-schema.test.ts",
     "legacy:serve": "bun scripts/serve-legacy.ts",
     "build": "bun run --filter '*' --if-present build",
+    "worksheets:build": "bun scripts/build-grammar-worksheets.ts",
     "db:seed:generate": "bun scripts/generate-supabase-seed.ts",
     "format": "bun x prettier --write .",
     "format:check": "bun x prettier --check .",
@@ -37,7 +38,8 @@
     "package:windows": "bun scripts/package-stores.ts windows",
     "package:ios": "bun scripts/package-stores.ts ios",
     "package:windows-exe": "bun scripts/package-windows-installer.ts",
-    "verify": "bun run format:check && bun run lint && bun run typecheck && bun run test && bun run test:installer && bun run db:schema:check && bun run build"
+    "verify": "bun run format:check && bun run test:worksheets && bun run lint && bun run typecheck && bun run test && bun run test:installer && bun run db:schema:check && bun run build",
+    "test:worksheets": "bun test ../../shared/grammar-worksheets/content.test.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.6",

@@ -902,6 +902,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     exerciseIndex = 0;
     renderExercise();
     renderCatalog();
+    // Topic selection mounts the same printable shell while retaining the legacy assessment controls.
+    window.GermanWorksheetUI?.render(unit);
     history.replaceState(
       null,
       "",
@@ -1265,7 +1267,7 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     }
 
     $("#unitCount").textContent = String(units.length);
-    const requestedTopic = dailyContext?.topic || params.get("topic") || "";
+    const requestedTopic = dailyContext?.topic || params.get("topic") || (params.has("level") ? "" : "Possessivartikel");
     const requestedIndex = units.findIndex((unit) => normalize(unit.title) === normalize(requestedTopic));
     const requestedLevelIndex = units.findIndex((unit) => unit.level === (dailyContext?.level || params.get("level")));
     selectedIndex = requestedIndex >= 0 ? requestedIndex : requestedLevelIndex >= 0 ? requestedLevelIndex : 0;

@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "deutschflow-automaticity-v2-20260905e-models-20260905";
+const CACHE = "deutschflow-automaticity-v2-20260908-worksheets-ink";
 const CORE = [
   "/practice",
   "/learning-core/practice.js",
@@ -12,6 +12,14 @@ const CORE = [
   "/heute",
   "/studio",
   "/grammatik",
+  // Keep the worksheet shell and its exact versioned imports usable after an offline restart.
+  "/replacements/de/grammar-catalog.js?v=20260902-valency-1",
+  "/replacements/de/grammar-runtime.js?v=20260908-worksheets-ink-1",
+  "/replacements/de/grammar-worksheet-ink.js?v=20260908-2",
+  "/replacements/de/grammar-worksheets.js?v=20260908-2",
+  "/replacements/de/grammar-worksheet-runtime.js?v=20260908-2",
+  "/replacements/de/grammar-worksheets.css?v=20260908-2",
+  ...["book", "repeat", "timer", "pencil", "search", "clipboard", "calendar", "arrow", "printer"].map((name) => `/replacements/de/worksheet-icons/${name}.svg`),
   "/wiederholungen",
   "/ressourcen",
   "/einstellungen",
@@ -63,8 +71,9 @@ self.addEventListener("fetch", (event) => {
       })
       .catch(async () => {
         // Task query parameters select local state within the cached practice shell.
-        if (event.request.mode === "navigate" && new URL(event.request.url).pathname === "/practice") {
-          const practice = await caches.match("/practice");
+        const pathname = new URL(event.request.url).pathname;
+        if (event.request.mode === "navigate" && ["/practice", "/grammatik"].includes(pathname)) {
+          const practice = await caches.match(pathname);
           if (practice) return practice;
         }
         const cached = await caches.match(event.request);

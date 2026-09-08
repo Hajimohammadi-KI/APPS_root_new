@@ -5,7 +5,8 @@
 			"**",
 			"!**/.next",
 			"!**/node_modules",
-			"!public/learning-core"
+			"!public/learning-core",
+			"!public/replacements/en/seven-step-flow.js"
 		]
 	},
 	"css": {

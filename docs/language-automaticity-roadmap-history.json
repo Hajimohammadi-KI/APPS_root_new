@@ -1,8 +1,8 @@
 {
   "version": 1,
   "firstObservedAt": "2026-09-05T05:39:47.639Z",
-  "updatedAt": "2026-09-07T17:19:15.833Z",
-  "sourceSha256": "d459c3810da48f736c3e1274032f7e3595338bbec2dcadf3d1ccffd0a84a17cf",
+  "updatedAt": "2026-09-08T13:46:00.653Z",
+  "sourceSha256": "c1e056cf1e4e30bc247400d21b3683bd0ed71bf72bf6a7393a9e084652eef2d5",
   "taskSnapshots": {
     "B01": {
       "id": "B01",
@@ -3434,6 +3434,39 @@
       "condition": null,
       "progressNote": "Standalone HTML, live local updates, dated change journal and green verified states implemented. All 15 final browser checks passed, including the actual live viewer, reopening a task, malformed input, mobile reflow, keyboard access and direct file opening. Desktop and mobile screenshots inspected; strict TypeScript and HTML freshness checks passed.",
       "updatedOn": "2026-09-05",
+      "engineeringVerification": "verified_for_recorded_scope"
+    },
+    "U06": {
+      "id": "U06",
+      "phase": "daily",
+      "title": "Deliver the seven-step flow in both live language apps",
+      "status": "verified",
+      "priority": "P0",
+      "required": true,
+      "progressNote": "Verified seven-step practice UI for 112 English and 144 German worksheet topics, with exact item resume, typed/ink drafts, original-audio retention, adjustable playback and due-date checks. Browser tests used isolated contexts and synthetic pen/audio input. Both Windows release lifecycle checks passed. Qualified learning outcomes and physical-device acceptance are not claimed.",
+      "acceptance": [
+        "Root and daily routes open the topic-specific seven-step flow in both apps.",
+        "Text and pen drafts retain their exact topic and item after reload.",
+        "Original audio, raw ASR and edited text stay distinct across retries.",
+        "Future reviews cannot complete early; completion is separate from assessment.",
+        "Verify phone/tablet/desktop layouts, package lifecycle and served LAN assets."
+      ],
+      "evidence": [
+        "docs/learning-flow/IMPLEMENTATION-REPORT-2026-09-08.md",
+        "shared/seven-step-flow",
+        "artifacts/seven-step-flow/browser/verification.json",
+        "artifacts/seven-step-flow/package-verification.json",
+        "artifacts/installer-cycle/English-20260908-154022-cb1a926a/report.json",
+        "artifacts/installer-cycle/German-20260908-153724-bc4d5b3c/report.json"
+      ],
+      "dependsOn": [
+        "L03",
+        "U02"
+      ],
+      "deliverable": "Live seven-step daily UI, shared runtime, tests and release evidence",
+      "condition": null,
+      "updatedOn": "2026-09-08",
+      "engineeringScope": "Authored-content reuse, practice UI and evidence integrity. No claim of qualified oral assessment, physical-device certification, independent item-bank completeness or learner effectiveness.",
       "engineeringVerification": "verified_for_recorded_scope"
     }
   },
@@ -12879,6 +12912,38 @@
         "docs/roadmap-decisions/2026-09-06-conditional-eligibility.json",
         "docs/CONDITIONAL-ROADMAP-DECISIONS-2026-09-06.md",
         "docs/roadmap-decisions/2026-09-06t06-24-43-873z-conditional-eligibility.json"
+      ]
+    },
+    {
+      "id": "12b8b4e16f70266c7786ca41bc2764cd91e0f28d482b718805d212771be34afd",
+      "at": "2026-09-08T13:30:39.243Z",
+      "taskId": "U06",
+      "title": "Deliver the seven-step flow in both live language apps",
+      "from": null,
+      "to": "implemented",
+      "note": "Seven saved activity states are implemented for the 112 English and 144 German worksheet topics. Browser, recording and release verification is in progress. Rehearsal and model comparison never award assessed mastery.",
+      "engineeringVerified": false,
+      "evidence": [
+        "shared/seven-step-flow",
+        "docs/learning-flow/SEVEN-STEP-IMPLEMENTATION-PROMPT.md"
+      ]
+    },
+    {
+      "id": "644e02fa9d958d7f3c07c6e6e5c7a7d1c290c386a184a3d976ce75176f66f444",
+      "at": "2026-09-08T13:46:00.653Z",
+      "taskId": "U06",
+      "title": "Deliver the seven-step flow in both live language apps",
+      "from": "implemented",
+      "to": "verified",
+      "note": "Verified seven-step practice UI for 112 English and 144 German worksheet topics, with exact item resume, typed/ink drafts, original-audio retention, adjustable playback and due-date checks. Browser tests used isolated contexts and synthetic pen/audio input. Both Windows release lifecycle checks passed. Qualified learning outcomes and physical-device acceptance are not claimed.",
+      "engineeringVerified": true,
+      "evidence": [
+        "docs/learning-flow/IMPLEMENTATION-REPORT-2026-09-08.md",
+        "shared/seven-step-flow",
+        "artifacts/seven-step-flow/browser/verification.json",
+        "artifacts/seven-step-flow/package-verification.json",
+        "artifacts/installer-cycle/English-20260908-154022-cb1a926a/report.json",
+        "artifacts/installer-cycle/German-20260908-153724-bc4d5b3c/report.json"
       ]
     }
   ],

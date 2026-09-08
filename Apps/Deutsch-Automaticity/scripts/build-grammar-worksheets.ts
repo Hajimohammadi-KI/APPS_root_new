@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+import { emitSevenStepFlow } from "../../../shared/seven-step-flow/build";
 import { syncConversationFlow } from "../../../shared/conversation-flow/build";
 import { worksheets as specialist } from "../packages/content/src/grammar-worksheets";
 import { grammarUnits } from "../packages/content/src/index";
@@ -26,6 +27,7 @@ await Bun.write(
 
 await emitSharedAssets(out);
 await syncConversationFlow(root, "de");
+await emitSevenStepFlow(root, "de");
 console.log(
   `${worksheets.length} German worksheet sets verified against the catalog.`,
 );

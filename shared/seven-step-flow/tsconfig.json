@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "include": ["app.ts", "model.ts", "view.ts", "persistence.ts", "copy.ts"]
+}

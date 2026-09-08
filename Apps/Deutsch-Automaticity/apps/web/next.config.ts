@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // The root starts the focused daily flow; explicit app screens remain accessible.
+        {
+          source: "/",
+          missing: [{ type: "query", key: "screen" }],
+          destination: "/replacements/de/heute.html",
+        },
         { source: "/practice", destination: "/learning-core/practice-de.html" },
         { source: "/heute", destination: "/replacements/de/heute.html" },
         {

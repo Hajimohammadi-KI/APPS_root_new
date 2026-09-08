@@ -1,4 +1,5 @@
 node_modules/
+.npm-cache/
 .bun-install-cache*/
 .build-caches/
 .git.backup-*/

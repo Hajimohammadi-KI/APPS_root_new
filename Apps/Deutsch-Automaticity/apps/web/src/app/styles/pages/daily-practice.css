@@ -5,9 +5,9 @@
 }
 .daily-overview-main,
 .daily-overview-aside > div {
-  border: 1px solid #ded5ee;
+  border: 1px solid #efe7da;
   background: #fff;
-  box-shadow: 0 14px 36px rgb(69 43 121 / 7%);
+  box-shadow: 0 14px 36px rgb(61 90 158 / 7%);
 }
 .daily-overview-main {
   overflow: hidden;
@@ -21,10 +21,10 @@
   align-items: center;
   border-radius: 20px;
   padding: 24px;
-  background: linear-gradient(135deg, #f7f1ff, #fff9ee);
+  background: linear-gradient(135deg, #faf8f4, #fff9ee);
 }
 .daily-overview-greeting {
-  color: #6941ad;
+  color: #3d5a9e;
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.09em;
@@ -32,17 +32,17 @@
 }
 .daily-overview-hero h1 {
   margin: 5px 0 3px;
-  color: #251738;
+  color: #192a3c;
   font-size: clamp(1.35rem, 2.4vw, 2rem);
   font-weight: 900;
 }
 .daily-overview-hero h2 {
   margin: 0 0 8px;
-  color: #7040bd;
+  color: #3d5a9e;
   font-size: 1rem;
 }
 .daily-overview-hero p {
-  color: #665d73;
+  color: #3d5a9e;
   font-size: 0.84rem;
 }
 .daily-overview-meta {
@@ -50,7 +50,7 @@
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 14px;
-  color: #594d68;
+  color: #3d5a9e;
   font-size: 0.7rem;
   font-weight: 800;
 }
@@ -63,15 +63,15 @@
   border-radius: 50%;
   background:
     radial-gradient(circle, #fff 58%, transparent 60%),
-    conic-gradient(#7443c4 var(--daily-progress), #e6ddf2 0);
+    conic-gradient(#3d5a9e var(--daily-progress), #efe7da 0);
   text-align: center;
 }
 .daily-progress-ring strong {
-  color: #321b52;
+  color: #192a3c;
   font-size: 1.45rem;
 }
 .daily-progress-ring span {
-  color: #7c6f8d;
+  color: #3d5a9e;
   font-size: 0.62rem;
 }
 .daily-activity-phase {
@@ -79,7 +79,7 @@
 }
 .daily-activity-phase h3 {
   margin: 0 0 8px;
-  color: #6b5790;
+  color: #3d5a9e;
   font-size: 0.72rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -103,9 +103,9 @@
   align-items: start;
   width: 100%;
   min-height: 118px;
-  border: 1px solid #e0d7ed;
+  border: 1px solid #efe7da;
   border-radius: 18px;
-  background: linear-gradient(135deg, #fff, #fbf8ff);
+  background: linear-gradient(135deg, #fff, #faf8f4);
   padding: 14px;
   text-align: left;
   cursor: pointer;
@@ -115,20 +115,20 @@
     transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 .daily-activity-card:hover {
-  border-color: #9b79ce;
-  box-shadow: 0 12px 24px rgb(78 45 125 / 10%);
+  border-color: #879bc4;
+  box-shadow: 0 12px 24px rgb(61 90 158 / 10%);
   transform: translateY(-1px);
 }
 .daily-activity-card:active {
   transform: scale(0.97);
 }
 .daily-activity-card:focus-visible {
-  outline: 3px solid rgb(116 67 196 / 28%);
+  outline: 3px solid rgb(61 90 158 / 28%);
   outline-offset: 2px;
 }
 .daily-activity-card[data-completed="true"] {
-  border-color: #8dcbb7;
-  background: #f4fcf8;
+  border-color: #879bc4;
+  background: #faf8f4;
 }
 .daily-activity-number,
 .daily-activity-icon {
@@ -139,15 +139,15 @@
 .daily-activity-number {
   width: 28px;
   height: 28px;
-  background: #7141bd;
+  background: #3d5a9e;
   color: #fff;
   font-weight: 900;
 }
 .daily-activity-icon {
   width: 40px;
   height: 40px;
-  background: #f0e8fb;
-  color: #6c39b6;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 .daily-activity-icon svg {
   width: 20px;
@@ -159,22 +159,22 @@
   display: flex;
   justify-content: space-between;
   gap: 8px;
-  color: #271936;
+  color: #192a3c;
 }
 .daily-activity-title-row strong {
   font-size: 0.82rem;
 }
 .daily-activity-title-row small {
   border-radius: 999px;
-  background: #f1ebf9;
+  background: #faf8f4;
   padding: 3px 7px;
-  color: #6f5e86;
+  color: #3d5a9e;
   font-size: 0.56rem;
 }
 .daily-activity-description {
   display: block;
   margin-top: 5px;
-  color: #756a83;
+  color: #3d5a9e;
   font-size: 0.67rem;
   line-height: 1.45;
 }
@@ -183,12 +183,12 @@
   justify-content: space-between;
   gap: 8px;
   margin-top: 10px;
-  color: #6f6280;
+  color: #3d5a9e;
   font-size: 0.62rem;
   font-weight: 800;
 }
 .daily-activity-open {
-  color: #6734b5;
+  color: #3d5a9e;
 }
 .daily-overview-aside {
   display: grid;
@@ -211,16 +211,16 @@
   height: 38px;
   padding: 9px;
   border-radius: 12px;
-  background: #f1eaff;
-  color: #7141bd;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 .daily-glance-card span {
-  color: #776b84;
+  color: #3d5a9e;
   font-size: 0.65rem;
 }
 .daily-plan-card > p {
   margin: 5px 0 12px;
-  color: #756b80;
+  color: #3d5a9e;
   font-size: 0.68rem;
 }
 .daily-plan-options {
@@ -232,16 +232,16 @@
   display: grid;
   min-height: 52px;
   place-content: center;
-  border: 1px solid #ddd4e9;
+  border: 1px solid #efe7da;
   border-radius: 12px;
   background: #fff;
   cursor: pointer;
 }
 .daily-plan-options button[aria-pressed="true"] {
-  border-color: #7141bd;
-  background: #f0e8fb;
-  color: #5d2cac;
-  box-shadow: 0 0 0 2px rgb(113 65 189 / 12%);
+  border-color: #3d5a9e;
+  background: #faf8f4;
+  color: #3d5a9e;
+  box-shadow: 0 0 0 2px rgb(61 90 158 / 12%);
 }
 .daily-plan-options button:active {
   transform: scale(0.97);
@@ -253,15 +253,15 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  border: 1px solid #ded5ee;
+  border: 1px solid #efe7da;
   border-radius: 18px;
-  background: linear-gradient(110deg, #fff, #f7f2ff);
+  background: linear-gradient(110deg, #fff, #faf8f4);
   padding: 14px 16px;
-  box-shadow: 0 10px 28px rgb(69 43 121 / 7%);
+  box-shadow: 0 10px 28px rgb(61 90 158 / 7%);
 }
 .daily-focused-header p {
   margin: 0;
-  color: #725b93;
+  color: #3d5a9e;
   font-size: 0.7rem;
   font-weight: 900;
   text-transform: uppercase;

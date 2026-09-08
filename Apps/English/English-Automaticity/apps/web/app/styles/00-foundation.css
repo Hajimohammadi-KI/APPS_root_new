@@ -1,4 +1,3 @@
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,22 +11,22 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
-  --shadow-card: 0 12px 30px rgba(25, 45, 80, 0.1);
+  --shadow-card: 0 12px 30px rgb(25 42 60 / 0.1);
 }
 
 :root {
-  --background: #f7f4fb;
-  --foreground: #21182f;
+  --background: #faf8f4;
+  --foreground: #192a3c;
   --card: #fffefe;
-  --card-foreground: #21182f;
-  --primary: #7651b4;
+  --card-foreground: #192a3c;
+  --primary: #3d5a9e;
   --primary-foreground: #ffffff;
-  --secondary: #f0e9f8;
-  --secondary-foreground: #54327f;
-  --muted: #f1edf5;
-  --muted-foreground: #655d70;
-  --border: #ded4e7;
-  --input: #cfc1dc;
+  --secondary: #faf8f4;
+  --secondary-foreground: #3d5a9e;
+  --muted: #faf8f4;
+  --muted-foreground: #3d5a9e;
+  --border: #efe7da;
+  --input: #ded8cd;
 }
 
 * {
@@ -45,12 +44,12 @@ body {
   background:
     radial-gradient(
       circle at 82% -8%,
-      rgba(155, 112, 202, 0.17),
+      rgb(135 155 196 / 0.17),
       transparent 31rem
     ),
     radial-gradient(
       circle at 12% 28%,
-      rgba(222, 205, 239, 0.24),
+      rgb(239 231 218 / 0.24),
       transparent 24rem
     ),
     var(--background);
@@ -66,4 +65,3 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   text-rendering: optimizeLegibility;
 }
-

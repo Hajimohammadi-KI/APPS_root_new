@@ -29,7 +29,10 @@ function isRequestBody(value: unknown): value is EvaluationRequestBody {
   );
 }
 
-function applyReplacements(text: string, matches: readonly LanguageToolMatch[]) {
+function applyReplacements(
+  text: string,
+  matches: readonly LanguageToolMatch[],
+) {
   const applicable = [...matches]
     .filter((match) => match.replacements?.[0]?.value !== undefined)
     .filter(
@@ -64,12 +67,16 @@ export async function POST(request: Request) {
 
   if (!isRequestBody(body)) {
     return Response.json(
-      { error: "text must contain 1–8000 characters and language must be en or de." },
+      {
+        error:
+          "text must contain 1–8000 characters and language must be en or de.",
+      },
       { status: 400 },
     );
   }
 
-  const endpoint = process.env.LANGUAGETOOL_URL ?? "https://api.languagetool.org/v2/check";
+  const endpoint =
+    process.env.LANGUAGETOOL_URL ?? "https://api.languagetool.org/v2/check";
   const form = new URLSearchParams({
     text: body.text.trim(),
     language: body.language === "de" ? "de-DE" : "en-US",
@@ -91,7 +98,34 @@ export async function POST(request: Request) {
       );
     }
     const payload = (await response.json()) as LanguageToolResponse;
-    const matches = Array.isArray(payload.matches) ? payload.matches : [];
+    // A malformed provider response must not become a reassuring empty result.
+    if (
+      !Array.isArray(payload.matches) ||
+      !payload.matches.every(
+        (match) =>
+          match &&
+          typeof match.message === "string" &&
+          Number.isInteger(match.offset) &&
+          Number.isInteger(match.length) &&
+          match.offset >= 0 &&
+          match.length >= 0 &&
+          match.offset + match.length <= body.text.trim().length &&
+          (match.replacements === undefined ||
+            (Array.isArray(match.replacements) &&
+              match.replacements.every(
+                (replacement: unknown) =>
+                  !!replacement &&
+                  typeof replacement === "object" &&
+                  "value" in replacement &&
+                  typeof replacement.value === "string",
+              ))),
+      )
+    )
+      return Response.json(
+        { error: "Invalid grammar-provider response." },
+        { status: 502 },
+      );
+    const matches = payload.matches;
     const original = body.text.trim();
     return Response.json({
       original,
@@ -110,7 +144,8 @@ export async function POST(request: Request) {
       })),
     });
   } catch (error) {
-    const reason = error instanceof Error ? error.message : "Unknown provider error";
+    const reason =
+      error instanceof Error ? error.message : "Unknown provider error";
     return Response.json(
       { error: `LanguageTool is unavailable: ${reason}` },
       { status: 502 },

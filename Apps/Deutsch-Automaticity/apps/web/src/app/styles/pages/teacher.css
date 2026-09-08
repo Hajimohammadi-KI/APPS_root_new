@@ -1,16 +1,16 @@
 .teacher-page {
   min-height: 100vh;
   padding: clamp(1rem, 3vw, 3rem);
-  background: #f7f3fb;
-  color: #171126;
+  background: #faf8f4;
+  color: #192a3c;
 }
 .teacher-hero,
 .teacher-editor,
 .teacher-library {
   background: #fff;
-  border: 1px solid #ded5e7;
+  border: 1px solid #efe7da;
   border-radius: 24px;
-  box-shadow: 0 16px 40px #44256b12;
+  box-shadow: 0 16px 40px #192a3c12;
 }
 .teacher-hero {
   padding: clamp(1.25rem, 3vw, 2.5rem);
@@ -23,15 +23,15 @@
 }
 .teacher-hero p {
   max-width: 72ch;
-  color: #655b72;
+  color: #3d5a9e;
 }
 .teacher-review-queue {
   margin-bottom: 1.25rem;
-  border: 1px solid #d9ccea;
+  border: 1px solid #efe7da;
   border-radius: 24px;
   padding: clamp(1rem, 2vw, 2rem);
-  background: linear-gradient(135deg, #fff, #f7f2ff);
-  box-shadow: 0 16px 40px #44256b12;
+  background: linear-gradient(135deg, #fff, #faf8f4);
+  box-shadow: 0 16px 40px #192a3c12;
 }
 .teacher-review-heading {
   display: flex;
@@ -45,15 +45,15 @@
 .teacher-review-heading p {
   margin: 0;
   max-width: 72ch;
-  color: #655b72;
+  color: #3d5a9e;
   line-height: 1.55;
 }
 .teacher-review-heading > strong {
   flex: 0 0 auto;
   border-radius: 999px;
   padding: 0.45rem 0.7rem;
-  background: #eee5fb;
-  color: #63379f;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 .teacher-review-items {
   display: grid;
@@ -66,7 +66,7 @@
 /* Native list semantics announce the queue length to screen-reader users. */
 .teacher-review-items > li {
   min-width: 0;
-  border: 1px solid #e0d5ee;
+  border: 1px solid #efe7da;
   border-radius: 18px;
   padding: 1rem;
   background: rgba(255, 255, 255, 0.96);
@@ -76,8 +76,8 @@
     transform 160ms ease;
 }
 .teacher-review-items > li:hover {
-  border-color: #a98bcf;
-  box-shadow: 0 12px 26px #49306c1a;
+  border-color: #879bc4;
+  box-shadow: 0 12px 26px #3d5a9e1a;
   transform: translateY(-1px);
 }
 .teacher-review-items header {
@@ -88,7 +88,7 @@
 }
 .teacher-review-items header svg {
   width: 1.5rem;
-  color: #7345ad;
+  color: #3d5a9e;
 }
 .teacher-review-items h3 {
   margin: 0.45rem 0 0;
@@ -106,8 +106,8 @@
   color: #a7460a;
 }
 .teacher-review-priority-planned {
-  background: #e9f3ff;
-  color: #1d5d92;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 .teacher-review-items dl {
   display: grid;
@@ -118,18 +118,18 @@
   display: grid;
   grid-template-columns: minmax(105px, 0.38fr) minmax(0, 1fr);
   gap: 0.65rem;
-  border-top: 1px solid #eee8f4;
+  border-top: 1px solid #efe7da;
   padding-top: 0.5rem;
 }
 .teacher-review-items dt {
-  color: #73687f;
+  color: #3d5a9e;
   font-size: 0.75rem;
   font-weight: 800;
 }
 .teacher-review-items dd {
   margin: 0;
   overflow-wrap: anywhere;
-  color: #30263e;
+  color: #192a3c;
   line-height: 1.45;
 }
 .teacher-review-action {
@@ -137,29 +137,29 @@
   min-height: 44px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #cbb9e2;
+  border: 1px solid #ded8cd;
   border-radius: 12px;
   padding: 0.55rem 0.8rem;
-  background: #7043ad;
+  background: #3d5a9e;
   color: #fff;
   font-weight: 850;
   text-decoration: none;
 }
 .teacher-review-empty {
   margin-top: 1.1rem;
-  border: 1px dashed #cdbce4;
+  border: 1px dashed #ded8cd;
   border-radius: 16px;
   padding: 1.4rem;
-  color: #655d72;
+  color: #3d5a9e;
   text-align: center;
 }
 .teacher-assignment {
   margin-bottom: 1.25rem;
-  border: 1px solid #d9ccea;
+  border: 1px solid #efe7da;
   border-radius: 24px;
   padding: clamp(1rem, 2vw, 2rem);
   background: #fff;
-  box-shadow: 0 16px 40px #44256b12;
+  box-shadow: 0 16px 40px #192a3c12;
 }
 .teacher-assignment-heading {
   display: flex;
@@ -173,8 +173,8 @@
 .teacher-assignment-heading > span {
   border-radius: 999px;
   padding: 0.4rem 0.65rem;
-  background: #eaf8ef;
-  color: #17633a;
+  background: #faf8f4;
+  color: #192a3c;
   font-weight: 850;
 }
 .teacher-assignment-grid {
@@ -185,13 +185,13 @@
 }
 .teacher-assignment-source {
   margin: 1.1rem 0;
-  border: 1px solid #e1d8ed;
+  border: 1px solid #efe7da;
   border-radius: 17px;
   padding: 1rem;
-  background: #f9f6fd;
+  background: #faf8f4;
 }
 .teacher-assignment-source > span {
-  color: #7043ad;
+  color: #3d5a9e;
   font-size: 0.75rem;
   font-weight: 900;
   text-transform: uppercase;
@@ -201,7 +201,7 @@
 }
 .teacher-assignment-source p {
   margin: 0;
-  color: #5d566d;
+  color: #3d5a9e;
   line-height: 1.55;
 }
 .teacher-assignment-check {
@@ -220,7 +220,7 @@
   display: inline-flex;
   gap: 0.45rem;
   align-items: center;
-  color: #6840a4;
+  color: #3d5a9e;
   font-weight: 750;
 }
 .teacher-back svg,
@@ -233,7 +233,7 @@
   font-size: 0.76rem;
   letter-spacing: 0.14em;
   font-weight: 850;
-  color: #7546b7;
+  color: #3d5a9e;
 }
 .teacher-layout {
   display: grid;
@@ -255,7 +255,7 @@
 .teacher-page textarea {
   width: 100%;
   min-width: 0;
-  border: 1px solid #d9cfea;
+  border: 1px solid #efe7da;
   border-radius: 12px;
   padding: 0.8rem;
   background: #fff;
@@ -268,11 +268,11 @@
 }
 .teacher-helper {
   margin: 1rem 0;
-  border-left: 3px solid #7546b7;
+  border-left: 3px solid #3d5a9e;
   border-radius: 0 12px 12px 0;
   padding: 0.75rem 1rem;
-  background: #f7f1fd;
-  color: #5d378f;
+  background: #faf8f4;
+  color: #3d5a9e;
   line-height: 1.5;
 }
 .teacher-grid {
@@ -281,7 +281,7 @@
   gap: 1rem;
 }
 .teacher-page fieldset {
-  border: 1px solid #ded5e7;
+  border: 1px solid #efe7da;
   border-radius: 16px;
   padding: 1rem;
   margin: 1rem 0;
@@ -290,10 +290,10 @@
   display: flex !important;
   align-items: center;
   gap: 0.5rem;
-  border: 1px dashed #9b78cd;
+  border: 1px dashed #879bc4;
   border-radius: 12px;
   padding: 0.8rem;
-  color: #6840a4;
+  color: #3d5a9e;
   cursor: pointer;
 }
 .teacher-upload input {
@@ -318,15 +318,15 @@
   cursor: pointer;
 }
 .teacher-primary-button {
-  background: #7546b7;
+  background: #3d5a9e;
   color: #fff;
 }
 .teacher-secondary-button,
 .teacher-item-actions button,
 .human-audio-player button,
 .human-audio-recorder button {
-  background: #f1eafb;
-  color: #5d378f;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 .teacher-library-heading {
   display: flex;
@@ -354,7 +354,7 @@
   gap: 1rem;
 }
 .teacher-items article {
-  border: 1px solid #ded5e7;
+  border: 1px solid #efe7da;
   border-radius: 16px;
   padding: 1rem;
 }
@@ -363,10 +363,10 @@
   gap: 0.5rem;
   flex-wrap: wrap;
   align-items: center;
-  color: #675b72;
+  color: #3d5a9e;
 }
 .teacher-item-meta span {
-  background: #f1eafb;
+  background: #faf8f4;
   border-radius: 999px;
   padding: 0.2rem 0.55rem;
 }
@@ -375,15 +375,15 @@
   color: #8a4b00;
 }
 .teacher-item-meta .teacher-status-review {
-  background: #e9f3ff;
-  color: #1b5c93;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 .teacher-item-meta .teacher-status-published {
-  background: #eaf8ef;
-  color: #17633a;
+  background: #faf8f4;
+  color: #192a3c;
 }
 .teacher-auto-link {
-  color: #5d378f;
+  color: #3d5a9e;
   font-weight: 700;
 }
 .teacher-item-actions {
@@ -406,9 +406,9 @@
 }
 .teacher-message {
   border-radius: 12px;
-  background: #f0f8f3;
+  background: #faf8f4;
   padding: 0.75rem;
-  color: #17633a;
+  color: #192a3c;
 }
 .human-audio-player,
 .human-audio-recorder {

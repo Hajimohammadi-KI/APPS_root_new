@@ -2,12 +2,11 @@
 
 import * as React from "react";
 import {
-  Check,
-  FileMusic,
-  RefreshCcw,
-  Trash2,
-  Volume2,
-} from "lucide-react";
+  AudioPlayback,
+  PlaybackSpeed,
+} from "@/app/studio/source/flow/playback";
+import { Check, FileMusic, RefreshCcw, Trash2, Volume2 } from "lucide-react";
+import { ConversationRecordings } from "@/app/studio/source/flow/library";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,7 +32,10 @@ function AudioRecordCard({
   record: AudioRecord;
   refresh: () => Promise<void>;
 }) {
-  const source = React.useMemo(() => URL.createObjectURL(record.blob), [record.blob]);
+  const source = React.useMemo(
+    () => URL.createObjectURL(record.blob),
+    [record.blob],
+  );
 
   React.useEffect(
     () => () => {
@@ -83,9 +85,11 @@ function AudioRecordCard({
           <Trash2 aria-hidden className="size-4" />
         </Button>
       </div>
-      <audio className="mt-3 w-full" controls src={source}>
-        <track kind="captions" />
-      </audio>
+      <AudioPlayback
+        src={source}
+        language="en"
+        label={`Recording: ${record.topic}`}
+      />
       <div className="mt-3 grid gap-3 md:grid-cols-2">
         <div className="rounded-xl border bg-slate-50 p-3 text-sm">
           <p className="text-xs font-bold uppercase text-muted-foreground">
@@ -115,8 +119,7 @@ function AudioRecordCard({
           }}
           variant="outline"
         >
-          <Check aria-hidden className="size-4" />
-          I repeated it accurately
+          <Check aria-hidden className="size-4" />I repeated it accurately
         </Button>
       </div>
     </article>
@@ -131,7 +134,9 @@ export function AudioScreen() {
     setLoading(true);
     try {
       const rows = await listAudio();
-      setRecords(rows.toSorted((a, b) => b.createdAt.localeCompare(a.createdAt)));
+      setRecords(
+        rows.toSorted((a, b) => b.createdAt.localeCompare(a.createdAt)),
+      );
     } finally {
       setLoading(false);
     }
@@ -146,6 +151,7 @@ export function AudioScreen() {
       <div className="page-heading">
         <div>
           <h1>Audio Library</h1>
+          <PlaybackSpeed language="en" />
           <p>
             Local legacy recordings combine original voice, transcript,
             corrected model, listening comparison, and clear review status.
@@ -156,6 +162,8 @@ export function AudioScreen() {
           Refresh
         </Button>
       </div>
+      <ConversationRecordings language="en" refreshKey={loading} />
+      <h2>Earlier recordings</h2>
       {loading ? (
         <Card>
           <CardContent className="pt-5 text-sm text-muted-foreground">
@@ -165,7 +173,11 @@ export function AudioScreen() {
       ) : records.length > 0 ? (
         <div className="grid gap-3">
           {records.map((record) => (
-            <AudioRecordCard key={record.id} record={record} refresh={refresh} />
+            <AudioRecordCard
+              key={record.id}
+              record={record}
+              refresh={refresh}
+            />
           ))}
         </div>
       ) : (
@@ -178,8 +190,7 @@ export function AudioScreen() {
                 </EmptyMedia>
                 <EmptyTitle>No recording saved yet</EmptyTitle>
                 <EmptyDescription>
-                  Record an answer in the conversation studio and complete a
-                  successful evaluation.
+                  New conversation recordings appear above.
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>

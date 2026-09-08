@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "light",
-  themeColor: "#155eef",
+  themeColor: "#3D5A9E",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -55,13 +55,15 @@ export default function RootLayout({
     // learning aids opt into RTL only on their own scoped containers.
     <html lang="en" dir="ltr">
       <body>
-        <LearningRecoveryBoundary><AppStoreProvider>
-          {children}
-          <GlobalReadingRuler />
-          <ContextualHoverHelp />
-          <DeepLSelectionTranslator />
-          <GuardedNudge />
-        </AppStoreProvider></LearningRecoveryBoundary>
+        <LearningRecoveryBoundary>
+          <AppStoreProvider>
+            {children}
+            <GlobalReadingRuler />
+            <ContextualHoverHelp />
+            <DeepLSelectionTranslator />
+            <GuardedNudge />
+          </AppStoreProvider>
+        </LearningRecoveryBoundary>
       </body>
     </html>
   );

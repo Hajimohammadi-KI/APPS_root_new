@@ -429,11 +429,15 @@ try {
     deviceScaleFactor: 1,
     mobile: false,
   });
-  report.layoutFailures = await evaluate(`(() => {
+  report.layoutFailures = [];
+  // Keep every catalog case, but yield between batches so a slow device does not
+  // exceed one CDP command's deadline while laying out hundreds of A4 pages.
+  for (let offset = 0; offset < count; offset += 12) {
+    const failures = await evaluate(`(() => {
     const failures=[];
     for (const locale of ['${language}', '${language}-fa']) {
       localStorage.setItem('${storage}:worksheet-language',locale);
-      for (const entry of window.GrammarWorksheets.worksheets) {
+      for (const entry of window.GrammarWorksheets.worksheets.slice(${offset}, ${offset + 12})) {
         window.GrammarWorksheetUI.render({title:entry.topic,level:entry.level});
         document.body.classList.add('ws-printing');
         for (const paper of document.querySelectorAll('.ws-paper')) {
@@ -445,6 +449,8 @@ try {
     }
     return failures;
   })()`);
+    report.layoutFailures.push(...failures);
+  }
   assert.deepEqual(
     report.layoutFailures,
     [],

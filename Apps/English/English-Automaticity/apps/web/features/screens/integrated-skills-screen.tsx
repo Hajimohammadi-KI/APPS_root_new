@@ -1,4 +1,6 @@
 "use client";
+import { PlaybackSpeed } from "@/app/studio/source/flow/playback";
+import { readPlaybackRate } from "@/app/studio/source/flow/playback-rate";
 
 import * as React from "react";
 import {
@@ -393,7 +395,7 @@ export function IntegratedSkillsScreen({
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "en-US";
-    utterance.rate = options.rate ?? state.settings.ttsRate;
+    utterance.rate = options.rate ?? readPlaybackRate();
     utterance.onstart = () =>
       setMessage(
         `${options.label ?? "Audio"} is playing. Listen without reading first.`,
@@ -837,6 +839,7 @@ export function IntegratedSkillsScreen({
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
                   <h3 className="text-base font-black">Lesson material</h3>
+                  <PlaybackSpeed language="en" />
                   {skill === "listening" ? (
                     <p className="mt-1 text-xs font-bold text-violet-700">
                       Original listening script written for this lesson
@@ -866,7 +869,7 @@ export function IntegratedSkillsScreen({
                       onClick={() =>
                         speak(material, {
                           label: "Slow listening",
-                          rate: Math.max(0.65, state.settings.ttsRate - 0.2),
+                          rate: 0.75,
                         })
                       }
                       size="sm"

@@ -44,12 +44,14 @@ export const databaseNames = (language: Language) =>
         "english-automaticity-teacher-content",
         "automaticity-v2-en",
         "automaticity-migration-v2-en",
+        "conversation-studio",
       ]
     : [
         "GrammarAutomaticityV11_de",
         "deutsch-automaticity-teacher-content",
         "automaticity-v2-de",
         "automaticity-migration-v2-de",
+        "conversation-studio",
       ];
 const journalName = (language: Language) =>
   `automaticity-recovery-v2-${language}`;
@@ -81,8 +83,8 @@ function sha256Fallback(bytes: Uint8Array): string {
   const view = new DataView(padded.buffer);
   view.setUint32(padded.length - 4, bytes.length * 8);
   let hash: [number, number, number, number, number, number, number, number] = [
-    0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-    0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19,
+    0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c,
+    0x1f83d9ab, 0x5be0cd19,
   ];
   for (let offset = 0; offset < padded.length; offset += 64) {
     const words = new Uint32Array(64);
@@ -90,22 +92,48 @@ function sha256Fallback(bytes: Uint8Array): string {
       words[index] = view.getUint32(offset + index * 4);
     for (let index = 16; index < 64; index++) {
       // The loop bounds keep every schedule index within this 64-word array.
-      const value = words[index - 15]!, previous = words[index - 2]!;
-      const sigma0 = (value >>> 7 | value << 25) ^ (value >>> 18 | value << 14) ^ (value >>> 3);
-      const sigma1 = (previous >>> 17 | previous << 15) ^ (previous >>> 19 | previous << 13) ^ (previous >>> 10);
-      words[index] = (words[index - 16]! + sigma0 + words[index - 7]! + sigma1) >>> 0;
+      const value = words[index - 15]!,
+        previous = words[index - 2]!;
+      const sigma0 =
+        ((value >>> 7) | (value << 25)) ^
+        ((value >>> 18) | (value << 14)) ^
+        (value >>> 3);
+      const sigma1 =
+        ((previous >>> 17) | (previous << 15)) ^
+        ((previous >>> 19) | (previous << 13)) ^
+        (previous >>> 10);
+      words[index] =
+        (words[index - 16]! + sigma0 + words[index - 7]! + sigma1) >>> 0;
     }
     let [a, b, c, d, e, f, g, h] = hash;
     for (let index = 0; index < 64; index++) {
-      const sum1 = (e >>> 6 | e << 26) ^ (e >>> 11 | e << 21) ^ (e >>> 25 | e << 7);
+      const sum1 =
+        ((e >>> 6) | (e << 26)) ^
+        ((e >>> 11) | (e << 21)) ^
+        ((e >>> 25) | (e << 7));
       const choice = (e & f) ^ (~e & g);
-      const temporary1 = (h + sum1 + choice + sha256Constants[index]! + words[index]!) >>> 0;
-      const sum0 = (a >>> 2 | a << 30) ^ (a >>> 13 | a << 19) ^ (a >>> 22 | a << 10);
+      const temporary1 =
+        (h + sum1 + choice + sha256Constants[index]! + words[index]!) >>> 0;
+      const sum0 =
+        ((a >>> 2) | (a << 30)) ^
+        ((a >>> 13) | (a << 19)) ^
+        ((a >>> 22) | (a << 10));
       const majority = (a & b) ^ (a & c) ^ (b & c);
       const temporary2 = (sum0 + majority) >>> 0;
-      [h, g, f, e, d, c, b, a] = [g, f, e, (d + temporary1) >>> 0, c, b, a, (temporary1 + temporary2) >>> 0];
+      [h, g, f, e, d, c, b, a] = [
+        g,
+        f,
+        e,
+        (d + temporary1) >>> 0,
+        c,
+        b,
+        a,
+        (temporary1 + temporary2) >>> 0,
+      ];
     }
-    hash = hash.map((value, index) => (value + [a, b, c, d, e, f, g, h][index]!) >>> 0) as typeof hash;
+    hash = hash.map(
+      (value, index) => (value + [a, b, c, d, e, f, g, h][index]!) >>> 0,
+    ) as typeof hash;
   }
   return hash.map((value) => value.toString(16).padStart(8, "0")).join("");
 }

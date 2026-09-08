@@ -1,3 +1,5 @@
+import { readPlaybackRate } from "@/app/studio/source/flow/playback-rate";
+
 interface SpeakOptions {
   rate?: number;
   onBoundary?: () => void;
@@ -7,12 +9,16 @@ interface SpeakOptions {
 }
 
 export function speak(text: string, options?: SpeakOptions) {
-  if (typeof window === "undefined" || !("speechSynthesis" in window) || !text) {
+  if (
+    typeof window === "undefined" ||
+    !("speechSynthesis" in window) ||
+    !text
+  ) {
     return false;
   }
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "en-US";
-  utterance.rate = options?.rate ?? 0.92;
+  utterance.rate = options?.rate ?? readPlaybackRate();
   utterance.onboundary = () => options?.onBoundary?.();
   utterance.onend = () => options?.onEnd?.();
   utterance.onerror = () => options?.onError?.();

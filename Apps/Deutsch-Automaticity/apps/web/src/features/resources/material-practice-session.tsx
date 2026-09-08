@@ -1,4 +1,6 @@
 "use client";
+import { PlaybackSpeed } from "@/app/studio/source/flow/playback";
+import { readPlaybackRate } from "@/app/studio/source/flow/playback-rate";
 
 import Link from "next/link";
 import {
@@ -210,7 +212,7 @@ export function MaterialPracticeSession({
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "de-DE";
-    utterance.rate = state.settings.ttsRate;
+    utterance.rate = readPlaybackRate();
     window.speechSynthesis.speak(utterance);
   };
 
@@ -346,6 +348,7 @@ export function MaterialPracticeSession({
           <p className="text-base font-medium leading-7 text-slate-900">
             {plan.rule}
           </p>
+          <PlaybackSpeed language="de" />
           <Button
             className="mt-3"
             onClick={() => readPrompt(plan.rule)}

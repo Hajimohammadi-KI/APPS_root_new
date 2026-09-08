@@ -1,3 +1,4 @@
+import { bindPlaybackRate } from "@/app/studio/source/flow/playback-rate";
 export type TeacherContentKind =
   "verb" | "example" | "exercise" | "conversation";
 export type TeacherContentStatus = "draft" | "review" | "published";
@@ -262,12 +263,22 @@ export async function playTeacherAudioByContextKey(
   if (!blob) return false;
   const url = URL.createObjectURL(blob);
   const audio = new Audio(url);
-  audio.addEventListener("ended", () => URL.revokeObjectURL(url), {
+  const unbind = bindPlaybackRate(audio);
+  const release = () => {
+    unbind();
+    URL.revokeObjectURL(url);
+  };
+  audio.addEventListener("ended", release, {
     once: true,
   });
-  audio.addEventListener("error", () => URL.revokeObjectURL(url), {
+  audio.addEventListener("error", release, {
     once: true,
   });
-  await audio.play();
+  try {
+    await audio.play();
+  } catch (error) {
+    release();
+    throw error;
+  }
   return true;
 }

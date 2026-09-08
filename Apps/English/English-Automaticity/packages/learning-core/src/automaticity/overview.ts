@@ -102,7 +102,7 @@ export function mountEvidenceOverview(
     t("Independent learning evidence", "Unabhängige Lernnachweise"),
   );
   root.style.cssText =
-    "border:1px solid #b7cebf;border-radius:14px;padding:20px;margin:16px 0;background:#f6faf7;color:#20382b;line-height:1.55;overflow-wrap:anywhere";
+    "border:1px solid #ded8cd;border-radius:14px;padding:20px;margin:16px 0;background:#FAF8F4;color:#192a3c;line-height:1.55;overflow-wrap:anywhere";
   const refresh = () => {
     if (!active || !pack) return;
     const read = readAutomaticityEvents(localStorage, language);
@@ -124,7 +124,7 @@ export function mountEvidenceOverview(
     const start = node("a", t("Continue practice", "Weiterüben"));
     start.href = "/practice";
     start.style.cssText =
-      "display:inline-block;padding:10px 14px;margin:8px 8px 12px 0;background:#176346;color:white;border-radius:8px";
+      "display:inline-block;padding:10px 14px;margin:8px 8px 12px 0;background:#3D5A9E;color:white;border-radius:8px";
     root.append(start);
     const review = node(
       "a",

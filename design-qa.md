@@ -51,3 +51,46 @@ Verified setup SHA-256 values:
 - English Grammar Automaticity: `fe8fb22dcc823b4feb98d17b5b7b6b595fb45f85e6d79d6893b76e71c0f4067c`.
 
 Printable samples are committed under each app's `output/pdf` directory. Runtime evidence and large installer archives stay outside Git.
+
+# Conversation, listening and shared visual refresh
+
+Reviewed on 2026-09-08 after the worksheet release above. The shared implementation is in `shared/conversation-flow`; comments explain recording ownership, transcript confirmation, playback timing and storage boundaries. The English and German web builds synchronise these files automatically.
+
+## Implemented behaviour
+
+Conversation Studio now has three separate views: Prepare, Speak and Feedback. Preparation shows one task and up to two optional phrases. Speaking uses a real microphone waveform and capture timer, with task and hints behind disclosures. Feedback requires transcript confirmation before grammar evaluation and shows one priority correction with its cause; additional corrections and error notes are expandable. Original recognition, edited text and each audio attempt remain separate. A retry preserves the first recording. Day 1, 3, 7 and 14 reviews schedule a new context without exposing the previous answer. Neither scheduling nor repeating a task certifies mastery.
+
+Conversation recordings, teacher recordings and listening controls offer 0.5×, 0.75×, 1×, 1.25×, 1.5× and 2× playback. The setting persists on the current origin. Native audio preserves pitch; device speech uses the selected speed for the next utterance. Changing playback speed does not change captured audio, capture duration or ASR-based word-rate estimates. The Audio Library lists the separate attempts, and complete backup/restore includes their audio blobs.
+
+The app shell, dashboards, daily practice, grammar, resources and other existing learning pages use cream, indigo and sand. The three supplied conversation images were compared with rendered Prepare, Speak and Feedback states. Visual inspection also found and corrected legacy purple styling, overlapping daily-page sidebars and an unreadable active navigation label. Existing worksheet content and the ink renderer remain intact.
+
+## Verification boundaries
+
+The German aggregate `bun run verify` and English `bun run check` passed. The earlier German formatting blockers recorded above were resolved with formatting changes. Both production web builds passed, and the canonical learning-core mirrors match. The focused conversation suite passed 10 tests with 35 assertions, including transcript binding, review/evidence boundaries and malformed provider responses.
+
+Browser interaction tests use the real MediaRecorder with a generated tone in a disposable Chrome profile. Recognition and grammar-provider responses are synthetic fixtures restricted to the test tab. These checks establish application behaviour; they do not establish microphone hardware quality, recognition quality or improved learning outcomes. Physical Apple Pencil, Android stylus and Windows pen testing remains unverified. Handwriting remains locally stored ink, without OCR or automatic grading.
+
+The worksheet regression passed for both languages, including typed and ink persistence, pressure strokes, erasing, undo, phone/tablet/desktop layouts and all 1,536 A4 layouts. The exhaustive print scan now yields between batches of twelve topics to avoid a single long browser-command timeout; it retains every topic and both instruction modes. Browser and print results are in `artifacts/grammar-worksheets/{de,en}/verification.json`.
+
+Conversation browser checks passed all 17 scenarios in each language against production previews, with no uncaught runtime exceptions. Checks include microphone error states, pause timing, autosave before evaluation, provider failure, transcript confirmation and edit invalidation, retained first-attempt audio, backup restoration, review boundaries, playback-speed persistence, the Audio Library, mobile/tablet layouts and Persian instructions. The instruction selector is also checked for unobstructed pointer access at 390, 768 and 1117 px; the English header reserves space for its floating reading-ruler control. The visual audit passed 15 German and 13 English routes with the local services running: no detected green accents, horizontal overflow, overlapping sidebars or unreadable active navigation labels. Reports and screenshots are under `artifacts/conversation-flow/{de,en}`.
+
+## Final Windows packages
+
+These replace the earlier worksheet-only versions in this report. Both final setup files passed previous-version installation, upgrade, startup, update, repair and uninstall in isolated directories. A synthetic data marker survived. Recording backup/restore was checked separately in the browser and compared original audio hashes. Both unsigned setup executables ran on this machine. These are local release archives; no release upload or Git push was performed.
+
+| Product | Final version | Upgrade from | Lifecycle report |
+| --- | --- | --- | --- |
+| DeutschFlow | 20.8.48 | 20.8.47 | `artifacts/installer-cycle/German-20260908-104632-50a5ea6d/report.json` |
+| English Grammar Automaticity | 27.3.43 | 27.3.42 | `artifacts/installer-cycle/English-20260908-110130-bd6efcfd/report.json` |
+
+Setup SHA-256 values verified by those lifecycle runs:
+
+- DeutschFlow: `9f8adb3a65ea665b5d20952f4d41950175e20ce66763b5aa068a5ddc121a894b`.
+- English: `796e31a0b187463e1b49b2aee790655c946e9b544aead210e6de55b57afa0d46`.
+
+Complete delivery archives, including setup and required payload:
+
+- `releases/DeutschFlowDesktop-20.8.48-Windows.zip` — SHA-256 `8f4dab6aca2bc605028195d1de4173094f73d956463c54a0d6ffedb992bc6d8b`.
+- `releases/EnglishGrammarAutomaticityDesktop-27.3.43-Windows.zip` — SHA-256 `51dba851343bd461f7c34f1eafcdd535b1672076452e1d87cdd058d95c017d33`.
+
+Package parity passed for 39 German and 38 English public/production assets, plus 16 worksheet assets in each language. Embedded web checksums match. Evidence is in `artifacts/conversation-flow/package-verification.json` and `artifacts/grammar-worksheets/package-verification.json`.

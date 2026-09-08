@@ -1,8 +1,14 @@
 "use client";
+import {
+  AudioPlayback,
+  PlaybackSpeed,
+  readPlaybackRate,
+} from "@/app/studio/source/flow/playback";
 
 import { useCallback, useEffect, useState } from "react";
 import { Check, Headphones, RefreshCw, Trash2, Volume2 } from "lucide-react";
 
+import { ConversationRecordings } from "@/app/studio/source/flow/library";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +43,7 @@ function speak(text: string) {
   }
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = "de-DE";
-  utterance.rate = 0.92;
+  utterance.rate = readPlaybackRate();
   speechSynthesis.cancel();
   speechSynthesis.speak(utterance);
 }
@@ -104,6 +110,7 @@ export function AudioLibrary() {
         <div>
           <p className="section-kicker">Lokal aufgenommen</p>
           <h1 className="section-title">Audio-Bibliothek</h1>
+          <PlaybackSpeed language="de" />
           <p className="mt-2 text-sm text-muted-foreground">
             Gesprächsaufnahmen und Transkripte aus IndexedDB.
           </p>
@@ -122,6 +129,8 @@ export function AudioLibrary() {
         </Button>
       </div>
 
+      <ConversationRecordings language="de" refreshKey={loading} />
+      <h2>Frühere Aufnahmen</h2>
       <div className="grid gap-4">
         {rows.map(({ record, url }) => (
           <Card key={record.id}>
@@ -154,11 +163,10 @@ export function AudioLibrary() {
                   {record.correctedTranscript ?? record.transcript}
                 </div>
               </div>
-              <audio
-                controls
+              <AudioPlayback
                 src={url}
-                className="w-full"
-                aria-label={`Aufnahme: ${record.topic}`}
+                language="de"
+                label={`Aufnahme: ${record.topic}`}
               />
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -202,8 +210,7 @@ export function AudioLibrary() {
                 </EmptyMedia>
                 <EmptyTitle>Noch keine Aufnahmen</EmptyTitle>
                 <EmptyDescription>
-                  Aktiviere „Audio lokal speichern“ und nimm im Studio eine
-                  Antwort auf.
+                  Neue Gesprächsaufnahmen findest du oben.
                 </EmptyDescription>
               </EmptyHeader>
             </Empty>

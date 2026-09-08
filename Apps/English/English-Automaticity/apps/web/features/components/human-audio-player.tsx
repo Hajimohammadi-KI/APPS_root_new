@@ -1,10 +1,17 @@
 "use client";
 
 import * as React from "react";
+import { AudioPlayback } from "@/app/studio/source/flow/playback";
 import { CircleStop, Mic } from "lucide-react";
 import { getTeacherAudio } from "@/lib/teacher-content";
 
-export function HumanAudioPlayer({ contentId, compact = false }: { contentId: string; compact?: boolean }) {
+export function HumanAudioPlayer({
+  contentId,
+  compact = false,
+}: {
+  contentId: string;
+  compact?: boolean;
+}) {
   const [url, setUrl] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState(true);
 
@@ -24,26 +31,59 @@ export function HumanAudioPlayer({ contentId, compact = false }: { contentId: st
     };
   }, [contentId]);
 
-  if (loading) return <span className="text-xs text-muted-foreground">Loading human audio…</span>;
-  if (!url) return <span className="text-xs text-muted-foreground">Human recording not available.</span>;
-  return <audio aria-label="Human-recorded lesson audio" className={compact ? "h-9 max-w-full" : "w-full"} controls preload="metadata" src={url} />;
+  if (loading)
+    return (
+      <span className="text-xs text-muted-foreground">
+        Loading human audio…
+      </span>
+    );
+  if (!url)
+    return (
+      <span className="text-xs text-muted-foreground">
+        Human recording not available.
+      </span>
+    );
+  return (
+    <div className={compact ? "max-w-full" : "w-full"}>
+      <AudioPlayback
+        src={url}
+        language="en"
+        label="Human-recorded lesson audio"
+      />
+    </div>
+  );
 }
 
-export function HumanAudioRecorder({ onRecorded }: { onRecorded: (blob: Blob) => void }) {
+export function HumanAudioRecorder({
+  onRecorded,
+}: {
+  onRecorded: (blob: Blob) => void;
+}) {
   const [recording, setRecording] = React.useState(false);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const recorder = React.useRef<MediaRecorder | null>(null);
   const chunks = React.useRef<Blob[]>([]);
 
-  React.useEffect(() => () => { if (previewUrl) URL.revokeObjectURL(previewUrl); }, [previewUrl]);
+  React.useEffect(
+    () => () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    },
+    [previewUrl],
+  );
 
   async function start() {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true },
+    });
     const next = new MediaRecorder(stream);
     chunks.current = [];
-    next.ondataavailable = (event) => { if (event.data.size) chunks.current.push(event.data); };
+    next.ondataavailable = (event) => {
+      if (event.data.size) chunks.current.push(event.data);
+    };
     next.onstop = () => {
-      const blob = new Blob(chunks.current, { type: next.mimeType || "audio/webm" });
+      const blob = new Blob(chunks.current, {
+        type: next.mimeType || "audio/webm",
+      });
       stream.getTracks().forEach((track) => track.stop());
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl(URL.createObjectURL(blob));
@@ -59,10 +99,23 @@ export function HumanAudioRecorder({ onRecorded }: { onRecorded: (blob: Blob) =>
     setRecording(false);
   }
 
-  return <div className="flex flex-wrap items-center gap-2">
-    <button className="teacher-secondary-button" onClick={() => void (recording ? Promise.resolve(stop()) : start())} type="button">
-      {recording ? <CircleStop aria-hidden /> : <Mic aria-hidden />} {recording ? "Stop recording" : "Record human voice"}
-    </button>
-    {previewUrl ? <audio aria-label="New recording preview" className="h-10 max-w-full" controls src={previewUrl} /> : null}
-  </div>;
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        className="teacher-secondary-button"
+        onClick={() => void (recording ? Promise.resolve(stop()) : start())}
+        type="button"
+      >
+        {recording ? <CircleStop aria-hidden /> : <Mic aria-hidden />}{" "}
+        {recording ? "Stop recording" : "Record human voice"}
+      </button>
+      {previewUrl ? (
+        <AudioPlayback
+          src={previewUrl}
+          language="en"
+          label="New recording preview"
+        />
+      ) : null}
+    </div>
+  );
 }

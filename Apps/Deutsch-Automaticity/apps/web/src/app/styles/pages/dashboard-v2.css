@@ -1,7 +1,7 @@
 .home-v2 {
-  --v2-ink: #171426;
-  --v2-muted: #777286;
-  --v2-line: #ece6ee;
+  --v2-ink: #192a3c;
+  --v2-muted: #3d5a9e;
+  --v2-line: #efe7da;
   min-height: 100%;
   color: var(--v2-ink);
 }
@@ -9,12 +9,8 @@
 .german-app-main:has(.home-v2) {
   min-height: calc(100vh - 92px);
   background:
-    radial-gradient(
-      circle at 86% 2%,
-      rgba(237, 223, 250, 0.72),
-      transparent 31%
-    ),
-    linear-gradient(135deg, #fbf9fd, #f7f1fa);
+    radial-gradient(circle at 86% 2%, rgb(239 231 218 / 0.72), transparent 31%),
+    linear-gradient(135deg, #faf8f4, #faf8f4);
 }
 
 .home-v2 a {
@@ -37,7 +33,7 @@
   align-items: center;
   gap: 7px;
   margin: 0 0 6px;
-  color: #8b62b6;
+  color: #3d5a9e;
   font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.08em;
@@ -62,10 +58,10 @@
   gap: 18px;
   margin: 0 0 18px;
   padding: 16px 18px;
-  border: 1px solid #cbb8e5;
+  border: 1px solid #ded8cd;
   border-radius: 18px;
-  background: linear-gradient(110deg, #f5effd, #fff);
-  box-shadow: 0 10px 26px #33234f12;
+  background: linear-gradient(110deg, #faf8f4, #fff);
+  box-shadow: 0 10px 26px #192a3c12;
 }
 .home-v2-continue p,
 .home-v2-continue h2,
@@ -73,7 +69,7 @@
   margin: 0;
 }
 .home-v2-continue p {
-  color: #6d3ba8;
+  color: #3d5a9e;
   font-size: 11px;
   font-weight: 850;
   letter-spacing: 0.08em;
@@ -97,7 +93,7 @@
   justify-content: center;
   gap: 8px;
   border-radius: 13px;
-  background: #171426;
+  background: #192a3c;
   padding: 11px 15px;
   color: #fff;
   font-weight: 850;
@@ -129,8 +125,8 @@
   transform: scale(0.97);
 }
 .home-v2-tools > a:hover {
-  border-color: #d7cae6;
-  box-shadow: 0 9px 24px rgba(84, 61, 100, 0.08);
+  border-color: #efe7da;
+  box-shadow: 0 9px 24px rgb(61 90 158 / 0.08);
 }
 .home-v2-dot {
   position: absolute;
@@ -155,7 +151,7 @@
   height: 32px;
   place-items: center;
   border-radius: 10px;
-  background: linear-gradient(135deg, #f1bbca, #aa8ce9);
+  background: linear-gradient(135deg, #efe7da, #ded8cd);
   color: white;
   font-weight: 900;
 }
@@ -178,17 +174,17 @@
 .home-v2-focus-card,
 .home-v2-courses,
 .home-v2-rhythm {
-  border: 1px solid rgba(229, 219, 232, 0.94);
+  border: 1px solid rgb(239 231 218 / 0.94);
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 20px 60px rgba(105, 75, 108, 0.08);
+  box-shadow: 0 20px 60px rgb(61 90 158 / 0.08);
 }
 .home-v2-chart-card {
   padding: clamp(18px, 2.5vw, 28px);
   background:
     radial-gradient(
       circle at 90% -10%,
-      rgba(246, 183, 205, 0.26),
+      rgb(239 231 218 / 0.26),
       transparent 40%
     ),
     rgba(255, 255, 255, 0.92);
@@ -217,7 +213,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #795b9d;
+  color: #3d5a9e;
   font-size: 12px;
   font-weight: 800;
 }
@@ -249,7 +245,7 @@
   inset: 42% 1rem auto;
   margin: 0;
   text-align: center;
-  color: #635b71;
+  color: #3d5a9e;
   font-weight: 700;
 }
 .home-v2-chart-wrap svg {
@@ -258,24 +254,24 @@
   overflow: visible;
 }
 .home-v2-chart-wrap line {
-  stroke: #eee8f0;
+  stroke: #efe7da;
   stroke-width: 0.35;
 }
 .home-v2-chart-wrap circle {
   fill: white;
-  stroke: #f195b4;
+  stroke: #ded8cd;
   stroke-width: 0.8;
   vector-effect: non-scaling-stroke;
 }
 .home-v2-chart-line {
   fill: none;
-  stroke: #ed8fad;
+  stroke: #ded8cd;
   stroke-width: 1.5;
   vector-effect: non-scaling-stroke;
 }
 .home-v2-chart-shadow {
   fill: none;
-  stroke: rgba(155, 132, 238, 0.22);
+  stroke: rgb(135 155 196 / 0.22);
   stroke-width: 7;
   vector-effect: non-scaling-stroke;
   filter: blur(4px);
@@ -315,13 +311,13 @@
   margin-top: 8px;
   overflow: hidden;
   border-radius: 99px;
-  background: #f0ebf2;
+  background: #efe7da;
 }
 .home-v2-progress-track span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, #ef9bb7, #9d84ed);
+  background: linear-gradient(90deg, #ded8cd, #879bc4);
   transition: width 220ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 .home-v2-primary {
@@ -331,7 +327,7 @@
   justify-content: space-between;
   margin-top: 20px;
   border-radius: 14px;
-  background: #171426;
+  background: #192a3c;
   padding: 12px 14px;
   color: white !important;
   font-size: 12px;
@@ -343,9 +339,9 @@
   width: 130px;
   height: 130px;
   margin: 22px auto;
-  border: 12px solid #efe9f7;
-  border-top-color: #9a83ef;
-  border-right-color: #f2a1ba;
+  border: 12px solid #faf8f4;
+  border-top-color: #879bc4;
+  border-right-color: #ded8cd;
   border-radius: 50%;
 }
 .home-v2-score strong {
@@ -365,7 +361,7 @@
 .home-v2-focus-card dl div {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #f0ebf1;
+  border-bottom: 1px solid #efe7da;
   padding-bottom: 7px;
   font-size: 11px;
 }
@@ -415,13 +411,13 @@
 }
 .home-v2-course:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 25px rgba(94, 67, 102, 0.09);
+  box-shadow: 0 12px 25px rgb(61 90 158 / 0.09);
 }
 .home-v2-course-rose {
-  background: #fff0f4;
+  background: #faf8f4;
 }
 .home-v2-course-lavender {
-  background: #f1edff;
+  background: #faf8f4;
 }
 .home-v2-course-peach {
   background: #fff1e8;
@@ -433,7 +429,7 @@
   place-items: center;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.7);
-  color: #795b9d;
+  color: #3d5a9e;
 }
 .home-v2-course strong,
 .home-v2-course small {
@@ -466,17 +462,17 @@
   aspect-ratio: 1;
   place-items: center;
   border-radius: 9px;
-  background: #f2edf3;
+  background: #faf8f4;
   color: #9b94a1;
   font-size: 9px;
   font-weight: 800;
 }
 .home-v2-week span.is-active {
-  background: linear-gradient(145deg, #f6a6bd, #967fe8);
+  background: linear-gradient(145deg, #ded8cd, #879bc4);
   color: white;
 }
 .home-v2 :focus-visible {
-  outline: 3px solid rgba(128, 82, 195, 0.36);
+  outline: 3px solid rgb(61 90 158 / 0.36);
   outline-offset: 3px;
 }
 

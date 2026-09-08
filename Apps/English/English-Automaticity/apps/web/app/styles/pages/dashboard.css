@@ -3,11 +3,11 @@
   min-height: 300px;
   overflow: hidden;
   border-radius: 28px;
-  background-color: #174da9;
+  background-color: #3d5a9e;
   background-image: url("/dashboard-banner.svg");
   background-position: center;
   background-size: cover;
-  box-shadow: 0 20px 45px rgba(21, 58, 115, 0.18);
+  box-shadow: 0 20px 45px rgb(25 42 60 / 0.18);
 }
 
 .dashboard-banner-action {
@@ -22,8 +22,8 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 34px;
-  background: #102a56;
-  box-shadow: 0 28px 70px rgba(16, 42, 86, 0.25);
+  background: #192a3c;
+  box-shadow: 0 28px 70px rgb(25 42 60 / 0.25);
   isolation: isolate;
 }
 
@@ -41,12 +41,12 @@
   background:
     linear-gradient(
       90deg,
-      rgba(8, 27, 59, 0.98) 0%,
-      rgba(9, 30, 66, 0.91) 31%,
-      rgba(11, 36, 76, 0.35) 58%,
-      rgba(11, 36, 76, 0.08) 100%
+      rgb(25 42 60 / 0.98) 0%,
+      rgb(25 42 60 / 0.91) 31%,
+      rgb(25 42 60 / 0.35) 58%,
+      rgb(25 42 60 / 0.08) 100%
     ),
-    linear-gradient(0deg, rgba(5, 21, 47, 0.35), transparent 55%);
+    linear-gradient(0deg, rgb(25 42 60 / 0.35), transparent 55%);
 }
 
 .dashboard-hero-copy {
@@ -65,7 +65,7 @@
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.12);
   padding: 7px 11px;
-  color: #d9eaff;
+  color: #efe7da;
   font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.03em;
@@ -85,7 +85,7 @@
 .app-content[data-screen="home"] .dashboard-hero-copy > p {
   max-width: 52ch;
   margin: 20px 0 0;
-  color: #dbe8fb;
+  color: #efe7da;
   font-size: clamp(15px, 1.55vw, 19px);
   line-height: 1.65;
 }
@@ -98,8 +98,8 @@
 }
 
 .dashboard-hero-actions > :first-child {
-  background: linear-gradient(135deg, #2f79f5, #1760df);
-  box-shadow: 0 14px 30px rgba(5, 29, 75, 0.35);
+  background: linear-gradient(135deg, #879bc4, #3d5a9e);
+  box-shadow: 0 14px 30px rgb(25 42 60 / 0.35);
 }
 
 .dashboard-hero-secondary {
@@ -124,9 +124,9 @@
 .dashboard-hero-proof span {
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 12px;
-  background: rgba(5, 24, 56, 0.32);
+  background: rgb(25 42 60 / 0.32);
   padding: 8px 10px;
-  color: #cbdcf5;
+  color: #efe7da;
   font-size: 11px;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
@@ -151,11 +151,11 @@
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.94),
-    rgba(245, 247, 255, 0.9)
+    rgb(250 248 244 / 0.9)
   );
   padding: 18px;
-  color: #10233f;
-  box-shadow: 0 18px 45px rgba(8, 22, 47, 0.2);
+  color: #192a3c;
+  box-shadow: 0 18px 45px rgb(25 42 60 / 0.2);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   backdrop-filter: blur(20px) saturate(140%);
 }
@@ -169,7 +169,7 @@
 
 .dashboard-practice-summary h2 {
   margin: 0;
-  color: #10233f;
+  color: #192a3c;
   font-size: 17px;
   font-weight: 800;
   line-height: 1.25;
@@ -177,7 +177,7 @@
 
 .dashboard-practice-summary p {
   margin: 4px 0 0;
-  color: #5b6d87;
+  color: #3d5a9e;
   font-size: 12px;
   line-height: 1.5;
 }
@@ -192,8 +192,8 @@
   flex: none;
   border-radius: 50%;
   background: conic-gradient(
-    #6d3ee8 var(--practice-progress),
-    #e8e7f1 var(--practice-progress)
+    #879bc4 var(--practice-progress),
+    #efe7da var(--practice-progress)
   );
 }
 
@@ -209,7 +209,7 @@
 .dashboard-practice-ring strong {
   position: relative;
   z-index: 1;
-  color: #10233f;
+  color: #192a3c;
   font-size: 16px;
   font-variant-numeric: tabular-nums;
 }
@@ -219,13 +219,13 @@
   grid-template-columns: minmax(210px, 0.85fr) minmax(0, 1.7fr) auto;
   align-items: center;
   gap: 20px;
-  border: 1px solid #cfe1f4;
+  border: 1px solid #efe7da;
   border-radius: 28px;
   background:
-    radial-gradient(circle at 0 0, rgba(47, 121, 245, 0.12), transparent 18rem),
-    linear-gradient(135deg, #ffffff, #f5faff);
+    radial-gradient(circle at 0 0, rgb(135 155 196 / 0.12), transparent 18rem),
+    linear-gradient(135deg, #ffffff, #faf8f4);
   padding: 20px;
-  box-shadow: 0 14px 34px rgba(20, 57, 99, 0.08);
+  box-shadow: 0 14px 34px rgb(25 42 60 / 0.08);
 }
 
 .quick-start-heading {
@@ -243,8 +243,8 @@
   flex: 0 0 auto;
   place-items: center;
   border-radius: 15px;
-  background: #e4f0ff;
-  color: #1760df;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 
 .quick-start-icon svg,
@@ -256,7 +256,7 @@
 .quick-start-heading p,
 .user-guide-header > p {
   margin: 0;
-  color: #1760df;
+  color: #3d5a9e;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -296,7 +296,7 @@
   align-items: start;
   gap: 9px;
   border-radius: 16px;
-  background: rgba(239, 247, 255, 0.76);
+  background: rgb(250 248 244 / 0.76);
   padding: 11px;
 }
 
@@ -306,7 +306,7 @@
   height: 23px;
   place-items: center;
   border-radius: 999px;
-  background: #1760df;
+  background: #3d5a9e;
   color: white;
   font-size: 11px;
   font-weight: 900;
@@ -317,7 +317,7 @@
   width: 23px;
   height: 23px;
   place-items: center;
-  color: #1760df;
+  color: #3d5a9e;
 }
 
 .guide-step-icon svg {
@@ -362,7 +362,7 @@
 }
 
 .user-guide-dialog::backdrop {
-  background: rgba(18, 31, 53, 0.34);
+  background: rgb(25 42 60 / 0.34);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }
@@ -375,7 +375,7 @@
   border-radius: 28px;
   background: white;
   padding: 24px;
-  box-shadow: 0 28px 80px rgba(18, 31, 53, 0.24);
+  box-shadow: 0 28px 80px rgb(25 42 60 / 0.24);
 }
 
 .user-guide-close {
@@ -394,7 +394,7 @@
 }
 
 .user-guide-close:hover {
-  color: #1760df;
+  color: #3d5a9e;
 }
 
 .user-guide-close svg {
@@ -434,11 +434,11 @@
   align-items: flex-start;
   gap: 10px;
   margin-top: 18px;
-  border: 1px solid #bfe7d5;
+  border: 1px solid #ded8cd;
   border-radius: 18px;
-  background: #effaf5;
+  background: #faf8f4;
   padding: 14px;
-  color: #185e4b;
+  color: #192a3c;
 }
 
 .user-guide-safe > svg {
@@ -458,7 +458,7 @@
 
 .user-guide-safe span {
   margin-top: 3px;
-  color: #367363;
+  color: #3d5a9e;
   font-size: 12px;
   line-height: 1.55;
 }
@@ -474,15 +474,15 @@
 
 .progress-story {
   overflow: hidden;
-  border: 1px solid #d8e4f3;
+  border: 1px solid #efe7da;
   border-radius: 30px;
   background:
     radial-gradient(
       circle at 92% -15%,
-      rgba(24, 167, 134, 0.11),
+      rgb(61 90 158 / 0.11),
       transparent 18rem
     ),
-    linear-gradient(145deg, #ffffff, #f7faff);
+    linear-gradient(145deg, #ffffff, #faf8f4);
   padding: clamp(18px, 3vw, 28px);
   box-shadow: var(--shadow-card);
 }
@@ -544,7 +544,7 @@
   border: 1px solid var(--border);
   border-radius: 22px;
   background: white;
-  box-shadow: 0 10px 24px rgba(25, 45, 80, 0.07);
+  box-shadow: 0 10px 24px rgb(25 42 60 / 0.07);
   transition:
     transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
     box-shadow 180ms cubic-bezier(0.23, 1, 0.32, 1),
@@ -553,25 +553,25 @@
 
 .progress-story-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 34px rgba(25, 45, 80, 0.11);
+  box-shadow: 0 18px 34px rgb(25 42 60 / 0.11);
 }
 
 .progress-story-card[data-status="current"] {
-  border-color: rgba(23, 96, 223, 0.55);
+  border-color: rgb(61 90 158 / 0.55);
   box-shadow:
-    0 0 0 3px rgba(23, 96, 223, 0.08),
-    0 14px 30px rgba(23, 96, 223, 0.12);
+    0 0 0 3px rgb(61 90 158 / 0.08),
+    0 14px 30px rgb(61 90 158 / 0.12);
 }
 
 .progress-story-card[data-status="complete"] {
-  border-color: rgba(24, 167, 134, 0.4);
+  border-color: rgb(61 90 158 / 0.4);
 }
 
 .progress-story-image {
   position: relative;
   min-height: 178px;
   overflow: hidden;
-  background: #edf4ff;
+  background: #faf8f4;
 }
 
 .progress-story-image img {
@@ -593,7 +593,7 @@
   color: var(--primary);
   font-size: 13px;
   font-weight: 900;
-  box-shadow: 0 8px 18px rgba(25, 45, 80, 0.12);
+  box-shadow: 0 8px 18px rgb(25 42 60 / 0.12);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
 }
@@ -627,21 +627,21 @@
   align-items: center;
   gap: 6px;
   border-radius: 999px;
-  background: #eef3f9;
+  background: #faf8f4;
   padding: 6px 9px;
-  color: #596980;
+  color: #3d5a9e;
   font-size: 11px;
   font-weight: 850;
 }
 
 .progress-story-card[data-status="current"] .progress-story-status {
-  background: #e8f1ff;
-  color: #174a9e;
+  background: #faf8f4;
+  color: #3d5a9e;
 }
 
 .progress-story-card[data-status="complete"] .progress-story-status {
-  background: #e5f7f1;
-  color: #146a55;
+  background: #efe7da;
+  color: #192a3c;
 }
 
 .metric-grid {
@@ -654,7 +654,7 @@
   min-width: 0;
   border: 1px solid var(--border);
   border-radius: 18px;
-  background: linear-gradient(180deg, #fff, #f9fbfe);
+  background: linear-gradient(180deg, #fff, #faf8f4);
   padding: 14px;
 }
 
@@ -703,4 +703,3 @@
   display: grid;
   gap: 7px;
 }
-

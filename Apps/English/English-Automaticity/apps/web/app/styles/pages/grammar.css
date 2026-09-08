@@ -31,14 +31,14 @@
 
 .grammar-button:hover,
 .grammar-button[data-active="true"] {
-  border-color: rgba(21, 94, 239, 0.45);
-  background: #edf4ff;
+  border-color: rgb(61 90 158 / 0.45);
+  background: #faf8f4;
 }
 
 .practice-card {
   border: 1px solid var(--border);
   border-radius: 20px;
-  background: linear-gradient(180deg, #fff, #fbfdff);
+  background: linear-gradient(180deg, #fff, #faf8f4);
   padding: 17px;
 }
 
@@ -48,4 +48,3 @@
   font-weight: 850;
   line-height: 1.4;
 }
-

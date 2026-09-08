@@ -98,7 +98,34 @@ export async function POST(request: Request) {
       );
     }
     const payload = (await response.json()) as LanguageToolResponse;
-    const matches = Array.isArray(payload.matches) ? payload.matches : [];
+    // A malformed provider response must not become a reassuring empty result.
+    if (
+      !Array.isArray(payload.matches) ||
+      !payload.matches.every(
+        (match) =>
+          match &&
+          typeof match.message === "string" &&
+          Number.isInteger(match.offset) &&
+          Number.isInteger(match.length) &&
+          match.offset >= 0 &&
+          match.length >= 0 &&
+          match.offset + match.length <= body.text.trim().length &&
+          (match.replacements === undefined ||
+            (Array.isArray(match.replacements) &&
+              match.replacements.every(
+                (replacement: unknown) =>
+                  !!replacement &&
+                  typeof replacement === "object" &&
+                  "value" in replacement &&
+                  typeof replacement.value === "string",
+              ))),
+      )
+    )
+      return Response.json(
+        { error: "Invalid grammar-provider response." },
+        { status: 502 },
+      );
+    const matches = payload.matches;
     const original = body.text.trim();
     return Response.json({
       original,

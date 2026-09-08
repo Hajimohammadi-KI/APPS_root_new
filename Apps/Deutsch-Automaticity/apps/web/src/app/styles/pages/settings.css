@@ -46,15 +46,15 @@
 
 .settings-choice:has(input:checked),
 .settings-toggle:has(input:checked) {
-  border-color: #8b5cf6;
-  background: #f5f3ff;
-  box-shadow: 0 0 0 2px rgb(139 92 246 / 12%);
+  border-color: #879bc4;
+  background: #faf8f4;
+  box-shadow: 0 0 0 2px rgb(135 155 196 / 12%);
 }
 
 .settings-choice input,
 .settings-toggle input {
   margin-top: 0.15rem;
-  accent-color: #7c3aed;
+  accent-color: #879bc4;
 }
 
 .settings-choice span,
@@ -113,7 +113,7 @@
 }
 
 .settings-intention-eyebrow {
-  color: #6d28d9;
+  color: #3d5a9e;
   font-size: 0.78rem;
   font-weight: 800;
 }
@@ -190,12 +190,12 @@
 .settings-intention-active input {
   width: 1.15rem;
   height: 1.15rem;
-  accent-color: #7c3aed;
+  accent-color: #879bc4;
 }
 
 .settings-intention-privacy {
-  background: color-mix(in srgb, #059669 8%, var(--background));
-  color: #047857;
+  background: color-mix(in srgb, #3d5a9e 8%, var(--background));
+  color: #192a3c;
   line-height: 1.5;
 }
 
@@ -208,9 +208,9 @@
 .settings-nudge-consent {
   display: grid;
   gap: 0.5rem;
-  border: 1px solid color-mix(in srgb, #7c3aed 28%, var(--border));
+  border: 1px solid color-mix(in srgb, #879bc4 28%, var(--border));
   border-radius: 0.9rem;
-  background: color-mix(in srgb, #7c3aed 5%, var(--background));
+  background: color-mix(in srgb, #879bc4 5%, var(--background));
   padding: 0.8rem;
 }
 
@@ -227,7 +227,7 @@
 .settings-device-grid article svg {
   grid-row: span 2;
   width: 1.25rem;
-  color: #6d28d9;
+  color: #3d5a9e;
 }
 
 @media (max-width: 760px) {

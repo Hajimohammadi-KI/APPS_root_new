@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+import { syncConversationFlow } from "../../../shared/conversation-flow/build";
 import { worksheets as specialist } from "../packages/content/src/grammar-worksheets";
 import { grammarUnits } from "../packages/content/src/index";
 import { a1Worksheets } from "../packages/content/src/worksheet-seeds-a1";
@@ -24,6 +25,7 @@ await Bun.write(
 );
 
 await emitSharedAssets(out);
+await syncConversationFlow(root, "de");
 console.log(
   `${worksheets.length} German worksheet sets verified against the catalog.`,
 );

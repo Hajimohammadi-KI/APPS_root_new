@@ -1,7 +1,11 @@
 import { resolve } from "node:path";
+import { syncConversationFlow } from "../../../../shared/conversation-flow/build";
 import { grammarUnits } from "../packages/content/src/index";
 import { englishSeeds } from "../../../../shared/grammar-worksheets/seeds-en";
-import { catalogWorksheets, emitSharedAssets } from "../../../../shared/grammar-worksheets/build";
+import {
+  catalogWorksheets,
+  emitSharedAssets,
+} from "../../../../shared/grammar-worksheets/build";
 const worksheets = catalogWorksheets(grammarUnits, englishSeeds, "en");
 
 const root = resolve(import.meta.dir, "..");
@@ -14,4 +18,7 @@ await Bun.write(
 );
 
 await emitSharedAssets(out);
-console.log(`${worksheets.length} English worksheet sets verified against the catalog.`);
+await syncConversationFlow(root, "en");
+console.log(
+  `${worksheets.length} English worksheet sets verified against the catalog.`,
+);

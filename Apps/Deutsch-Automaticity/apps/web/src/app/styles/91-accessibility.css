@@ -69,7 +69,7 @@ html[data-low-stimulation="true"]
 .neuro-ruler-toggle input {
   width: 1.1rem;
   height: 1.1rem;
-  accent-color: #713f98;
+  accent-color: #3d5a9e;
 }
 
 .neuro-reading-ruler {
@@ -106,7 +106,7 @@ html[data-low-stimulation="true"]
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.6;
-  box-shadow: 0 12px 40px rgb(15 23 42 / 18%);
+  box-shadow: 0 12px 40px rgb(25 42 60 / 18%);
 }
 
 .persian-word-help-card {
@@ -115,11 +115,11 @@ html[data-low-stimulation="true"]
   width: min(23rem, calc(100vw - 1.5rem));
   max-height: min(31rem, calc(100vh - 1.5rem));
   overflow: hidden;
-  border: 1px solid #7c5aa6;
+  border: 1px solid #3d5a9e;
   border-radius: 1rem;
-  background: #fcfaff;
-  color: #21172d;
-  box-shadow: 0 18px 50px rgb(43 25 63 / 24%);
+  background: #faf8f4;
+  color: #192a3c;
+  box-shadow: 0 18px 50px rgb(25 42 60 / 24%);
   padding: 0.8rem;
   font-family: Tahoma, Arial, sans-serif;
   font-size: 0.92rem;
@@ -133,9 +133,9 @@ html[data-low-stimulation="true"]
 .persian-word-help-term {
   margin: 0 0 0.55rem;
   border-radius: 0.7rem;
-  background: #eee6f8;
+  background: #efe7da;
   padding: 0.45rem 0.65rem;
-  color: #38244f;
+  color: #192a3c;
   font-size: 1rem;
   font-weight: 900;
 }
@@ -149,18 +149,18 @@ html[data-low-stimulation="true"]
 
 .persian-word-help-section + .persian-word-help-section,
 .persian-word-help-example {
-  border-top: 1px solid #e4daee;
+  border-top: 1px solid #efe7da;
 }
 
 .persian-word-help-section strong,
 .persian-word-help-example strong {
-  color: #69458d;
+  color: #3d5a9e;
   font-size: 0.7rem;
   font-weight: 900;
 }
 
 .persian-word-help-example bdi {
-  color: #21172d;
+  color: #192a3c;
   font-family: Arial, sans-serif;
   font-weight: 750;
   text-align: left;

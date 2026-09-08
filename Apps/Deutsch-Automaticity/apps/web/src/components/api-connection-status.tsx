@@ -82,7 +82,7 @@ export function ApiConnectionStatus() {
         style={{
           backgroundColor:
             status === "connected"
-              ? "#15803d"
+              ? "#3d5a9e"
               : status === "offline"
                 ? "#b91c1c"
                 : "#a16207",

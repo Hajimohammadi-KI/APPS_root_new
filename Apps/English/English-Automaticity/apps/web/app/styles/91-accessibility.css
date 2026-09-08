@@ -73,7 +73,7 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
 .neuro-ruler-toggle input {
   width: 1.1rem;
   height: 1.1rem;
-  accent-color: #713f98;
+  accent-color: #3d5a9e;
 }
 
 .neuro-reading-ruler {
@@ -88,6 +88,11 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
   pointer-events: none;
 }
 
+/* Reserve a row for the standalone ruler so it never covers language selection. */
+body .conversation-flow .cf-top {
+  padding-top: 48px;
+}
+
 @media (max-width: 680px) {
   .neuro-ruler-toggle span {
     display: none;
@@ -99,8 +104,8 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
   z-index: 110;
   top: calc(0.75rem + env(safe-area-inset-top));
   right: 0.75rem;
-  border: 2px solid #6d28d9;
-  box-shadow: 0 8px 26px rgb(76 29 149 / 18%);
+  border: 2px solid #3d5a9e;
+  box-shadow: 0 8px 26px rgb(61 90 158 / 18%);
 }
 
 @media (max-width: 680px) {
@@ -125,7 +130,7 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.6;
-  box-shadow: 0 12px 40px rgb(15 23 42 / 18%);
+  box-shadow: 0 12px 40px rgb(25 42 60 / 18%);
 }
 
 .persian-word-help-card {
@@ -134,13 +139,13 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
   width: min(23rem, calc(100vw - 1.5rem));
   max-height: min(31rem, calc(100vh - 1.5rem));
   overflow: hidden;
-  border: 2px solid #6d28d9;
+  border: 2px solid #3d5a9e;
   border-radius: 1rem;
   background: #ffffff;
-  color: #21172d;
+  color: #192a3c;
   box-shadow:
-    0 18px 50px rgb(76 29 149 / 24%),
-    0 0 0 3px rgb(109 40 217 / 10%);
+    0 18px 50px rgb(61 90 158 / 24%),
+    0 0 0 3px rgb(61 90 158 / 10%);
   padding: 0.8rem;
   font-family: Tahoma, Arial, sans-serif;
   font-size: 0.92rem;
@@ -154,9 +159,9 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
 .persian-word-help-term {
   margin: 0 0 0.55rem;
   border-radius: 0.7rem;
-  background: #eee6f8;
+  background: #efe7da;
   padding: 0.45rem 0.65rem;
-  color: #38244f;
+  color: #192a3c;
   font-size: 1rem;
   font-weight: 900;
 }
@@ -168,11 +173,11 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
 }
 
 .persian-word-help-section + .persian-word-help-section {
-  border-top: 1px solid #e4daee;
+  border-top: 1px solid #efe7da;
 }
 
 .persian-word-help-section strong {
-  color: #69458d;
+  color: #3d5a9e;
   font-size: 0.7rem;
   font-weight: 900;
 }
@@ -191,4 +196,3 @@ html[data-low-stimulation="true"] :where(.card, [class*="shadow"]) {
     animation: none;
   }
 }
-

@@ -170,7 +170,8 @@ export function ErrorEngine() {
             Deine vier Fehler-Schwerpunkte
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Wiederkehrende Fehler werden nach Muster gebündelt, damit die nächste Übung gezielt bleibt.
+            Wiederkehrende Fehler werden nach Muster gebündelt, damit die
+            nächste Übung gezielt bleibt.
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

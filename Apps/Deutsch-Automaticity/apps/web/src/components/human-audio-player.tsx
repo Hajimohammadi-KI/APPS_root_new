@@ -1,4 +1,5 @@
 "use client";
+import { AudioPlayback } from "@/app/studio/source/flow/playback";
 
 import * as React from "react";
 import { CircleStop, Mic } from "lucide-react";
@@ -41,13 +42,13 @@ export function HumanAudioPlayer({
       </span>
     );
   return (
-    <audio
-      aria-label="Von einer Lehrkraft aufgenommene Audiodatei"
-      className={compact ? "h-9 max-w-full" : "w-full"}
-      controls
-      preload="metadata"
-      src={url}
-    />
+    <div className={compact ? "max-w-full" : "w-full"}>
+      <AudioPlayback
+        src={url}
+        language="de"
+        label="Von einer Lehrkraft aufgenommene Audiodatei"
+      />
+    </div>
   );
 }
 
@@ -103,11 +104,10 @@ export function HumanAudioRecorder({
         {recording ? "Aufnahme beenden" : "Stimme aufnehmen"}
       </button>
       {previewUrl ? (
-        <audio
-          aria-label="Vorschau der neuen Aufnahme"
-          className="h-10 max-w-full"
-          controls
+        <AudioPlayback
           src={previewUrl}
+          language="de"
+          label="Vorschau der neuen Aufnahme"
         />
       ) : null}
     </div>

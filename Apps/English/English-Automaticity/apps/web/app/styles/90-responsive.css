@@ -110,7 +110,7 @@ body {
     overflow-y: auto;
     border: 1px solid var(--border);
     border-radius: 22px;
-    box-shadow: 0 20px 50px rgba(24, 43, 75, 0.2);
+    box-shadow: 0 20px 50px rgb(25 42 60 / 0.2);
     opacity: 0;
     pointer-events: none;
     transform: translateY(-140%);
@@ -134,7 +134,7 @@ body {
     inset: 68px 0 0;
     display: block;
     border: 0;
-    background: rgba(20, 32, 52, 0.34);
+    background: rgb(25 42 60 / 0.34);
     padding: 0;
     -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
@@ -330,10 +330,10 @@ body {
   .dashboard-hero-shade {
     background: linear-gradient(
       180deg,
-      rgba(7, 25, 55, 0.96) 0%,
-      rgba(8, 28, 61, 0.88) 48%,
-      rgba(7, 25, 55, 0.34) 76%,
-      rgba(7, 25, 55, 0.82) 100%
+      rgb(25 42 60 / 0.96) 0%,
+      rgb(25 42 60 / 0.88) 48%,
+      rgb(25 42 60 / 0.34) 76%,
+      rgb(25 42 60 / 0.82) 100%
     );
   }
 

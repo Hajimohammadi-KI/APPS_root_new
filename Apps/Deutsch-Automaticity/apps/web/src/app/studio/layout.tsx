@@ -1,5 +1,4 @@
-import "./source/globals.css";
-import "./source/redesign.css";
+import "./source/flow/styles.css";
 
 export default function StudioLayout({
   children,

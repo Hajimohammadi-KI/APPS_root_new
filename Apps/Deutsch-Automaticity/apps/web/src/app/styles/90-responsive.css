@@ -99,9 +99,9 @@ body {
     inset: 68px auto 10px 10px;
     width: min(310px, calc(100vw - 20px));
     max-height: calc(100dvh - 78px);
-    border: 1px solid #e3d9ef;
+    border: 1px solid #efe7da;
     border-radius: 20px;
-    box-shadow: 0 22px 58px rgb(36 22 53 / 24%);
+    box-shadow: 0 22px 58px rgb(25 42 60 / 24%);
     opacity: 0;
     pointer-events: none;
     transform: translateX(calc(-100% - 20px));
@@ -329,10 +329,10 @@ body {
   .dashboard-hero-shade {
     background: linear-gradient(
       180deg,
-      rgb(7 25 55 / 96%) 0%,
-      rgb(8 28 61 / 88%) 48%,
-      rgb(7 25 55 / 34%) 76%,
-      rgb(7 25 55 / 82%) 100%
+      rgb(25 42 60 / 96%) 0%,
+      rgb(25 42 60 / 88%) 48%,
+      rgb(25 42 60 / 34%) 76%,
+      rgb(25 42 60 / 82%) 100%
     );
   }
 

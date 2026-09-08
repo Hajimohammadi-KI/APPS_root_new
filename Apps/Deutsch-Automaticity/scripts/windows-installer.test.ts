@@ -231,7 +231,7 @@ describe("Windows installation roadmap", () => {
     );
   });
 
-  test("keeps data separate and uses the accessible tracker palette", () => {
+  test("keeps data separate and uses the shared indigo worksheet palette", () => {
     expect(setupSource).toContain("Product.DataRoot");
     expect(setupSource).toContain(
       "Learning progress and settings are preserved",
@@ -239,9 +239,9 @@ describe("Windows installation roadmap", () => {
     expect(setupSource).toContain(
       "<Setter Property='Foreground' Value='White'/>",
     );
-    expect(setupConfig.darkColor).toBe("#493465");
-    expect(setupConfig.accentColor).toBe("#6F5296");
-    expect(setupConfig.accentSoftColor).toBe("#F1EAFA");
+    expect(setupConfig.darkColor).toBe("#192A3C");
+    expect(setupConfig.accentColor).toBe("#3D5A9E");
+    expect(setupConfig.accentSoftColor).toBe("#EFE7DA");
   });
 
   test("launches the app and closes setup after a successful operation", () => {

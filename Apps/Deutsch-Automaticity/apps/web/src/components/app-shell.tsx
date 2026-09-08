@@ -88,6 +88,9 @@ export function AppShell({
     },
   ] as const;
 
+  // Conversation owns a focused three-stage workspace with its own return navigation.
+  if (pathname === "/studio") return children;
+
   return (
     <div className="min-h-screen">
       {/* Keyboard users can bypass repeated navigation and land on the single main region. */}

@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "scope": "Authoring and release preflight. This policy does not activate a new learner evaluator or certify model-authored transformations.",
+  "types": [
+    {
+      "id": "comprehension",
+      "purpose": "Interpret meaning, reference or a contrast.",
+      "evidence": "A selection or explanation establishes receptive evidence only."
+    },
+    {
+      "id": "recall",
+      "purpose": "Retrieve a previously encountered form or relation without the solution.",
+      "evidence": "Record identity and exposure; a new example is not familiar-item recall for FSRS."
+    },
+    {
+      "id": "correction",
+      "purpose": "Repair a specific error while retaining the intended message.",
+      "evidence": "Accept multiple licensed repairs; keep the original response and targeted error."
+    },
+    {
+      "id": "transformation",
+      "purpose": "Re-express a message under explicit structural and semantic constraints.",
+      "evidence": "Check participants, predicate, time, polarity and modality; record changed focus. A claimed semantic record is not an assessment."
+    },
+    {
+      "id": "constrained_production",
+      "purpose": "Produce an answer under limited lexical or contextual choices.",
+      "evidence": "Closed variants need review; a cloze alone does not prove spontaneous use."
+    },
+    {
+      "id": "free_production",
+      "purpose": "Produce an original message for a communicative purpose.",
+      "evidence": "Require target opportunity, relevance and qualified open assessment; do not grade against one model sentence."
+    },
+    {
+      "id": "interaction",
+      "purpose": "Respond contingently to another turn and resolve a communicative need.",
+      "evidence": "Require a preceding turn and contingent response. Recording a monologue does not establish interaction."
+    }
+  ],
+  "partitions": ["teaching", "practice", "calibration", "evaluation"],
+  "partitionRule": "Template and scenario IDs connect variants globally, including declared translations. Normalised content matches connect items within a language. Connections are transitive. A connected family shared by learning and held-out material, exposed held-out material, or calibration and evaluation is quarantined. Evaluation material is never selected as practice. Unregistered semantic paraphrases still require independent review.",
+  "authoringRule": "Generate from teaching/practice sources only. Register new template/scenario IDs before authoring; recheck the complete partition manifest after any change. Renaming an ID does not erase content-based exposure.",
+  "transformationReview": "Validate grammatical feasibility and meaning in context. Passive conversion is not a universal transformation for intransitive predicates. Reduced purpose clauses need a licensed controller. Changed modality, negation, temporal relation or participants invalidates an equivalence claim.",
+  "interactionStatus": "Explicit requirement; current generated single-response tasks provide no interaction evidence. Author dialogue tasks in L01/L03.",
+  "humanReview": "pending"
+}

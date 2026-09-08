@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-09-05",
+  "reviewer": {
+    "id": "codex",
+    "role": "automated reference and curriculum author",
+    "kind": "model",
+    "humanReview": false
+  },
+  "scopeNote": "References establish topic categories and constraints. Chapter-level mapping and model-authored specifications do not constitute independent human review, CEFR certification or exhaustive lexical coverage. Cambridge access used the returned search-index content where direct requests returned 403.",
+  "sources": [
+    {
+      "id": "en-spelling",
+      "title": "Cambridge: Spelling",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/plurals",
+      "access": "search-index",
+      "topics": "suffixes; doubling; letter changes; lexical and regional exceptions"
+    },
+    {
+      "id": "en-mandative",
+      "title": "Cambridge: Suggest",
+      "url": "https://dictionary.cambridge.org/us/grammar/british-grammar/suggest",
+      "access": "search-index",
+      "topics": "that-clauses with base forms or should; complement-selection restrictions"
+    },
+    {
+      "id": "de-ersatzinfinitiv",
+      "title": "IDS grammis: Oberfeld",
+      "url": "https://grammis.ids-mannheim.de/terminologie/2106",
+      "access": "search-index",
+      "topics": "auxiliary placement with modal plus infinitive; Ersatzinfinitiv"
+    },
+    {
+      "id": "en-syntax",
+      "title": "Cambridge: Words, sentences and clauses",
+      "url": "https://dictionary.cambridge.org/us/grammar/british-grammar/words-sentences-and-clauses",
+      "access": "search-index",
+      "topics": "clause types; subjects and agreement; negation; questions; relatives; linking; focus"
+    },
+    {
+      "id": "en-nominal",
+      "title": "Cambridge: Nouns, pronouns and determiners",
+      "url": "https://dictionary.cambridge.org/us/grammar/british-grammar/nouns-pronouns-and-determiners",
+      "access": "search-index",
+      "topics": "noun form; number; countability; possession; determiners; pronouns; quantification"
+    },
+    {
+      "id": "en-modifiers",
+      "title": "Cambridge: Adjectives and adverbs",
+      "url": "https://dictionary.cambridge.org/us/grammar/british-grammar/adjectives-and-",
+      "access": "search-index",
+      "topics": "adjective order; degree; comparison; adverb position and function"
+    },
+    {
+      "id": "en-verbs",
+      "title": "Cambridge: Verbs",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/verbs",
+      "access": "search-index",
+      "topics": "tense and time; modality; verb patterns; nonfinite complements; voice"
+    },
+    {
+      "id": "en-prepositions",
+      "title": "Cambridge: Prepositions and particles",
+      "url": "https://dictionary.cambridge.org/us/grammar/british-grammar/prepositions-and-particles",
+      "access": "search-index",
+      "topics": "spatial and temporal prepositions; phrases; particles"
+    },
+    {
+      "id": "en-use",
+      "title": "Cambridge: Using English",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/English",
+      "access": "search-index",
+      "topics": "speech acts; reporting; spoken grammar; ellipsis; discourse markers; politeness; register"
+    },
+    {
+      "id": "en-writing",
+      "title": "Cambridge: Punctuation",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/punctuation",
+      "access": "search-index",
+      "topics": "capitalisation; punctuation; written boundaries; distinction from intonation"
+    },
+    {
+      "id": "de-categories",
+      "title": "IDS grammis: Ausdruckskategorien und Ausdrucksformen",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/1772",
+      "access": "page",
+      "topics": "words; phrases; verb complexes; nominal and prepositional phrases; clauses"
+    },
+    {
+      "id": "de-words",
+      "title": "IDS grammis: Wortarten",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/244",
+      "access": "page",
+      "topics": "nouns; pronouns; articles; adjectives; verbs; adverbs; particles"
+    },
+    {
+      "id": "de-paradigms",
+      "title": "IDS grammis: Paradigmatische Beziehungen",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/1774",
+      "access": "page",
+      "topics": "gender; number; person; tense including Futurperfekt; mood; voice"
+    },
+    {
+      "id": "de-verbs",
+      "title": "IDS grammis: Verbalkomplex",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/1522",
+      "access": "page",
+      "topics": "finite and nonfinite verbs; auxiliaries; modals; government"
+    },
+    {
+      "id": "de-valency",
+      "title": "IDS grammis: Valenz",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/2871",
+      "access": "page",
+      "topics": "verb, noun and adjective valency; licensed complements"
+    },
+    {
+      "id": "de-order",
+      "title": "IDS grammis: Wortstellung",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/748",
+      "access": "page",
+      "topics": "verb bracket; topological fields; information structure"
+    },
+    {
+      "id": "de-clauses",
+      "title": "IDS grammis: Nebensätze",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/1943",
+      "access": "page",
+      "topics": "clause integration; semantic types; complements; adverbials"
+    },
+    {
+      "id": "de-function",
+      "title": "IDS grammis: Kommunikativ-funktionale Sicht",
+      "url": "https://grammis.ids-mannheim.de/systematische-grammatik/2043",
+      "access": "page",
+      "topics": "form, meaning and use; productive and receptive perspectives; communicative acts"
+    },
+    {
+      "id": "de-writing",
+      "title": "Rat für deutsche Rechtschreibung: Amtliches Regelwerk 2024 via IDS",
+      "url": "https://grammis.ids-mannheim.de/rechtschreibung",
+      "access": "page",
+      "topics": "letter-sound mapping; separate and compound spelling; capitals; punctuation"
+    },
+    {
+      "id": "cefr-scope",
+      "title": "Council of Europe: Curriculum and course design",
+      "url": "https://rm.coe.int/168049447a",
+      "access": "pdf",
+      "topics": "CEFR is a curriculum resource rather than a prescribed syllabus; learner needs determine scope"
+    }
+  ]
+}

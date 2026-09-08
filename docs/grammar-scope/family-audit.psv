@@ -1,0 +1,43 @@
+# language|family|references|reference-to-catalog decision|explicit omissions or splits to author
+en|G01|en-syntax|Be and existential there cover basic predication; agreement and dummy subjects need explicit targets.|en.c.118,en.c.120
+en|G02|en-nominal|Plural, mass/count and complex nominal lessons exist; possession needs a separate alternation target.|en.c.122
+en|G03|en-nominal|Articles and quantity are mapped; demonstrative deixis needs explicit coverage.|en.c.114
+en|G04|en-nominal|Personal and reflexive pronouns exist; indefinite, reciprocal and independent possessive forms need separate targets.|en.c.115,en.c.116,en.c.117
+en|G05|en-modifiers|Degree and comparison exist; adjective order lacks a distinct unit.|en.c.121
+en|G06|en-verbs|Present, past and aspect contrasts are mapped; irregular forms remain an open lexical inventory.|
+en|G07|en-verbs|Future forms and time relations are mapped; reported time belongs to an overlapping family.|
+en|G08|en-verbs,en-prepositions|Complement selection and multiword verbs are mapped; every lexical governor still needs its own examples.|
+en|G09|en-verbs,en-syntax|Infinitive, gerund and participle patterns are mapped; control and meaning preservation must be checked per item.|
+en|G10|en-verbs|Obligation, ability and epistemic modality are mapped; one modal may have several readings.|
+en|G11|en-verbs|Voice and causatives are mapped; passive feasibility depends on the lexical predicate and intended reading.|
+en|G12|en-syntax|Questions and negation are mapped; subject/object question contrast needs an explicit target.|en.c.119
+en|G13|en-prepositions|Place, time and dependent prepositions are mapped; selection cannot be inferred from translation alone.|
+en|G14|en-syntax,en-mandative|Linking and layered embedding are present; mandative complements require a named target.|en.c.123
+en|G15|en-syntax|Basic and complex relatives are mapped; restrictive status and omitted object pronouns require item-level checks.|
+en|G16|en-verbs,en-syntax|Open, remote and counterfactual conditions exist; generic conditions need explicit scope.|en.c.113
+en|G17|en-use,en-verbs|Statements, questions and reporting verbs are mapped; source and viewpoint changes remain explicit constraints.|
+en|G18|en-syntax|Clefts, fronting and inversion are mapped; discourse equivalence is distinct from propositional equivalence.|
+en|G19|en-use|Cohesion, register and spoken features are mapped; genre labels do not establish proficiency.|
+en|G20|en-syntax,en-use|Integration lessons are retained as bundles; they do not replace atomic construction coverage.|
+en|G21|en-writing,en-spelling|Punctuation, capitalisation and apostrophes exist; inflectional spelling needs a separate graphic target.|en.c.124
+de|G01|de-categories,de-order|Basic clauses and the verb bracket are mapped; complement-es needs an explicit target.|de.c.152
+de|G02|de-words,de-paradigms|Case, number and nominal groups exist; gender assignment and derivation need separate inventories.|de.c.149,de.c.153
+de|G03|de-words|Articles, possession and quantity are mapped; demonstratives need explicit reference contrasts.|de.c.148
+de|G04|de-words|Personal, indefinite and pronominal adverbs exist; reciprocal and negative-indefinite patterns need explicit scope.|de.c.154,de.c.155
+de|G05|de-words,de-valency|Adjective inflection and comparison exist; adjective government and als/wie contrasts need explicit targets.|de.c.147,de.c.151
+de|G06|de-paradigms,de-verbs|Past forms and tense relations are mapped; lexical auxiliary and participle inventories stay extensible.|
+de|G07|de-paradigms|Futur I is mapped; Futurperfekt is named in the reference but lacks a distinct catalog target.|de.c.145
+de|G08|de-valency,de-verbs,de-ersatzinfinitiv|Verb government and functional-verb patterns exist; infinitive substitution needs a dedicated complex-verb target.|de.c.146
+de|G09|de-verbs,de-clauses|Infinitive and participial constructions are mapped; controller and attachment conditions remain item-specific.|
+de|G10|de-verbs,de-paradigms|Objective and subjective modal meanings are mapped; evidential source must remain distinguishable.|
+de|G11|de-paradigms,de-verbs|Event, state, modal passive and alternatives are mapped; replacement forms may add modal meaning.|
+de|G12|de-order,de-function|Questions, negation and scope are mapped; the oral intonation dimension remains required evidence.|
+de|G13|de-categories,de-valency|Place, time, alternating-case and genitive prepositions are mapped; lexical relations stay open-ended.|
+de|G14|de-clauses,de-order|Coordinators, subordinators and connector adverbs are mapped with distinct position rules.|
+de|G15|de-clauses|Nominative, accusative and dative relatives are explicit; genitive relatives need a distinct target.|de.c.150
+de|G16|de-paradigms,de-clauses|Open, remote and past counterfactual structures are mapped; time and modality constrain transformations.|
+de|G17|de-paradigms,de-function|Konjunktiv reporting is mapped; forms and source attribution remain separate review dimensions.|
+de|G18|de-order,de-function|Vorfeld, Mittelfeld and Nachfeld are mapped; alternative orders need contextual focus checks.|
+de|G19|de-function|Register, cohesion, particles and perspective are mapped; linguistic appropriateness needs situated review.|
+de|G20|de-function,de-clauses|Integration bundles are preserved without claiming that they cover every subconstruction.|
+de|G21|de-writing|Punctuation and citation syntax exist; separate/compound spelling needs a dedicated graphic target.|de.c.156

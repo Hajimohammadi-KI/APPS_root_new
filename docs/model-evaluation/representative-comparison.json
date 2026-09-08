@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "benchmarkVersion": "representative-development-2026-09-05.1",
+  "partition": "development",
+  "approved": false,
+  "manifestPath": "docs/model-evaluation/representative-development.json",
+  "manifestSha256": "b3fdf156e14c0ec41d32a26632671400df442db8c97f6ae3a9d07ec0fbe58e01",
+  "manifestPurpose": "Development adapter regression only: reuses implementation-authored examples, not unseen evaluation. Expected labels are unreviewed hypotheses. The ambiguous category includes unsupported wording that may be grammatical. asr_corruption means synthetic damaged text here, not measured ASR or audio. acceptedAnswers contains one canonical example only for the closed-answer comparator; production tasks remain open. No calibration/final partition or language/learner qualification is created.",
+  "limit": "Original model-authored drafts, no independent human labels. Counts against draft categories are diagnostics, not accuracy estimates. Latency includes cold language initialization and adapter work. Local device and energy costs are unmeasured. LanguageTool suggestions do not assess task target or meaning; zero suggestions cannot award success.",
+  "candidates": [
+    {
+      "candidate": {
+        "id": "controlled-answer",
+        "version": "1.0.0"
+      },
+      "startedAt": "2026-09-05T22:13:38.380Z",
+      "finishedAt": "2026-09-05T22:13:38.397Z",
+      "source": {
+        "folder": "artifacts/model-evaluation/2026-09-05T22-13-38-380Z-controlled-answer",
+        "runSha256": "11c5f27a4ae7e9663a10f23a6951cadb7e64b72a7dab35423e63e7158d79b935",
+        "reportSha256": "5da1276240beb008c647607f6b5807abebcf1e9f78f5ab2fc3009c1863143a69"
+      },
+      "languages": [
+        {
+          "language": "en",
+          "cases": 37,
+          "pass": 6,
+          "needsRepair": 0,
+          "targetNotObserved": 0,
+          "abstentions": 31,
+          "annotationCases": 0,
+          "providerFailures": 0,
+          "byDraftCategory": [
+            {
+              "category": "correct_alternative",
+              "cases": 12,
+              "annotationCases": 0
+            },
+            {
+              "category": "grammar_error",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "off_target",
+              "cases": 7,
+              "annotationCases": 0
+            },
+            {
+              "category": "ambiguous",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "asr_corruption",
+              "cases": 6,
+              "annotationCases": 0
+            }
+          ],
+          "medianLatencyMs": 0.1325999999999965,
+          "p95LatencyMs": 0.3539999999999992,
+          "reportedApiCost": 0,
+          "suggestedSpans": []
+        },
+        {
+          "language": "de",
+          "cases": 37,
+          "pass": 6,
+          "needsRepair": 0,
+          "targetNotObserved": 0,
+          "abstentions": 31,
+          "annotationCases": 0,
+          "providerFailures": 0,
+          "byDraftCategory": [
+            {
+              "category": "correct_alternative",
+              "cases": 12,
+              "annotationCases": 0
+            },
+            {
+              "category": "grammar_error",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "off_target",
+              "cases": 7,
+              "annotationCases": 0
+            },
+            {
+              "category": "ambiguous",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "asr_corruption",
+              "cases": 6,
+              "annotationCases": 0
+            }
+          ],
+          "medianLatencyMs": 0.12439999999999429,
+          "p95LatencyMs": 0.24490000000000123,
+          "reportedApiCost": 0,
+          "suggestedSpans": []
+        }
+      ]
+    },
+    {
+      "candidate": {
+        "id": "representative-construction",
+        "version": "1.0.0"
+      },
+      "startedAt": "2026-09-05T22:13:38.620Z",
+      "finishedAt": "2026-09-05T22:13:38.629Z",
+      "source": {
+        "folder": "artifacts/model-evaluation/2026-09-05T22-13-38-620Z-representative-construction",
+        "runSha256": "46cf2f54444c6116a665430589776949f15227f04587f1a08e1cdeb1e2e46f33",
+        "reportSha256": "b9d73761b04317d159c48b1859eefa0ce738539a0c9114dadf84ecce4e01eb56"
+      },
+      "languages": [
+        {
+          "language": "en",
+          "cases": 37,
+          "pass": 12,
+          "needsRepair": 12,
+          "targetNotObserved": 1,
+          "abstentions": 12,
+          "annotationCases": 0,
+          "providerFailures": 0,
+          "byDraftCategory": [
+            {
+              "category": "correct_alternative",
+              "cases": 12,
+              "annotationCases": 0
+            },
+            {
+              "category": "grammar_error",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "off_target",
+              "cases": 7,
+              "annotationCases": 0
+            },
+            {
+              "category": "ambiguous",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "asr_corruption",
+              "cases": 6,
+              "annotationCases": 0
+            }
+          ],
+          "medianLatencyMs": 0.05819999999999936,
+          "p95LatencyMs": 0.12189999999998236,
+          "reportedApiCost": 0,
+          "suggestedSpans": []
+        },
+        {
+          "language": "de",
+          "cases": 37,
+          "pass": 12,
+          "needsRepair": 12,
+          "targetNotObserved": 1,
+          "abstentions": 12,
+          "annotationCases": 0,
+          "providerFailures": 0,
+          "byDraftCategory": [
+            {
+              "category": "correct_alternative",
+              "cases": 12,
+              "annotationCases": 0
+            },
+            {
+              "category": "grammar_error",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "off_target",
+              "cases": 7,
+              "annotationCases": 0
+            },
+            {
+              "category": "ambiguous",
+              "cases": 6,
+              "annotationCases": 0
+            },
+            {
+              "category": "asr_corruption",
+              "cases": 6,
+              "annotationCases": 0
+            }
+          ],
+          "medianLatencyMs": 0.05119999999999436,
+          "p95LatencyMs": 0.0992999999999995,
+          "reportedApiCost": 0,
+          "suggestedSpans": []
+        }
+      ]
+    }
+  ]
+}

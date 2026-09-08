@@ -1,0 +1,16 @@
+{
+  "python.testing.unittestArgs": [
+    "-v",
+    "-s",
+    "./research/cefr-classification/tests",
+    "-p",
+    "test_*.py"
+  ],
+  "search.exclude": {
+    "DELETE/**": true,
+    ".codex-tmp/**": true,
+    "artifacts/**": true
+  },
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true
+}

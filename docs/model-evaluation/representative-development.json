@@ -1,0 +1,2820 @@
+{
+  "schemaVersion": 1,
+  "version": "representative-development-2026-09-05.1",
+  "createdAt": "2026-09-05T18:51:07.735Z",
+  "purpose": "Development adapter regression only: reuses implementation-authored examples, not unseen evaluation. Expected labels are unreviewed hypotheses. The ambiguous category includes unsupported wording that may be grammatical. asr_corruption means synthetic damaged text here, not measured ASR or audio. acceptedAnswers contains one canonical example only for the closed-answer comparator; production tasks remain open. No calibration/final partition or language/learner qualification is created.",
+  "cases": [
+    {
+      "id": "dev-representative-en.inflection-canonical",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.007",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "8444cddc3686b576cb0aab1fb27bf79cb3146426b0bf62b60df9fa2be7046b5d",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; work; in the library; every day. Describe this routine in the present simple. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina works in the library every day.",
+      "acceptedAnswers": [
+        "Mina works in the library every day."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.007.representative.retrieve.writing",
+        "taskSha256": "4223b01ffee059af22cc3a96580e26c2b9042ff64a7d2c612cafb9e4becb3f56"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.inflection-alternative",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.007",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "fb6e455faca88231f1eb44e0836fd2f3717dbf5d3aaf88262323b12ffa1b82f6",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; work; in the library; every day. Describe this routine in the present simple. Write one complete sentence. Word order and wording may vary.",
+      "response": "Every day, Mina works in the library.",
+      "acceptedAnswers": [
+        "Mina works in the library every day."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.007.representative.retrieve.writing",
+        "taskSha256": "4223b01ffee059af22cc3a96580e26c2b9042ff64a7d2c612cafb9e4becb3f56"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.inflection-grammar",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.007",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "0305e4c387afd82638ac0f3b88ebd7318c0731a76e1b47d716d003af57b13751",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; work; in the library; every day. Describe this routine in the present simple. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina work in the library every day.",
+      "acceptedAnswers": [
+        "Mina works in the library every day."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.007.representative.retrieve.writing",
+        "taskSha256": "4223b01ffee059af22cc3a96580e26c2b9042ff64a7d2c612cafb9e4becb3f56"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.inflection-wrong-role",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.007",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "aa0c113dab441537eee4e77cdc8ab8923e0f9a9da8cddd82d9fe784484e1deae",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; work; in the library; every day. Describe this routine in the present simple. Write one complete sentence. Word order and wording may vary.",
+      "response": "Omar works in the library every day.",
+      "acceptedAnswers": [
+        "Mina works in the library every day."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.007.representative.retrieve.writing",
+        "taskSha256": "4223b01ffee059af22cc3a96580e26c2b9042ff64a7d2c612cafb9e4becb3f56"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.inflection-unsupported",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.007",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "382ebc1f89874f214577d9f187b22cfa054ae16da848f6db30128268fdfcaae6",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; work; in the library; every day. Describe this routine in the present simple. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina is working in the library every day.",
+      "acceptedAnswers": [
+        "Mina works in the library every day."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.007.representative.retrieve.writing",
+        "taskSha256": "4223b01ffee059af22cc3a96580e26c2b9042ff64a7d2c612cafb9e4becb3f56"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.inflection-damaged-text",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.007",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "21fe050d786719eab3b25ee091c7670b6a3401dba0c81887ec5e637cbe0caa31",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; work; in the library; every day. Describe this routine in the present simple. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina works in the library every day. �",
+      "acceptedAnswers": [
+        "Mina works in the library every day."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.007.representative.retrieve.writing",
+        "taskSha256": "4223b01ffee059af22cc3a96580e26c2b9042ff64a7d2c612cafb9e4becb3f56"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.inflection-canonical",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.041",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "590bbaa0371d7a96bea7536044118f00c1fc05cf43c63c4190c254a9ab822505",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Sprecher: ich; Handlung: erklären; Gegenstand: der neue Plan. Verwende einen bestimmten Artikel. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Ich erkläre den neuen Plan.",
+      "acceptedAnswers": [
+        "Ich erkläre den neuen Plan."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.041.representative.retrieve.writing",
+        "taskSha256": "5983b2c317b86583d02283059cef99c1736434af21287934dd359bc8d76872e6"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.inflection-alternative",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.041",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "ae57aa54bda877db3446377bf0546b5d68789080dab21df662ae67e50cc7134a",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Sprecher: ich; Handlung: erklären; Gegenstand: der neue Plan. Verwende einen bestimmten Artikel. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Den neuen Plan erkläre ich.",
+      "acceptedAnswers": [
+        "Ich erkläre den neuen Plan."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.041.representative.retrieve.writing",
+        "taskSha256": "5983b2c317b86583d02283059cef99c1736434af21287934dd359bc8d76872e6"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.inflection-grammar",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.041",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "857c30a62aa7e762e374f2fa0558b7d4a8a114e9d0374ed67446cd65bbb4d907",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Sprecher: ich; Handlung: erklären; Gegenstand: der neue Plan. Verwende einen bestimmten Artikel. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Ich erkläre dem neue Plan.",
+      "acceptedAnswers": [
+        "Ich erkläre den neuen Plan."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.041.representative.retrieve.writing",
+        "taskSha256": "5983b2c317b86583d02283059cef99c1736434af21287934dd359bc8d76872e6"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.inflection-wrong-role",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.041",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "38c7b8b3d32995f2628b0e74cfe4a1fb727f9cc293d12ac88b8b695848824346",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Sprecher: ich; Handlung: erklären; Gegenstand: der neue Plan. Verwende einen bestimmten Artikel. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Wir erklären den neuen Plan.",
+      "acceptedAnswers": [
+        "Ich erkläre den neuen Plan."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.041.representative.retrieve.writing",
+        "taskSha256": "5983b2c317b86583d02283059cef99c1736434af21287934dd359bc8d76872e6"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.inflection-unsupported",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.041",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "8b108e76f01726b23a5a85ac35df4cc79ed77fde8e09de282ecae213eea376f1",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Sprecher: ich; Handlung: erklären; Gegenstand: der neue Plan. Verwende einen bestimmten Artikel. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Ich erläutere den neuen Plan.",
+      "acceptedAnswers": [
+        "Ich erkläre den neuen Plan."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.041.representative.retrieve.writing",
+        "taskSha256": "5983b2c317b86583d02283059cef99c1736434af21287934dd359bc8d76872e6"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.inflection-damaged-text",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.041",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.inflection.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.inflection",
+      "learnerGroup": null,
+      "contentFingerprint": "fda2c2c69bba38ec2d371ad1e5f1f7e00d21030e0584bdcf197302a2942c7d1d",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Sprecher: ich; Handlung: erklären; Gegenstand: der neue Plan. Verwende einen bestimmten Artikel. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Ich erkläre den neuen Plan. �",
+      "acceptedAnswers": [
+        "Ich erkläre den neuen Plan."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.041.representative.retrieve.writing",
+        "taskSha256": "5983b2c317b86583d02283059cef99c1736434af21287934dd359bc8d76872e6"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.valency-canonical",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.102",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "cbbf04f1dfa5c9d6d6466e0e0c3ca907f01f0015b6f989d2c7d2b4a0f16d1fa7",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina needs Omar's support. Use depend or rely in the present simple. Keep both names. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina depends on Omar.",
+      "acceptedAnswers": [
+        "Mina depends on Omar."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.102.representative.retrieve.writing",
+        "taskSha256": "3c97332acfdc970bdf6a9b4cce7c06ad595d2706d660f3b61ed1eb8aed9da91c"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.valency-alternative",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.102",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "9e9faec14cf3cbce02fa081a3e363d3092e929cea87167c455b89c12967241f5",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina needs Omar's support. Use depend or rely in the present simple. Keep both names. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina relies on Omar.",
+      "acceptedAnswers": [
+        "Mina depends on Omar."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.102.representative.retrieve.writing",
+        "taskSha256": "3c97332acfdc970bdf6a9b4cce7c06ad595d2706d660f3b61ed1eb8aed9da91c"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.valency-grammar",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.102",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "ec1fbd815a3100edc57d87214dfcfff95b979fa6d2e303174ef6141b9cc66571",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina needs Omar's support. Use depend or rely in the present simple. Keep both names. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina depends to Omar.",
+      "acceptedAnswers": [
+        "Mina depends on Omar."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.102.representative.retrieve.writing",
+        "taskSha256": "3c97332acfdc970bdf6a9b4cce7c06ad595d2706d660f3b61ed1eb8aed9da91c"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.valency-wrong-role",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.102",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "124f1ecc22ce98c0deef73fc102d5c87e6be694385a193d39b6285f15f189200",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina needs Omar's support. Use depend or rely in the present simple. Keep both names. Write one complete sentence. Word order and wording may vary.",
+      "response": "Omar depends on Mina.",
+      "acceptedAnswers": [
+        "Mina depends on Omar."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.102.representative.retrieve.writing",
+        "taskSha256": "3c97332acfdc970bdf6a9b4cce7c06ad595d2706d660f3b61ed1eb8aed9da91c"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.valency-unsupported",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.102",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "515d0ae797cddca70f5bf02495e6f51b47a045acae83eba71dae954e50eb8cde",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina needs Omar's support. Use depend or rely in the present simple. Keep both names. Write one complete sentence. Word order and wording may vary.",
+      "response": "She relies on him.",
+      "acceptedAnswers": [
+        "Mina depends on Omar."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.102.representative.retrieve.writing",
+        "taskSha256": "3c97332acfdc970bdf6a9b4cce7c06ad595d2706d660f3b61ed1eb8aed9da91c"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.valency-damaged-text",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.102",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "2c916c92317f5beb32920c304c63dbc186fb29505c8f77cc2decc90f7b8a1ce8",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina needs Omar's support. Use depend or rely in the present simple. Keep both names. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina depends on Omar. �",
+      "acceptedAnswers": [
+        "Mina depends on Omar."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.102.representative.retrieve.writing",
+        "taskSha256": "3c97332acfdc970bdf6a9b4cce7c06ad595d2706d660f3b61ed1eb8aed9da91c"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.valency-canonical",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.127",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "4548a61f5eb7c0cabe3f9500831be61be3742a1d819a06a8f745bd13d4c30a42",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina hat gestern den Kontakt zu Omar hergestellt. Verwende kontaktieren im Perfekt und nenne beide Namen und gestern. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina hat gestern Omar kontaktiert.",
+      "acceptedAnswers": [
+        "Mina hat gestern Omar kontaktiert."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.127.representative.retrieve.writing",
+        "taskSha256": "1ab48767ded193a48bd3c977c4b503f8898499c28483a72003f80146585e9f4f"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.valency-alternative",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.127",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "407f3e8b4955bb7e397bb9e8ad9dae7fccce5212dd1623ed4c65d5b21201562f",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina hat gestern den Kontakt zu Omar hergestellt. Verwende kontaktieren im Perfekt und nenne beide Namen und gestern. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Gestern hat Mina Omar kontaktiert.",
+      "acceptedAnswers": [
+        "Mina hat gestern Omar kontaktiert."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.127.representative.retrieve.writing",
+        "taskSha256": "1ab48767ded193a48bd3c977c4b503f8898499c28483a72003f80146585e9f4f"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.valency-grammar",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.127",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "b6b627ce72f8f367b04ac04a779033dd65f66b122af07f9acc73bc959d7ed11e",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina hat gestern den Kontakt zu Omar hergestellt. Verwende kontaktieren im Perfekt und nenne beide Namen und gestern. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina hat gestern mit Omar kontaktiert.",
+      "acceptedAnswers": [
+        "Mina hat gestern Omar kontaktiert."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.127.representative.retrieve.writing",
+        "taskSha256": "1ab48767ded193a48bd3c977c4b503f8898499c28483a72003f80146585e9f4f"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.valency-wrong-role",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.127",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "b533afa93f7a9921dbfedac2f624ca7cc22f360e07547d40d5927071cd459e10",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina hat gestern den Kontakt zu Omar hergestellt. Verwende kontaktieren im Perfekt und nenne beide Namen und gestern. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Omar hat gestern Mina kontaktiert.",
+      "acceptedAnswers": [
+        "Mina hat gestern Omar kontaktiert."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.127.representative.retrieve.writing",
+        "taskSha256": "1ab48767ded193a48bd3c977c4b503f8898499c28483a72003f80146585e9f4f"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.valency-unsupported",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.127",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "3cf373d20b2e86eb3f527fd88c442cdca7f8dbb0ec3b0296ee7840c79a58e0e0",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina hat gestern den Kontakt zu Omar hergestellt. Verwende kontaktieren im Perfekt und nenne beide Namen und gestern. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Sie hat ihn gestern kontaktiert.",
+      "acceptedAnswers": [
+        "Mina hat gestern Omar kontaktiert."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.127.representative.retrieve.writing",
+        "taskSha256": "1ab48767ded193a48bd3c977c4b503f8898499c28483a72003f80146585e9f4f"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.valency-damaged-text",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.127",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.valency.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.valency",
+      "learnerGroup": null,
+      "contentFingerprint": "a053c0d1447ed0fe067d632e7e649afdbd3729641935ca13d638b595177e2d53",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina hat gestern den Kontakt zu Omar hergestellt. Verwende kontaktieren im Perfekt und nenne beide Namen und gestern. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina hat gestern Omar kontaktiert. �",
+      "acceptedAnswers": [
+        "Mina hat gestern Omar kontaktiert."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.127.representative.retrieve.writing",
+        "taskSha256": "1ab48767ded193a48bd3c977c4b503f8898499c28483a72003f80146585e9f4f"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.temporal-canonical",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.030",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "7c9d5d0e4cb90b2b41a7633cead4b75eb8a5c22ba2e0e5fec9af456d97ce53e1",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; finish the report; yesterday. State when this completed event happened and keep the time expression. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina finished the report yesterday.",
+      "acceptedAnswers": [
+        "Mina finished the report yesterday."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.030.representative.retrieve.writing",
+        "taskSha256": "3631b80f7c04ae5a8954692ea007372ef3c84cbb31b8bef63ffa0e796b91747b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.temporal-alternative",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.030",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "e193c870d7455fd47b312e2a34fd58a93f2e08b1f2126da4497c133092a11016",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; finish the report; yesterday. State when this completed event happened and keep the time expression. Write one complete sentence. Word order and wording may vary.",
+      "response": "Yesterday, Mina finished the report.",
+      "acceptedAnswers": [
+        "Mina finished the report yesterday."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.030.representative.retrieve.writing",
+        "taskSha256": "3631b80f7c04ae5a8954692ea007372ef3c84cbb31b8bef63ffa0e796b91747b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.temporal-grammar",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.030",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "9b0886851cac3591a1422c6e5cafafa480d9abcc5764710821d71a2f44a7ee29",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; finish the report; yesterday. State when this completed event happened and keep the time expression. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina has finished the report yesterday.",
+      "acceptedAnswers": [
+        "Mina finished the report yesterday."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.030.representative.retrieve.writing",
+        "taskSha256": "3631b80f7c04ae5a8954692ea007372ef3c84cbb31b8bef63ffa0e796b91747b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.temporal-wrong-role",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.030",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "344d956bec588f2ddc87385d189d83c746d319e6df16bef3e12d4e7a911d562c",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; finish the report; yesterday. State when this completed event happened and keep the time expression. Write one complete sentence. Word order and wording may vary.",
+      "response": "Omar finished the report yesterday.",
+      "acceptedAnswers": [
+        "Mina finished the report yesterday."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.030.representative.retrieve.writing",
+        "taskSha256": "3631b80f7c04ae5a8954692ea007372ef3c84cbb31b8bef63ffa0e796b91747b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.temporal-unsupported",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.030",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "97bc9d734e6f584570b0b8b27d9377ec671e4178ac75d9347e7c3c7d53a992ad",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; finish the report; yesterday. State when this completed event happened and keep the time expression. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina finished her report yesterday.",
+      "acceptedAnswers": [
+        "Mina finished the report yesterday."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.030.representative.retrieve.writing",
+        "taskSha256": "3631b80f7c04ae5a8954692ea007372ef3c84cbb31b8bef63ffa0e796b91747b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.temporal-damaged-text",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.030",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "22b6cacb25ea8dcc485b128d9f68a19fb97ebe6015a2baacaace7b64ecfc846c",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; finish the report; yesterday. State when this completed event happened and keep the time expression. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina finished the report yesterday. �",
+      "acceptedAnswers": [
+        "Mina finished the report yesterday."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.030.representative.retrieve.writing",
+        "taskSha256": "3631b80f7c04ae5a8954692ea007372ef3c84cbb31b8bef63ffa0e796b91747b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.temporal-canonical",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.015",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "782d536161c8d5023ce124fab96060d82af90ac86e9f99336ebfc5b12799c863",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; den Bericht schreiben; gestern. Berichte im Perfekt und nenne alle Angaben. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina hat gestern den Bericht geschrieben.",
+      "acceptedAnswers": [
+        "Mina hat gestern den Bericht geschrieben."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.015.representative.retrieve.writing",
+        "taskSha256": "a9323f3f84411c2fa15351d165480a099914e7e109b1e0ae4a1ce7e03a53b49e"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.temporal-alternative",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.015",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "0a4eac3d39f6361f950b695bb0099c9d7fd67c7bdb9b8e42565f0e263c38f499",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; den Bericht schreiben; gestern. Berichte im Perfekt und nenne alle Angaben. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Gestern hat Mina den Bericht geschrieben.",
+      "acceptedAnswers": [
+        "Mina hat gestern den Bericht geschrieben."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.015.representative.retrieve.writing",
+        "taskSha256": "a9323f3f84411c2fa15351d165480a099914e7e109b1e0ae4a1ce7e03a53b49e"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.temporal-grammar",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.015",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "fe806001389496fdb6b8b06f151ced474a402d478b95383e56297e34f6d5046a",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; den Bericht schreiben; gestern. Berichte im Perfekt und nenne alle Angaben. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina ist gestern den Bericht schreiben.",
+      "acceptedAnswers": [
+        "Mina hat gestern den Bericht geschrieben."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.015.representative.retrieve.writing",
+        "taskSha256": "a9323f3f84411c2fa15351d165480a099914e7e109b1e0ae4a1ce7e03a53b49e"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.temporal-wrong-role",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.015",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "e65da08f1bf9a14298722258e552067bfc8d46212792dcafac9769cda66475ce",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; den Bericht schreiben; gestern. Berichte im Perfekt und nenne alle Angaben. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Omar hat gestern den Bericht geschrieben.",
+      "acceptedAnswers": [
+        "Mina hat gestern den Bericht geschrieben."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.015.representative.retrieve.writing",
+        "taskSha256": "a9323f3f84411c2fa15351d165480a099914e7e109b1e0ae4a1ce7e03a53b49e"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.temporal-unsupported",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.015",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "d8cee092561f90e0d0bbb6eb4d4e84dfbaa8455eea99014c18b77ff465ff75d4",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; den Bericht schreiben; gestern. Berichte im Perfekt und nenne alle Angaben. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina schrieb gestern den Bericht.",
+      "acceptedAnswers": [
+        "Mina hat gestern den Bericht geschrieben."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.015.representative.retrieve.writing",
+        "taskSha256": "a9323f3f84411c2fa15351d165480a099914e7e109b1e0ae4a1ce7e03a53b49e"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.temporal-damaged-text",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.015",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.temporal.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.temporal",
+      "learnerGroup": null,
+      "contentFingerprint": "fe267059f67ec2e6badcdcfbb4248fcad8ad3351982d9839a55d19fc1cf04b32",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina; den Bericht schreiben; gestern. Berichte im Perfekt und nenne alle Angaben. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina hat gestern den Bericht geschrieben. �",
+      "acceptedAnswers": [
+        "Mina hat gestern den Bericht geschrieben."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.015.representative.retrieve.writing",
+        "taskSha256": "a9323f3f84411c2fa15351d165480a099914e7e109b1e0ae4a1ce7e03a53b49e"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.clause-canonical",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.040",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "55d5b7136ba91b3dcaafb6d04a990938a5753ff55f5ecd10f75466e081de2ced",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is speaking now. Her message: Omar is ready. Report it using says, keep both names, and do not use quotation marks. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina says that Omar is ready.",
+      "acceptedAnswers": [
+        "Mina says that Omar is ready."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.040.representative.retrieve.writing",
+        "taskSha256": "d7f7ddc892f6d738916cc4aebd83620a01bd8a55005966b80bf8d61813cec9f9"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.clause-alternative",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.040",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "061a2c58f563352c0ec77f088741b9b70e98411d6ad8155f9a27ef5faf144c39",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is speaking now. Her message: Omar is ready. Report it using says, keep both names, and do not use quotation marks. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina says Omar is ready.",
+      "acceptedAnswers": [
+        "Mina says that Omar is ready."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.040.representative.retrieve.writing",
+        "taskSha256": "d7f7ddc892f6d738916cc4aebd83620a01bd8a55005966b80bf8d61813cec9f9"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.clause-grammar",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.040",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "8485beddbc1bf04cfb8dd8fc0dc5e4c4a313f2f8c86dfe425fc18590d9725f07",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is speaking now. Her message: Omar is ready. Report it using says, keep both names, and do not use quotation marks. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina says that Omar ready is.",
+      "acceptedAnswers": [
+        "Mina says that Omar is ready."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.040.representative.retrieve.writing",
+        "taskSha256": "d7f7ddc892f6d738916cc4aebd83620a01bd8a55005966b80bf8d61813cec9f9"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.clause-wrong-role",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.040",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "1cc2b54f285f76e4c9a5d85b63cf78a56400ee67ce99ff8f94adc9e4d87946ce",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is speaking now. Her message: Omar is ready. Report it using says, keep both names, and do not use quotation marks. Write one complete sentence. Word order and wording may vary.",
+      "response": "Omar says that Mina is ready.",
+      "acceptedAnswers": [
+        "Mina says that Omar is ready."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.040.representative.retrieve.writing",
+        "taskSha256": "d7f7ddc892f6d738916cc4aebd83620a01bd8a55005966b80bf8d61813cec9f9"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.clause-unsupported",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.040",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "6e48d67444274df3038649bab8f4d2e8640f3580adf37183f2171d8af9c74ea6",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is speaking now. Her message: Omar is ready. Report it using says, keep both names, and do not use quotation marks. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina says she is ready.",
+      "acceptedAnswers": [
+        "Mina says that Omar is ready."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.040.representative.retrieve.writing",
+        "taskSha256": "d7f7ddc892f6d738916cc4aebd83620a01bd8a55005966b80bf8d61813cec9f9"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.clause-damaged-text",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.040",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "e5373ff2326273d9355052015278a337b551935ad2e3f2402f3d53694d6217d6",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is speaking now. Her message: Omar is ready. Report it using says, keep both names, and do not use quotation marks. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina says that Omar is ready. �",
+      "acceptedAnswers": [
+        "Mina says that Omar is ready."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.040.representative.retrieve.writing",
+        "taskSha256": "d7f7ddc892f6d738916cc4aebd83620a01bd8a55005966b80bf8d61813cec9f9"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.clause-canonical",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.022",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "d4fd9ab2ebd6210ab127b2d95858711f1b3bad4bedb28ea07621eaffa29e535a",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina bleibt zu Hause. Grund: Omar ist krank. Verbinde mit weil und nenne beide Namen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina bleibt zu Hause, weil Omar krank ist.",
+      "acceptedAnswers": [
+        "Mina bleibt zu Hause, weil Omar krank ist."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.022.representative.retrieve.writing",
+        "taskSha256": "d225cbe1bdcdabdf5b3fbce5a62baa7b5aa5595ae7f2e611ebb5711fc1f8bd2b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.clause-alternative",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.022",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "f95f474d9006f1ecb6c6efce18690e3af5e870fcdc2ee0af99150081beaeb6b0",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina bleibt zu Hause. Grund: Omar ist krank. Verbinde mit weil und nenne beide Namen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Weil Omar krank ist, bleibt Mina zu Hause.",
+      "acceptedAnswers": [
+        "Mina bleibt zu Hause, weil Omar krank ist."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.022.representative.retrieve.writing",
+        "taskSha256": "d225cbe1bdcdabdf5b3fbce5a62baa7b5aa5595ae7f2e611ebb5711fc1f8bd2b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.clause-grammar",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.022",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "86517d0d1b8a326e6c07ed2082b89662132e208251cea7b7dff2713ea06cd19e",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina bleibt zu Hause. Grund: Omar ist krank. Verbinde mit weil und nenne beide Namen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina bleibt zu Hause, weil Omar ist krank.",
+      "acceptedAnswers": [
+        "Mina bleibt zu Hause, weil Omar krank ist."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.022.representative.retrieve.writing",
+        "taskSha256": "d225cbe1bdcdabdf5b3fbce5a62baa7b5aa5595ae7f2e611ebb5711fc1f8bd2b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.clause-wrong-role",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.022",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "96e8818e66e8d0aa3b4588872596e02efcc5e29d468443f975f5254b5f732922",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina bleibt zu Hause. Grund: Omar ist krank. Verbinde mit weil und nenne beide Namen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Omar bleibt zu Hause, weil Mina krank ist.",
+      "acceptedAnswers": [
+        "Mina bleibt zu Hause, weil Omar krank ist."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.022.representative.retrieve.writing",
+        "taskSha256": "d225cbe1bdcdabdf5b3fbce5a62baa7b5aa5595ae7f2e611ebb5711fc1f8bd2b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.clause-unsupported",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.022",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "93d2f22d3bb11cd19bdcb393f794bbeb4bd2091b21c1a3f413025e16ad0a545e",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina bleibt zu Hause. Grund: Omar ist krank. Verbinde mit weil und nenne beide Namen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina bleibt zu Hause, weil er krank ist.",
+      "acceptedAnswers": [
+        "Mina bleibt zu Hause, weil Omar krank ist."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.022.representative.retrieve.writing",
+        "taskSha256": "d225cbe1bdcdabdf5b3fbce5a62baa7b5aa5595ae7f2e611ebb5711fc1f8bd2b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.clause-damaged-text",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.022",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.clause.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.clause",
+      "learnerGroup": null,
+      "contentFingerprint": "a8d7948f84ddf4de42440dcd11cf4f41d6fe2c15b7422d4bcccb85056e45b469",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina bleibt zu Hause. Grund: Omar ist krank. Verbinde mit weil und nenne beide Namen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina bleibt zu Hause, weil Omar krank ist. �",
+      "acceptedAnswers": [
+        "Mina bleibt zu Hause, weil Omar krank ist."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.022.representative.retrieve.writing",
+        "taskSha256": "d225cbe1bdcdabdf5b3fbce5a62baa7b5aa5595ae7f2e611ebb5711fc1f8bd2b"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.voice-canonical",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.053",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "0ce6ada597699a9276e5c38d540dc5d1b4a0a736b33305e09aea512fc86daa26",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Object: the report. Action: check. Checking is required. Express the obligation in the passive; the person doing it is unspecified. Write one complete sentence. Word order and wording may vary.",
+      "response": "The report must be checked.",
+      "acceptedAnswers": [
+        "The report must be checked."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.053.representative.retrieve.writing",
+        "taskSha256": "a139475a38ff2f1915260b7026e1532d5202703f1d32f36caf5dfb1ed2911642"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.voice-alternative",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.053",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "451a84f3a0614f30bfe6e40a0cefa2119bca3c8b794343660bfc67a56f6360a9",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Object: the report. Action: check. Checking is required. Express the obligation in the passive; the person doing it is unspecified. Write one complete sentence. Word order and wording may vary.",
+      "response": "The report has to be checked.",
+      "acceptedAnswers": [
+        "The report must be checked."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.053.representative.retrieve.writing",
+        "taskSha256": "a139475a38ff2f1915260b7026e1532d5202703f1d32f36caf5dfb1ed2911642"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.voice-grammar",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.053",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "614b22afbb86f5849d8bd95513729d906ea31351f309f4b270b3e4e367a0ef6c",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Object: the report. Action: check. Checking is required. Express the obligation in the passive; the person doing it is unspecified. Write one complete sentence. Word order and wording may vary.",
+      "response": "The report must checked.",
+      "acceptedAnswers": [
+        "The report must be checked."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.053.representative.retrieve.writing",
+        "taskSha256": "a139475a38ff2f1915260b7026e1532d5202703f1d32f36caf5dfb1ed2911642"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.voice-wrong-role",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.053",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "e9327bc21888d6d6d824b7024e20d11fcc469edbcf7610e4ce164a0fb2a4818f",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Object: the report. Action: check. Checking is required. Express the obligation in the passive; the person doing it is unspecified. Write one complete sentence. Word order and wording may vary.",
+      "response": "The door must be checked.",
+      "acceptedAnswers": [
+        "The report must be checked."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.053.representative.retrieve.writing",
+        "taskSha256": "a139475a38ff2f1915260b7026e1532d5202703f1d32f36caf5dfb1ed2911642"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.voice-unsupported",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.053",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "3adb8e50cc8bbdea223ca0e4b4f7c9a32c7dc2d5833a1b9eae71d5fe3633892e",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Object: the report. Action: check. Checking is required. Express the obligation in the passive; the person doing it is unspecified. Write one complete sentence. Word order and wording may vary.",
+      "response": "It is necessary to check the report.",
+      "acceptedAnswers": [
+        "The report must be checked."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.053.representative.retrieve.writing",
+        "taskSha256": "a139475a38ff2f1915260b7026e1532d5202703f1d32f36caf5dfb1ed2911642"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.voice-damaged-text",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.053",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "49d557dd89d8037c9f44f6a7865228116b5890830a48f16eabddff9e54d81ebe",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Object: the report. Action: check. Checking is required. Express the obligation in the passive; the person doing it is unspecified. Write one complete sentence. Word order and wording may vary.",
+      "response": "The report must be checked. �",
+      "acceptedAnswers": [
+        "The report must be checked."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.053.representative.retrieve.writing",
+        "taskSha256": "a139475a38ff2f1915260b7026e1532d5202703f1d32f36caf5dfb1ed2911642"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.voice-canonical",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.044",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "418572595e79f39072598ac00ba30771064e6d126faf74d89eeeb4e4b3ff4c62",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Gegenstand: der Bericht. Handlung: prüfen. Die Prüfung ist Pflicht. Formuliere im Passiv mit müssen, ohne eine handelnde Person zu nennen. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Der Bericht muss geprüft werden.",
+      "acceptedAnswers": [
+        "Der Bericht muss geprüft werden."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.044.representative.retrieve.writing",
+        "taskSha256": "74ef834f1660745fe224ae9c39e42935d65efdbaac054611fe0cc28685c08b96"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.voice-alternative",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.044",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "be20626adc56aad9b37708b85daf97ae3ff10178afbf0f8fce252d0c0fa3c84c",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Gegenstand: der Bericht. Handlung: prüfen. Die Prüfung ist Pflicht. Formuliere im Passiv mit müssen, ohne eine handelnde Person zu nennen. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Geprüft werden muss der Bericht.",
+      "acceptedAnswers": [
+        "Der Bericht muss geprüft werden."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.044.representative.retrieve.writing",
+        "taskSha256": "74ef834f1660745fe224ae9c39e42935d65efdbaac054611fe0cc28685c08b96"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.voice-grammar",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.044",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "5d46d8c689c768b18818496f0e0a7a39a69230e15bcb146c3e9f42ff5b8d3e8e",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Gegenstand: der Bericht. Handlung: prüfen. Die Prüfung ist Pflicht. Formuliere im Passiv mit müssen, ohne eine handelnde Person zu nennen. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Der Bericht muss geprüft wird.",
+      "acceptedAnswers": [
+        "Der Bericht muss geprüft werden."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.044.representative.retrieve.writing",
+        "taskSha256": "74ef834f1660745fe224ae9c39e42935d65efdbaac054611fe0cc28685c08b96"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.voice-wrong-role",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.044",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "d4968dbe02cda2bc0d5509138bd324ece67c33dc4039f7d4d97e3e462a2897b8",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Gegenstand: der Bericht. Handlung: prüfen. Die Prüfung ist Pflicht. Formuliere im Passiv mit müssen, ohne eine handelnde Person zu nennen. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Die Tür muss geprüft werden.",
+      "acceptedAnswers": [
+        "Der Bericht muss geprüft werden."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.044.representative.retrieve.writing",
+        "taskSha256": "74ef834f1660745fe224ae9c39e42935d65efdbaac054611fe0cc28685c08b96"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.voice-unsupported",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.044",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "9f9f1f2915131b77ae84b5ca5e44dd1232f7c63ade96ac58d155fe4eb5b885bd",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Gegenstand: der Bericht. Handlung: prüfen. Die Prüfung ist Pflicht. Formuliere im Passiv mit müssen, ohne eine handelnde Person zu nennen. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Der Bericht ist zu prüfen.",
+      "acceptedAnswers": [
+        "Der Bericht muss geprüft werden."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.044.representative.retrieve.writing",
+        "taskSha256": "74ef834f1660745fe224ae9c39e42935d65efdbaac054611fe0cc28685c08b96"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.voice-damaged-text",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.044",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.voice.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.voice",
+      "learnerGroup": null,
+      "contentFingerprint": "77bfd9c9331b0b03edf62100808d9ec905e54df1c8bf80eceb4dd82c8939eb7b",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Gegenstand: der Bericht. Handlung: prüfen. Die Prüfung ist Pflicht. Formuliere im Passiv mit müssen, ohne eine handelnde Person zu nennen. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Der Bericht muss geprüft werden. �",
+      "acceptedAnswers": [
+        "Der Bericht muss geprüft werden."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.044.representative.retrieve.writing",
+        "taskSha256": "74ef834f1660745fe224ae9c39e42935d65efdbaac054611fe0cc28685c08b96"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.discourse-canonical",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.092",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "509a37669cf1d34b7da882dc3139663171d3817d5085635366296305c4c9b238",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is tired. Mina keeps working. Connect these facts to express an unexpected contrast. Keep the name in both clauses. Write one complete sentence. Word order and wording may vary.",
+      "response": "Although Mina is tired, Mina keeps working.",
+      "acceptedAnswers": [
+        "Although Mina is tired, Mina keeps working."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.092.representative.retrieve.writing",
+        "taskSha256": "ca8c1a85d3921c3e831517e307a7372ae212c8a30e3bfdd8fd9176ad44f74eff"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.discourse-alternative",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.092",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "aeb26c9e2d2ce9dd3b6f6df2fa42d07fb4d5ba9b78d10d3476ccf463f7c4efca",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is tired. Mina keeps working. Connect these facts to express an unexpected contrast. Keep the name in both clauses. Write one complete sentence. Word order and wording may vary.",
+      "response": "Mina keeps working though Mina is tired.",
+      "acceptedAnswers": [
+        "Although Mina is tired, Mina keeps working."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.092.representative.retrieve.writing",
+        "taskSha256": "ca8c1a85d3921c3e831517e307a7372ae212c8a30e3bfdd8fd9176ad44f74eff"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.discourse-grammar",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.092",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "236150a2ffa0182af5f6a758b65ef2b2e683e82e2986200676fa5f6b103c5e3b",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is tired. Mina keeps working. Connect these facts to express an unexpected contrast. Keep the name in both clauses. Write one complete sentence. Word order and wording may vary.",
+      "response": "Although Mina is tired, Mina keep working.",
+      "acceptedAnswers": [
+        "Although Mina is tired, Mina keeps working."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.092.representative.retrieve.writing",
+        "taskSha256": "ca8c1a85d3921c3e831517e307a7372ae212c8a30e3bfdd8fd9176ad44f74eff"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.discourse-wrong-role",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.092",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "6719154bb2603238f59d3ab7772c4195cbc22d98be61a9bd6db2e75e0e7efd73",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is tired. Mina keeps working. Connect these facts to express an unexpected contrast. Keep the name in both clauses. Write one complete sentence. Word order and wording may vary.",
+      "response": "Although Omar is tired, Mina keeps working.",
+      "acceptedAnswers": [
+        "Although Mina is tired, Mina keeps working."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.092.representative.retrieve.writing",
+        "taskSha256": "ca8c1a85d3921c3e831517e307a7372ae212c8a30e3bfdd8fd9176ad44f74eff"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.discourse-unsupported",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.092",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "a1f83927a967e9bd972383e4737d4a7d69dee57bbc5a47d366713511064be548",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is tired. Mina keeps working. Connect these facts to express an unexpected contrast. Keep the name in both clauses. Write one complete sentence. Word order and wording may vary.",
+      "response": "Although she is tired, Mina keeps working.",
+      "acceptedAnswers": [
+        "Although Mina is tired, Mina keeps working."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.092.representative.retrieve.writing",
+        "taskSha256": "ca8c1a85d3921c3e831517e307a7372ae212c8a30e3bfdd8fd9176ad44f74eff"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.discourse-damaged-text",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.092",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "cbe2f09be47c6372f84204629e356339da5c6090888450f806caa07adb9a7182",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is tired. Mina keeps working. Connect these facts to express an unexpected contrast. Keep the name in both clauses. Write one complete sentence. Word order and wording may vary.",
+      "response": "Although Mina is tired, Mina keeps working. �",
+      "acceptedAnswers": [
+        "Although Mina is tired, Mina keeps working."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.092.representative.retrieve.writing",
+        "taskSha256": "ca8c1a85d3921c3e831517e307a7372ae212c8a30e3bfdd8fd9176ad44f74eff"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-en.discourse-missing-target",
+      "language": "en",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "en.c.092",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "en.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-en.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "392fe845a3426b422078fd98d799a81dfc8fe33215ee0502853139e09fb7a43a",
+      "category": "off_target",
+      "expected": "target_not_observed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina is tired. Mina keeps working. Connect these facts to express an unexpected contrast. Keep the name in both clauses. Write one complete sentence. Word order and wording may vary.",
+      "response": "Because Mina is tired, Mina keeps working.",
+      "acceptedAnswers": [
+        "Although Mina is tired, Mina keeps working."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "en.c.092.representative.retrieve.writing",
+        "taskSha256": "ca8c1a85d3921c3e831517e307a7372ae212c8a30e3bfdd8fd9176ad44f74eff"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.discourse-canonical",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.039",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "d72dbb1a110ba26b61dd5b3ffbe098f889d32ad6407354ff2d8ec6a6071f294f",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina ist müde. Mina arbeitet weiter. Verbinde die Aussagen als unerwarteten Gegensatz. Nenne Mina in beiden Teilsätzen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Obwohl Mina müde ist, arbeitet Mina weiter.",
+      "acceptedAnswers": [
+        "Obwohl Mina müde ist, arbeitet Mina weiter."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.039.representative.retrieve.writing",
+        "taskSha256": "c0158dfafb1a64b292c7070e4cad28dfbde7035d3f6f036e70241d4aaa38bbe8"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.discourse-alternative",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.039",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "b3fd93e0a6052b594b583af8de665bcd38297f1c6e32e0a620b2664146c2af57",
+      "category": "correct_alternative",
+      "expected": "pass",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina ist müde. Mina arbeitet weiter. Verbinde die Aussagen als unerwarteten Gegensatz. Nenne Mina in beiden Teilsätzen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Mina ist müde, trotzdem arbeitet Mina weiter.",
+      "acceptedAnswers": [
+        "Obwohl Mina müde ist, arbeitet Mina weiter."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.039.representative.retrieve.writing",
+        "taskSha256": "c0158dfafb1a64b292c7070e4cad28dfbde7035d3f6f036e70241d4aaa38bbe8"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.discourse-grammar",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.039",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "25e8e5de296972a3265788420d9e39bba7fa3a3e896408966de27d3ed6f8756f",
+      "category": "grammar_error",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina ist müde. Mina arbeitet weiter. Verbinde die Aussagen als unerwarteten Gegensatz. Nenne Mina in beiden Teilsätzen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Obwohl Mina müde ist, Mina arbeitet weiter.",
+      "acceptedAnswers": [
+        "Obwohl Mina müde ist, arbeitet Mina weiter."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.039.representative.retrieve.writing",
+        "taskSha256": "c0158dfafb1a64b292c7070e4cad28dfbde7035d3f6f036e70241d4aaa38bbe8"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.discourse-wrong-role",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.039",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "9f20f5a0ff06f41ce0f75a4d656f7817a7419a86f634f5e8c452693d5c730187",
+      "category": "off_target",
+      "expected": "needs_repair",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina ist müde. Mina arbeitet weiter. Verbinde die Aussagen als unerwarteten Gegensatz. Nenne Mina in beiden Teilsätzen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Obwohl Omar müde ist, arbeitet Mina weiter.",
+      "acceptedAnswers": [
+        "Obwohl Mina müde ist, arbeitet Mina weiter."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.039.representative.retrieve.writing",
+        "taskSha256": "c0158dfafb1a64b292c7070e4cad28dfbde7035d3f6f036e70241d4aaa38bbe8"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.discourse-unsupported",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.039",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "fab9af6ed10fb429636e1472b2dc1068e9887a437ec5edd7b9471e906913af81",
+      "category": "ambiguous",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina ist müde. Mina arbeitet weiter. Verbinde die Aussagen als unerwarteten Gegensatz. Nenne Mina in beiden Teilsätzen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Obwohl sie müde ist, arbeitet Mina weiter.",
+      "acceptedAnswers": [
+        "Obwohl Mina müde ist, arbeitet Mina weiter."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.039.representative.retrieve.writing",
+        "taskSha256": "c0158dfafb1a64b292c7070e4cad28dfbde7035d3f6f036e70241d4aaa38bbe8"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.discourse-damaged-text",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.039",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "98f4a5580e1f422754e5dccd3dc18cb20ce9b7bfb88bcaba2270b911fe20740d",
+      "category": "asr_corruption",
+      "expected": "not_assessed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina ist müde. Mina arbeitet weiter. Verbinde die Aussagen als unerwarteten Gegensatz. Nenne Mina in beiden Teilsätzen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Obwohl Mina müde ist, arbeitet Mina weiter. �",
+      "acceptedAnswers": [
+        "Obwohl Mina müde ist, arbeitet Mina weiter."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.039.representative.retrieve.writing",
+        "taskSha256": "c0158dfafb1a64b292c7070e4cad28dfbde7035d3f6f036e70241d4aaa38bbe8"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    },
+    {
+      "id": "dev-representative-de.discourse-missing-target",
+      "language": "de",
+      "modality": "writing",
+      "contentVersion": "2026-09-05.5",
+      "taskVersion": "2026-09-05.5",
+      "constructionId": "de.c.039",
+      "rubricVersion": "representative-construction-v1",
+      "sourceId": "representative-engineering-fixtures-2026-09-05",
+      "license": "Original model-authored project regression examples; no third-party extracts or learner records.",
+      "partition": "development",
+      "itemFamily": "de.discourse.representative.0",
+      "sourceGroup": "representative-implementation-regressions",
+      "templateFamily": "representative-de.discourse",
+      "learnerGroup": null,
+      "contentFingerprint": "afa70c945ac79941856e4623b4a16f85542eafc9007d29c7ca37e7fb77c880e2",
+      "category": "off_target",
+      "expected": "target_not_observed",
+      "humanReviewIds": [],
+      "adjudicated": false,
+      "prompt": "Mina ist müde. Mina arbeitet weiter. Verbinde die Aussagen als unerwarteten Gegensatz. Nenne Mina in beiden Teilsätzen. Verwende geschriebenes Standarddeutsch. Formuliere einen vollständigen Satz. Wortstellung und Formulierung dürfen variieren.",
+      "response": "Weil Mina müde ist, arbeitet Mina weiter.",
+      "acceptedAnswers": [
+        "Obwohl Mina müde ist, arbeitet Mina weiter."
+      ],
+      "normalisation": {
+        "terminalFullStop": true
+      },
+      "taskBinding": {
+        "taskId": "de.c.039.representative.retrieve.writing",
+        "taskSha256": "c0158dfafb1a64b292c7070e4cad28dfbde7035d3f6f036e70241d4aaa38bbe8"
+      },
+      "authoredBy": "Codex",
+      "reviewStatus": "pending",
+      "reviews": [],
+      "adjudication": null,
+      "audioSha256": null
+    }
+  ]
+}

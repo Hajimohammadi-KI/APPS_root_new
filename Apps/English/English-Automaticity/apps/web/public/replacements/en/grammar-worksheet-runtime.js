@@ -1,6 +1,5 @@
 /* Worksheet drafts are private practice notes, never evidence of assessed mastery. */
 (() => {
-
   const config = window.GrammarWorksheetConfig || {
     language: "de",
     assetBase: "/replacements/de",
@@ -166,7 +165,16 @@
   let timer;
   let oralIndex = 0;
   let storageAvailable = true;
-  const key = () => `${config.storage}:worksheet:v1:${active.id}`;
+  const dailyParams = new URLSearchParams(location.search);
+  const requestedActivity =
+    dailyParams.get("from") === "daily"
+      ? Number(dailyParams.get("activity"))
+      : 0;
+  const dailyActivity = [1, 4, 5, 7].includes(requestedActivity)
+    ? requestedActivity
+    : 0;
+  const key = () =>
+    `${config.storage}:worksheet:v1:${active.id}${dailyActivity ? `:daily:${dailyActivity}` : ""}`;
   const fa = (text) =>
     bilingual
       ? `<span class="ws-fa" lang="fa" dir="rtl">${escapeHtml(text)}</span>`
@@ -387,6 +395,115 @@
       .querySelector("[data-ws-print-key]")
       .addEventListener("click", () => print(true));
     showPage(page);
+    if (dailyActivity) focusDailyExercise();
+  }
+
+  function focusDailyExercise() {
+    // Keep the existing cards and pen controls, but expose only this activity's tasks.
+    const paper = root.querySelector(`[data-ws-page="${page}"]`);
+    if (dailyActivity === 4) {
+      const recall = root.querySelector(".ws-recall");
+      recall.querySelector(".ws-speed")?.remove();
+      paper.insertBefore(recall, paper.querySelector(".ws-page-footer"));
+    }
+    root.querySelectorAll("[data-ws-page]").forEach((item) => {
+      if (item !== paper) item.remove();
+    });
+    root.querySelector(".ws-stage-nav").remove();
+    root.querySelectorAll("[data-key-page]").forEach((item) => item.remove());
+    let items = active.learn;
+    const titles = {
+      1: say("Aktiv anwenden", "Activate and use accurately"),
+      4: say("Lektion und gezielte Übungen", "Lesson and controlled practice"),
+      5: say("Täglich selbst schreiben", "Daily writing"),
+      7: say("Wiederholen und Antworten sichern", "Review and save evidence"),
+    };
+    if (dailyActivity === 1) {
+      paper.querySelector(".ws-recall")?.remove();
+      items = [...active.guided, ...active.transform];
+    } else if (dailyActivity === 4) items = [...active.learn, active.recall];
+    else {
+      paper.querySelectorAll(".ws-card").forEach((card) => {
+        const personal = !!card.querySelector(".ws-personal");
+        if (dailyActivity === 5 ? !personal : personal) card.remove();
+      });
+      if (dailyActivity === 5) paper.querySelector(".ws-review")?.remove();
+      items = dailyActivity === 7 ? active.correction : [];
+    }
+    paper.querySelector(".ws-page-header h2").textContent =
+      titles[dailyActivity];
+    paper.querySelector(".ws-page-header p").textContent = active.focus;
+    paper.querySelector(".ws-eyebrow").textContent =
+      `${active.level} · ${active.topic} · ${say("Übung", "Activity")} ${dailyActivity}`;
+    paper.dataset.dailyActivity = String(dailyActivity);
+    paper.querySelector(".ws-page-footer span:last-child").textContent =
+      `${config.brand} · ${say("Übung", "Activity")} ${dailyActivity}`;
+    paper.after(
+      document
+        .createRange()
+        .createContextualFragment(answerKey(page, items, dailyActivity === 5)),
+    );
+    root.querySelector(".ws-key summary").innerHTML =
+      `${icon("clipboard")}${say("Lösungen und Ursachen", "Answers and causes")} · ${say("Übung", "Activity")} ${dailyActivity}`;
+    const bar = document.createElement("section");
+    bar.className = "ws-card";
+    bar.innerHTML = `<p>${escapeHtml(say("Übung", "Activity"))} ${dailyActivity} · ${escapeHtml(active.topic)}</p><button type="button" class="ws-button" data-daily-save>${escapeHtml(say("Diese Übung speichern und zurück", "Save this activity and return"))}</button><p data-daily-status role="status"></p>`;
+    root.prepend(bar);
+    root.querySelector("[data-daily-save]").addEventListener("click", () => {
+      const fields = [
+        ...paper.querySelectorAll("textarea[data-ws-field]"),
+      ].filter((field) => !field.dataset.wsField.startsWith("log-"));
+      const answered = (field) =>
+        field.value.trim() ||
+        drafts[`${field.dataset.wsField}:ink`]?.some((stroke) => stroke.length);
+      if (!fields.length || !fields.every(answered)) {
+        root.querySelector("[data-daily-status]").textContent = say(
+          "Beantworte zuerst die Aufgaben und die Warum-Felder. Stifteingaben sind möglich.",
+          "Complete the answers and WHY fields first. Pen answers are accepted.",
+        );
+        return;
+      }
+      persist();
+      if (!storageAvailable) return;
+      try {
+        const sessionKey = english
+          ? "english-automaticity:daily-session:v1"
+          : "deutsch-automaticity:daily-session:v1";
+        const saved = JSON.parse(localStorage.getItem(sessionKey) || "{}");
+        if (
+          saved.topic &&
+          (saved.topic !== active.topic || saved.level !== active.level)
+        ) {
+          root.querySelector("[data-daily-status]").textContent = say(
+            "Antworten gespeichert. Der Tagesplan wurde inzwischen geändert; öffne ihn erneut.",
+            "Answers saved. The daily plan has changed; reopen it before marking this activity complete.",
+          );
+          return;
+        }
+        // This checks the practice task only; it does not award assessed mastery.
+        localStorage.setItem(
+          sessionKey,
+          JSON.stringify({
+            ...saved,
+            completedActivities: [
+              ...new Set([...(saved.completedActivities || []), dailyActivity]),
+            ],
+            updatedAt: new Date().toISOString(),
+          }),
+        );
+        location.href = english ? "/daily" : "/heute";
+      } catch {
+        root.querySelector("[data-daily-status]").textContent = say(
+          "Speichern nicht möglich. Deine Eingaben bleiben sichtbar.",
+          "Saving failed. Your answers remain visible.",
+        );
+      }
+    });
+    root.querySelector("[data-ws-print]").textContent = say(
+      "Diese Übung drucken",
+      "Print this activity",
+    );
+    translateUI();
   }
 
   function print(solutions, answers = false) {
@@ -437,7 +554,7 @@
       mode.hidden = !worksheet;
       if (!worksheet) return;
       active = worksheet;
-      page = 1;
+      page = dailyActivity === 1 ? 2 : [5, 7].includes(dailyActivity) ? 3 : 1;
       try {
         const saved = JSON.parse(localStorage.getItem(key()) || "{}");
         drafts =

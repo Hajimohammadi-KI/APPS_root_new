@@ -1,3 +1,4 @@
+import { emitDailyContext } from "../../../../shared/grammar-worksheets/daily-build";
 import { resolve } from "node:path";
 import { syncConversationFlow } from "../../../../shared/conversation-flow/build";
 import { grammarUnits } from "../packages/content/src/index";
@@ -18,6 +19,7 @@ await Bun.write(
 );
 
 await emitSharedAssets(out);
+await emitDailyContext(root, "en", worksheets);
 await syncConversationFlow(root, "en");
 console.log(
   `${worksheets.length} English worksheet sets verified against the catalog.`,

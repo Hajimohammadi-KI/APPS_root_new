@@ -41,6 +41,7 @@
     :where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action):focus-visible{outline:3px solid #3D5A9E6b;outline-offset:3px}
 </style>
 <link rel="stylesheet" href="/editorial.css">
+<script data-daily-worksheet-map>window.dailyWorksheetsByLevel={"A1":{"topic":"Personalpronomen und sein","id":"a1-personalpronomen-und-sein"},"A2":{"topic":"Perfekt mit haben","id":"a2-perfekt-mit-haben"},"B1":{"topic":"Präteritum in Erzählungen","id":"b1-pra-teritum-in-erza-hlungen"},"B2":{"topic":"Konjunktiv II Vergangenheit","id":"b2-konjunktiv-ii-vergangenheit"},"C1":{"topic":"Konjunktiv I vollständig","id":"c1-konjunktiv-i-vollsta-ndig"},"C2":{"topic":"Feine Bedeutungsunterschiede im Modus","id":"c2-feine-bedeutungsunterschiede-im-modus"}};</script>
 </head>
 <body>
 <aside aria-label="Eigenständiges Üben" style="background:#eef4ff;border-bottom:1px solid #bfcee8;padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;color:#173d7a;font:500 15px/1.5 system-ui"><span>Übe den Abruf mit eigenen Antworten, gespeicherten Entwürfen und Aufnahmen.</span><a href="/practice" style="background:#2258c0;border-radius:9px;padding:10px 16px;color:white;text-decoration:none">Eigenständig üben</a></aside>
@@ -73,7 +74,7 @@
   try {
     const state=JSON.parse(localStorage.getItem('german-automaticity:v20')||localStorage.getItem('grammar-automaticity:de')||'{}');
     const level=state?.learner?.selfDeclaredLevel||'A1';
-    const focusByLevel={A1:'sein: bin/ist/sind',A2:'Perfekt im Alltag',B1:'Nebensätze und sichere Wortstellung',B2:'Konjunktiv II und präzise Erklärungen',C1:'Komplexer Satzbau und Register',C2:'Nuancierte Stil- und Registerwahl'};
+    const focusByLevel=Object.fromEntries(Object.entries(window.dailyWorksheetsByLevel).map(([level,item])=>[level,item.topic]));
     document.getElementById('mission-focus').textContent=`${focusByLevel[level]||focusByLevel.A1} · ${level}`;
   } catch {}
   const toast=document.getElementById('toast');let timer;
@@ -110,7 +111,7 @@ function refreshAdherenceShadow(minutes){
   const result=runner({flags:{adherence_v1_shadow:shadowFlagEnabled()},currentPlan,readinessSignals:{completionRate7d:Math.min(1,completed/7),daysSinceLastSession:daysSince(session.startedAt),srsReviewBacklog:Array.isArray(session.mistakes)?session.mistakes.length:0,planDuration:selected,currentPracticeStreak:0}});
   Object.defineProperty(window,'__automaticityAdherenceShadow',{configurable:true,writable:true,value:result});
 }
-const focusByLevel={A1:'sein: bin/ist/sind',A2:'Perfekt im Alltag',B1:'Nebensätze und sichere Wortstellung',B2:'Konjunktiv II und präzise Erklärungen',C1:'Komplexer Satzbau und Register',C2:'Nuancierte Stil- und Registerwahl'};
+const focusByLevel=Object.fromEntries(Object.entries(window.dailyWorksheetsByLevel).map(([level,item])=>[level,item.topic]));
 const currentLevel=()=>{const state=readLearnerState();return state?.learningLevel||state?.learner?.selfDeclaredLevel||localStorage.getItem('german-cefr-level')||'A1'};
 let selectedDuration=15;
 let boosterController=null;
@@ -155,8 +156,8 @@ document.querySelectorAll('.activity .open').forEach((button,index)=>button.addE
   const topic=focusByLevel[level]||focusByLevel.A1;
   const previous=readDailySession();
   localStorage.setItem(dailySessionKey,JSON.stringify({...previous,level,topic,sessionMinutes:selectedDuration,currentActivity:activity,activityMinutes:minutes,practiceUnits:units,startedAt:new Date().toISOString(),completedActivities:previous.completedActivities||[],mistakes:previous.mistakes||[]}));
-  const routes=['/grammatik','/studio','/studio','/grammatik','/automatik','/automatik','/wiederholungen'];
-  const query=new URLSearchParams({from:'daily',activity:String(activity),session:String(selectedDuration),minutes:String(minutes),units:String(units),level,topic,return:'/heute'});
+  const routes=["/grammatik","/studio","/studio","/grammatik","/grammatik","/studio","/grammatik"];
+  const query=new URLSearchParams({from:'daily',activity:String(activity),session:String(selectedDuration),minutes:String(minutes),units:String(units),level,topic,worksheet:window.dailyWorksheetsByLevel[level].id,return:'/heute'});
   location.href=`${routes[index]||'/heute'}?${query}`;
 }));
 document.querySelector('.hero-copy .primary').addEventListener('click',()=>document.querySelector('.activity .open').click());

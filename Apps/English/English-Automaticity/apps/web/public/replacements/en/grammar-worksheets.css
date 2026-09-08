@@ -1214,3 +1214,9 @@ body .page-icon {
     break-inside: avoid;
   }
 }
+/* Daily tasks keep their own length on screen; printed worksheets retain A4 sizing. */
+@media screen {
+  .ws-paper[data-daily-activity] {
+    min-height: 0;
+  }
+}

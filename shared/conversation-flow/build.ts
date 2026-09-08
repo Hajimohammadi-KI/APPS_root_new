@@ -11,6 +11,8 @@ export async function syncConversationFlow(
   // Copy the shared implementation into each package so standalone installers resolve React locally.
   for (const name of [
     "model.ts",
+    "daily-exercise.ts",
+    "daily-model.tsx",
     "storage.ts",
     "recorder.ts",
     "copy.ts",

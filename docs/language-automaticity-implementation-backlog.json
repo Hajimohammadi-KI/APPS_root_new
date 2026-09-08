@@ -5,7 +5,7 @@
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
   "updatedOn": "2026-09-08",
-  "progressRecord": "docs/LANGUAGE-ROLLBACK-2026-09-08.md",
+  "progressRecord": "docs/DISTINCT-DAILY-EXERCISES-2026-09-08.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -3815,9 +3815,9 @@
     }
   ],
   "delivery": {
-    "technicalIncrement": "restored",
-    "englishVersion": "27.3.43",
-    "germanVersion": "20.8.48",
+    "technicalIncrement": "verified",
+    "englishVersion": "27.3.46",
+    "germanVersion": "20.8.51",
     "fullRoadmap": "awaiting_human_validation",
     "fullCurriculum": "not_qualified",
     "learningEffectiveness": "not_measured",
@@ -3825,8 +3825,8 @@
     "transformer": "not_qualified",
     "fsrs": "bounded_pilot_available_not_enrolled",
     "reinforcementLearning": "offline_prototype_not_active",
-    "installedEnglishVersion": "27.3.43",
-    "installedGermanVersion": "20.8.48",
+    "installedEnglishVersion": "27.3.46",
+    "installedGermanVersion": "20.8.51",
     "requiredEngineeringScopesVerified": 43,
     "requiredHumanValidationTasks": 14,
     "requiredEngineeringTasksStillOpen": 0,
@@ -3834,22 +3834,22 @@
     "requiredImplementationStillOpen": []
   },
   "technicalRelease": {
-    "status": "restored",
+    "status": "verified",
     "versions": {
-      "English": "27.3.43",
-      "German": "20.8.48"
+      "English": "27.3.46",
+      "German": "20.8.51"
     },
     "installedVersions": {
-      "English": "27.3.43",
-      "German": "20.8.48"
+      "English": "27.3.46",
+      "German": "20.8.51"
     },
     "fullCurriculum": "not_qualified",
     "learnerOutcomes": "unmeasured",
-    "report": "docs/LANGUAGE-ROLLBACK-2026-09-08.md"
+    "report": "docs/DISTINCT-DAILY-EXERCISES-2026-09-08.md"
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-DELIVERY-2026-09-06.md",
+  "latestEngineeringUpdate": "docs/DISTINCT-DAILY-EXERCISES-2026-09-08.md",
   "grammarScope": {
     "status": "mapping_verified",
     "report": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",

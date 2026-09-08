@@ -32,6 +32,12 @@ import { readStudio, saveAttempt, saveReview } from "./storage";
 import { StudioRecorder, type RecordingSnapshot } from "./recorder";
 import { AudioPlayback, PlaybackSpeed, readPlaybackRate } from "./playback";
 import { words, type CopyKey } from "./copy";
+import {
+  dailyExercise,
+  type DailyExercise,
+  type DailyWorksheet,
+} from "./daily-exercise";
+import { DailyModel, shadowSteps } from "./daily-model";
 
 type RecordingState =
   "ready" | "requesting" | "recording" | "paused" | "stopped";
@@ -58,13 +64,90 @@ function useBlobUrl(blob: Blob | undefined) {
 const formatTime = (ms: number) =>
   `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, "0")}`;
 
-export default function StudioFlow({
+export default function StudioFlow(props: Props) {
+  const [context, setContext] = useState<{
+    ready: boolean;
+    exercise?: DailyExercise;
+    error?: string;
+  }>({ ready: false });
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (
+      params.get("from") !== "daily" ||
+      ![2, 3, 6].includes(Number(params.get("activity")))
+    ) {
+      setContext({ ready: true });
+      return;
+    }
+    const controller = new AbortController();
+    // Wait for the exact worksheet before mounting the recorder; never flash an unrelated task.
+    void fetch(`/replacements/${props.language}/daily-worksheets.json`, {
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Daily content unavailable");
+        const data = (await response.json()) as {
+          worksheets: DailyWorksheet[];
+        };
+        const exercise = dailyExercise(params, data.worksheets, props.language);
+        if (!exercise) throw new Error("Daily activity unavailable");
+        if (!controller.signal.aborted) setContext({ ready: true, exercise });
+      })
+      .catch(() => {
+        if (!controller.signal.aborted)
+          setContext({
+            ready: true,
+            error:
+              props.language === "de"
+                ? "Diese Tagesübung konnte nicht geladen werden. Öffne sie erneut über den Tagesplan."
+                : "This daily exercise could not be loaded. Reopen it from your daily plan.",
+          });
+      });
+    return () => controller.abort();
+  }, [props.language]);
+  const dailyTopics = useMemo(
+    () => (context.exercise ? [context.exercise.topic] : props.topics),
+    [context.exercise, props.topics],
+  );
+  if (!context.ready || context.error)
+    return (
+      <main className="conversation-flow">
+        <p role="status">
+          {context.error ||
+            (props.language === "de"
+              ? "Übung wird geladen …"
+              : "Loading exercise …")}
+        </p>
+        {context.error && (
+          <a href={props.language === "de" ? "/heute" : "/daily"}>
+            {props.language === "de"
+              ? "Zurück zum Tagesplan"
+              : "Back to daily plan"}
+          </a>
+        )}
+      </main>
+    );
+  return context.exercise ? (
+    <StudioContent
+      {...props}
+      topics={dailyTopics}
+      daily={context.exercise}
+      initialTopicId={context.exercise.topic.id}
+    />
+  ) : (
+    <StudioContent {...props} />
+  );
+}
+
+function StudioContent({
   language,
   topics,
   getExampleAudio,
   onComplete,
   initialTopicId,
-}: Props) {
+  daily,
+}: Props & { daily?: DailyExercise }) {
+  const [preparationStep, setPreparationStep] = useState(0);
   const [stage, setStage] = useState<Stage>("prepare");
   const [instructions, setInstructions] = useState<Language | "fa">(language);
   const text = (key: CopyKey): string =>
@@ -128,7 +211,11 @@ export default function StudioFlow({
           const requestedAttempt = new URLSearchParams(location.search).get(
             "attempt",
           );
-          const draft = stored.find((item) => item.id === requestedAttempt);
+          const draft = stored.find(
+            (item) =>
+              item.id === requestedAttempt &&
+              (!daily || item.topicId === daily.topic.id),
+          );
           if (draft) {
             current.current = draft;
             setAttempt(draft);
@@ -176,7 +263,7 @@ export default function StudioFlow({
       recorder.current?.dispose();
       window.speechSynthesis?.cancel();
     };
-  }, [language, topics, initialTopicId]);
+  }, [language, topics, initialTopicId, daily]);
 
   function persist(next: Attempt, quiet = false) {
     if (!alive.current) return saveAttempt(next).catch(() => undefined);
@@ -512,6 +599,7 @@ export default function StudioFlow({
       data-stage={stage}
       data-language={language}
       data-hydrated={loaded}
+      data-daily-activity={daily?.activity}
     >
       <header className="cf-top">
         <a href={returnPath}>
@@ -544,76 +632,100 @@ export default function StudioFlow({
         )}
       </header>
       <nav className="cf-steps" aria-label={text("mode")}>
-        {(["prepare", "speak", "feedback"] as const).map((value, index) => (
+        {(daily?.activity === 6
+          ? (["prepare", "prepare", "prepare", "speak", "feedback"] as const)
+          : (["prepare", "speak", "feedback"] as const)
+        ).map((value, index) => (
           <button
             type="button"
-            key={value}
-            aria-current={stage === value ? "step" : undefined}
+            key={index}
+            aria-current={
+              stage === value &&
+              (daily?.activity !== 6 ||
+                value !== "prepare" ||
+                preparationStep === index)
+                ? "step"
+                : undefined
+            }
             disabled={busy || (value === "feedback" && !attempt)}
             onClick={() => {
               setStage(value);
+              if (daily?.activity === 6 && index < 3) setPreparationStep(index);
               setStatus(undefined);
             }}
           >
             <span>{index + 1}</span>
-            {text(value)}
+            {daily?.activity === 6 ? shadowSteps[language][index] : text(value)}
           </button>
         ))}
       </nav>
       <div className="cf-content" dir={instructions === "fa" ? "rtl" : "ltr"}>
         {stage === "prepare" && (
           <>
-            <details className="cf-topic-picker">
-              <summary>
+            {daily ? (
+              <p className="cf-topic-picker">
                 {topic.level} · {topic.topic}
-                <ChevronDown aria-hidden size={18} />
-              </summary>
-              <div>
-                <label>
-                  {text("level")}
-                  <select
-                    value={level}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      setLevel(value);
-                      const first = topics.find(
-                        (item) => !value || item.level === value,
-                      );
-                      if (first) reset(first.id);
-                    }}
-                  >
-                    <option value="">{text("all")}</option>
-                    {[...new Set(topics.map((item) => item.level))].map(
-                      (value) => (
-                        <option key={value}>{value}</option>
-                      ),
-                    )}
-                  </select>
-                </label>
-                <label>
-                  {text("choose")}
-                  <select
-                    value={topic.id}
-                    onChange={(e) => reset(e.target.value)}
-                  >
-                    {topics
-                      .filter((item) => !level || item.level === level)
-                      .map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.level} · {item.topic}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-              </div>
-            </details>
+              </p>
+            ) : (
+              <details className="cf-topic-picker">
+                <summary>
+                  {topic.level} · {topic.topic}
+                  <ChevronDown aria-hidden size={18} />
+                </summary>
+                <div>
+                  <label>
+                    {text("level")}
+                    <select
+                      value={level}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setLevel(value);
+                        const first = topics.find(
+                          (item) => !value || item.level === value,
+                        );
+                        if (first) reset(first.id);
+                      }}
+                    >
+                      <option value="">{text("all")}</option>
+                      {[...new Set(topics.map((item) => item.level))].map(
+                        (value) => (
+                          <option key={value}>{value}</option>
+                        ),
+                      )}
+                    </select>
+                  </label>
+                  <label>
+                    {text("choose")}
+                    <select
+                      value={topic.id}
+                      onChange={(e) => reset(e.target.value)}
+                    >
+                      {topics
+                        .filter((item) => !level || item.level === level)
+                        .map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.level} · {item.topic}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                </div>
+              </details>
+            )}
             <section className="cf-card cf-task">
-              <h1>{text("task")}</h1>
+              <h1>{daily ? topic.topic.split(" · ")[0] : text("task")}</h1>
               <p lang={language} dir="ltr">
                 {actualTask}
               </p>
             </section>
-            {!review && (
+            {!review && daily && daily.activity !== 3 && (
+              <DailyModel
+                exercise={daily}
+                language={language}
+                step={preparationStep}
+              />
+            )}
+            {!review && !daily && (
               <div className="cf-example">
                 <button
                   className="cf-secondary"
@@ -632,7 +744,7 @@ export default function StudioFlow({
                 )}
               </div>
             )}
-            {!review && (
+            {!review && topic.hints.length > 0 && (
               <section className="cf-card cf-sand">
                 <h2>{text("hints")}</h2>
                 {topic.hints.slice(0, 2).map((hint) => (
@@ -655,64 +767,78 @@ export default function StudioFlow({
                 ))}
               </section>
             )}
-            <div className="cf-mode">
-              <label>
-                {text("mode")}
-                <select
-                  value={mode}
-                  onChange={(e) => setMode(e.target.value as typeof mode)}
-                >
-                  <option value="monologue">{text("monologue")}</option>
-                  <option value="dialogue">{text("dialogue")}</option>
-                </select>
-              </label>
-              {mode === "dialogue" && <PlaybackSpeed language={language} />}
-            </div>
+            {(!daily || daily.activity === 3) && (
+              <div className="cf-mode">
+                <label>
+                  {text("mode")}
+                  <select
+                    value={mode}
+                    onChange={(e) => setMode(e.target.value as typeof mode)}
+                  >
+                    <option value="monologue">{text("monologue")}</option>
+                    <option value="dialogue">{text("dialogue")}</option>
+                  </select>
+                </label>
+                {mode === "dialogue" && <PlaybackSpeed language={language} />}
+              </div>
+            )}
             <button
               type="button"
               className="cf-primary cf-wide"
               onClick={() => {
+                if (daily?.activity === 6 && preparationStep < 2) {
+                  setPreparationStep(preparationStep + 1);
+                  return;
+                }
                 setStage("speak");
                 setStatus(undefined);
               }}
             >
-              {text("continue")}
+              {daily?.activity === 6
+                ? shadowSteps[language][preparationStep + 1]
+                : text("continue")}
               <ArrowRight aria-hidden />
             </button>
             <p className="cf-note">{text("local")}</p>
             <details className="cf-library">
               <summary>{text("library")}</summary>
               {attempts.length === 0 && <p>{text("empty")}</p>}
-              {attempts.slice(0, 20).map((item) => (
-                <div key={item.id}>
-                  <span>
-                    {topics.find((t) => t.id === item.topicId)?.topic} ·{" "}
-                    {new Date(item.createdAt).toLocaleString(language)}
-                    {item.completedAt && ` · ${text("complete")}`}
-                  </span>
-                  <button type="button" onClick={() => openDraft(item)}>
-                    {text("open")}
-                  </button>
-                </div>
-              ))}
-              {reviews.map((item) => (
-                <div key={item.id}>
-                  <span>
-                    {text("day")} {item.day} · {text("due")}{" "}
-                    {new Date(item.dueAt).toLocaleDateString(language)}
-                    {item.completedAt && ` · ${text("complete")}`}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={
-                      !!item.completedAt || Date.parse(item.dueAt) > Date.now()
-                    }
-                    onClick={() => startReview(item)}
-                  >
-                    {text("startReview")}
-                  </button>
-                </div>
-              ))}
+              {attempts
+                .filter((item) => !daily || item.topicId === daily.topic.id)
+                .slice(0, 20)
+                .map((item) => (
+                  <div key={item.id}>
+                    <span>
+                      {topics.find((t) => t.id === item.topicId)?.topic} ·{" "}
+                      {new Date(item.createdAt).toLocaleString(language)}
+                      {item.completedAt && ` · ${text("complete")}`}
+                    </span>
+                    <button type="button" onClick={() => openDraft(item)}>
+                      {text("open")}
+                    </button>
+                  </div>
+                ))}
+              {reviews
+                .filter((item) => !daily || item.topicId === daily.topic.id)
+                .map((item) => (
+                  <div key={item.id}>
+                    <span>
+                      {text("day")} {item.day} · {text("due")}{" "}
+                      {new Date(item.dueAt).toLocaleDateString(language)}
+                      {item.completedAt && ` · ${text("complete")}`}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={
+                        !!item.completedAt ||
+                        Date.parse(item.dueAt) > Date.now()
+                      }
+                      onClick={() => startReview(item)}
+                    >
+                      {text("startReview")}
+                    </button>
+                  </div>
+                ))}
             </details>
           </>
         )}
@@ -829,6 +955,16 @@ export default function StudioFlow({
         )}
         {stage === "feedback" && attempt && (
           <>
+            {daily?.activity === 6 && (
+              <details className="cf-card">
+                <summary>
+                  {language === "de"
+                    ? "Mit dem Modell vergleichen"
+                    : "Compare with the model"}
+                </summary>
+                <DailyModel exercise={daily} language={language} step={4} />
+              </details>
+            )}
             <section className="cf-card">
               <h1>{text("transcript")}</h1>
               {!attempt.evaluation && (

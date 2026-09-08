@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "deutschflow-automaticity-v2-20260908-worksheets-ink";
+const CACHE = "deutschflow-automaticity-v2-20260908-distinct-daily";
 const CORE = [
   "/practice",
   "/learning-core/practice.js",
@@ -11,6 +11,7 @@ const CORE = [
   "/fehler",
   "/heute",
   "/studio",
+  "/replacements/de/daily-worksheets.json",
   "/grammatik",
   // Keep the worksheet shell and its exact versioned imports usable after an offline restart.
   "/replacements/de/grammar-catalog.js?v=20260902-valency-1",
@@ -72,7 +73,7 @@ self.addEventListener("fetch", (event) => {
       .catch(async () => {
         // Task query parameters select local state within the cached practice shell.
         const pathname = new URL(event.request.url).pathname;
-        if (event.request.mode === "navigate" && ["/practice", "/grammatik"].includes(pathname)) {
+        if (event.request.mode === "navigate" && ["/practice", "/grammatik", "/studio"].includes(pathname)) {
           const practice = await caches.match(pathname);
           if (practice) return practice;
         }

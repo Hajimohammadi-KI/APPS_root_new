@@ -1,3 +1,4 @@
+import { emitDailyContext } from "../../../shared/grammar-worksheets/daily-build";
 import { resolve } from "node:path";
 import { syncConversationFlow } from "../../../shared/conversation-flow/build";
 import { worksheets as specialist } from "../packages/content/src/grammar-worksheets";
@@ -25,6 +26,7 @@ await Bun.write(
 );
 
 await emitSharedAssets(out);
+await emitDailyContext(root, "de", worksheets);
 await syncConversationFlow(root, "de");
 console.log(
   `${worksheets.length} German worksheet sets verified against the catalog.`,

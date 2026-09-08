@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "english-automaticity-automaticity-v2-20260908-worksheets-ink";
+const CACHE = "english-automaticity-automaticity-v2-20260908-distinct-daily";
 const PRECACHE = [
   "/practice",
   "/learning-core/practice.js",
@@ -9,6 +9,7 @@ const PRECACHE = [
   "/",
   "/daily",
   "/studio",
+  "/replacements/en/daily-worksheets.json",
   "/grammar",
   "/replacements/en/grammar-worksheets.css?v=20260908-2",
   "/replacements/en/grammar-worksheet-ink.js?v=20260908-2",
@@ -65,7 +66,7 @@ self.addEventListener("fetch", (event) => {
       })
       .catch(async () => {
         // Task selection lives in the query string; every task uses this same shell.
-        if (event.request.mode === "navigate" && ["/practice", "/grammar"].includes(new URL(event.request.url).pathname)) {
+        if (event.request.mode === "navigate" && ["/practice", "/grammar", "/studio"].includes(new URL(event.request.url).pathname)) {
           const practice = await caches.match(new URL(event.request.url).pathname);
           if (practice) return practice;
         }

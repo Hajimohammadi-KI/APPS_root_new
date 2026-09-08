@@ -45,6 +45,7 @@
     :where(button,summary,select,[role="button"],nav a[href],a[class*="button"],a[class*="card"],a.action):focus-visible{outline:3px solid #3D5A9E6b;outline-offset:3px}
 </style>
 <link rel="stylesheet" href="/editorial.css">
+<script data-daily-worksheet-map>window.dailyWorksheetsByLevel={"A1":{"topic":"Verb be: am/is/are","id":"a1-verb-be-am-is-are"},"A2":{"topic":"Present continuous","id":"a2-present-continuous"},"B1":{"topic":"Present perfect","id":"b1-present-perfect"},"B2":{"topic":"Present perfect continuous","id":"b2-present-perfect-continuous"},"C1":{"topic":"Cleft sentences","id":"c1-cleft-sentences"},"C2":{"topic":"Marked word order","id":"c2-marked-word-order"}};</script>
 </head>
 <body>
 <aside aria-label="Independent practice" style="background:#eef4ff;border-bottom:1px solid #bfcee8;padding:14px 24px;display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;color:#173d7a;font:500 15px/1.5 system-ui"><span>Build recall with your own answers, saved drafts, and recordings.</span><a href="/practice" style="background:#2258c0;border-radius:9px;padding:10px 16px;color:white;text-decoration:none">Start independent practice</a></aside>
@@ -78,7 +79,7 @@
 <script src="/learning-core/adherence-shadow.js"></script>
 <script src="/learning-core/forced-output-booster.js"></script>
 <script>
-  const focusByLevel={A1:'Verb be: am/is/are',A2:'Present simple and everyday routines',B1:'Present perfect for experience and results',B2:'Conditionals and precise explanations',C1:'Advanced clause control',C2:'Nuanced register and style'};
+  const focusByLevel=Object.fromEntries(Object.entries(window.dailyWorksheetsByLevel).map(([level,item])=>[level,item.topic]));
   let detectedLevel='A1';
   try {
     const state=JSON.parse(localStorage.getItem('grammar-automaticity:v27')||'{}');
@@ -137,8 +138,8 @@
     const activity=index+1,level=levelSelect.value,topic=focusByLevel[level]||focusByLevel.A1;
     const session={...readDailySession(),level,topic,currentActivity:activity,startedAt:new Date().toISOString(),completedActivities:readDailySession().completedActivities||[],mistakes:readDailySession().mistakes||[]};
     localStorage.setItem(dailySessionKey,JSON.stringify(session));
-    const routes=['/grammar','/studio','/studio','/grammar','/grammar','/studio','/notebook'];
-    const query=new URLSearchParams({from:'daily',activity:String(activity),level,topic,return:'/daily'});
+    const routes=["/grammar","/studio","/studio","/grammar","/grammar","/studio","/grammar"];
+    const query=new URLSearchParams({from:'daily',activity:String(activity),level,topic,worksheet:window.dailyWorksheetsByLevel[level].id,return:'/daily'});
     location.href=`${routes[index]||'/daily'}?${query}`;
   }));
   // The hero CTA starts the first real activity instead of stopping at a toast;

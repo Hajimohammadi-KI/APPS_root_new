@@ -24,9 +24,24 @@ function complete(attempt: Attempt) {
   const params = new URLSearchParams(location.search);
   if (params.get("from") !== "daily") return;
   const activity = Number(params.get("activity"));
-  if (!Number.isFinite(activity)) return;
+  if (
+    ![2, 3, 6].includes(activity) ||
+    !attempt.topicId.startsWith(`daily:${activity}:`)
+  )
+    return;
+  if (
+    params.get("worksheet") &&
+    attempt.topicId !== `daily:${activity}:${params.get("worksheet")}`
+  )
+    return;
   const key = "deutsch-automaticity:daily-session:v1";
   const state = JSON.parse(localStorage.getItem(key) || "{}");
+  // A saved recording must not complete a different plan opened in another tab.
+  if (
+    state.topic &&
+    (state.topic !== params.get("topic") || state.level !== params.get("level"))
+  )
+    return;
   // Checklist progress is separate from the retained recordings and grammar assessment evidence.
   localStorage.setItem(
     key,

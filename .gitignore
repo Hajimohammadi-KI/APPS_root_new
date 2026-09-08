@@ -1,43 +1,53 @@
+# Dependencies and generated builds
 node_modules/
 .npm-cache/
 .bun-install-cache*/
 .build-caches/
-.git.backup-*/
 .next/
 .vercel/
 dist/
 build/
 out/
 coverage/
+
+# Local caches, logs, and editor files
 .tmp/
 tmp/
 .run-logs/
 .history/
 .claude/
 .tmp.driveupload/
-
 .venv/
 venv/
 __pycache__/
 *.pyc
-
 *.tsbuildinfo
 *.log
 *.log.err
+*.tmp
 runtime-logs/
+.ipynb_checkpoints/
+.vscode/settings.json
+.vscode/*.log
+.DS_Store
+Thumbs.db
 
-# Local AI/editor working files
-.agents/
-.codex-tmp/
-.audit/
+# Local tools and audits
+/.agents/
+/.audit/
+/.codex-tmp/
 
-# Recoverable files intentionally kept outside the active source tree
-deleted/
-DELETE/
+# Independently versioned local checkouts; preserve their files and history
+/.fix/
+/APPS_root_new/
+.git.backup-*/
 
-# Local educational source library (large and potentially licensed material)
-Sources/
+# Recoverable cleanup folders and local educational source material
+/deleted/
+/DELETE/
+/Sources/
 
+# Environment, credentials, and private data
 .env
 .env.*
 !.env.example
@@ -45,27 +55,31 @@ client_secret*.json
 shared/private/
 API-CONNECTION-INFORMATION.txt
 
+# Local installer payloads and update channels
+*.downloads
 *.exe
 *.msi
 *.dll
 *.zip
 !releases/CrossRepositoryCodeIntelligence-*-Version2-final.zip
-
-# Local-only update channels for the language apps and PDF Reader. Their large
-# packages are intentionally not published until external signing/hosting is ready.
 releases/english-grammar-update.json
 releases/deutschflow-update.json
 releases/research-pdf-studio-update.json
-
-artifacts/
 release/
 
-*.downloads
-*.exe
-*.msi
-.vercel
-.env*
-!.env.example
+# Generated runtimes and verification output retained locally
+/artifacts/installer-cycle/
+/artifacts/release-runtime/
+/artifacts/conversation-flow/
+/artifacts/grammar-worksheets/
+/artifacts/seven-step-flow/
+/artifacts/distinct-daily-exercises/
+/artifacts/rollback-*/
 
-# Interrupted atomic document writes are disposable local intermediates.
-*.html.*.tmp
+# Only known generated children of device-access are excluded
+artifacts/device-access/additional-preview-build/
+/artifacts/device-access/additional-api-main.js
+/artifacts/device-access/browser/
+/artifacts/device-access/*-runtime.json
+/artifacts/device-access/network.json
+/artifacts/device-access/previous/

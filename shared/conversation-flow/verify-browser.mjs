@@ -1,20 +1,21 @@
 import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { assertTestTarget } from "../device-access/browser-target.mjs";
 
 // Connect to a disposable local Chrome profile; never use the learner's browser storage.
 const language = process.env.CONVERSATION_LANGUAGE || "de";
 const app =
   process.env.CONVERSATION_TEST_URL ||
   (language === "en" ? "http://127.0.0.1:3251" : "http://127.0.0.1:3250");
-assert(["127.0.0.1", "localhost"].includes(new URL(app).hostname));
+assertTestTarget(app);
 const output = resolve(
   import.meta.dirname,
-  `../../artifacts/conversation-flow/${language}`,
+  `../../artifacts/conversation-flow/${process.env.DEVICE_TEST_HOST ? "devices/" : ""}${language}`,
 );
 const pdfOutput = resolve(
   import.meta.dirname,
-  `../../artifacts/conversation-flow/${language}/pdf`,
+  `../../artifacts/conversation-flow/${process.env.DEVICE_TEST_HOST ? "devices/" : ""}${language}/pdf`,
 );
 await mkdir(output, { recursive: true });
 await mkdir(pdfOutput, { recursive: true });
@@ -127,6 +128,9 @@ async function screenshot(name, selector) {
 // encodes a generated tone; no personal microphone or external ASR is accessed.
 await cdp("Page.enable");
 await cdp("Runtime.enable");
+// Test-profile exception only. Device trust is verified separately using the private CA.
+if (new URL(app).protocol === "https:" && process.env.DEVICE_TEST_HOST)
+  await cdp("Security.setIgnoreCertificateErrors", { ignore: true });
 await cdp("Page.addScriptToEvaluateOnNewDocument", { source: `
 localStorage.removeItem('studio:instructions:de');localStorage.removeItem('studio:instructions:en');
 window.__micError = '';

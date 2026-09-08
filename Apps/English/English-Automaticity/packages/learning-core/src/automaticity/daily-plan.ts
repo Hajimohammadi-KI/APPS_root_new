@@ -1,3 +1,4 @@
+import { createClientId } from "../client-id";
 import { isRecord, type AttemptEvent, type Language } from "./contracts";
 import type { LocalStore } from "./storage";
 
@@ -60,7 +61,7 @@ export function saveDailyPlan(
   const key = dailyPlanKey(language, plan.day),
     previous = store.getItem(key);
   if (previous !== null && !parsePlan(previous, plan.day)) {
-    const archive = `${key}:unreadable:${crypto.randomUUID()}`;
+    const archive = `${key}:unreadable:${createClientId()}`;
     store.setItem(archive, previous);
     if (store.getItem(archive) !== previous)
       throw new Error("Original daily plan could not be preserved");

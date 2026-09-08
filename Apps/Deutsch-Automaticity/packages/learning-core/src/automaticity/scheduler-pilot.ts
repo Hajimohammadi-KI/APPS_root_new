@@ -1,3 +1,4 @@
+import { createClientId } from "../client-id";
 import {
   isRecord,
   validDate,
@@ -278,7 +279,7 @@ export function enrollSchedulerPilot(
   }
   const record: PilotEnrollment = {
     schemaVersion: 1,
-    id: crypto.randomUUID(),
+    id: createClientId(),
     planSha256,
     at,
     baseline: structuredClone(state.progress),
@@ -301,7 +302,7 @@ export function stopSchedulerPilot(
   if (key)
     persist(
       store,
-      prefix(language) + "withdrawal:" + crypto.randomUUID(),
+      prefix(language) + "withdrawal:" + createClientId(),
       JSON.stringify({ at, enrollment: key }),
     );
 }

@@ -26,7 +26,12 @@ export function ApiConnectionStatus() {
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
 
-    if (!isLoopbackHost(window.location.hostname)) {
+    // Relative APIs belong to the current app, including its tablet/LAN origin.
+    const target = new URL(API_BASE_URL, window.location.origin);
+    if (
+      !isLoopbackHost(window.location.hostname) &&
+      isLoopbackHost(target.hostname)
+    ) {
       setStatus("offline");
       return () => {
         active = false;

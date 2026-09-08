@@ -1,20 +1,21 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { assertTestTarget } from "../device-access/browser-target.mjs";
 
 // Connect to a disposable local Chrome profile; never use the learner's browser storage.
 const language = process.env.WORKSHEET_LANGUAGE || "de";
 const app =
   process.env.WORKSHEET_TEST_URL ||
   (language === "en" ? "http://127.0.0.1:3202" : "http://127.0.0.1:3210");
-assert(["127.0.0.1", "localhost"].includes(new URL(app).hostname));
+assertTestTarget(app);
 const output = resolve(
   import.meta.dirname,
-  `../../artifacts/grammar-worksheets/${language}`,
+  `../../artifacts/grammar-worksheets/${process.env.DEVICE_TEST_HOST ? "devices/" : ""}${language}`,
 );
 const pdfOutput = resolve(
   import.meta.dirname,
-  `../../artifacts/grammar-worksheets/${language}/pdf`,
+  `../../artifacts/grammar-worksheets/${process.env.DEVICE_TEST_HOST ? "devices/" : ""}${language}/pdf`,
 );
 await mkdir(output, { recursive: true });
 await mkdir(pdfOutput, { recursive: true });

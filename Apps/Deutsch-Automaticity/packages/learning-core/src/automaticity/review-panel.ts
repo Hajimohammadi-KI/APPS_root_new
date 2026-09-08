@@ -1,3 +1,4 @@
+import { createClientId } from "../client-id";
 import type { AssessmentEvent, Language, Verdict } from "./contracts";
 import type { CurriculumPack } from "./curriculum";
 import { readAutomaticityEvents, appendAutomaticityEvent } from "./storage";
@@ -573,7 +574,7 @@ export function mountReviewPanel(
       const assessment: AssessmentEvent = {
         version: 2,
         type: "assessment",
-        id: crypto.randomUUID(),
+        id: createClientId(),
         language,
         at,
         attemptId: row.attempt.id,
@@ -605,7 +606,7 @@ export function mountReviewPanel(
           version: "1",
           kind: reviewer.value === "human" ? "human" : "self",
           scopeApproved: false,
-          reviewId: crypto.randomUUID(),
+          reviewId: createClientId(),
         },
         uncertainty: result === "not_assessed",
         confidence: null,

@@ -1,4 +1,5 @@
 export * from "./contracts";
+export { createClientId } from "../client-id";
 export * from "./evidence";
 export * from "./storage";
 export * from "./backup";

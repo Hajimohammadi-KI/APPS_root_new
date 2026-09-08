@@ -1,4 +1,6 @@
 "use client";
+
+import { createClientId } from "@automaticity/learning-core";
 import { syncLegacyPracticeInBrowser } from "@automaticity/learning-core/automaticity";
 
 import {
@@ -100,7 +102,7 @@ const LearnerStateContext = createContext<LearnerStateContextValue | null>(
 );
 
 function createId(prefix: string): string {
-  return `${prefix}-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
+  return `${prefix}-${Date.now()}-${createClientId().slice(0, 8)}`;
 }
 
 const DAY_IN_MILLISECONDS = 86_400_000;

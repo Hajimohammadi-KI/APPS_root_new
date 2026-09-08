@@ -32,6 +32,10 @@ just the map to get there.
 .\START-APPS.cmd
 ```
 
+For the English, German and roadmap links on the same Wi-Fi, run
+`.\START-LANGUAGE-DEVICES.cmd`. See [phone, tablet and pen setup](docs/LANGUAGE-DEVICE-ACCESS.md)
+for handwriting, adjustable playback speed and the private HTTPS recording links.
+
 Before shipping a change, run the release readiness gate — see
 [`docs/RELEASE-READINESS.md`](docs/RELEASE-READINESS.md).
 

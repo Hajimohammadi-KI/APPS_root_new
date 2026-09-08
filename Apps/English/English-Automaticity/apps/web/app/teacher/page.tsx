@@ -1,4 +1,6 @@
 "use client";
+
+import { createClientId } from "@automaticity/learning-core";
 import {AutomaticityEvidenceSummary} from "@/features/components/automaticity-evidence-summary";
 
 import * as React from "react";
@@ -34,7 +36,7 @@ import { buildTeacherReviewQueue } from "@/lib/teacher-review-queue";
 import { useAppStore } from "@/features/store/app-store";
 
 const empty = (): TeacherContentItem => ({
-  id: crypto.randomUUID(),
+  id: createClientId(),
   kind: "example",
   level: "A1",
   title: "",
@@ -169,7 +171,7 @@ export default function TeacherPage() {
     // Assignments reuse only original in-app starter content and save locally;
     // licensed companion material is never copied into the teacher library.
     const assignment: TeacherContentItem = {
-      id: crypto.randomUUID(),
+      id: createClientId(),
       kind: "exercise",
       level: assignmentSource.level,
       title: `Assignment · ${assignmentSource.title}`,

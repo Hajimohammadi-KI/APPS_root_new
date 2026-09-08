@@ -1,5 +1,7 @@
 "use client";
 
+import { createClientId } from "@automaticity/learning-core";
+
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpenCheck,
@@ -395,7 +397,7 @@ export function AutomaticityLab({
     appendLearningEvidenceBundleToStorage(
       window.localStorage,
       buildAttemptVerticalSlice({
-        attemptId: crypto.randomUUID(),
+        attemptId: createClientId(),
         occurredAt,
         language: "de",
         cefrLevel: grammar.level as CefrLevel,
@@ -562,7 +564,7 @@ export function AutomaticityLab({
 
     if (state.settings.saveAudio && audioRef.current) {
       await saveAudio({
-        id: `automatik-audio-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
+        id: `automatik-audio-${Date.now()}-${createClientId().slice(0, 8)}`,
         date: new Date().toISOString(),
         topic: `${TOPIC} im Alltag`,
         transcript,

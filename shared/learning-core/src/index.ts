@@ -1,4 +1,5 @@
 export const LEARNING_SCHEMA_VERSION = "1.0.0" as const;
+export { createClientId } from "./client-id";
 export const LEARNING_DATA_EXPORT_KIND =
   "automaticity.learning-data-export" as const;
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { createClientId } from "@automaticity/learning-core";
+
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import {
   captureCompleteBackup,
@@ -106,14 +108,14 @@ export function SettingsScreen() {
     }
 
     const participantId =
-      measurementConsent?.participantId ?? `participant-${crypto.randomUUID()}`;
+      measurementConsent?.participantId ?? `participant-${createClientId()}`;
     const consent = grantMeasurementConsent(window.localStorage, {
-      id: `consent-${crypto.randomUUID()}`,
+      id: `consent-${createClientId()}`,
       participantId,
       grantedAt: now,
     });
     const baselineResult = captureMeasurementBaseline(window.localStorage, {
-      id: `baseline-${crypto.randomUUID()}`,
+      id: `baseline-${createClientId()}`,
       capturedAt: now,
       language: "de",
       appVersion: MEASUREMENT_APP_VERSION,

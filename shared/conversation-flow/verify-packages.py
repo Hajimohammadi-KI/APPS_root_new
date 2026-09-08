@@ -22,6 +22,7 @@ for language, relative, product in [
     paths = [public / "editorial.css", public / f"replacements/{language}/{'heute' if language=='de' else 'daily'}.html"]
     paths += [public / f"learning-core/{name}" for name in ["automaticity-v2.js", "overview.js", "practice.js"]]
     chunks = list((app / "apps/web/.next/static").rglob("*.js")) + list((app / "apps/web/.next/static").rglob("*.css"))
+    assert chunks and any(path.suffix == ".css" for path in chunks), f"Missing completed production build for {language}"
     checked = []
     with ZipFile(BytesIO(data)) as web:
         for source in paths + chunks:

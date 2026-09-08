@@ -1,3 +1,4 @@
+import { createClientId } from "../client-id";
 import {
   isRecord,
   type AssessmentEvent,
@@ -350,7 +351,7 @@ export async function assessWithQualifiedTransformer(
   const base: AssessmentEvent = {
     version: 2,
     type: "assessment",
-    id: crypto.randomUUID(),
+    id: createClientId(),
     language: attempt.language,
     at: new Date().toISOString(),
     attemptId: attempt.id,

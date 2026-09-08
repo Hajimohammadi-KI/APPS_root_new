@@ -14,6 +14,11 @@ const nextConfig = {
         { source: "/daily", destination: "/replacements/en/daily.html" },
         { source: "/grammar", destination: "/replacements/en/grammar.html" },
       ],
+      // Preserve the existing web API handlers and proxy only the Nest API endpoints.
+      afterFiles: ["health", "assessment"].map((endpoint) => ({
+        source: `/api/${endpoint}`,
+        destination: `${process.env.API_INTERNAL_ORIGIN ?? "http://127.0.0.1:4201"}/api/${endpoint}`,
+      })),
     };
   },
 };

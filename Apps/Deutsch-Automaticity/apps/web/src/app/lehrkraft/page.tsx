@@ -1,7 +1,5 @@
 "use client";
 
-import { createClientId } from "@automaticity/learning-core";
-
 import * as React from "react";
 import {
   ArrowLeft,
@@ -35,7 +33,7 @@ import { buildTeacherReviewQueue } from "@/lib/teacher-review-queue";
 import { useLearnerState } from "@/features/learner-state/learner-state-provider";
 
 const empty = (): TeacherContentItem => ({
-  id: createClientId(),
+  id: crypto.randomUUID(),
   kind: "example",
   level: "A1",
   title: "",
@@ -186,7 +184,7 @@ export default function LehrkraftPage() {
     // Aufgaben verwenden nur eigene App-Startinhalte und bleiben lokal;
     // lizenziertes Begleitmaterial wird nicht in die Bibliothek kopiert.
     const assignment: TeacherContentItem = {
-      id: createClientId(),
+      id: crypto.randomUUID(),
       kind: "exercise",
       level: assignmentSource.level,
       title: `Aufgabe · ${assignmentSource.title}`,

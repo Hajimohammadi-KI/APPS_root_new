@@ -21,24 +21,11 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // The root starts the focused daily flow; explicit app screens remain accessible.
-        {
-          source: "/",
-          missing: [{ type: "query", key: "screen" }],
-          destination: "/replacements/de/heute.html",
-        },
         { source: "/practice", destination: "/learning-core/practice-de.html" },
         { source: "/heute", destination: "/replacements/de/heute.html" },
         {
           source: "/grammatik",
           destination: "/replacements/de/grammatik.html",
-        },
-      ],
-      // Keep the backend on the host computer; a tablet must never call its own loopback.
-      afterFiles: [
-        {
-          source: "/api/v1/:path*",
-          destination: `${process.env.API_INTERNAL_ORIGIN ?? "http://127.0.0.1:4210"}/api/v1/:path*`,
         },
       ],
     };

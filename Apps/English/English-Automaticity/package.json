@@ -12,7 +12,7 @@
     "start": "concurrently --kill-others-on-fail --names api,web --prefix-colors magenta,cyan \"bun run --cwd apps/api start\" \"bun run --cwd apps/web start\"",
     "start:parity": "concurrently --kill-others-on-fail --names api,web,legacy --prefix-colors magenta,cyan,blue \"bun run --cwd apps/api start\" \"bun run --cwd apps/web start -- --port 3201\" \"bun run legacy:preview\"",
     "build": "bun run content:check && bun run --cwd apps/api build && bun run --cwd apps/web build && bun scripts/prepare-standalone.mjs",
-    "check": "bun run content:check && bun run test:worksheets && bun run test:conversation && bun run test:seven-step && bun run automaticity:check && bun run typecheck && bun run test && bun run test:installer && bun run lint",
+    "check": "bun run content:check && bun run test:worksheets && bun run test:conversation && bun run automaticity:check && bun run typecheck && bun run test && bun run test:installer && bun run lint",
     "automaticity:check": "bun test packages/learning-core/src/automaticity packages/learning-core/src/index.test.ts && bun run --cwd packages/learning-core typecheck",
     "content:sync": "bun scripts/sync-grammar-replacement.ts",
     "content:check": "bun scripts/sync-grammar-replacement.ts --check",
@@ -30,8 +30,7 @@
     "package:windows-exe": "bun scripts/package-windows-installer.ts",
     "worksheets:build": "bun scripts/build-grammar-worksheets.ts",
     "test:conversation": "bun test ../../../shared/conversation-flow",
-    "test:worksheets": "bun test ../../../shared/grammar-worksheets/content.test.ts",
-    "test:seven-step": "bun test ../../../shared/seven-step-flow/model.test.ts && bun node_modules/typescript/bin/tsc --project ../../../shared/seven-step-flow/tsconfig.json"
+    "test:worksheets": "bun test ../../../shared/grammar-worksheets/content.test.ts"
   },
   "devDependencies": {
     "@types/node": "24.10.14",

@@ -1,4 +1,3 @@
-import { createClientId } from "../client-id";
 import {
   type AttemptEvent,
   type Language,
@@ -85,7 +84,7 @@ const stages: Stage[] = [
   "retain",
 ];
 const now = () => new Date().toISOString();
-const id = () => createClientId();
+const id = () => crypto.randomUUID();
 const qualifiedTransformer = createTransformerClient();
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,

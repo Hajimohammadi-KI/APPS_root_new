@@ -8,13 +8,13 @@
     <style>
       :root {
         font-family: Inter, "Segoe UI", system-ui, sans-serif;
-        color: #192a3c;
-        background: #faf8f4;
+        color: #20362e;
+        background: #f4f5ef;
         font-synthesis: none;
-        --indigo: #3d5a9e;
-        --muted: #667187;
-        --line: #ded8cd;
-        --amber: #a34d40;
+        --green: #166446;
+        --muted: #56665f;
+        --line: #d9e1d8;
+        --amber: #885116;
       }
       * {
         box-sizing: border-box;
@@ -29,7 +29,7 @@
         padding: 40px 28px 70px;
       }
       a {
-        color: #3d5a9e;
+        color: #245d4a;
       }
       button,
       input,
@@ -43,7 +43,7 @@
       button,
       select,
       input {
-        border: 1px solid #ded8cd;
+        border: 1px solid #c5d1c7;
         border-radius: 9px;
         background: white;
         color: inherit;
@@ -51,10 +51,10 @@
         min-height: 44px;
       }
       button:hover {
-        background: #efe7da;
+        background: #e9f1e9;
       }
       :focus-visible {
-        outline: 3px solid #3d5a9e;
+        outline: 3px solid #3275bc;
         outline-offset: 3px;
       }
       h1,
@@ -78,7 +78,7 @@
         font-size: 1rem;
       }
       header {
-        border-bottom: 1px solid #ded8cd;
+        border-bottom: 1px solid #b8cbb9;
         padding: 12px 0 30px;
       }
       .eyebrow {
@@ -86,7 +86,7 @@
         font-weight: 700;
         font-size: 0.74rem;
         text-transform: uppercase;
-        color: var(--indigo);
+        color: var(--green);
         margin-bottom: 20px;
       }
       .intro {
@@ -126,18 +126,18 @@
       }
       .pill.good,
       .good {
-        color: var(--indigo);
-        background: #efe7da;
-        border-color: #ded8cd;
+        color: var(--green);
+        background: #e6f3e9;
+        border-color: #a4ceb2;
       }
       .pill.warning {
         color: var(--amber);
-        background: #efe7da;
-        border-color: #ded8cd;
+        background: #fff5e5;
+        border-color: #e6cfa6;
       }
       .pill.muted {
-        background: #efe7da;
-        color: #667187;
+        background: #edf0ed;
+        color: #56665f;
       }
       .stats {
         display: grid;
@@ -169,8 +169,8 @@
       }
       .release {
         padding: 22px;
-        border: 1px solid #ded8cd;
-        background: #efe7da;
+        border: 1px solid #b0cdb8;
+        background: #edf7ef;
         border-radius: 14px;
         display: flex;
         gap: 22px;
@@ -182,14 +182,14 @@
         font-size: 0.9rem;
       }
       .release strong {
-        color: var(--indigo);
+        color: var(--green);
       }
       .review {
         margin: 28px 0 36px;
         padding: 22px;
-        border: 1px solid #ded8cd;
+        border: 1px solid #d8c9a6;
         border-radius: 14px;
-        background: #efe7da;
+        background: #fffaf0;
       }
       .review h2 {
         margin-bottom: 8px;
@@ -208,19 +208,19 @@
       .review-card {
         min-height: 132px;
         padding: 14px;
-        border: 1px solid #efe7da;
+        border: 1px solid #eadcbf;
         border-radius: 10px;
         background: #fff;
       }
       .review-card strong {
         display: block;
-        color: #a34d40;
+        color: #704416;
         font-size: 0.92rem;
       }
       .review-card span {
         display: block;
         margin-top: 7px;
-        color: #667187;
+        color: #5f5a4c;
         font-size: 0.82rem;
       }
       .section-head {
@@ -236,7 +236,7 @@
         position: sticky;
         top: 0;
         z-index: 2;
-        background: #faf8f4f5;
+        background: #f4f5eff5;
         padding: 12px 0;
       }
       .controls label {
@@ -268,15 +268,15 @@
       .dot {
         width: 9px;
         height: 9px;
-        background: #667187;
+        background: #6d7972;
         border-radius: 50%;
         display: inline-block;
       }
-      .dot.indigo {
-        background: #3d5a9e;
+      .dot.green {
+        background: #218158;
       }
       .dot.amber {
-        background: #a34d40;
+        background: #b37525;
       }
       .phase {
         margin: 24px 0 32px;
@@ -289,7 +289,7 @@
       }
       .phase-number {
         font-size: 0.77rem;
-        border: 1px solid #ded8cd;
+        border: 1px solid #b5c6b6;
         border-radius: 8px;
         padding: 5px 9px;
       }
@@ -304,20 +304,20 @@
       }
       .task {
         border: 1px solid var(--line);
-        border-left: 4px solid #ded8cd;
+        border-left: 4px solid #b5c2b6;
         border-radius: 12px;
         margin: 10px 0;
         background: #fff;
         overflow: hidden;
       }
       .task[data-status="verified"] {
-        border-color: #ded8cd;
-        border-left-color: #3d5a9e;
-        background: #efe7da;
+        border-color: #9bc5a7;
+        border-left-color: #218158;
+        background: #eef8f0;
       }
       .task[data-status="in_progress"],
       .task[data-status="blocked"] {
-        border-left-color: #a34d40;
+        border-left-color: #b37525;
       }
       .task summary {
         display: grid;
@@ -360,7 +360,7 @@
         font-size: 0.9rem;
       }
       .task-body p {
-        color: #465675;
+        color: #42574b;
       }
       .task-body h3 {
         margin: 20px 0 8px;
@@ -386,7 +386,7 @@
       }
       .empty {
         padding: 30px;
-        border: 1px dashed #ded8cd;
+        border: 1px dashed #bdc9bc;
         border-radius: 14px;
         text-align: center;
         color: var(--muted);
@@ -397,15 +397,15 @@
         padding-right: 8px;
       }
       .change {
-        border-left: 3px solid #ded8cd;
+        border-left: 3px solid #adb9ae;
         padding: 12px 18px;
         margin: 12px 0;
         background: #fff;
         border-radius: 0 10px 10px 0;
       }
       .change.verified {
-        border-color: #3d5a9e;
-        background: #efe7da;
+        border-color: #218158;
+        background: #e9f5ec;
       }
       .change p {
         font-size: 0.87rem;
@@ -423,10 +423,10 @@
         overflow-wrap: anywhere;
       }
       .error {
-        color: #a34d40;
-        background: #efe7da;
+        color: #893815;
+        background: #fff0e7;
         padding: 12px;
-        border: 1px solid #ded8cd;
+        border: 1px solid #d2aa8a;
         border-radius: 10px;
       }
       .sr-only {
@@ -531,7 +531,8 @@
     <main>
       <header>
         <div class="topline">
-          <span class="eyebrow">Language automaticity / English + German</span
+          <span class="eyebrow"
+            >Language automaticity / English + German</span
           ><span id="connection" class="stamp">Opening roadmap…</span>
         </div>
         <h1>From knowing grammar<br />to using it naturally.</h1>
@@ -545,35 +546,6 @@
         </div>
       </header>
       <div id="error" class="error" role="alert" hidden></div>
-      <section
-        class="release"
-        id="seven-step-release"
-        aria-labelledby="seven-step-title"
-      >
-        <div class="eyebrow">Updated learning interface · English + German</div>
-        <h2 id="seven-step-title">One target, seven focused steps.</h2>
-        <p>
-          Learn → Repair → Retrieve aloud → Use → Write → Listen and retell →
-          Review.
-        </p>
-        <p>
-          The daily flow uses authored worksheets for 112 English and 144 German
-          topics. It saves text, pen strokes and recording attempts separately.
-          Repeated cues are practice; completion does not certify mastery.
-        </p>
-        <div class="row">
-          <a class="pill" href="http://192.168.178.24:3203/"
-            >Open English Automaticity</a
-          ><a class="pill" href="http://192.168.178.24:3211/"
-            >Open DeutschFlow</a
-          >
-        </div>
-        <p>
-          Phone, tablet and desktop layouts; playback at 0.5×–2×; reviews on
-          days 1, 3, 7, 14 and 30. Physical stylus testing and
-          learner-effectiveness validation remain separate acceptance work.
-        </p>
-      </section>
       <section class="stats" id="stats" aria-label="Roadmap progress"></section>
       <p id="completion-note" role="status"></p>
       <section
@@ -616,9 +588,9 @@
           ><button id="refresh" type="button">Refresh</button>
         </div>
         <div class="legend">
-          <span><i class="dot indigo"></i>Indigo task: acceptance verified</span
+          <span><i class="dot green"></i>Green task: acceptance verified</span
           ><span
-            ><i class="dot indigo"></i>Indigo badge: recorded engineering checks
+            ><i class="dot green"></i>Green badge: recorded engineering checks
             passed</span
           ><span
             ><i class="dot amber"></i>Amber: work or evidence still needed</span
@@ -631,48 +603,37 @@
         <div class="section-head">
           <div class="eyebrow">Dated progress</div>
           <h2 id="history-heading">What changed</h2>
-          <section class="review" aria-labelledby="german-review-heading">
-            <div class="eyebrow">German program review</div>
-            <h2 id="german-review-heading">
-              Prioritize recurring error patterns
-            </h2>
-            <p class="review-intro">
-              Current evaluation can classify these errors, but the roadmap must
-              also measure recurrence and repair by pattern. German practice now
-              groups feedback into four focused loops instead of treating every
-              correction as an isolated mistake.
-            </p>
-            <div class="review-grid">
-              <article class="review-card">
-                <strong>Verben &amp; Verbformen</strong>
-                <span
-                  >Subject agreement, conjugation, auxiliary and tense
-                  choices.</span
-                >
-              </article>
-              <article class="review-card">
-                <strong>Kasus &amp; Präpositionen</strong>
-                <span
-                  >Preposition government, article choice and case in one
-                  unit.</span
-                >
-              </article>
-              <article class="review-card">
-                <strong>Rechtschreibung</strong>
-                <span
-                  >Spelling and capitalization stay meaningful, not
-                  cosmetic.</span
-                >
-              </article>
-              <article class="review-card">
-                <strong>Adjektive &amp; Endungen</strong>
-                <span>Adjective endings and other form-dependent endings.</span>
-              </article>
-            </div>
-          </section>
+      <section class="review" aria-labelledby="german-review-heading">
+        <div class="eyebrow">German program review</div>
+        <h2 id="german-review-heading">Prioritize recurring error patterns</h2>
+        <p class="review-intro">
+          Current evaluation can classify these errors, but the roadmap must also
+          measure recurrence and repair by pattern. German practice now groups
+          feedback into four focused loops instead of treating every correction
+          as an isolated mistake.
+        </p>
+        <div class="review-grid">
+          <article class="review-card">
+            <strong>Verben &amp; Verbformen</strong>
+            <span>Subject agreement, conjugation, auxiliary and tense choices.</span>
+          </article>
+          <article class="review-card">
+            <strong>Kasus &amp; Präpositionen</strong>
+            <span>Preposition government, article choice and case in one unit.</span>
+          </article>
+          <article class="review-card">
+            <strong>Rechtschreibung</strong>
+            <span>Spelling and capitalization stay meaningful, not cosmetic.</span>
+          </article>
+          <article class="review-card">
+            <strong>Adjektive &amp; Endungen</strong>
+            <span>Adjective endings and other form-dependent endings.</span>
+          </article>
+        </div>
+      </section>
           <p>
             Updates appear here when the backlog changes. Verified work receives
-            a indigo badge. Earlier changes remain in the journal if a task is
+            a green badge. Earlier changes remain in the journal if a task is
             reopened.
           </p>
         </div>

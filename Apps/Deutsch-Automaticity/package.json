@@ -38,10 +38,9 @@
     "package:windows": "bun scripts/package-stores.ts windows",
     "package:ios": "bun scripts/package-stores.ts ios",
     "package:windows-exe": "bun scripts/package-windows-installer.ts",
-    "verify": "bun run format:check && bun run test:worksheets && bun run test:conversation && bun run test:seven-step && bun run lint && bun run typecheck && bun run test && bun run test:installer && bun run db:schema:check && bun run build",
+    "verify": "bun run format:check && bun run test:worksheets && bun run test:conversation && bun run lint && bun run typecheck && bun run test && bun run test:installer && bun run db:schema:check && bun run build",
     "test:conversation": "bun test ../../shared/conversation-flow",
-    "test:worksheets": "bun test ../../shared/grammar-worksheets/content.test.ts",
-    "test:seven-step": "bun test ../../shared/seven-step-flow/model.test.ts && bun node_modules/typescript/bin/tsc --project ../../shared/seven-step-flow/tsconfig.json"
+    "test:worksheets": "bun test ../../shared/grammar-worksheets/content.test.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.6",

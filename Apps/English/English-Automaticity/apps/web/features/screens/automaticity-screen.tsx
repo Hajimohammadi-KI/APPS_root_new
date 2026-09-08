@@ -1,7 +1,5 @@
 "use client";
 
-import { createClientId } from "@automaticity/learning-core";
-
 import * as React from "react";
 import {
   BookOpenCheck,
@@ -431,7 +429,7 @@ export function AutomaticityScreen({
     appendLearningEvidenceBundleToStorage(
       window.localStorage,
       buildAttemptVerticalSlice({
-        attemptId: createClientId(),
+        attemptId: crypto.randomUUID(),
         occurredAt,
         language: "en",
         cefrLevel: grammar.level as CefrLevel,
@@ -475,7 +473,7 @@ export function AutomaticityScreen({
     }
     const analysis = await analyzeLessonOutput(delayedTransfer, 4);
     const occurredAt = new Date().toISOString();
-    const attemptId = createClientId();
+    const attemptId = crypto.randomUUID();
     setDelayedTransferAnalysis(analysis);
     appendLearningEvidenceBundleToStorage(
       window.localStorage,

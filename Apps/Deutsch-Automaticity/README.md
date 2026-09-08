@@ -1,9 +1,5 @@
 # DeutschFlow V10.08.2026
 
-Device access update (20.8.49): phone/tablet layouts, pen answer pads, local
-HTTP draft IDs and same-origin API access. The [device setup guide](../../docs/LANGUAGE-DEVICE-ACCESS.md)
-includes the shared launcher and trusted HTTPS microphone setup.
-
 Production rewrite of the Deutsch Grammatik-Automatik v20.8 PWA.
 
 ## Stack

@@ -1,9 +1,5 @@
 # English Grammar Automaticity v27
 
-Device access update (27.3.44): phone/tablet layouts, pen answer pads, local
-HTTP draft IDs and same-origin API access. The [device setup guide](../../../docs/LANGUAGE-DEVICE-ACCESS.md)
-includes the shared launcher and trusted HTTPS microphone setup.
-
 The legacy single-file PWA is now a runnable Bun monorepo with a Next.js 16 /
 React 19 frontend, Shadcn-style UI primitives, a NestJS 11 backend, and a
 typed shared content package. The original page is retained at `legacy/index.html` as

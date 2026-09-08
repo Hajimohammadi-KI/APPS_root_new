@@ -507,8 +507,6 @@
   </dialog>
 
   <script src="/replacements/en/grammar-curriculum.js"></script>
-  <!-- Shared IDs keep legacy written responses and review drafts working on LAN HTTP. -->
-  <script src="/learning-core/automaticity-v2.js"></script>
   <script>window.GrammarWorksheetConfig = {"language": "en", "assetBase": "/replacements/en", "brand": "English Automaticity", "storage": "english-automaticity"};</script>
   <script src="/replacements/en/grammar-worksheets.js?v=20260908-2"></script>
   <script src="/replacements/en/grammar-worksheet-ink.js?v=20260908-2"></script>
@@ -768,7 +766,7 @@
       const preserveResponse = (text, mode) => {
         if (!text.trim()) return true;
         const key='english-automaticity:grammar-open-responses:v1';
-        try { const rows=JSON.parse(localStorage.getItem(key)||'[]'); if(!Array.isArray(rows))throw new Error('Unreadable history'); rows.push({id:window.AutomaticityV2.createClientId(),topic:progress.activeTopic,level:progress.activeLevel,inputText:text,mode,occurredAt:new Date().toISOString()}); localStorage.setItem(key,JSON.stringify(rows)); return true; }
+        try { const rows=JSON.parse(localStorage.getItem(key)||'[]'); if(!Array.isArray(rows))throw new Error('Unreadable history'); rows.push({id:crypto.randomUUID(),topic:progress.activeTopic,level:progress.activeLevel,inputText:text,mode,occurredAt:new Date().toISOString()}); localStorage.setItem(key,JSON.stringify(rows)); return true; }
         catch { feedback.className='feedback show bad';feedback.textContent='Your answer could not be saved. Keep this tab open and export a backup before retrying.';return false; }
       };
       $('#checkBtn').addEventListener('click', () => {
@@ -885,7 +883,7 @@
         if (!reviews.some(review => review.sourceType === 'grammar_topic' && review.sourceId === progress.activeTopic && review.status === 'pending')) {
           const lesson = lessonProfile(progress.activeTopic);
           reviews.push({
-            id: `review-${Date.now()}-${window.AutomaticityV2.createClientId().slice(0, 8)}`,
+            id: `review-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`,
             sourceType: 'grammar_topic',
             sourceId: progress.activeTopic,
             topic: progress.activeTopic,

@@ -187,13 +187,46 @@ export async function startGateway({
       args: ["apps/api/dist/main.js"],
     },
   ];
+  // A rollback pins the gateway to the archived release, so restarting cannot
+  // accidentally serve a newer build from the development checkout.
+  const releaseFile = join(directory, "release-runtimes.json");
+  if (existsSync(releaseFile)) {
+    const releases = JSON.parse(readFileSync(releaseFile, "utf8"));
+    if (releases.schemaVersion !== 1)
+      throw new Error("Invalid release runtime configuration.");
+    for (const service of services) {
+      const language = service.name.startsWith("English") ? "en" : "de";
+      const release = releases[language];
+      if (!release?.runtimeRoot || !release.version)
+        throw new Error(`Missing ${language} release pin.`);
+      const web = service.name.endsWith("web");
+      const entry = resolve(
+        release.runtimeRoot,
+        web ? "web/apps/web/server.js" : "api/main.js",
+      );
+      if (!existsSync(entry))
+        throw new Error(`Pinned release is missing: ${entry}`);
+      service.root = resolve(release.runtimeRoot, web ? "web/apps/web" : "api");
+      service.args = [entry];
+      const webPort = language === "en" ? 3202 : 3210;
+      const origins = [
+        `http://127.0.0.1:${webPort}`,
+        `http://localhost:${webPort}`,
+        `http://${host}:${webPort + 1}`,
+        `https://${host}:${webPort + 2}`,
+      ].join(",");
+      service.env = web
+        ? { PORT: String(service.port), HOSTNAME: "127.0.0.1" }
+        : { WEB_ORIGINS: origins, CORS_ORIGINS: origins };
+    }
+  }
   const start = (service) => {
     if (stopping) return;
     const child = spawn(service.runtime, service.args, {
-      cwd: join(root, service.root),
+      cwd: resolve(root, service.root),
       windowsHide: true,
       stdio: "inherit",
-      env: { ...process.env, HOST: "127.0.0.1" },
+      env: { ...process.env, HOST: "127.0.0.1", ...service.env },
     });
     children.add(child);
     child.on("error", (error) =>

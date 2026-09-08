@@ -1,11 +1,5 @@
 import { createHash } from "node:crypto";
-import {
-  copyFileSync,
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  readdirSync,
-} from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -24,8 +18,6 @@ const files = [
   "tsconfig.json",
   "src/index.ts",
   "src/index.test.ts",
-  "src/client-id.ts",
-  "src/client-id.test.ts",
   "src/automaticity/contracts.ts",
   "src/automaticity/evidence.ts",
   "src/automaticity/storage.ts",
@@ -135,8 +127,7 @@ function checkSourceInventory(directory) {
     if (entry.isDirectory()) checkSourceInventory(path);
     else if (entry.isFile() && entry.name.endsWith(".ts")) {
       const name = relative(sourceRoot, path).replaceAll("\\", "/");
-      if (!files.includes(name))
-        throw new Error(`Canonical source missing from sync manifest: ${name}`);
+      if (!files.includes(name)) throw new Error(`Canonical source missing from sync manifest: ${name}`);
     }
   }
 }

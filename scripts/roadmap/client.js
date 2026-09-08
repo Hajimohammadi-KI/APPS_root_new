@@ -81,20 +81,20 @@
       )
       .join("");
     $("completion-note").textContent =
-      `${complete} of ${required.length} required tasks are fully verified. ${required.length - complete} required tasks and ${tasks.filter((task) => !task.required && task.status !== "verified").length} conditional tasks remain open. Indigo check badges cover the recorded tests only.${implementationOpen.length ? ` Required implementation still open: ${implementationOpen.map((task) => task.id).join(", ")}.` : ""}`;
+      `${complete} of ${required.length} required tasks are fully verified. ${required.length - complete} required tasks and ${tasks.filter((task) => !task.required && task.status !== "verified").length} conditional tasks remain open. Green check badges cover the recorded tests only.${implementationOpen.length ? ` Required implementation still open: ${implementationOpen.map((task) => task.id).join(", ")}.` : ""}`;
     const decisions = tasks.filter((task) => task.conditionalDecision).length;
     if (decisions)
       $("completion-note").textContent +=
         ` Eligibility was checked for ${decisions} conditional tasks; their activation or experiment remains deferred.`;
     const release = backlog.technicalRelease;
     $("release").innerHTML =
-      `<div><span class="pill ${release.status === "verified" ? "good" : "warning"}">${release.status === "verified" ? "✓ Technical release verified" : release.status === "blocked" ? "Desktop release blocked" : "Technical release pending"}</span><p><strong>${Object.entries(
+      `<div><span class="pill ${["verified", "restored"].includes(release.status) ? "good" : "warning"}">${release.status === "restored" ? "Requested releases restored" : release.status === "verified" ? "✓ Technical release verified" : release.status === "blocked" ? "Desktop release blocked" : "Technical release pending"}</span><p><strong>${Object.entries(
         release.versions,
       )
         .map(([name, version]) => escape(name) + " " + escape(version))
         .join(" · ")}</strong></p>${
         release.installedVersions
-          ? `<p>${release.installationScope ? escape(release.installationScope) : "Installed and preserved"}: ${Object.entries(
+          ? `<p>Installed and preserved: ${Object.entries(
               release.installedVersions,
             )
               .map(([name, version]) => escape(name) + " " + escape(version))
@@ -166,7 +166,7 @@
         ["Work after human evidence arrives", task.afterHumanValidation],
       ];
       const decision = task.conditionalDecision;
-      const details = `${decision ? `<section class="conditional-decision"><h3>Current eligibility decision</h3><p>Checked ${escape(date(decision.recordedAt))}. The indigo badge verifies this deferral decision. Activation and learner benefit are unverified.</p><ul>${decision.reasons.map((reason) => `<li>${escape(reason)}</li>`).join("")}</ul><h3>Reopen when</h3><ul>${decision.reopenWhen.map((step) => `<li>${escape(step)}</li>`).join("")}</ul></section>` : ""}${task.engineeringScope ? `<p><strong>Scope of passed checks:</strong> ${escape(task.engineeringScope)}</p>` : ""}${lists
+      const details = `${decision ? `<section class="conditional-decision"><h3>Current eligibility decision</h3><p>Checked ${escape(date(decision.recordedAt))}. The green badge verifies this deferral decision. Activation and learner benefit are unverified.</p><ul>${decision.reasons.map((reason) => `<li>${escape(reason)}</li>`).join("")}</ul><h3>Reopen when</h3><ul>${decision.reopenWhen.map((step) => `<li>${escape(step)}</li>`).join("")}</ul></section>` : ""}${task.engineeringScope ? `<p><strong>Scope of passed checks:</strong> ${escape(task.engineeringScope)}</p>` : ""}${lists
         .filter(([, items]) => items?.length)
         .map(
           ([title, items]) =>

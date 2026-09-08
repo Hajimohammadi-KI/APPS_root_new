@@ -1,4 +1,3 @@
-import { createClientId } from "@automaticity/learning-core";
 import {
   CEFR_LEVELS,
   type CefrLevel,
@@ -228,7 +227,7 @@ export function createLearnerProfile(): LearnerProfile {
   const now = new Date().toISOString();
   return {
     schemaVersion: 1,
-    profileId: createClientId(),
+    profileId: crypto.randomUUID(),
     displayName: "",
     avatarDataUrl: "",
     createdAt: now,

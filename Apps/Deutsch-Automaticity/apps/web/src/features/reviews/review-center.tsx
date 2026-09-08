@@ -1,7 +1,5 @@
 "use client";
 
-import { createClientId } from "@automaticity/learning-core";
-
 import { useEffect, useState } from "react";
 import {
   Award,
@@ -170,7 +168,7 @@ export function ReviewCenter() {
       appendLearningEvidenceBundleToStorage(
         window.localStorage,
         buildAttemptVerticalSlice({
-          attemptId: createClientId(),
+          attemptId: crypto.randomUUID(),
           occurredAt,
           language: "de",
           cefrLevel: grammar.level as CefrLevel,

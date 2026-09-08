@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { normalizeApiOrigin } from "@/lib/api-origin";
 import { syncLegacyPracticeInBrowser } from "@automaticity/learning-core/automaticity";
 import type { CefrLevel, GrammarUnit } from "@grammar/content";
 import {
@@ -213,7 +212,8 @@ export const DEFAULT_STATE: AppState = {
 	version: 27,
 	settings: {
 		apiBaseUrl:
-			normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL),
+			process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
+			"http://127.0.0.1:4201",
 		minWords: 12,
 		dailyStudyMinutes: 15,
 		honovrLanguage: "en",
@@ -320,7 +320,14 @@ export function normalizeAppState(value: unknown): AppState {
 		typeof settings.minWords === "number" && Number.isFinite(settings.minWords)
 			? Math.min(200, Math.max(5, Math.round(settings.minWords)))
 			: fallback.settings.minWords;
-	const apiBaseUrl = normalizeApiOrigin(settings.apiBaseUrl, fallback.settings.apiBaseUrl);
+	const storedApiBaseUrl =
+		typeof settings.apiBaseUrl === "string" && settings.apiBaseUrl.trim()
+			? settings.apiBaseUrl.trim().replace(/\/$/, "")
+			: fallback.settings.apiBaseUrl;
+	const apiBaseUrl =
+		storedApiBaseUrl === "http://localhost:4201"
+			? fallback.settings.apiBaseUrl
+			: storedApiBaseUrl;
 	const todayGrammar =
 		isRecord(value.todayGrammar) &&
 		typeof value.todayGrammar.title === "string" &&

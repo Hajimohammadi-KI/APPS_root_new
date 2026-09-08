@@ -1,7 +1,5 @@
 "use client";
 
-import { createClientId } from "@automaticity/learning-core";
-
 import { useEffect, useState } from "react";
 import { CalendarClock, Plus, Trash2 } from "lucide-react";
 
@@ -37,7 +35,7 @@ const actionOptions = Object.keys(
 
 function makeDraft(index: number): ImplementationIntention {
   return {
-    id: `intention-${createClientId()}`,
+    id: `intention-${crypto.randomUUID()}`,
     trigger: "time",
     triggerLabel: index === 0 ? "18:00" : "08:00",
     action: "full_session",

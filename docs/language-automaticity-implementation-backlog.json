@@ -5,7 +5,7 @@
   "strategy": "docs/LANGUAGE-AUTOMATICITY-STRATEGY-2026-09-04.md",
   "status": "in_progress",
   "updatedOn": "2026-09-08",
-  "progressRecord": "docs/learning-flow/IMPLEMENTATION-REPORT-2026-09-08.md",
+  "progressRecord": "docs/LANGUAGE-ROLLBACK-2026-09-08.md",
   "scope": "All English and German grammar in the reviewed A1-C2 curriculum; initial 112 English and 144 German units are a migration baseline, not a ceiling.",
   "statusDefinitions": {
     "planned": "Work specified; not executed.",
@@ -3812,45 +3812,12 @@
       "progressNote": "Standalone HTML, live local updates, dated change journal and green verified states implemented. All 15 final browser checks passed, including the actual live viewer, reopening a task, malformed input, mobile reflow, keyboard access and direct file opening. Desktop and mobile screenshots inspected; strict TypeScript and HTML freshness checks passed.",
       "updatedOn": "2026-09-05",
       "engineeringVerification": "verified_for_recorded_scope"
-    },
-    {
-      "id": "U06",
-      "phase": "daily",
-      "title": "Deliver the seven-step flow in both live language apps",
-      "status": "verified",
-      "priority": "P0",
-      "required": true,
-      "progressNote": "Verified seven-step practice UI for 112 English and 144 German worksheet topics, with exact item resume, typed/ink drafts, original-audio retention, adjustable playback and due-date checks. Browser tests used isolated contexts and synthetic pen/audio input. Both Windows release lifecycle checks passed. Qualified learning outcomes and physical-device acceptance are not claimed.",
-      "acceptance": [
-        "Root and daily routes open the topic-specific seven-step flow in both apps.",
-        "Text and pen drafts retain their exact topic and item after reload.",
-        "Original audio, raw ASR and edited text stay distinct across retries.",
-        "Future reviews cannot complete early; completion is separate from assessment.",
-        "Verify phone/tablet/desktop layouts, package lifecycle and served LAN assets."
-      ],
-      "evidence": [
-        "docs/learning-flow/IMPLEMENTATION-REPORT-2026-09-08.md",
-        "shared/seven-step-flow",
-        "artifacts/seven-step-flow/browser/verification.json",
-        "artifacts/seven-step-flow/package-verification.json",
-        "artifacts/installer-cycle/English-20260908-154022-cb1a926a/report.json",
-        "artifacts/installer-cycle/German-20260908-153724-bc4d5b3c/report.json"
-      ],
-      "dependsOn": [
-        "L03",
-        "U02"
-      ],
-      "deliverable": "Live seven-step daily UI, shared runtime, tests and release evidence",
-      "condition": null,
-      "updatedOn": "2026-09-08",
-      "engineeringScope": "Authored-content reuse, practice UI and evidence integrity. No claim of qualified oral assessment, physical-device certification, independent item-bank completeness or learner effectiveness.",
-      "engineeringVerification": "verified_for_recorded_scope"
     }
   ],
   "delivery": {
-    "technicalIncrement": "verified",
-    "englishVersion": "27.3.45",
-    "germanVersion": "20.8.50",
+    "technicalIncrement": "restored",
+    "englishVersion": "27.3.43",
+    "germanVersion": "20.8.48",
     "fullRoadmap": "awaiting_human_validation",
     "fullCurriculum": "not_qualified",
     "learningEffectiveness": "not_measured",
@@ -3858,8 +3825,8 @@
     "transformer": "not_qualified",
     "fsrs": "bounded_pilot_available_not_enrolled",
     "reinforcementLearning": "offline_prototype_not_active",
-    "installedEnglishVersion": "27.3.41",
-    "installedGermanVersion": "20.8.45",
+    "installedEnglishVersion": "27.3.43",
+    "installedGermanVersion": "20.8.48",
     "requiredEngineeringScopesVerified": 43,
     "requiredHumanValidationTasks": 14,
     "requiredEngineeringTasksStillOpen": 0,
@@ -3867,23 +3834,22 @@
     "requiredImplementationStillOpen": []
   },
   "technicalRelease": {
-    "status": "verified",
+    "status": "restored",
     "versions": {
-      "English": "27.3.45",
-      "German": "20.8.50"
+      "English": "27.3.43",
+      "German": "20.8.48"
     },
     "installedVersions": {
-      "English": "27.3.45",
-      "German": "20.8.50"
+      "English": "27.3.43",
+      "German": "20.8.48"
     },
     "fullCurriculum": "not_qualified",
     "learnerOutcomes": "unmeasured",
-    "report": "docs/learning-flow/IMPLEMENTATION-REPORT-2026-09-08.md",
-    "installationScope": "Tested with isolated installer data"
+    "report": "docs/LANGUAGE-ROLLBACK-2026-09-08.md"
   },
   "htmlRoadmap": "docs/LANGUAGE-AUTOMATICITY-ROADMAP.html",
   "roadmapViewer": "docs/LANGUAGE-ROADMAP-VIEWER.md",
-  "latestEngineeringUpdate": "docs/learning-flow/IMPLEMENTATION-REPORT-2026-09-08.md",
+  "latestEngineeringUpdate": "docs/LANGUAGE-AUTOMATICITY-DELIVERY-2026-09-06.md",
   "grammarScope": {
     "status": "mapping_verified",
     "report": "docs/LANGUAGE-AUTOMATICITY-PHASE-4-2026-09-05.md",

@@ -144,7 +144,9 @@ Findings become a reviewed content change (a new task version), then sections
 For the selected learning cycles, send the teacher the canonical site's
 `/assessment-readiness.html`, or a direct link such as
 `/learning-core/content-review.html?unit=en.c.001&focus=cycle` (German:
-`unit=de.c.001`). No installation or deployment credentials are needed.
+`unit=de.c.001`). The teacher signs in at `/staff` with the separate teacher
+password before opening these links. No installation or deployment credentials
+are needed.
 The teacher enters their name and qualification, saves findings and downloads
 the JSON to return to the owner. Reviewing only the seven cycle tasks cannot
 approve the whole unit: all its active writing and speaking tasks remain
@@ -241,3 +243,25 @@ offline cached execution, asset corruption and zero audio network requests.
 Neither software tests nor public-corpus examples prove this learner's halo will
 be detected reliably; the user's actual recording and teacher review remain
 necessary. Keep upstream provenance and all license notices with the assets.
+
+## 10. Private teacher and developer workspace
+
+Both canonical sites use `/staff` for password login. Teacher and developer
+menus are separate and absent from learner navigation. Developer access also
+includes teacher tools. Server route protection covers direct URLs and private
+review APIs; these responses bypass service-worker and browser caching.
+
+Set `LANGUAGE_TEACHER_PASSWORD`, `LANGUAGE_DEVELOPER_PASSWORD` (at least 12
+characters each), and `LANGUAGE_STAFF_SESSION_SECRET` (at least 32 characters)
+as sensitive Production variables in both existing Vercel projects. Keep values
+out of source, logs and browser storage. The owner's local credentials are in
+ignored `artifacts/private/language-staff-login.txt`; this folder is excluded
+from deployments. Rotating a role password or the signing secret invalidates
+existing sessions after redeployment. Sessions expire after eight hours; logout
+also closes access in other open staff tabs.
+
+Run `node scripts/verify-staff-workspace-browser.mjs <EnglishURL> <GermanURL>`
+with the ignored local credential JSON available. Fetch protected `/roadmap.html`
+with a developer session for the final byte comparison in section 4. Teacher
+credentials cannot open the roadmap, benchmark diagnostics or developer review
+tools. Learner progress, drafts and explicit saved choices stay unchanged.

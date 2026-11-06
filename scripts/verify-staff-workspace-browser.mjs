@@ -289,6 +289,13 @@ try {
       }
     }
   }
+} catch (error) {
+  let message =
+    error instanceof Error ? (error.stack ?? error.message) : String(error);
+  for (const value of Object.values(credentials))
+    message = message.replaceAll(value, "[redacted]");
+  console.error(message);
+  process.exitCode = 1;
 } finally {
   await browser.close();
 }

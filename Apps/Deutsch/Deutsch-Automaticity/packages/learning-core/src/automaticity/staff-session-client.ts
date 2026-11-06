@@ -47,25 +47,30 @@ export function watchStaffSession(
   let timer: ReturnType<typeof setTimeout> | undefined;
   let checking = false;
   let hidden = false;
+  let revoked = false;
   let originalVisibility = "";
+  let originalInert = false;
   const cover = (hide: boolean) => {
     const body = document.body;
     if (!body || hide === hidden) return;
     if (hide) {
       originalVisibility = body.style.visibility;
+      originalInert = body.inert;
       body.style.visibility = "hidden";
       body.inert = true;
     } else {
       body.style.visibility = originalVisibility;
-      body.inert = false;
+      body.inert = originalInert;
     }
     hidden = hide;
   };
   const revoke = (reason: "logout" | "expired" | "unavailable") => {
     if (controller.signal.aborted) return;
+    revoked = true;
+    controller.abort();
     clearTimeout(timer);
+    if (path !== "/staff") cover(true);
     invalid(reason);
-    cover(false);
   };
   const check = async (privateRecheck = false) => {
     if (checking || controller.signal.aborted) return;
@@ -101,7 +106,7 @@ export function watchStaffSession(
       revoke("unavailable");
     } finally {
       checking = false;
-      cover(false);
+      if (!revoked) cover(false);
     }
   };
   const focus = () => {

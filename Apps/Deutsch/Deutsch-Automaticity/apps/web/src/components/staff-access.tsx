@@ -79,7 +79,7 @@ export function StaffAccessProvider({ children }: { children: ReactNode }) {
         if (reason === "logout") location.replace("/");
         else if (pathname !== "/staff")
           location.replace(
-            "/staff?returnTo=" + encodeURIComponent(pathname + location.search),
+            `/staff?returnTo=${encodeURIComponent(pathname + location.search)}`,
           );
       },
     );

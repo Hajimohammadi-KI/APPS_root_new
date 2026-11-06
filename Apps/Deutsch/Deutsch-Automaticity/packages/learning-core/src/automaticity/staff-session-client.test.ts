@@ -79,3 +79,26 @@ test("session expiry closes access without requiring navigation", async () => {
   expect(reasons).toContain("expired");
   expect(staffRoleAllowed("/staff/developer", "teacher")).toBe(false);
 });
+
+test("an earlier pending verification cannot restore a role after logout", async () => {
+  const { target, body } = setup({ role: "developer" });
+  let respond: (value: Response) => void = () => {};
+  put(
+    "fetch",
+    () =>
+      new Promise<Response>((resolve) => {
+        respond = resolve;
+      }),
+  );
+  const events: string[] = [];
+  stop = watchStaffSession(
+    "/staff/developer",
+    (data) => events.push(`verified:${data.role}`),
+    (reason) => events.push(`invalid:${reason}`),
+  );
+  target.dispatchEvent(new Event("language-staff-logout"));
+  respond(Response.json({ role: "developer" }));
+  await settle();
+  expect(events).toEqual(["invalid:logout"]);
+  expect(body.style.visibility).toBe("hidden");
+});

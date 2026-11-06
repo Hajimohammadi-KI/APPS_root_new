@@ -17,6 +17,18 @@ const privateHeaders = {
   "Cache-Control": "private, no-store, max-age=0",
   Vary: "Cookie",
 };
+function publicOrigin(request: Request): string {
+  const url = new URL(request.url);
+  const host = request.headers.get("host");
+  const forwarded = request.headers
+    .get("x-forwarded-proto")
+    ?.split(",")[0]
+    ?.trim();
+  const protocol = forwarded === "https" ? "https:" : url.protocol;
+  return host && /^[a-zA-Z0-9.[\]:-]+$/u.test(host)
+    ? new URL(`${protocol}//${host}`).origin
+    : url.origin;
+}
 
 export function staffConfigFromEnvironment(): StaffConfig {
   return {
@@ -172,7 +184,7 @@ export function protectStaffRequest(
       { error: "staff_access_required" },
       { status: session ? 403 : 401, headers: privateHeaders },
     );
-  const target = new URL("/staff", url);
+  const target = new URL("/staff", publicOrigin(request));
   target.searchParams.set("returnTo", url.pathname + url.search);
   return new Response(null, {
     status: 307,
@@ -241,11 +253,11 @@ export async function staffSessionResponse(
     });
   const origin = request.headers.get("origin");
   if (
-    origin !== new URL(request.url).origin ||
+    origin !== publicOrigin(request) ||
     request.headers.get("sec-fetch-site") === "cross-site"
   )
     return json({ error: "same_origin_required" }, 403);
-  const attributes = `Path=/; HttpOnly; SameSite=Strict${new URL(request.url).protocol === "https:" ? "; Secure" : ""}`;
+  const attributes = `Path=/; HttpOnly; SameSite=Strict${publicOrigin(request).startsWith("https:") ? "; Secure" : ""}`;
   if (request.method === "DELETE")
     return json(
       { role: null },
@@ -280,12 +292,9 @@ export async function staffSessionResponse(
     data.returnTo.startsWith("/") &&
     !data.returnTo.startsWith("//")
   ) {
-    const target = new URL(data.returnTo, request.url);
+    const target = new URL(data.returnTo, publicOrigin(request));
     const roles = requiredStaffRoles(target.pathname);
-    if (
-      target.origin === new URL(request.url).origin &&
-      roles?.includes(data.role)
-    )
+    if (target.origin === publicOrigin(request) && roles?.includes(data.role))
       redirectTo = target.pathname + target.search;
   }
   return json(

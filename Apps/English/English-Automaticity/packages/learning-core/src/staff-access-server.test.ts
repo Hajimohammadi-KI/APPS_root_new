@@ -173,3 +173,44 @@ test("login uses an HttpOnly cookie and logout clears it; configuration absence 
     readStaffSession(createStaffSession("teacher", config, now), {}, now),
   ).toBeNull();
 });
+
+test("Next internal URLs use the public Host and forwarded protocol for same-origin login", async () => {
+  const response = await staffSessionResponse(
+    new Request("http://localhost:3202/api/staff-session", {
+      method: "POST",
+      headers: {
+        host: "127.0.0.1:3202",
+        origin: "http://127.0.0.1:3202",
+        "content-type": "application/json",
+        "x-forwarded-for": "proxy-local",
+      },
+      body: JSON.stringify({
+        role: "teacher",
+        password: config.teacherPassword,
+      }),
+    }),
+    config,
+    now + 300_000,
+  );
+  expect(response.status).toBe(200);
+  const remote = await staffSessionResponse(
+    new Request("http://localhost:3000/api/staff-session", {
+      method: "POST",
+      headers: {
+        host: "app.test",
+        origin: "https://app.test",
+        "x-forwarded-proto": "https",
+        "content-type": "application/json",
+        "x-forwarded-for": "proxy-remote",
+      },
+      body: JSON.stringify({
+        role: "teacher",
+        password: config.teacherPassword,
+      }),
+    }),
+    config,
+    now + 300_000,
+  );
+  expect(remote.status).toBe(200);
+  expect(remote.headers.get("set-cookie")).toContain("Secure");
+});

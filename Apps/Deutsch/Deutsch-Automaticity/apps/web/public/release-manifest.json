@@ -1,8 +1,8 @@
 {
   "publishedAt": "2026-11-06",
-  "version": "20.9.11",
-  "webRelease": "2026.11.06.2",
+  "version": "20.9.12",
+  "webRelease": "2026.11.06.3",
   "changes": [
-    "The daily page now uses the same teal accent as its lower practice buttons instead of purple."
+    "Der Tagesplan zeigt die empfohlene Frage, eine neue Situation und die spätere Wiederholung; eine Uhrzeit kann lokal gespeichert und als Kalendertermin exportiert werden."
   ]
 }

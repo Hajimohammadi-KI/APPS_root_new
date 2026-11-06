@@ -13,6 +13,9 @@ import {
   schedulerPilotCards,
 } from "./scheduler-pilot";
 import { readAutomaticityEvents } from "./storage";
+import { buildDailyPathSteps } from "./daily-path-plan";
+import { mountDailyReminder } from "./daily-reminder-browser";
+import { readSupportLanguage } from "./support-language";
 
 function launchRequest(): LearningPathRequest {
   const params = new URLSearchParams(location.search);
@@ -124,8 +127,62 @@ export function mountDailyLearningPath(
   link.style.cssText =
     "justify-self:start;display:inline-flex;min-height:44px;align-items:center;padding:8px 16px;border-radius:12px;background:#007f83;color:#fff;font-weight:700;text-decoration:none";
   link.href = "/practice";
-  root.replaceChildren(heading, focus, explanation, link);
+  const route = document.createElement("section");
+  route.dataset.dailyPathPlan = "";
+  route.style.cssText =
+    "display:grid;gap:8px;margin-top:8px;padding-top:14px;border-top:1px solid #cfe0e4";
+  const routeHeading = document.createElement("h3");
+  routeHeading.textContent = t("Today's learning route", "Dein Lernweg heute");
+  routeHeading.style.margin = "0";
+  const routeSteps = document.createElement("ol");
+  routeSteps.style.cssText =
+    "display:grid;gap:8px;margin:0;padding-inline-start:24px";
+  route.append(routeHeading, routeSteps);
+  const reminder = mountDailyReminder(language);
+  root.replaceChildren(
+    heading,
+    focus,
+    explanation,
+    link,
+    route,
+    reminder.element,
+  );
+  let currentSelection: LearningPathSelection | null = null;
+  const renderRoute = () => {
+    const displayLanguage = readSupportLanguage(language);
+    routeHeading.textContent =
+      displayLanguage === "fa"
+        ? "برنامهٔ کوتاه امروز"
+        : displayLanguage === "en"
+          ? "Today's learning route"
+          : "Dein Lernweg heute";
+    route.dir = displayLanguage === "fa" ? "rtl" : "ltr";
+    route.lang = displayLanguage;
+    routeSteps.dir = displayLanguage === "fa" ? "rtl" : "ltr";
+    routeSteps.lang = displayLanguage;
+    routeSteps.replaceChildren(
+      ...(currentSelection
+        ? buildDailyPathSteps(currentSelection, language, displayLanguage).map(
+            (step) => {
+              const item = document.createElement("li");
+              const title =
+                step.href && step.id !== "priority"
+                  ? document.createElement("a")
+                  : document.createElement("strong");
+              title.textContent = step.label;
+              if (title instanceof HTMLAnchorElement) title.href = step.href!;
+              const detail = document.createElement("p");
+              detail.textContent = step.detail;
+              detail.style.margin = "0";
+              item.append(title, detail);
+              return item;
+            },
+          )
+        : []),
+    );
+  };
   const stop = watchLearningPath(language, (selection) => {
+    currentSelection = selection;
     focus.textContent = selection
       ? `${selection.unit.title} · ${selection.level}`
       : t(
@@ -140,6 +197,7 @@ export function mountDailyLearningPath(
       "[data-learning-path-topic]",
     ))
       node.textContent = focus.textContent;
+    renderRoute();
     if (selection) {
       const notebook = document.querySelector<HTMLElement>(
         "[data-notebook-daily]",
@@ -147,8 +205,11 @@ export function mountDailyLearningPath(
       if (notebook) notebook.dataset.level = selection.level;
     }
   });
+  window.addEventListener("automaticity:support-language", renderRoute);
   return () => {
     stop();
+    window.removeEventListener("automaticity:support-language", renderRoute);
+    reminder.stop();
     root.replaceChildren();
   };
 }

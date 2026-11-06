@@ -83,12 +83,14 @@ export function GuardedNudge() {
     const now = new Date();
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
     const profile = loadProfile(window.localStorage, { now, timeZone });
+    if (!profile.nudgeOptIn) return;
     const history = readNudgeEvents(window.localStorage, now);
     const trigger = findEligibleTimeIntention(
       profile.intentions,
       now,
       timeZone,
     );
+    if (!trigger) return;
     const reviewBacklog = latest.current.state.reviews.filter(
       (review) => !review.mastered && review.due <= now.getTime(),
     ).length;
@@ -145,9 +147,11 @@ export function GuardedNudge() {
     };
     document.addEventListener("visibilitychange", evaluateWhenVisible);
     window.addEventListener("pageshow", evaluateWhenVisible);
+    const timer = window.setInterval(evaluateWhenVisible, 60_000);
     return () => {
       document.removeEventListener("visibilitychange", evaluateWhenVisible);
       window.removeEventListener("pageshow", evaluateWhenVisible);
+      window.clearInterval(timer);
     };
   }, [evaluate]);
 

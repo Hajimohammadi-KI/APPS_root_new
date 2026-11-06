@@ -35,7 +35,7 @@ export const IMPLEMENTATION_INTENTION_COPY: Readonly<
     eyebrow: "Optional setup · about 1 minute",
     title: "My if–then practice plans",
     description:
-      "Choose 2–5 situations that can help you start. You can skip, disable, or delete them without any penalty.",
+      "Choose 1–5 situations that can help you start. One daily time is enough. You can skip, disable, or delete them without any penalty.",
     add: "Add a plan",
     save: "Save plans on this device",
     skip: "Skip for now",
@@ -46,7 +46,7 @@ export const IMPLEMENTATION_INTENTION_COPY: Readonly<
     action: "Then I will",
     privacy:
       "These plans stay only on this device and are never sent or used to diagnose you.",
-    countError: "Save either no active plans or 2–5 active plans.",
+    countError: "Save up to five active plans.",
     labelError: "Every plan needs a valid time or short situation.",
     saved: "Plans saved locally. No reminder was sent.",
     skipped: "Skipped. Nothing was saved and there is no penalty.",
@@ -68,7 +68,7 @@ export const IMPLEMENTATION_INTENTION_COPY: Readonly<
     eyebrow: "Optionale Einrichtung · etwa 1 Minute",
     title: "Meine Wenn-dann-Lernpläne",
     description:
-      "Wähle 2–5 Situationen, die dir beim Start helfen können. Überspringen, Deaktivieren und Löschen haben keine Nachteile.",
+      "Wähle 1–5 Situationen, die dir beim Start helfen können. Eine tägliche Uhrzeit reicht. Überspringen, Deaktivieren und Löschen haben keine Nachteile.",
     add: "Plan hinzufügen",
     save: "Pläne auf diesem Gerät speichern",
     skip: "Jetzt überspringen",
@@ -79,7 +79,7 @@ export const IMPLEMENTATION_INTENTION_COPY: Readonly<
     action: "Dann werde ich",
     privacy:
       "Diese Pläne bleiben nur auf diesem Gerät und werden nie gesendet oder für eine Diagnose verwendet.",
-    countError: "Speichere entweder keinen oder 2–5 aktive Pläne.",
+    countError: "Speichere höchstens fünf aktive Pläne.",
     labelError: "Jeder Plan braucht eine gültige Uhrzeit oder kurze Situation.",
     saved: "Pläne lokal gespeichert. Es wurde keine Erinnerung gesendet.",
     skipped:
@@ -102,7 +102,7 @@ export const IMPLEMENTATION_INTENTION_COPY: Readonly<
     eyebrow: "تنظیم اختیاری · حدود یک دقیقه",
     title: "برنامه‌های اگر–آنگاه من",
     description:
-      "۲ تا ۵ موقعیت را انتخاب کنید که می‌توانند به شروع تمرین کمک کنند. ردکردن، غیرفعال‌کردن یا حذف هیچ جریمه‌ای ندارد.",
+      "۱ تا ۵ موقعیت را انتخاب کنید که می‌توانند به شروع تمرین کمک کنند. یک ساعت روزانه کافی است. ردکردن، غیرفعال‌کردن یا حذف هیچ جریمه‌ای ندارد.",
     add: "افزودن برنامه",
     save: "ذخیره روی همین دستگاه",
     skip: "فعلاً رد شود",
@@ -113,7 +113,7 @@ export const IMPLEMENTATION_INTENTION_COPY: Readonly<
     action: "آنگاه من",
     privacy:
       "این برنامه‌ها فقط روی همین دستگاه می‌مانند و هرگز ارسال یا برای تشخیص پزشکی استفاده نمی‌شوند.",
-    countError: "هیچ برنامهٔ فعالی یا ۲ تا ۵ برنامهٔ فعال ذخیره کنید.",
+    countError: "حداکثر پنج برنامهٔ فعال ذخیره کنید.",
     labelError: "هر برنامه به یک زمان معتبر یا موقعیت کوتاه نیاز دارد.",
     saved: "برنامه‌ها محلی ذخیره شدند. هیچ یادآوری ارسال نشد.",
     skipped: "رد شد. چیزی ذخیره نشد و هیچ جریمه‌ای وجود ندارد.",

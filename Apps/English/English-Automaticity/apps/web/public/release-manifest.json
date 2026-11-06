@@ -1,8 +1,8 @@
 {
   "publishedAt": "2026-11-06",
-  "version": "27.4.13",
-  "webRelease": "2026.11.06.2",
+  "version": "27.4.14",
+  "webRelease": "2026.11.06.3",
   "changes": [
-    "The shared roadmap records the German daily color correction; English learning content is unchanged."
+    "Daily practice now has a short route from the recommended question to a new situation and later review, plus an optional local reminder time and calendar export."
   ]
 }

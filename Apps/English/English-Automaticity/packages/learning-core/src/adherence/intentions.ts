@@ -6,7 +6,7 @@ import type {
 } from "./types";
 
 export const MAX_ACTIVE_IMPLEMENTATION_INTENTIONS = 5 as const;
-export const MIN_ACTIVE_IMPLEMENTATION_INTENTIONS = 2 as const;
+export const MIN_ACTIVE_IMPLEMENTATION_INTENTIONS = 1 as const;
 export const MAX_IMPLEMENTATION_INTENTION_LABEL_LENGTH = 120 as const;
 
 function normalizeLabel(value: string): string {
@@ -24,9 +24,8 @@ function isTimeLabel(value: string): boolean {
 }
 
 /**
- * Validate the optional 0-or-2-to-5 contract before local persistence.
- * A learner may skip or disable every intention; a lone active intention is a
- * draft, not a saved onboarding configuration.
+ * Validate the optional 0-or-1-to-5 contract before local persistence.
+ * One learner-chosen time is enough for a daily reminder.
  */
 export function validateImplementationIntentions(
   intentions: readonly ImplementationIntention[],

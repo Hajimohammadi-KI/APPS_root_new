@@ -302,7 +302,7 @@ describe("optional implementation intentions", () => {
     },
   ];
 
-  test("accepts optional zero or two-to-five active plans, never one or six", () => {
+  test("accepts one chosen reminder time while still limiting plans to five", () => {
     expect(validateImplementationIntentions([])).toMatchObject({
       valid: true,
       activeCount: 0,
@@ -314,8 +314,8 @@ describe("optional implementation intentions", () => {
     expect(
       validateImplementationIntentions(intentions.slice(0, 1)),
     ).toMatchObject({
-      valid: false,
-      code: "active-count",
+      valid: true,
+      activeCount: 1,
     });
     expect(
       validateImplementationIntentions(

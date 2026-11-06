@@ -72,7 +72,11 @@ function put(key: string, value: unknown) {
     value,
   });
 }
-function browser(pathname: string, staff = false, language: "en" | "de" = "de") {
+function browser(
+  pathname: string,
+  staff = false,
+  language: "en" | "de" = "de",
+) {
   const summary = new ElementStub("section");
   put("document", {
     createElement: (tag: string) => new ElementStub(tag),
@@ -132,7 +136,9 @@ for (const language of ["en", "de"] as const)
     browser(language === "de" ? "/heute" : "/today", false, language);
     const root = new ElementStub("section");
     root.dataset.level = "A1";
-    disposers.push(mountDailyNotebook(root as unknown as HTMLElement, language));
+    disposers.push(
+      mountDailyNotebook(root as unknown as HTMLElement, language),
+    );
     await Bun.sleep(0);
     expect(root.textContent).not.toMatch(/\d+ (?:von|of|از) \d+/u);
     expect(root.textContent).not.toContain("Today:");

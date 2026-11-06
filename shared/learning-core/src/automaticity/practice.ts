@@ -1124,14 +1124,14 @@ export async function mountPractice(
       ...(recentNotebook
         ? staffRole
           ? [
-            f(
-              `${all.passed} تمرین از ${all.total} درست بوده است.`,
-              `${all.passed} of ${all.total} passed.`,
-              `${all.passed} von ${all.total} bestanden.`,
-            ),
-            copy.source,
-            copy.progressBasis,
-          ]
+              f(
+                `${all.passed} تمرین از ${all.total} درست بوده است.`,
+                `${all.passed} of ${all.total} passed.`,
+                `${all.passed} von ${all.total} bestanden.`,
+              ),
+              copy.source,
+              copy.progressBasis,
+            ]
           : []
         : notebookCardLines(language, level, atLevel, all, !!staffRole)
       ).map((line) => element("p", line, "muted")),

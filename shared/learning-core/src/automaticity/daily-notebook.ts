@@ -113,10 +113,14 @@ export function mountDailyNotebook(
     root.replaceChildren(
       ...recentNodes,
       heading,
-      ...(staff ? [node(
-        "p",
-        `${t(`Today: ${progress.today} of ${DAILY_NOTEBOOK_GOAL} exercises`, `Heute: ${progress.today} von ${DAILY_NOTEBOOK_GOAL} Übungen`)} · ${t(`${progress.passed} of ${progress.total} passed at ${level}`, `${progress.passed} von ${progress.total} auf ${level} bestanden`)}.`,
-      )] : []),
+      ...(staff
+        ? [
+            node(
+              "p",
+              `${t(`Today: ${progress.today} of ${DAILY_NOTEBOOK_GOAL} exercises`, `Heute: ${progress.today} von ${DAILY_NOTEBOOK_GOAL} Übungen`)} · ${t(`${progress.passed} of ${progress.total} passed at ${level}`, `${progress.passed} von ${progress.total} auf ${level} bestanden`)}.`,
+            ),
+          ]
+        : []),
       progress.next
         ? link(
             staff && progress.today >= DAILY_NOTEBOOK_GOAL

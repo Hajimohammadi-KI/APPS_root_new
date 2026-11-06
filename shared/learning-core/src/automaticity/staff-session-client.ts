@@ -40,7 +40,13 @@ export function broadcastStaffLogout(): void {
 }
 export function watchStaffSession(
   path: string,
-  verified: (data: { role: StaffRole | null; configured: boolean }) => void,
+  verified: (data: {
+    role: StaffRole | null;
+    configured: boolean;
+    email: string | null;
+    isOwner: boolean;
+    setupAvailable: boolean;
+  }) => void,
   invalid: (reason: "logout" | "expired" | "unavailable") => void,
 ): () => void {
   const controller = new AbortController();
@@ -94,7 +100,13 @@ export function watchStaffSession(
         revoke("expired");
         return;
       }
-      verified({ role, configured: data.configured === true });
+      verified({
+        role,
+        configured: data.configured === true,
+        email: role && typeof data.email === "string" ? data.email : null,
+        isOwner: role === "developer" && data.isOwner === true,
+        setupAvailable: !role && data.configured !== true && data.setupAvailable === true,
+      });
       clearTimeout(timer);
       if (role && typeof data.expiresAt === "number")
         timer = setTimeout(

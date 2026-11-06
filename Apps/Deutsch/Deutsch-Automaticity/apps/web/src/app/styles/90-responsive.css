@@ -92,7 +92,7 @@ body {
   max-width: 100%;
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 899px) {
   .german-app-sidebar {
     position: fixed;
     z-index: 50;

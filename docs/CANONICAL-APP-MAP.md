@@ -1,67 +1,51 @@
-# Canonical app map and archive plan
+# Canonical app map
 
-Status: published from `scripts/release-targets.json`; ownership and companion
-status reviewed on 1 September 2026.
+This is the authoritative list of what is active in this repository, where it
+lives, and how it reaches production. Anything not listed under "Active" is
+not built, tested, or deployed by any tool in this repository.
 
 ## Active products
 
-| Job | Canonical product | Source | Runtime | Accountable owner |
+| Product | Folder | Local ports | Vercel project | Canonical URL |
 | --- | --- | --- | --- | --- |
-| English learning | English Automaticity | `Apps/English/English-Automaticity` | local 3202; Vercel project `english-grammar-automaticity-pwa` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
-| German learning | Deutsch Automaticity | `Apps/Deutsch-Automaticity` | local 3210; Vercel project `deutschflow-grammar` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
-| Study planning | Cross Repository Tracker | `Apps/Study-Tracker` | local 4312; Vercel project `study-tracker-plan`; production `https://study-tracker-plan-five.vercel.app/` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
-| Shared preferences | Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | local 4323; local-only | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
-| Research reading | Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | local 4332; Vercel project `research-pdf-studio` | Elahe Hajimohammadi (assigned 1 September 2026; GitHub `Hajimohammadi-KI`) |
+| English Automaticity | `Apps/English/English-Automaticity` | web 3202, API 4201 | `english-grammar-automaticity-pwa` (root directory `Apps/English/English-Automaticity/apps/web`) | https://english-grammar-automaticity-pwa.vercel.app/ |
+| DeutschFlow (Deutsch Automaticity) | `Apps/Deutsch/Deutsch-Automaticity` | web 3210, API 4210 | `deutschflow-grammar` (root directory `Apps/Deutsch/Deutsch-Automaticity/apps/web`) | https://deutschflow-grammar.vercel.app/ |
+| Research PDF Studio | `Apps/Apps-For-Integeration/Reader-PDF-App` | 4332 | `research-pdf-studio-old` | https://research-pdf-studio.vercel.app/ |
+| Settings | `Apps/Apps-For-Integeration/Einstellungen-APP` | 4323 | none (local only) | none |
+| Starter | `Apps/Starter-App` | launcher | none | none |
 
-These five entries are the only active release targets. Conversation Studio, Daily Practice, Integrated Skills, and Teacher Studio are product surfaces inside the English/German canonical apps, not separate active products.
+Both language apps are self-contained: copying the app folder is enough to
+install, test, build, and deploy it (see each app's README, "Self-contained
+project folder"). The Vercel root directories above are paths inside this
+repository, so production deployments are uploaded from the repository root
+(see `docs/RELEASE-READINESS.md`); the root `.vercelignore` limits that upload
+to the two app folders.
 
-The assignment is also machine-readable in `scripts/release-targets.json` and
-has an ownership review due 1 December 2026. This is a formal repository
-assignment, not evidence that one person has enough capacity to operate all
-five products indefinitely.
+## Shared sources
 
-## Supported companion
+`shared/learning-core`, `shared/language-home`, and `shared/language-web` are
+authoring copies. They are copied into both apps by
+`shared/learning-core/sync-workspaces.mjs`, `scripts/sync-language-home.ts`,
+and `scripts/sync-language-web.mjs`; each script has a `--check` mode. The
+apps build from their own copies and never import `shared/`.
+`learning-home.css` is per app since R67 and is not synchronized.
 
-**LingoBridge** at
-`Apps/Apps-For-Integeration/App_Rememberry - Translate and Memorize with Flashcards`
-is retained as a supported, local-first browser-extension companion. It is not
-retired, not a duplicate prototype, and not a sixth Starter/Vercel release
-target. It remains independently buildable and may exchange the documented
-`lingobridge.flashcards.v1` payload with the language apps and Tracker when the
-user explicitly loads the extension. Its accountable owner is Elahe
-Hajimohammadi under the same 1 September assignment and 1 December review.
+`shared/windows-release` and the `shared/*.cjs` bridges are used by
+Research PDF Studio; the language apps carry their own copies under
+`distribution/windows-release`.
 
-## Duplicate prototypes
+## Not in this repository
 
-Five directories are confirmed duplicate prototypes and must not receive independent release fixes. A sixth, listed here previously, was found on 2026-08-30 to be miscategorized — see the note below the table.
+The Cross Repository Tracker (https://study-tracker-plan-five.vercel.app/)
+lives in `D:\Bachelor-Thesis\Thesis-Study-Workspace\Study-Tracker` and is not
+built or released from here.
 
-| Directory | Real content (after clearing gitignored caches) | Inventory verdict |
-| --- | --- | --- |
-| `Apps/Apps-For-Integeration/App_english-daily-practice-complete-source` | 25 KB, one static `index.html` preview | Superseded by the canonical Daily Practice surface; nothing unique |
-| `Apps/Apps-For-Integeration/App_grammar-lab-responsive` | 44 KB, one static `index.html` preview | Superseded by the canonical app; nothing unique |
-| `Apps/Apps-For-Integeration/App_english-automaticity-dashboard-complete` | 385 KB Next.js dashboard preview with `reference/` screenshots | Early UI iteration, superseded by the canonical dashboard |
-| `Apps/Apps-For-Integeration/App_english-automaticity-routed-HOME` | 369 KB Next.js routing preview (`app/[workspace]`) | Early UI/routing iteration, superseded by the canonical app |
-| `Apps/Apps-For-Integeration/App_english-conversation-studio-source` | 2.7 MB; mostly a generic Cloudflare "vinext-starter" scaffold plus `conversation-data.ts`/`conversation-storage.ts` | Canonical English already has `test-results/parity-migrated-conversation.png`, evidence this was already migrated |
+## Staged for deletion
 
-**Not a duplicate — removed from this list:** `Apps/Apps-For-Integeration/App_Rememberry - Translate and Memorize with Flashcards` is **LingoBridge**, an original browser extension that integrates with the German app, English app, and project tracker (see its own `README.md`). It was archived under this list by mistake. Its status was resolved on 1 September 2026 as a supported companion, not an independent Starter/Vercel release target; see the corrected notice in its `ARCHIVED.md`.
-
-Before this inventory, `du` over these directories reported roughly 1.9 GB, which read as source bloat. It was not: 1.75 GB of that was gitignored `node_modules`/`.next`/`.sites-runtime`/`.wrangler` build caches, already excluded from git and safe to delete outright since any package manager regenerates them from the lockfile. That cache was cleared on 2026-08-30 (one accidental deletion of tracked `.vinext/fonts/*` files was caught via `git status` and restored immediately). The five confirmed duplicates now total under 4 MB of real, git-tracked content combined.
-
-## Archive plan
-
-1. ✅ Label every duplicate `prototype-review`; do not delete it yet. Done 2026-08-30 via `ARCHIVED.md` in each directory.
-2. ✅ Inventory unique learner content, assets, routes, and tests against the canonical English app. Done 2026-08-30 — see the table above. None of the five confirmed duplicates contain content not already superseded by the canonical app.
-3. N/A — the inventory found nothing unique to migrate from the five confirmed duplicates.
-4. ✅ Add an `ARCHIVED.md` redirecting maintainers to the canonical product and freeze feature work in the duplicate. Done 2026-08-30 (corrected for LingoBridge, which got its own notice instead).
-5. ⬜ Run clean-clone builds and route checks before moving the prototype to an archive repository or recoverable archive folder. Not started — low priority now that the real content is under 4 MB total; a build/route check mainly matters if something here is ever revived, not to justify deletion.
-6. ⬜ Delete nothing until the product owner approves the inventory and migration evidence above. Nothing has been deleted or moved except regenerable dependency caches; the five prototypes remain pending explicit deletion approval, while LingoBridge is retained as a supported companion.
-
-## Evidence-based next investment
-
-Choose **teacher workflow validation and repair-loop completion** for the next evidence sprint. The technical queue and assignment flow now exist, but the roadmap still has no real teacher observation. That is a larger decision risk than adding another feature. Speech quality remains second because provider availability and real audio analysis are not yet consistently verified; PDF annotation and multi-device sync follow after the teacher sessions identify whether they block the core review task.
-
-This is a product decision for the next evidence sprint, not proof that the teacher flow already succeeds with humans.
-
-## Governance doc rule of thumb
-
-Write a new governance doc only after the process it describes has been run by hand at least once. This repo had docs describing an aspirational process before that process was ever executed; several claims here (ownership, the archive plan, the release gate) were only made accurate by actually running them on 2026-08-30, not by writing them more carefully the first time.
+`delete/` holds everything that no longer has a function: dated snapshots
+(`English-07082026`, `Deutsch-V10.08.2026`), the stale `learning-core` copy
+that used to sit at `Apps/Deutsch-Automaticity`, the `App_*` prototypes, the
+Tracker's historical documents, unused shared prototypes, one-shot scripts
+from finished rounds, and local backups. `delete/README.md` lists each group
+with its reason. The folder is gitignored, so its contents are already out
+of the repository (Git history keeps them); empty it when the review is done.

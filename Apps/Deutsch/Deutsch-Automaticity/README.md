@@ -44,6 +44,38 @@ The original static PWA remains available under `legacy/v20.8-static/` and at
 - A modern browser
 - Supabase is optional until account synchronization is enabled
 
+### Central Study Tracker (AI explanations, DeepL)
+
+The `/api/ai` and `/api/deepl` routes proxy to the central Study Tracker.
+Configure it on the server only; browser-sent identity headers are ignored.
+
+| Variable                   | Purpose                                                        |
+| -------------------------- | -------------------------------------------------------------- |
+| `CENTRAL_STUDY_APP_URL`    | Base URL of the tracker (default `http://127.0.0.1:4312`)      |
+| `CENTRAL_STUDY_USER_ID`    | Identity forwarded to the tracker when it is not in local mode |
+| `CENTRAL_STUDY_USER_EMAIL` | Optional e-mail identity forwarded alongside the id            |
+
+## Self-contained project folder
+
+This folder is the whole application. Copy it anywhere (or hand it to someone)
+and it installs, tests, builds, and deploys on its own:
+
+```powershell
+bun install --frozen-lockfile
+bun run verify
+```
+
+Nothing is imported from outside the folder. The shared learning core, home
+screen, and mobile assets are kept as full copies under `packages/learning-core`,
+`apps/web/src/components`, and `apps/web/public/device-access`; the Windows
+installer helpers are under `distribution/windows-release`. Local Vercel links
+(`.vercel/`) and `node_modules/` are machine-specific and are not part of the
+hand-over. The Vercel project `deutschflow-grammar` builds `apps/web` with
+`apps/web/vercel.json`.
+
+Only `bun run parity:check` needs the English project; it reads
+`ENGLISH_APP_ROOT` or the sibling folder in the shared checkout.
+
 ## Commands
 
 ```powershell

@@ -1,82 +1,116 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, LibraryBig, Menu } from "lucide-react";
-
-import { AppNavigation } from "@/components/app-navigation";
-import { Brand } from "@/components/brand";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import { LearningNavigation } from "@/components/learning-navigation";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import {
-  coreNavigation,
-  libraryNavigation,
-  secondaryNavigation,
-} from "@/lib/navigation";
 
-export function MobileNavigation() {
+export function MobileNavigation({
+  homePinned = false,
+  onPinHomeMenu,
+}: {
+  homePinned?: boolean;
+  onPinHomeMenu?: () => void;
+}) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    panelRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        triggerRef.current?.focus();
+        return;
+      }
+      if (event.key !== "Tab") return;
+      const controls = [
+        ...(panelRef.current?.querySelectorAll<HTMLElement>(
+          "a[href], summary, button:not([disabled])",
+        ) ?? []),
+      ].filter((node) => node.getClientRects().length > 0);
+      const first = controls[0];
+      const last = controls.at(-1);
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
+
+  if (homePinned && pathname === "/")
+    return (
+      <Button
+        aria-label="Zum angehefteten Menü"
+        className="size-11"
+        onClick={() =>
+          document
+            .querySelector("[data-pinned-home-navigation]")
+            ?.scrollIntoView({ block: "start" })
+        }
+        size="icon"
+        variant="ghost"
+      >
+        <Menu aria-hidden="true" />
+      </Button>
+    );
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
-        render={
-          <Button variant="ghost" size="icon" aria-label="Navigation öffnen" />
-        }
+    <>
+      <Button
+        aria-controls="german-mobile-menu-panel"
+        aria-expanded={open}
+        aria-label={open ? "Navigation schließen" : "Navigation öffnen"}
+        className="size-11"
+        onClick={() => setOpen((value) => !value)}
+        ref={triggerRef}
+        size="icon"
+        variant="outline"
       >
-        <Menu />
-      </SheetTrigger>
-      <SheetContent side="left" className="w-[19rem] max-w-[85vw]">
-        <SheetHeader className="border-b">
-          <Brand />
-          <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <SheetDescription className="sr-only">
-            Bereiche der Lernanwendung
-          </SheetDescription>
-        </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-3 py-4">
-          <a
-            href="/practice"
-            className="mb-3 block rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white"
+        {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+      </Button>
+      {open ? (
+        <>
+          <button
+            aria-label="Navigation schließen"
+            className="german-mobile-menu-scrim"
+            onClick={() => setOpen(false)}
+            type="button"
+          />
+          <aside
+            aria-label="Lernnavigation"
+            aria-modal="true"
+            className="german-mobile-menu-panel"
+            id="german-mobile-menu-panel"
+            ref={panelRef}
+            role="dialog"
           >
-            Eigenständig Grammatik üben
-          </a>
-          <AppNavigation
-            ariaLabel="Tägliche Praxis"
-            items={coreNavigation}
-            onNavigate={() => setOpen(false)}
-          />
-          <details className="group mt-3">
-            <summary className="flex min-h-10 cursor-pointer list-none items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold text-muted-foreground outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50">
-              <LibraryBig className="size-4.5" aria-hidden="true" />
-              Mehr lernen
-              <ChevronDown
-                className="ms-auto size-4 transition-transform group-open:rotate-180"
-                aria-hidden="true"
-              />
-            </summary>
-            <div className="mt-1 ps-2">
-              <AppNavigation
-                ariaLabel="Weitere Lernbereiche"
-                items={libraryNavigation}
-                onNavigate={() => setOpen(false)}
-              />
-            </div>
-          </details>
-          <div className="my-4 border-t" />
-          <AppNavigation
-            ariaLabel="App und Einstellungen"
-            items={secondaryNavigation}
-            onNavigate={() => setOpen(false)}
-          />
-        </div>
-      </SheetContent>
-    </Sheet>
+            <LearningNavigation
+              language="de"
+              current={pathname}
+              onNavigate={() => setOpen(false)}
+              onPinToggle={
+                pathname === "/" && onPinHomeMenu
+                  ? () => {
+                      onPinHomeMenu();
+                      setOpen(false);
+                    }
+                  : undefined
+              }
+            />
+          </aside>
+        </>
+      ) : null}
+    </>
   );
 }

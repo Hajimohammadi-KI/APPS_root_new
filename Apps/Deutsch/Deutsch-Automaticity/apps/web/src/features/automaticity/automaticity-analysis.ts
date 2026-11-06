@@ -1,3 +1,9 @@
+import { writingIssues } from "@automaticity/learning-core/writing-rules";
+import {
+  matchesReferenceAnswer,
+  normalizeReferenceAnswer,
+} from "@automaticity/learning-core/reference-answer";
+
 export type AutomatikIssueCode =
   "missing_target" | "missing_comma" | "word_order" | "unfinished_sentence";
 
@@ -9,6 +15,9 @@ export interface AutomatikIssue {
 }
 
 export interface AutomatikAnalysis {
+  readonly verified: boolean;
+  readonly online: boolean;
+  readonly corrected: string;
   readonly sentenceCount: number;
   readonly wordCount: number;
   readonly targetUses: number;
@@ -33,19 +42,18 @@ export function countWeilClauses(text: string): number {
 }
 
 function firstWordOrderIssue(text: string): AutomatikIssue | null {
-  const match = text.match(
-    /\bweil\s+(ich|du|er|sie|es|wir|ihr|Sie)\s+(bin|bist|ist|sind|seid|habe|hast|hat|haben|habt|werde|wirst|wird|werden|werdet|kann|kannst|können|könnt|muss|musst|müssen|müsst)\b/i,
+  const issue = writingIssues(text, "de").find(
+    (issue) =>
+      issue.ruleId === "DE_SUBORDINATE_FINAL" || issue.ruleId === "DE_V2",
   );
-  if (!match) return null;
-
-  const subject = match[1] ?? "ich";
-  const verb = match[2] ?? "bin";
-  return {
-    code: "word_order",
-    message: "Im weil-Nebensatz steht das finite Verb am Ende.",
-    original: match[0],
-    corrected: `weil ${subject} … ${verb}`,
-  };
+  return issue
+    ? {
+        code: "word_order",
+        message: issue.message,
+        original: issue.original,
+        corrected: issue.replacement,
+      }
+    : null;
 }
 
 export function analyzeWeilClause(text: string): AutomatikAnalysis {
@@ -93,6 +101,9 @@ export function analyzeWeilClause(text: string): AutomatikAnalysis {
   const score = Math.min(100, sentenceScore + targetScore + accuracyScore);
 
   return {
+    verified: false,
+    online: false,
+    corrected: cleanText,
     sentenceCount,
     wordCount,
     targetUses,
@@ -103,16 +114,14 @@ export function analyzeWeilClause(text: string): AutomatikAnalysis {
 }
 
 export function normalizePracticeAnswer(value: string): string {
-  return value
-    .trim()
-    .toLocaleLowerCase("de-DE")
-    .replace(/[.!?]+$/g, "")
-    .replace(/\s+/g, " ");
+  return normalizeReferenceAnswer(value);
 }
 
 export function practiceAnswerMatches(
   value: string,
   expected: string,
 ): boolean {
-  return normalizePracticeAnswer(value) === normalizePracticeAnswer(expected);
+  return matchesReferenceAnswer(value, expected, {
+    allowOptionalFinalPeriod: true,
+  });
 }

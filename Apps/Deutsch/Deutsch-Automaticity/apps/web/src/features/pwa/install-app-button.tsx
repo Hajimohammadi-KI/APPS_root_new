@@ -40,8 +40,7 @@ export function InstallAppButton({
         variant={installed ? "outline" : "default"}
         disabled={installed}
         className={cn(
-          surface === "header" &&
-            "bg-gradient-to-r from-violet-700 to-purple-500 text-white shadow-sm hover:from-violet-600 hover:to-purple-400",
+          surface === "header" && "german-install-button text-white shadow-sm",
         )}
         onClick={() => void handleInstall()}
       >

@@ -1,13 +1,20 @@
 import type { NextConfig } from "next";
 import path from "node:path";
+import { securityHeaders } from "./security-headers";
 
 const nextConfig: NextConfig = {
-  // The Vercel project root is two levels above this nested web app, so its framework adapter must find .next there.
-  // Local and Windows builds keep standalone output inside the web workspace through the same configured path.
-  ...(process.env.VERCEL
-    ? { distDir: "../../.next" }
-    : { output: "standalone" }),
-  outputFileTracingRoot: path.resolve(import.meta.dirname, "../.."),
+  // Vercel builds apps/web directly; desktop builds keep standalone output.
+  // Locally the tracing root is this project's own folder (two levels above
+  // apps/web); nothing outside the project folder is imported, so a copy of
+  // the folder builds the same way on its own as inside a larger checkout. On
+  // Vercel the project is always placed at /vercel/path0, and the Vercel Next
+  // builder expects the trace root at the container root (five levels up
+  // resolves to /); a narrower root breaks its output tracing step.
+  ...(!process.env.VERCEL ? { output: "standalone" } : {}),
+  outputFileTracingRoot: path.resolve(
+    import.meta.dirname,
+    process.env.VERCEL ? "../../../../.." : "../..",
+  ),
   experimental: {
     useTypeScriptCli: true,
   },
@@ -17,6 +24,21 @@ const nextConfig: NextConfig = {
     "@grammar/domain",
   ],
   typedRoutes: true,
+  // The English app names the same screens /grammar, /daily and /settings;
+  // a link or test written for one app should land on the matching screen
+  // here instead of a 404. The German paths stay canonical.
+  async redirects() {
+    return [
+      { source: "/grammar", destination: "/grammatik", permanent: true },
+      { source: "/daily", destination: "/heute", permanent: true },
+      { source: "/settings", destination: "/einstellungen", permanent: true },
+      {
+        source: "/integrierte-fertigkeiten",
+        destination: "/fertigkeiten",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [
@@ -27,10 +49,19 @@ const nextConfig: NextConfig = {
           destination: "/replacements/de/grammatik.html",
         },
       ],
+      afterFiles: process.env.VERCEL
+        ? []
+        : [
+            {
+              source: "/api/v1/:path*",
+              destination: "http://127.0.0.1:4210/api/v1/:path*",
+            },
+          ],
     };
   },
   async headers() {
     return [
+      { source: "/(.*)", headers: securityHeaders() },
       {
         source: "/sw.js",
         headers: [

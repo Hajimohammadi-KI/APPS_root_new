@@ -1,0 +1,480 @@
+import {
+  spokenPracticeEvidence,
+  describeRecording,
+  type WaveformDescription,
+  type RecognitionEvidence,
+} from "@automaticity/learning-core/speech";
+import { useEffect, useRef, useState } from "react";
+import {
+  appendEvidenceInvalidationToStorage,
+  appendLearningEvidenceBundleToStorage,
+  buildAttemptVerticalSlice,
+  type DailySessionMinutes,
+} from "@automaticity/learning-core";
+import {
+  copy,
+  speechLocale,
+  type ConversationTopic,
+  type StudioLanguage,
+} from "./conversation-data";
+import { saveConversationSession } from "./conversation-storage";
+import {
+  countWords,
+  type EvaluationResponse,
+  isEvaluationResponse,
+  recognitionConstructor,
+  RecognitionSession,
+  type RecordingState,
+  type SpeechRecognitionLike,
+  studioAudioToStore,
+} from "./studio-helpers";
+
+interface RecorderOptions {
+  readonly language: StudioLanguage;
+  readonly selected: ConversationTopic;
+  readonly maxSeconds: number;
+  readonly minWords: number;
+  readonly sessionMinutes: DailySessionMinutes;
+  readonly storeAudio: boolean;
+  readonly onlineConsent: boolean;
+  readonly onRecordingStarted: () => void;
+  readonly onRecorded: () => void;
+  readonly onEvaluated: () => void;
+  readonly onSaved: (evaluation: EvaluationResponse) => void;
+}
+
+function providerError(payload: unknown): string | null {
+  return typeof payload === "object" &&
+    payload !== null &&
+    "error" in payload &&
+    typeof payload.error === "string"
+    ? payload.error
+    : null;
+}
+
+/** Microphone, live transcript, LanguageTool evaluation and local saving for one studio session. */
+export function useStudioRecorder({
+  language,
+  selected,
+  maxSeconds,
+  minWords,
+  sessionMinutes,
+  storeAudio,
+  onlineConsent,
+  onRecordingStarted,
+  onRecorded,
+  onEvaluated,
+  onSaved,
+}: RecorderOptions) {
+  const text = copy[language];
+  const [recordingState, setRecordingState] = useState<RecordingState>("idle");
+  const [seconds, setSeconds] = useState(0);
+  const [transcript, setTranscript] = useState("");
+  const [interimTranscript, setInterimTranscript] = useState("");
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [hasAudioBlob, setHasAudioBlob] = useState(false);
+  const [evaluation, setEvaluation] = useState<EvaluationResponse | null>(null);
+  const [baseline, setBaseline] = useState<EvaluationResponse | null>(null);
+  const [evaluating, setEvaluating] = useState(false);
+  const [savedId, setSavedId] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState(0);
+  const [voiceRecoveryAvailable, setVoiceRecoveryAvailable] = useState(false);
+  const [consentNeeded, setConsentNeeded] = useState(false);
+  const [recognitionEvidence, setRecognitionEvidence] =
+    useState<RecognitionEvidence | null>(null);
+  const transcriptEditedRef = useRef(false);
+  const recognitionSessionRef = useRef(new RecognitionSession());
+  const [waveform, setWaveform] = useState<WaveformDescription | null>(null);
+
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const audioBlobRef = useRef<Blob | null>(null);
+  const transcriptRef = useRef<HTMLTextAreaElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const attemptIdRef = useRef<string | null>(null);
+  const savedEvidenceIdRef = useRef<string | null>(null);
+
+  const wordCount = countWords(transcript);
+  const wordsPerMinute =
+    seconds > 0 ? Math.round(wordCount / (seconds / 60)) : 0;
+
+  useEffect(() => {
+    if (recordingState !== "recording") return;
+    const timer = window.setInterval(() => {
+      setSeconds((current) => Math.min(current + 1, maxSeconds));
+    }, 1_000);
+    return () => window.clearInterval(timer);
+  }, [maxSeconds, recordingState]);
+
+  useEffect(() => {
+    if (recordingState !== "recording" || seconds < maxSeconds) return;
+    const recorder = recorderRef.current;
+    if (recorder && recorder.state !== "inactive") recorder.stop();
+    try {
+      recognitionRef.current?.stop();
+    } catch {
+      /* already stopped */
+    }
+  }, [maxSeconds, recordingState, seconds]);
+
+  useEffect(
+    () => () => {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      try {
+        recognitionRef.current?.stop();
+      } catch {
+        // The recognition engine can already be stopped by the browser.
+      }
+      window.speechSynthesis?.cancel();
+    },
+    [],
+  );
+
+  useEffect(
+    () => () => {
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+    },
+    [audioUrl],
+  );
+
+  function resetSession(clearBaseline = true) {
+    transcriptEditedRef.current = false;
+    recognitionSessionRef.current.reset();
+    setRecognitionEvidence(null);
+    setWaveform(null);
+    setTranscript("");
+    setInterimTranscript("");
+    setEvaluation(null);
+    if (clearBaseline) setBaseline(null);
+    setSavedId(null);
+    setSeconds(0);
+    setMessage(null);
+    audioBlobRef.current = null;
+    attemptIdRef.current = null;
+    savedEvidenceIdRef.current = null;
+    setHasAudioBlob(false);
+    setAudioUrl(null);
+    window.speechSynthesis?.cancel();
+  }
+
+  function editTranscript(value: string) {
+    transcriptEditedRef.current = true;
+    recognitionSessionRef.current.setManualText(value);
+    setRecognitionEvidence(null);
+    setTranscript(value);
+    setInterimTranscript("");
+    setEvaluation(null);
+    setSavedId(null);
+  }
+
+  function startSpeechRecognition() {
+    const Recognition = recognitionConstructor();
+    if (!Recognition) return false;
+    const recognition = new Recognition();
+    recognition.lang = speechLocale[language];
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 3;
+    const session = recognitionSessionRef.current;
+    const run = session.begin();
+    recognition.onresult = (event) => {
+      if (transcriptEditedRef.current) return;
+      const evidence = session.accept(run, event);
+      if (!evidence) return;
+      setRecognitionEvidence(evidence);
+      setTranscript(evidence.finalText);
+      setInterimTranscript(evidence.interimText);
+    };
+    recognition.onerror = (event) => {
+      if (event.error !== "aborted" && event.error !== "no-speech") {
+        setMessage(`Spracherkennung: ${event.error}`);
+      }
+    };
+    try {
+      recognition.start();
+      recognitionRef.current = recognition;
+      return true;
+    } catch {
+      recognitionRef.current = null;
+      return false;
+    }
+  }
+
+  async function startRecording({
+    keepBaseline = false,
+  }: { keepBaseline?: boolean } = {}) {
+    setMessage(null);
+    setVoiceRecoveryAvailable(false);
+    if (
+      !navigator.mediaDevices?.getUserMedia ||
+      typeof MediaRecorder === "undefined"
+    ) {
+      setMessage("Audioaufnahme wird von diesem Browser nicht unterstützt.");
+      setVoiceRecoveryAvailable(true);
+      return;
+    }
+    try {
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true },
+      });
+      const nextAttemptId = crypto.randomUUID();
+      if (savedEvidenceIdRef.current) {
+        appendEvidenceInvalidationToStorage(window.localStorage, {
+          evidenceId: savedEvidenceIdRef.current,
+          occurredAt: new Date().toISOString(),
+          supersedingResponseId: `${nextAttemptId}:response`,
+        });
+      }
+      attemptIdRef.current = nextAttemptId;
+      savedEvidenceIdRef.current = null;
+      streamRef.current = stream;
+      chunksRef.current = [];
+      audioBlobRef.current = null;
+      setHasAudioBlob(false);
+      const recorder = new MediaRecorder(stream);
+      recorderRef.current = recorder;
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) chunksRef.current.push(event.data);
+      };
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, {
+          type: recorder.mimeType || "audio/webm",
+        });
+        audioBlobRef.current = blob;
+        void describeRecording(blob)
+          .then((description) => {
+            if (audioBlobRef.current === blob) setWaveform(description);
+          })
+          .catch(() => {
+            if (audioBlobRef.current === blob) setWaveform(null);
+          });
+        setHasAudioBlob(blob.size > 0);
+        setAudioUrl(blob.size > 0 ? URL.createObjectURL(blob) : null);
+        stream.getTracks().forEach((track) => track.stop());
+        setRecordingState("idle");
+        onRecorded();
+      };
+
+      setTranscript("");
+      setInterimTranscript("");
+      setEvaluation(null);
+      if (!keepBaseline) setBaseline(null);
+      setSavedId(null);
+      setSeconds(0);
+      setAudioUrl(null);
+
+      transcriptEditedRef.current = false;
+      recognitionSessionRef.current.reset();
+      setRecognitionEvidence(null);
+      if (!startSpeechRecognition()) {
+        setMessage(
+          "Audio wird aufgenommen, aber Live-Transkription ist nicht verfügbar. Du kannst das Transkript manuell eingeben.",
+        );
+        setVoiceRecoveryAvailable(true);
+      }
+      recorder.start(250);
+      setRecordingState("recording");
+      onRecordingStarted();
+    } catch (error) {
+      const blocked =
+        error instanceof DOMException &&
+        ["NotAllowedError", "SecurityError"].includes(error.name);
+      setMessage(
+        blocked
+          ? "Mikrofonzugriff wurde blockiert. Erlaube ihn im Browser und versuche es erneut."
+          : "Das Mikrofon konnte nicht gestartet werden.",
+      );
+      setVoiceRecoveryAvailable(true);
+    }
+  }
+
+  function pauseOrResume() {
+    const recorder = recorderRef.current;
+    if (!recorder || recorder.state === "inactive") return;
+    if (recorder.state === "recording") {
+      recorder.pause();
+      try {
+        recognitionRef.current?.stop();
+      } catch {
+        /* already stopped */
+      }
+      setRecordingState("paused");
+      return;
+    }
+    recorder.resume();
+    const session = recognitionSessionRef.current;
+    setTranscript(session.finalText);
+    setInterimTranscript("");
+    startSpeechRecognition();
+    setRecordingState("recording");
+  }
+
+  function finishRecording() {
+    const recorder = recorderRef.current;
+    if (recorder && recorder.state !== "inactive") recorder.stop();
+    try {
+      recognitionRef.current?.stop();
+    } catch {
+      /* already stopped */
+    }
+    setRecordingState("idle");
+  }
+
+  /** `consented` is true only when called from the in-place "allow online checks" action. */
+  async function evaluateTranscript({ consented = false } = {}) {
+    const reviewedTranscript = `${transcript} ${interimTranscript}`.trim();
+    if (!reviewedTranscript) {
+      setMessage("Prüfe oder ergänze zuerst dein Transkript.");
+      return;
+    }
+    const reviewedWordCount = countWords(reviewedTranscript);
+    if (reviewedWordCount < minWords) {
+      setMessage(
+        `${reviewedWordCount}/${minWords} Wörter. Ergänze deine Antwort, bevor sie als Produktionsnachweis ausgewertet wird.`,
+      );
+      return;
+    }
+    setTranscript(reviewedTranscript);
+    setInterimTranscript("");
+    if (!onlineConsent && !consented) {
+      setConsentNeeded(true);
+      setMessage(text.consentNotice);
+      return;
+    }
+    setConsentNeeded(false);
+    setEvaluating(true);
+    setMessage(null);
+    try {
+      const response = await fetch("/api/conversation/evaluate", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          text: reviewedTranscript,
+          language,
+          variant: "de-DE",
+          consent: true,
+        }),
+      });
+      const payload: unknown = await response.json();
+      if (response.status === 429 && providerError(payload)) {
+        setEvaluation(null);
+        setMessage(providerError(payload));
+        return;
+      }
+      if (!response.ok || !isEvaluationResponse(payload))
+        throw new Error("Provider response was unavailable or invalid.");
+      setEvaluation(payload);
+      setAttempts((current) => current + 1);
+      onEvaluated();
+    } catch {
+      setEvaluation(null);
+      setMessage(text.providerUnavailable);
+    } finally {
+      setEvaluating(false);
+    }
+  }
+
+  async function practiceImprovedVersion() {
+    if (!evaluation) return;
+    setBaseline(evaluation);
+    await startRecording({ keepBaseline: true });
+  }
+
+  async function saveSession() {
+    if (!evaluation || !audioBlobRef.current) {
+      setMessage(
+        "Für das Speichern werden Aufnahme und echte Auswertung benötigt.",
+      );
+      return;
+    }
+    const id = attemptIdRef.current ?? crypto.randomUUID();
+    const occurredAt = new Date().toISOString();
+    const stored = studioAudioToStore(audioBlobRef.current, storeAudio, id);
+    try {
+      await saveConversationSession({
+        id,
+        createdAt: occurredAt,
+        language,
+        topicId: selected.id,
+        transcript: evaluation.original,
+        corrected: evaluation.corrected,
+        durationSeconds: seconds,
+        wordCount,
+        wordsPerMinute,
+        provider: evaluation.provider,
+        checkedAt: evaluation.checkedAt,
+        issues: evaluation.issues,
+        audio: stored.audio,
+      });
+      const bundle = buildAttemptVerticalSlice({
+        attemptId: id,
+        occurredAt,
+        language,
+        cefrLevel: selected.level,
+        contentVersion: selected.contentVersion,
+        topic: selected.topic,
+        targetForm: selected.targetForm,
+        prompt: selected.task,
+        mode: "speaking",
+        inputText: evaluation.original,
+        correctedText: evaluation.corrected,
+        ...spokenPracticeEvidence(),
+        latencyMs: seconds * 1_000,
+        assessedBy: "online",
+        sessionMinutes,
+        audioCaptured: audioBlobRef.current.size > 0,
+        ...(stored.audioReferenceId
+          ? { audioReferenceId: stored.audioReferenceId }
+          : {}),
+        sourceId: selected.sourceId,
+      });
+      appendLearningEvidenceBundleToStorage(window.localStorage, bundle);
+      savedEvidenceIdRef.current = bundle.evidence.id;
+      setSavedId(id);
+      setMessage(stored.audio ? text.saved : text.savedWithoutAudio);
+      onSaved(evaluation);
+    } catch {
+      setMessage(
+        "Die Sitzung konnte in diesem Browser nicht gespeichert werden.",
+      );
+    }
+  }
+
+  return {
+    recordingState,
+    seconds,
+    transcript,
+    interimTranscript,
+    audioUrl,
+    hasAudioBlob,
+    evaluation,
+    baseline,
+    evaluating,
+    savedId,
+    message,
+    attempts,
+    voiceRecoveryAvailable,
+    consentNeeded,
+    recognitionEvidence,
+    waveform,
+    wordCount,
+    wordsPerMinute,
+    transcriptRef,
+    audioRef,
+    setMessage,
+    resetSession,
+    editTranscript,
+    startRecording,
+    pauseOrResume,
+    finishRecording,
+    evaluateTranscript,
+    practiceImprovedVersion,
+    saveSession,
+  };
+}
+
+export type StudioRecorder = ReturnType<typeof useStudioRecorder>;

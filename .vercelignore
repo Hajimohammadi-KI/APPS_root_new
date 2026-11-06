@@ -1,0 +1,39 @@
+# Deployments are uploaded from this repository root with the Vercel CLI; each
+# language project builds its own Apps/<Language>/<App>/apps/web root directory.
+# App builds also verify their roadmap against the root source and generator.
+.git/
+.git.backup-*/
+.codex-tmp/
+.vercel/
+.vscode/
+archive/
+artifacts/
+backups/
+delete/
+/docs/*
+!/docs/language-apps-roadmap.json
+research/
+/scripts/*
+!/scripts/language-apps-roadmap.mjs
+!/scripts/build-local-transcription.mjs
+shared/
+tmp/
+Apps/Apps-For-Integeration/
+Apps/Starter-App/
+**/node_modules/
+**/.next/
+**/dist/
+**/coverage/
+**/test-results/
+**/playwright-report/
+**/.bun-install-cache/
+**/.tmp/
+**/distribution/build/
+**/distribution/windows-modern/.staging/
+**/apps/api/dist/
+**/*.exe
+**/*.payload.zip
+**/*.log
+Apps/English/English-Automaticity/apps/web/public/local-transcription/wasm/ort-wasm-simd-threaded.jspi.*
+Apps/English/English-Automaticity/apps/web/public/local-transcription/wasm/ort-wasm-simd-threaded.mjs
+Apps/English/English-Automaticity/apps/web/public/local-transcription/wasm/ort-wasm-simd-threaded.wasm

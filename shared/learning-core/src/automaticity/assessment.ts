@@ -1,3 +1,6 @@
+import { normalizeText } from "../text";
+import { discourseFeedback } from "../discourse";
+import { checkClosedAnswer } from "./closed-answer";
 import {
   parseAutomaticityEvent,
   type AssessmentEvent,
@@ -5,23 +8,25 @@ import {
 } from "./contracts";
 import type { PracticeTask } from "./curriculum";
 import { resolveRepresentativeTask } from "./representative-tasks";
+import { auditClosedTask } from "./curriculum-audit";
 import {
   CONSTRUCTION_RULE_VERSION,
   constructionFeedback,
   parseConstruction,
 } from "./construction-rules";
 export function normaliseAnswer(text: string, task: PracticeTask): string {
-  let value = text.normalize("NFC").trim().replace(/\s+/gu, " ");
-  if (task.normalisation.terminalFullStop)
-    value = value.replace(/(?<!\.)\.$/u, "");
-  return value;
+  return normalizeText(text, {
+    allowOptionalFinalPeriod: task.normalisation.terminalFullStop,
+  });
 }
-/** Practice feedback is independent of approved mastery/evaluator scope. */
+/** Practice feedback is independent of approved mastery/evaluator scope.
+ * `paused`: learners reported the exercise as wrong (pausedExercises). */
 export function assessControlledTask(
   attempt: AttemptEvent,
   task: PracticeTask,
   at: string,
   id: string,
+  { paused = false }: { paused?: boolean } = {},
 ): AssessmentEvent {
   const english = attempt.language === "en";
   const base: AssessmentEvent = {
@@ -146,46 +151,58 @@ export function assessControlledTask(
     );
     return parseAutomaticityEvent(base, attempt.language) as AssessmentEvent;
   }
-  if (task.answerPolicy !== "closed") return base;
-  const value = normaliseAnswer(attempt.response.text, task);
-  const accepted = task.acceptedAnswers.some(
-    (answer) => normaliseAnswer(answer, task) === value,
-  );
-  if (accepted) {
-    base.verdict = "pass";
-    base.uncertainty = false;
-    base.dimensions = {
-      grammar: "pass",
-      target: "observed",
-      relevance: "pass",
-      opportunities: 1,
-    };
-    base.feedback = english
-      ? "This matches an accepted form for this controlled task. Now use the pattern in your own words."
-      : "Diese Antwort entspricht einer zulässigen Form der kontrollierten Aufgabe. Verwende das Muster nun mit eigenen Worten.";
-  } else {
-    const caseOnly = task.acceptedAnswers.some(
-      (answer) =>
-        normaliseAnswer(answer, task).toLocaleLowerCase(attempt.language) ===
-        value.toLocaleLowerCase(attempt.language),
-    );
-    if (caseOnly && task.modality === "writing") {
-      base.verdict = "needs_repair";
-      base.uncertainty = false;
-      base.dimensions = {
-        grammar: "fail",
-        target: "observed",
-        relevance: "pass",
-        opportunities: 1,
-      };
-      base.feedback = english
-        ? "Check the capitalization, including sentence starts and names."
-        : "Prüfe die Groß- und Kleinschreibung, besonders am Satzanfang und bei Nomen.";
-    } else
-      base.feedback = english
-        ? "Your answer differs from the stored forms. It has been saved without a correctness score. Compare the meaning or request a review; a different correct answer should not be marked wrong."
-        : "Deine Antwort unterscheidet sich von den gespeicherten Formen. Sie wurde ohne Richtigkeitswert gespeichert. Vergleiche die Bedeutung oder lasse sie prüfen; eine andere richtige Antwort soll nicht als falsch gelten.";
+  if (task.answerPolicy !== "closed") {
+    base.feedback +=
+      " " +
+      discourseFeedback(attempt.response.text, attempt.language, "")
+        .description;
+    return base;
   }
+  if (auditClosedTask(task).some((issue) => issue.severity === "error")) {
+    base.feedback = english
+      ? "Saved without a score: this exercise needs content repair. Continue with a current exercise; your original response is kept."
+      : "Ohne Bewertung gespeichert: Diese Aufgabe muss inhaltlich überarbeitet werden. Fahre mit einer aktuellen Aufgabe fort; deine Originalantwort bleibt erhalten.";
+    return base;
+  }
+  if (paused) {
+    base.feedback = english
+      ? "Saved without a score: several learners reported this exercise as wrong, so it is paused until it is reviewed."
+      : "Ohne Bewertung gespeichert: Mehrere Lernende haben diese Aufgabe als fehlerhaft gemeldet; sie ist bis zur Prüfung pausiert.";
+    return base;
+  }
+  // The Grammar Labs give the same verdict from the same function.
+  const check = checkClosedAnswer(
+    { ...task, terminalFullStop: task.normalisation.terminalFullStop },
+    attempt.response.text,
+    attempt.language,
+  );
+  if (check.verdict !== "not_assessed") {
+    base.verdict = check.verdict;
+    base.uncertainty = false;
+    base.dimensions =
+      check.reason === "accepted"
+        ? {
+            grammar: "pass",
+            target: "observed",
+            relevance: "pass",
+            opportunities: 1,
+          }
+        : check.reason === "case" || check.reason === "punctuation"
+          ? {
+              grammar: "fail",
+              target: "observed",
+              relevance: "pass",
+              opportunities: 1,
+            }
+          : {
+              grammar: "fail",
+              target: "unknown",
+              relevance: "unknown",
+              opportunities: 1,
+            };
+  }
+  if (check.feedback) base.feedback = check.feedback;
+  base.spans = check.spans;
   return parseAutomaticityEvent(base, attempt.language) as AssessmentEvent;
 }
 export interface ModelScopeApproval {

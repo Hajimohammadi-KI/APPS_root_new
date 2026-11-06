@@ -10,6 +10,10 @@ const runtimeSource = readFileSync(
   ),
   "utf8",
 );
+const textBrowserSource = readFileSync(
+  new URL("../../../apps/web/public/learning-core/text.js", import.meta.url),
+  "utf8",
+);
 
 interface TestElement {
   value: string;
@@ -18,14 +22,34 @@ interface TestElement {
   className: string;
   querySelectorAll: () => readonly never[];
   focus: () => void;
+  setAttribute: () => void;
+  addEventListener: (event: string, handler: () => void) => void;
+  classList: { add: () => void; remove: () => void };
+}
+
+interface AiVerdict {
+  verdict: "correct" | "needs_revision";
+  targetUsed: boolean;
+  complete: boolean;
 }
 
 function grammarPage(
   expected: string,
-  options: { open?: boolean; alternatives?: string[] } = {},
+  options: {
+    open?: boolean;
+    alternatives?: string[];
+    ai?: AiVerdict;
+    skipRecoveryWrite?: boolean;
+  } = {},
 ) {
   const storage = new Map<string, string>();
+  if (options.ai)
+    storage.set(
+      "GrammarAutomaticityV11_de",
+      JSON.stringify({ learner: { allowOnlineAI: true } }),
+    );
   const elements = new Map<string, TestElement>();
+  const listeners = new Map<string, () => void>();
   const element = (selector: string): TestElement => {
     if (!elements.has(selector))
       elements.set(selector, {
@@ -35,9 +59,28 @@ function grammarPage(
         className: "",
         querySelectorAll: () => [],
         focus: () => {},
+        setAttribute: () => {},
+        addEventListener: (event, handler) =>
+          listeners.set(`${selector}:${event}`, handler),
+        classList: { add: () => {}, remove: () => {} },
       });
     return elements.get(selector)!;
   };
+  const aiReply = (body: unknown) =>
+    Promise.resolve({ ok: true, json: () => Promise.resolve(body) });
+  const fetch = (_url: string, init?: { method?: string }) =>
+    init?.method === "POST"
+      ? aiReply({
+          providerLabel: "Test AI",
+          model: "test-model",
+          text: JSON.stringify({
+            ...options.ai,
+            correctedGerman: "",
+            issueTypes: [],
+            feedbackPoints: [{ type: "check", message: "Modellhinweis." }],
+          }),
+        })
+      : aiReply({ connected: true });
   const fixture = {
     level: "A2",
     title: "Grammatik im Kontext",
@@ -56,8 +99,22 @@ function grammarPage(
     ],
   };
   const context = {
-    window: { GERMAN_GRAMMAR_UNITS: [fixture], location: { search: "" } },
+    draftState: {
+      assisted: false,
+      markAssisted() {
+        this.assisted = true;
+      },
+    },
+    window: {
+      GERMAN_GRAMMAR_UNITS: [fixture],
+      location: { search: "" },
+      dispatchEvent: (_event: Event) => true,
+    },
+    Event,
     URLSearchParams,
+    fetch,
+    setTimeout: () => 0,
+    clearTimeout: () => {},
     document: {
       querySelector: element,
       readyState: "loading",
@@ -65,23 +122,34 @@ function grammarPage(
     },
     localStorage: {
       getItem: (key: string) => storage.get(key) ?? null,
-      setItem: (key: string, value: string) => storage.set(key, value),
+      setItem: (key: string, value: string) =>
+        options.skipRecoveryWrite && key.includes(":recovery:")
+          ? storage
+          : storage.set(key, value),
     },
     harness: {} as {
       checkAnswer: () => Promise<void>;
       detectAnswerLanguage: (text: string) => string;
+      saveTodayChoice?: (unit: typeof fixture) => void;
     },
   };
   // Load the actual runtime and expose its handler without starting unrelated UI setup.
   const instrumented = runtimeSource.replace(
     /\n\}\)\(\);\s*$/u,
-    "\n globalThis.harness = { checkAnswer, detectAnswerLanguage };\n})();",
+    "\n drafts = draftState; globalThis.harness = { checkAnswer, detectAnswerLanguage, saveTodayChoice: typeof saveTodayChoice === 'function' ? saveTodayChoice : undefined };\n})();",
   );
-  runInNewContext(instrumented, context);
+  runInNewContext(
+    `${textBrowserSource}\nwindow.AutomaticityText = globalThis.AutomaticityText;\n${instrumented}`,
+    context,
+  );
   return {
     detect: context.harness.detectAnswerLanguage,
     storage,
+    draftState: context.draftState,
+    chooseToday: () => context.harness.saveTodayChoice?.(fixture),
     feedback: element("#feedback"),
+    input: element("#answerInput"),
+    showModel: () => listeners.get("#showModelBtn:click")?.(),
     async answer(text: string) {
       element("#answerInput").value = text;
       element("#intentInput").value = options.open ? "معنی دلخواه" : "";
@@ -92,16 +160,169 @@ function grammarPage(
 
 describe("active Grammar-Labor answer handler", () => {
   it.each([
+    ["Ich lese ein buch.", "feedback show bad"],
+    ["Ich lese jeden Morgen.", "feedback show"],
+  ])(
+    "keeps the full model hidden after a non-pass and reveals it only on request: %s",
+    async (answer, className) => {
+      const expected = "Ich lese ein Buch.";
+      const page = grammarPage(expected);
+      await page.answer(answer);
+      expect(page.feedback.className).toBe(className);
+      expect(page.feedback.innerHTML).not.toContain(expected);
+      expect(page.feedback.innerHTML).toContain('id="showModelBtn"');
+      expect(page.input.value).toBe(answer);
+      const originalHistory = page.storage.get(
+        "deutsch-automaticity:grammar-open-responses:v1",
+      );
+      page.showModel();
+      expect(page.feedback.innerHTML).toContain(expected);
+      expect(page.input.value).toBe(answer);
+      expect(page.draftState.assisted).toBe(true);
+      expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
+        false,
+      );
+      expect(
+        page.storage.get("deutsch-automaticity:grammar-open-responses:v1"),
+      ).toBe(originalHistory);
+    },
+  );
+
+  it("keeps a locally detected grammar error's full correction behind the model action", async () => {
+    const expected = "Ich sehe den Mann.";
+    const page = grammarPage(expected);
+    await page.answer("Ich sehe der Mann.");
+    expect(page.feedback.className).toBe("feedback show bad");
+    expect(page.feedback.innerHTML).toContain("Akkusativ");
+    expect(page.feedback.innerHTML).not.toContain(expected);
+    page.showModel();
+    expect(page.feedback.innerHTML).toContain(expected);
+  });
+
+  it("checks a repair against accepted alternatives and keeps the original attempt immutable", async () => {
+    const page = grammarPage("Heute bleibt sie zu Hause.", {
+      alternatives: ["Sie bleibt heute zu Hause."],
+    });
+    await page.answer("Heute bleibt sie zu hause.");
+    const historyKey = "deutsch-automaticity:grammar-open-responses:v1";
+    const original = JSON.parse(page.storage.get(historyKey)!)[0];
+    await page.answer("Sie bleibt heute zu Hause.");
+    expect(page.feedback.className).toContain("good");
+    expect(page.feedback.innerHTML).toContain(
+      "kein Nachweis selbstständiger Beherrschung",
+    );
+    const history = JSON.parse(page.storage.get(historyKey)!);
+    expect(history[0]).toEqual(original);
+    expect(history[0].assistanceUsed).toBe(false);
+    expect(history[1].assistanceUsed).toBe(true);
+    expect(history[1].outcome).toBe("guided-practice");
+    expect(
+      [...page.storage.keys()].some((key) => key.includes("mastery")),
+    ).toBe(false);
+  });
+
+  it("keeps a repeated error wrong and an unmatched repair unscored", async () => {
+    const page = grammarPage("Ich lese ein Buch.");
+    await page.answer("Ich lese ein buch.");
+    await page.answer("Ich lese ein buch.");
+    expect(page.feedback.className).toBe("feedback show bad");
+    await page.answer("Ich lese jeden Morgen.");
+    expect(page.feedback.className).toBe("feedback show");
+    expect(page.feedback.innerHTML).toContain("Ohne Bewertung gespeichert");
+    expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
+      false,
+    );
+  });
+
+  it.each(["{broken", "null", "[]", '{"version":99,"level":"A2"}'])(
+    "preserves unreadable canonical choice bytes before explicit replacement: %s",
+    (raw) => {
+      const page = grammarPage("Ich lerne heute.");
+      const key = "automaticity:v2:de:choice";
+      page.storage.set(key, raw);
+      page.chooseToday();
+      const recovery = [...page.storage].filter(([savedKey]) =>
+        savedKey.startsWith(`${key}:recovery:`),
+      );
+      expect(recovery.map(([, value]) => value)).toContain(raw);
+      expect(JSON.parse(page.storage.get(key)!)).toMatchObject({
+        version: 1,
+        level: "A2",
+        topic: "Grammatik im Kontext",
+      });
+    },
+  );
+
+  it("preserves unreadable legacy choice bytes before explicit replacement", () => {
+    const page = grammarPage("Ich lerne heute.");
+    const key = "deutsch-automaticity:today-grammar",
+      raw = "{invalid legacy";
+    page.storage.set(key, raw);
+    page.chooseToday();
+    expect(
+      [...page.storage]
+        .filter(([savedKey]) => savedKey.startsWith(`${key}:recovery:`))
+        .map(([, value]) => value),
+    ).toContain(raw);
+  });
+
+  it("refuses replacement when the unreadable-choice backup is not persisted", () => {
+    const page = grammarPage("Ich lerne heute.", { skipRecoveryWrite: true });
+    const key = "automaticity:v2:de:choice",
+      raw = "{broken";
+    const legacy = JSON.stringify({
+      level: "B1",
+      topic: "Saved lesson",
+      updatedAt: "2026-11-03T10:00:00Z",
+    });
+    page.storage.set(key, raw);
+    page.storage.set("deutsch-automaticity:today-grammar", legacy);
+    expect(() => page.chooseToday()).toThrow("choice backup");
+    expect(page.storage.get(key)).toBe(raw);
+    expect(page.storage.get("deutsch-automaticity:today-grammar")).toBe(legacy);
+  });
+  it("an explicit use-today choice is shared without replacing stored learner data", () => {
+    const page = grammarPage("Ich lerne heute.");
+    const existing = JSON.stringify({
+      learner: { displayName: "Learner" },
+      answers: ["kept"],
+    });
+    page.storage.set("GrammarAutomaticityV11_de", existing);
+    page.chooseToday();
+    expect(
+      JSON.parse(page.storage.get("automaticity:v2:de:choice") ?? "null"),
+    ).toMatchObject({
+      version: 1,
+      level: "A2",
+      topic: "Grammatik im Kontext",
+    });
+    expect(
+      JSON.parse(
+        page.storage.get("deutsch-automaticity:today-grammar") ?? "null",
+      ),
+    ).toMatchObject({
+      level: "A2",
+      topic: "Grammatik im Kontext",
+    });
+    expect(page.storage.get("GrammarAutomaticityV11_de")).toBe(existing);
+  });
+  it.each([
     ["Ich lese ein buch.", "Ich lese ein Buch."],
     ["Wir helfen ihnen.", "Wir helfen Ihnen."],
     ["Sie kommt?", "Sie kommt."],
     ["Ich weiß dass er kommt.", "Ich weiß, dass er kommt."],
+    ["Bist du bereit?.", "Bist du bereit?"],
+    ["Du bist bereit!.", "Du bist bereit!"],
+    ["Du bist bereit...", "Du bist bereit."],
+    ["Du bist bereit. .", "Du bist bereit."],
+    ["Du bist bereit... .", "Du bist bereit..."],
   ])(
     "does not complete a changed orthographic answer: %s",
     async (answer, expected) => {
       const page = grammarPage(expected);
       await page.answer(answer);
       expect(page.feedback.className).toContain("bad");
+      expect(page.draftState.assisted).toBe(true);
       expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
         false,
       );
@@ -112,6 +333,9 @@ describe("active Grammar-Labor answer handler", () => {
     ["Die Tür ist offen.", "  Die  Tu\u0308r ist offen  "],
     ["geöffnet", "geöffnet"],
     ["Hotel", "Hotel"],
+    ["Bist du bereit?", "Bist du bereit?"],
+    ["Du bist bereit!", "Du bist bereit!"],
+    ["Du bist bereit...", "Du bist bereit..."],
   ])(
     "completes canonical German forms without relying on language clues: %s",
     async (expected, answer) => {
@@ -165,6 +389,35 @@ describe("active Grammar-Labor answer handler", () => {
       )[0].response,
     ).toBe("Hotel");
   });
+
+  it.each([
+    [{ verdict: "correct", targetUsed: true, complete: true }, "feedback show"],
+    [
+      { verdict: "needs_revision", targetUsed: true, complete: true },
+      "feedback show bad",
+    ],
+  ] as const)(
+    "treats a single model verdict as feedback, not acceptance: %o",
+    async (ai, className) => {
+      const page = grammarPage("In meiner Stadt gibt es viele Parks.", {
+        open: true,
+        ai,
+      });
+      await page.answer("In meiner Stadt gibt es einen großen Park.");
+      expect(page.feedback.className).toBe(className);
+      expect(page.feedback.innerHTML).toContain("bestätigte Bewertung");
+      expect(page.feedback.innerHTML).toContain("Modellhinweis.");
+      expect(page.draftState.assisted).toBe(true);
+      expect(page.storage.has("deutsch-automaticity:grammar-progress:v3")).toBe(
+        true,
+      );
+      expect(
+        JSON.parse(
+          page.storage.get("deutsch-automaticity:grammar-open-responses:v1")!,
+        )[0].outcome,
+      ).toBe("submitted-unassessed");
+    },
+  );
 
   it("checks language without a topic-specific hint or completion", async () => {
     const page = grammarPage("Der Bericht wird geprüft.");

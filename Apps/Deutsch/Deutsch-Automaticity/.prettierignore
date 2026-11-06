@@ -12,7 +12,13 @@ legacy
 packages/content/src/data
 apps/web/public
 packages/learning-core/browser
+# Pinned upstream runtime; build verifies its original byte hash.
+packages/learning-core/src/vendor/hama-js/engine.js
+# Vendored copies of the Windows desktop bridges and updater scripts.
+distribution/windows-release
 *.exe
 *.exe.sha256
 *.zip
 *.apk
+# Generated from shared/navigation-config.json by scripts/sync-language-home.ts.
+apps/web/src/components/navigation-config.ts

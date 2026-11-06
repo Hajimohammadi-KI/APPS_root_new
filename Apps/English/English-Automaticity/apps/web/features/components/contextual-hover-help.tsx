@@ -259,7 +259,12 @@ function normalize(value: string) {
 function controlEntry(target: EventTarget | null): HelpEntry | null {
   if (!(target instanceof Element)) return null;
   const element = target.closest<HTMLElement>(interactiveSelector);
-  if (!element || element.closest(`#${TOOLTIP_ID}`)) return null;
+  if (
+    !element ||
+    element.closest(`#${TOOLTIP_ID}`) ||
+    element.closest("[data-no-context-help]")
+  )
+    return null;
   const custom = element.dataset.contextHelp;
   if (custom) return { term: "About this option", meaning: custom };
   const label = (
@@ -311,7 +316,11 @@ function wordAtPoint(x: number, y: number) {
 
 function positionFor(rect: DOMRect, entry: HelpEntry): TooltipState {
   const above = rect.bottom > window.innerHeight * 0.64;
-  const inset = Math.min(196, window.innerWidth / 2);
+  // The card is centred on `left`, so the inset must cover half of its real width
+  // (28rem cap in 101-design-contract.css); a fixed 196px let it run off the left edge.
+  const rem =
+    parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  const inset = Math.min(28 * rem, window.innerWidth - 2 * rem) / 2 + rem;
   return {
     key: `help:${entry.term}:${Math.round(rect.left)}:${Math.round(rect.top)}`,
     entry,

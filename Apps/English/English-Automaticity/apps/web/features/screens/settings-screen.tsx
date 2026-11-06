@@ -7,8 +7,10 @@ import {
 	Download,
 	Eye,
 	House,
+	MonitorDown,
 	PenLine,
 	ShieldCheck,
+	Smartphone,
 	Trash2,
 	Upload,
 	Wand2,
@@ -30,6 +32,7 @@ import {
 	type MeasurementConsent,
 } from "@automaticity/learning-core";
 import { Button } from "@/components/ui/button";
+import { PageHeading } from "@/components/ui/page-heading";
 import {
 	Card,
 	CardContent,
@@ -37,7 +40,14 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { useAppStore, type Settings } from "@/features/store/app-store";
+import { STORAGE_RECOVERY_NAMESPACE, useAppStore, type Settings } from "@/features/store/app-store";
+import {
+	backupReminder,
+	persistentStorageStatus,
+	recordBackup,
+	requestPersistentStorage,
+	type PersistenceStatus,
+} from "@/lib/storage-persistence";
 import {
 	BACKUP_FILE_NAME,
 	chooseBackupDirectory,
@@ -46,7 +56,10 @@ import {
 	supportsBackupDirectoryPicker,
 	writeBackupToDirectory,
 } from "@/lib/backup-directory";
+import { ContentReviewLinkCard } from "@/features/settings/content-review-link-card";
+import { DeleteAllDataCard } from "@/features/settings/delete-all-data-card";
 import { ImplementationIntentionsCard } from "@/features/settings/implementation-intentions-card";
+import { InstallAppControl } from "@/features/components/install-app-control";
 
 const TEXT_SCALE_OPTIONS: Array<{
 	value: Settings["textScale"];
@@ -75,6 +88,8 @@ export function SettingsScreen() {
 	const [measurementBaseline, setMeasurementBaseline] =
 		React.useState<MeasurementBaseline | null>(null);
 	const [measurementStatus, setMeasurementStatus] = React.useState("");
+	const [persistence, setPersistence] = React.useState<PersistenceStatus | null>(null);
+	const [reminder, setReminder] = React.useState<ReturnType<typeof backupReminder> | null>(null);
 
 	React.useEffect(() => {
 		// This browser-only capability must be detected after hydration.
@@ -82,7 +97,19 @@ export function SettingsScreen() {
 		enforceMeasurementRetention(window.localStorage, new Date().toISOString());
 		setMeasurementConsent(readMeasurementConsent(window.localStorage));
 		setMeasurementBaseline(readMeasurementBaseline(window.localStorage));
+		setReminder(backupReminder(window.localStorage, STORAGE_RECOVERY_NAMESPACE, new Date()));
+		void persistentStorageStatus().then(setPersistence);
 	}, []);
+
+	function noteBackup() {
+		const now = new Date();
+		recordBackup(window.localStorage, STORAGE_RECOVERY_NAMESPACE, now.toISOString());
+		setReminder(backupReminder(window.localStorage, STORAGE_RECOVERY_NAMESPACE, now));
+	}
+
+	async function keepStorage() {
+		setPersistence(await requestPersistentStorage());
+	}
 
 	function updateMeasurementConsent(checked: boolean) {
 		const now = new Date().toISOString();
@@ -180,7 +207,8 @@ export function SettingsScreen() {
 	}
 
 
-  async function exportData() {
+  /** True once a complete backup was saved or downloaded. */
+  async function exportData(): Promise<boolean> {
     setExporting(true); setExportStatus("");
     let contents: string | null = null;
     try {
@@ -189,10 +217,16 @@ export function SettingsScreen() {
       const directory = supportsBackupDirectoryPicker() ? await getBackupDirectory() : null;
       if (directory) { await writeBackupToDirectory(directory, contents); setExportStatus(`Complete backup saved to "${directory.name}".`); }
       else { downloadBackup(contents); setExportStatus(`Complete backup downloaded as "${BACKUP_FILE_NAME}".`); }
+      noteBackup();
+      return true;
     } catch (error) {
       if (contents !== null && error instanceof DOMException && ["AbortError", "SecurityError"].includes(error.name)) {
         downloadBackup(contents); setExportStatus("Folder access was unavailable. The complete backup was downloaded instead.");
-      } else setExportStatus(error instanceof Error ? error.message : "Backup export failed.");
+        noteBackup();
+        return true;
+      }
+      setExportStatus(error instanceof Error ? error.message : "Backup export failed.");
+      return false;
     } finally { setExporting(false); }
   }
 
@@ -227,21 +261,19 @@ export function SettingsScreen() {
 
 	return (
 		<div className="page-stack settings-screen">
-			<div className="page-heading settings-heading">
-				<div>
-					<h1>Settings</h1>
-					<p>
-						Reading, focus, grammar-accuracy, and local backup preferences.
-						Changes apply immediately and stay on this device.
-					</p>
-				</div>
-				<Button asChild variant="outline">
-					<Link href="/">
-						<House aria-hidden className="size-4" />
-						Back to Home
-					</Link>
-				</Button>
-			</div>
+			<PageHeading
+				actions={
+					<Button asChild variant="outline">
+						<Link href="/">
+							<House aria-hidden className="size-4" />
+							Back to Home
+						</Link>
+					</Button>
+				}
+				className="settings-heading"
+				description="Reading, focus, grammar-accuracy, and local backup preferences. Changes apply immediately and stay on this device."
+				title="Settings"
+			/>
 
 			<Card>
 				<CardHeader>
@@ -340,13 +372,14 @@ export function SettingsScreen() {
 						Optional effectiveness measurement
 					</CardTitle>
 					<CardDescription>
-						A separate, revocable research export for evaluating speaking and
-						writing outcomes. Nothing is uploaded automatically.
+						If you want to help check whether this app improves your speaking
+							and writing, you can download an anonymous summary of your
+							practice. Nothing is sent automatically.
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="settings-section">
 					<div className="settings-row">
-						<span>Purpose and consent</span>
+						<span>Your consent</span>
 						<label className="settings-toggle">
 							<input
 								checked={measurementConsent?.status === "granted"}
@@ -358,25 +391,27 @@ export function SettingsScreen() {
 							<span>
 								<strong>I consent to optional effectiveness measurement</strong>
 								<small>
-									Included: a random local participant ID, event/evidence IDs,
-									timestamps, versions, scores, gates, and human-rating
-									provenance if a human rating exists. Excluded: response text,
-									transcripts, audio, email, hardware IDs, and free-form
-									intentions.
+									The summary contains only numbers: a random ID for this
+										device, dates and times, app versions, scores, which checks
+										were passed, and whether a person reviewed an answer. It never
+										contains your written answers, transcripts, recordings, email
+										address or device identity.
 								</small>
 							</span>
 						</label>
 					</div>
 					<div className="settings-row">
-						<span>Retention and baseline</span>
+						<span>What happens to it</span>
 						<div className="settings-measurement-summary">
 							<p>
-								Stored only on this device for up to 365 days; transfer happens
-								only when you download a file. Revocation stops export.
+								The summary stays on this device for up to 365 days and leaves
+									it only when you download the file. If you withdraw consent, no
+									further file can be exported.
 							</p>
 							<p>
-								Baseline: {measurementBaseline ? "captured" : "not captured"}.
-								Cohort statistics: N/A — no production telemetry is connected.
+								Starting point:{" "}
+									{measurementBaseline ? "recorded" : "not recorded yet"}. This
+									app collects no usage statistics in the background.
 							</p>
 						</div>
 					</div>
@@ -472,13 +507,99 @@ export function SettingsScreen() {
 							/>
 							<span>
 								<strong>Allow optional online grammar checks</strong>
-								<small>Off by default; local practice still works.</small>
+								<small>
+									Off by default; local practice still works. When on, your
+									typed or transcribed text (never the recording) is sent to
+									LanguageTool (languagetool.org) for checking.
+								</small>
+							</span>
+						</label>
+					</div>
+					<fieldset className="settings-row">
+						<legend>English spelling</legend>
+						<div className="settings-choice-group">
+							{(["en-US", "en-GB"] as const).map((variant) => (
+								<label className="settings-choice" key={variant}>
+									<input
+										checked={settings.englishVariant === variant}
+										name="english-variant"
+										onChange={() =>
+											mutate((draft) => {
+												draft.settings.englishVariant = variant;
+											})
+										}
+										type="radio"
+									/>
+									<span>
+										<strong>
+											{variant === "en-US" ? "American English" : "British English"}
+										</strong>
+										<small>
+											{variant === "en-US"
+												? "color, center, on the weekend"
+												: "colour, centre, at the weekend"}
+										</small>
+									</span>
+								</label>
+							))}
+						</div>
+					</fieldset>
+					<div className="settings-row">
+						<span>Recordings</span>
+						<label className="settings-toggle">
+							<input
+								checked={settings.saveAudio}
+								onChange={(event) =>
+									mutate((draft) => {
+										draft.settings.saveAudio = event.target.checked;
+									})
+								}
+								type="checkbox"
+							/>
+							<span>
+								<strong>Save my recordings</strong>
+								<small>
+									Off by default. When on, your voice recordings stay only in
+									this browser; transcripts and feedback are saved either way.
+								</small>
 							</span>
 						</label>
 					</div>
 				</CardContent>
 			</Card>
 
+			<Card>
+				<CardHeader>
+					<CardTitle>
+						<MonitorDown aria-hidden className="mr-2 inline size-5" />
+						Install on your device
+					</CardTitle>
+					<CardDescription>
+						The web app works without installation. You can also add it to
+						your home screen or desktop like an app.
+					</CardDescription>
+				</CardHeader>
+				<CardContent className="settings-installation">
+					<InstallAppControl />
+					<div className="settings-device-grid">
+						<article>
+							<MonitorDown aria-hidden="true" />
+							<h3>Windows</h3>
+							<p>Choose “Install app” in the browser.</p>
+						</article>
+						<article>
+							<Smartphone aria-hidden="true" />
+							<h3>Android</h3>
+							<p>Choose “Add to Home screen” in the browser menu.</p>
+						</article>
+						<article>
+							<Smartphone aria-hidden="true" />
+							<h3>iPhone &amp; iPad</h3>
+							<p>Open Safari, tap Share, then “Add to Home Screen”.</p>
+						</article>
+					</div>
+				</CardContent>
+			</Card>
 			<Card>
 				<CardHeader>
 					<CardTitle>
@@ -544,6 +665,26 @@ export function SettingsScreen() {
 							type="file"
 						/>
 					</div>
+					<p className="settings-export-status" role="status">
+						{reminder?.lastBackupAt
+							? `Last backup: ${new Date(reminder.lastBackupAt).toLocaleDateString()}.`
+							: "No backup has been exported from this browser yet."}
+						{reminder?.overdue ? " Export a fresh backup; progress lives only on this device." : ""}
+					</p>
+					<p className="settings-export-status" role="status">
+						{persistence === null
+							? "Checking whether this browser keeps progress safe from automatic cleanup..."
+							: !persistence.supported
+								? "This browser cannot promise to keep local progress; export backups regularly."
+								: persistence.persisted
+									? "Storage is marked persistent: the browser will not clear progress to free space."
+									: "Storage is not yet persistent, so the browser may clear progress when space runs low."}
+						{persistence?.supported && !persistence.persisted ? (
+							<Button className="ml-2" onClick={() => void keepStorage()} size="sm" variant="outline">
+								Keep progress on this device
+							</Button>
+						) : null}
+					</p>
 					{exportStatus ? (
 						<p
 							aria-live="polite"
@@ -560,6 +701,8 @@ export function SettingsScreen() {
 					) : null}
 				</CardContent>
 			</Card>
+			<ContentReviewLinkCard />
+			<DeleteAllDataCard onExport={exportData} />
 		</div>
 	);
 }

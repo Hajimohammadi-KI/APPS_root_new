@@ -15,6 +15,7 @@ import {
   type ReviewOutput,
 } from "./lib/review-output-transaction";
 import { buildHumanReviewManifest } from "./lib/human-review-manifest";
+import { canonicalReviewOutputs } from "./lib/assessment-readiness";
 const root = resolve(import.meta.dir, ".."),
   input = Bun.argv[2];
 if (!input)
@@ -153,6 +154,14 @@ try {
       });
     }
     const oldBacklog = JSON.parse(backlogSource) as Record<string, unknown>[];
+    for (const pack of applied.packs.values())
+      outputs.push(
+        ...(await canonicalReviewOutputs(
+          root,
+          pack,
+          buildHumanReviewManifest(pack, prepared.reviews),
+        )),
+      );
     outputs.push({
       path: backlogPath,
       expectedSha256: sha256(backlogSource),

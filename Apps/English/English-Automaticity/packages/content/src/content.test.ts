@@ -16,6 +16,12 @@ import {
   releasedEnglishMediationB1,
 } from "./index";
 import { assessMediationContentRelease } from "@automaticity/learning-core";
+import {
+  UNIT_CONTENT_REVISIONS,
+  checkedPracticeFor,
+  controlledPracticeFor,
+} from "@automaticity/learning-core/content-revisions";
+import type { GrammarExercise } from "./types";
 import { repairGrammarUnitLinks } from "./resource-links";
 
 function sliceBetween(source: string, start: string, end: string): string {
@@ -98,7 +104,9 @@ describe("legacy content parity", () => {
     const firstChunkByLevel = new Map<string, string>();
 
     for (const level of levels) {
-      const topics = conversationTopics.filter((topic) => topic.level === level);
+      const topics = conversationTopics.filter(
+        (topic) => topic.level === level,
+      );
       expect(topics).toHaveLength(12);
 
       for (const topic of topics) {
@@ -111,9 +119,9 @@ describe("legacy content parity", () => {
               chunk.example.trim().length >= 12,
           ),
         ).toBe(true);
-        expect(new Set(topic.spokenChunks.map((chunk) => chunk.text)).size).toBe(
-          4,
-        );
+        expect(
+          new Set(topic.spokenChunks.map((chunk) => chunk.text)).size,
+        ).toBe(4);
       }
 
       firstChunkByLevel.set(level, topics[0]?.spokenChunks[0]?.text ?? "");
@@ -126,10 +134,7 @@ describe("legacy content parity", () => {
   test("ships the exact authored grammar catalog to the visual Grammar Lab", async () => {
     const root = resolve(import.meta.dir, "../../..");
     const browserSource = await Bun.file(
-      resolve(
-        root,
-        "apps/web/public/replacements/en/grammar-curriculum.js",
-      ),
+      resolve(root, "apps/web/public/replacements/en/grammar-curriculum.js"),
     ).text();
     const normalizedBrowserSource = browserSource.replaceAll("\r\n", "\n");
     const browserCatalog = JSON.parse(
@@ -141,7 +146,19 @@ describe("legacy content parity", () => {
     );
 
     expect(grammarUnits).toHaveLength(112);
-    expect(grammarUnits.every((unit) => unit.exercises.length === 6)).toBe(true);
+    // Six exercises, then the learner's error-notebook items of the unit.
+    for (const unit of grammarUnits) {
+      const notebook = checkedPracticeFor("en", unit.title).filter(
+        (row) => row.notebook,
+      );
+      const focused = controlledPracticeFor("en", unit.title).filter((row) =>
+        unit.exercises.some(([prompt]) => prompt === row.prompt),
+      );
+      expect(unit.exercises.slice(6).map(([prompt]) => prompt)).toEqual(
+        [...notebook, ...focused].map((row) => row.prompt),
+      );
+      expect(unit.exercises).toHaveLength(6 + notebook.length + focused.length);
+    }
     expect(browserCatalog).toEqual(grammarUnits);
   });
 
@@ -272,30 +289,97 @@ describe("legacy content parity", () => {
     }
   });
 
-  test("adds the researched curriculum without changing the legacy core", () => {
+  test("adds the researched curriculum with explicit repairs shared with the independent path", () => {
     expect(grammarUnits).toHaveLength(112);
-    expect(grammarUnits.slice(0, legacyGrammarUnits.length)).toEqual(
-      legacyGrammarUnits.map((unit) =>
-        repairGrammarUnitLinks({
-          ...unit,
-          exercises: [
-            ...unit.exercises,
-            [
-              `State the rule for “${unit.title}” from memory.`,
-              unit.recallTest,
-            ],
-            [
-              `Write the transfer model for “${unit.title}” accurately.`,
-              unit.transferTest,
-            ],
-            [
-              `Repair this common error for “${unit.title}” and write the full corrected sentence.`,
-              unit.repairTest,
-            ],
-          ],
-        }),
-      ),
+    const revisions = UNIT_CONTENT_REVISIONS.filter(
+      (row) => row.language === "en",
     );
+    const revised = new Set([
+      "Layered subordination",
+      ...revisions.map((row) => row.title),
+    ]);
+    // Copying a model sentence, explaining the rule, reciting it or a can-do
+    // statement, and repeating the first error checked nothing. The model
+    // sentence returns as a recall item and the learning path's checked items
+    // fill the unit; its first exercise stays as authored.
+    const exercise = ({
+      prompt,
+      answers: [answer, ...alternatives],
+    }: {
+      prompt: string;
+      answers: readonly string[];
+    }): GrammarExercise =>
+      alternatives.length
+        ? [prompt, answer!, { acceptedAnswers: alternatives }]
+        : [prompt, answer!];
+    // The Lab checks a prompt with a gap or one that asks to correct,
+    // complete, choose, change or transform; any other prompt is self-checked.
+    // The Lab's rule: an expected answer, or a prompt with a gap or a task verb.
+    const checkedInLab = ([prompt, , metadata]: GrammarExercise) =>
+      metadata?.answerRole === "expected" ||
+      /_{2,}|…|\.\.\.|^(correct|complete|choose|change|transform)\b/i.test(
+        prompt,
+      );
+    for (const legacy of legacyGrammarUnits.filter(
+      (unit) => !revised.has(unit.title),
+    )) {
+      const unit = grammarUnits.find((row) => row.title === legacy.title)!;
+      expect(unit.exercises[0]).toEqual(legacy.exercises[0]!);
+      for (const row of checkedPracticeFor("en", unit.title).slice(0, 2))
+        expect(unit.exercises).toContainEqual(exercise(row));
+    }
+    for (const unit of grammarUnits) {
+      expect(unit.exercises.length).toBeGreaterThanOrEqual(6);
+      expect(
+        unit.exercises.filter(([prompt]) =>
+          /^(State the rule|Write the transfer model|Explain the rule|Type (the|another) model sentence)/u.test(
+            prompt,
+          ),
+        ),
+      ).toEqual([]);
+      expect(
+        `${unit.title}: ${unit.exercises.filter((row) => !checkedInLab(row)).map(([prompt]) => prompt)}`,
+      ).toBe(`${unit.title}: `);
+      const answers = unit.exercises.map(([, answer]) => answer);
+      expect(`${unit.title}: ${answers.length - new Set(answers).size}`).toBe(
+        `${unit.title}: 0`,
+      );
+    }
+    const layered = grammarUnits.find(
+      (unit) => unit.title === "Layered subordination",
+    )!;
+    expect(layered.commonError).toBe(
+      "Although the data were limited, the pattern that emerge was consistent. → Although the data were limited, the pattern that emerged was consistent.",
+    );
+    expect(layered.exercises[0]).toEqual([
+      "Correct only the verb form and keep the meaning: Although the data were limited, the pattern that emerge was consistent.",
+      "Although the data were limited, the pattern that emerged was consistent.",
+    ]);
+    for (const revision of revisions) {
+      const unit = grammarUnits.find((row) => row.title === revision.title);
+      expect(unit?.title).toBe(revision.title);
+      const repair = revision.repair;
+      if (repair) {
+        expect(unit!.commonError).toBe(`${repair.source} → ${repair.answer}`);
+        expect(
+          unit!.exercises.find(([prompt]) => prompt === repair.prompt),
+        ).toEqual(
+          repair.alternatives
+            ? [
+                repair.prompt,
+                repair.answer,
+                { acceptedAnswers: [...repair.alternatives] },
+              ]
+            : [repair.prompt, repair.answer],
+        );
+      }
+      if (revision.examples)
+        expect(unit!.examples).toEqual([...revision.examples]);
+    }
+    expect(
+      legacyGrammarUnits.find((unit) => unit.title === layered.title)!
+        .commonError,
+    ).toBe("Stacked clauses with unclear reference.");
   });
 
   test("replaces retired external links with current official resources", () => {

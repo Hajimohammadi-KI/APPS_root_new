@@ -6,6 +6,9 @@ import { readRecording } from "./media";
 import { sha256 } from "./backup";
 import { mountAssessmentFeedbackPanel } from "./assessment-feedback-panel";
 import { qualifyHumanReview, readHumanReviewManifest } from "./human-review";
+import { fullRecordingPlayed } from "./audio-review";
+import { responseExposure } from "./response-exposure";
+import { disablePracticeControls } from "./practice-controls";
 import {
   parseReviewDraft,
   reviewDraftKey,
@@ -181,7 +184,11 @@ export function mountReviewPanel(
   const refreshFeedbackMemory = mountAssessmentFeedbackPanel(details, pack);
   root.append(details);
   let selectedId = "",
-    audioReview: { sha256: string; confirmed: boolean } | null = null,
+    audioReview: {
+      sha256: string;
+      confirmed: boolean;
+      transcriptSha256?: string;
+    } | null = null,
     audioUrl: string | null = null,
     displayGeneration = 0,
     saving = false;
@@ -368,6 +375,23 @@ export function mountReviewPanel(
       }
     showCurrentReview();
     original.textContent = row.attempt.response.text;
+    if (details.open) {
+      try {
+        appendAutomaticityEvent(
+          localStorage,
+          responseExposure(
+            row.attempt,
+            new Date().toISOString(),
+            crypto.randomUUID(),
+          ),
+        );
+      } catch {
+        status.textContent = t(
+          "Viewing this response could not be saved. Retention tracking may be incomplete; export a backup before continuing.",
+          "Das Ansehen dieser Antwort konnte nicht gespeichert werden. Die Erfassung des Behaltens kann unvollständig sein; exportiere vor dem Fortfahren eine Sicherung.",
+        );
+      }
+    }
     prompt.textContent =
       pack.units
         .flatMap((unit) => unit.tasks)
@@ -417,20 +441,31 @@ export function mountReviewPanel(
           const label = node(
             "label",
             t(
-              "I listened to and reviewed the original recording",
-              "Ich habe die Originalaufnahme angehört und geprüft",
+              "I listened to the whole original recording and verified that the transcript includes exactly what was said, including errors",
+              "Ich habe die gesamte Originalaufnahme angehört und bestätigt, dass das Transkript genau das Gesagte einschließlich der Fehler enthält",
             ),
           );
           label.prepend(confirmed);
           media.append(label);
           player.onended = () => {
-            if (generation === displayGeneration) confirmed.disabled = false;
+            if (generation === displayGeneration && !saving) {
+              const ranges: [number, number][] = [];
+              for (let i = 0; i < player.played.length; i++)
+                ranges.push([player.played.start(i), player.played.end(i)]);
+              confirmed.disabled = !fullRecordingPlayed(
+                ranges,
+                player.duration,
+              );
+            }
           };
           confirmed.onchange = () => {
             if (generation === displayGeneration)
               audioReview = {
                 sha256: row.attempt.audio!.sha256,
                 confirmed: confirmed.checked,
+                transcriptSha256: confirmed.checked
+                  ? row.attempt.response.sha256
+                  : undefined,
               };
           };
         })().catch((error) => {
@@ -477,6 +512,16 @@ export function mountReviewPanel(
     event.preventDefault();
     if (saving || !canEdit) return;
     saving = true;
+    const restoreControls = disablePracticeControls(
+      form.querySelectorAll<
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        | HTMLButtonElement
+      >("input,select,textarea,button"),
+    );
+    const capturedAudioReview = audioReview ? { ...audioReview } : null;
+    form.setAttribute("aria-busy", "true");
     void (async () => {
       const row = rows().find((row) => row.attempt.id === selectedId);
       if (!row)
@@ -544,7 +589,7 @@ export function mountReviewPanel(
               await readHumanReviewManifest(language),
               reviewerName.value,
               at,
-              audioReview,
+              capturedAudioReview,
             )
           : null;
       const current = rows().find(
@@ -614,6 +659,17 @@ export function mountReviewPanel(
         spans: [],
         supersedes:
           reviewer.value === "human" ? (row.assessment?.id ?? null) : null,
+        ...(approved &&
+        capturedAudioReview?.confirmed &&
+        capturedAudioReview.transcriptSha256
+          ? {
+              audioReview: {
+                audioSha256: capturedAudioReview.sha256,
+                transcriptSha256: capturedAudioReview.transcriptSha256,
+                transcriptVerified: true as const,
+              },
+            }
+          : {}),
       };
       appendAutomaticityEvent(localStorage, assessment);
       // Clear only the draft this editor loaded, after the review is durably saved.
@@ -642,6 +698,8 @@ export function mountReviewPanel(
       })
       .finally(() => {
         saving = false;
+        restoreControls();
+        form.removeAttribute("aria-busy");
       });
   };
   refresh();

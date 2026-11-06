@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { feedbackAddress } from "@automaticity/learning-core/feedback";
+import { ContactFeedback } from "@/features/components/contact-feedback";
 
 export const metadata: Metadata = {
   description:
@@ -8,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function SupportPage() {
+  const contact = feedbackAddress();
   return (
     <main className="legal-page">
       <div className="legal-shell">
@@ -16,13 +19,11 @@ export default function SupportPage() {
         </Link>
 
         <header className="legal-hero legal-hero-support">
-          <span className="legal-kicker">
-            Install once, practice anywhere
-          </span>
+          <span className="legal-kicker">Install once, practice anywhere</span>
           <h1>Installation and Support</h1>
           <p>
-            The same complete learning system is available on Windows,
-            Android, iPhone, and iPad.
+            Open this web app on your phone, tablet, or computer. Your progress
+            is saved separately in each browser on each device.
           </p>
         </header>
 
@@ -30,8 +31,7 @@ export default function SupportPage() {
           <section className="legal-card">
             <h2>Windows</h2>
             <p>
-              After release, use the Microsoft Store package, or open the
-              secure web URL in Microsoft Edge and choose
+              Open this web app in Microsoft Edge and choose
               <strong> Apps → Install English Automaticity</strong>.
             </p>
           </section>
@@ -39,17 +39,17 @@ export default function SupportPage() {
           <section className="legal-card">
             <h2>Android</h2>
             <p>
-              After release, use the Google Play listing. For direct testing,
-              install the signed APK or open the secure web URL in Chrome and
-              choose <strong>Install app</strong>.
+              Open this web app in Chrome. In the browser menu, choose
+              <strong> Add to Home screen</strong> or{" "}
+              <strong>Install app</strong>
+              when offered.
             </p>
           </section>
 
           <section className="legal-card">
             <h2>iPhone and iPad</h2>
             <p>
-              Use the App Store or TestFlight once the build is available. The
-              web version can also be installed in Safari via
+              Open this web app in Safari and use
               <strong> Share → Add to Home Screen</strong>.
             </p>
           </section>
@@ -59,8 +59,8 @@ export default function SupportPage() {
             <p>
               Open the app once with internet access after each update.
               Catalogs, exercises, progress, settings, and supported audio
-              recordings work locally. Full LanguageTool evaluation still
-              requires internet.
+              recordings work locally. Full LanguageTool evaluation requires a
+              configured online service.
             </p>
           </section>
 
@@ -76,13 +76,16 @@ export default function SupportPage() {
           <section className="legal-card">
             <h2>Evaluation issues</h2>
             <p>
-              Check API status in Settings. If unavailable, check your internet
-              connection and try again. Offline correction supports practice,
-              but intentionally does not unlock a verified checkpoint.
+              The public web app supports practice on this device. Online
+              assessment needs a separately configured service. Offline
+              correction supports practice, but intentionally does not unlock a
+              verified checkpoint.
             </p>
             <Link href="/privacy">Read privacy notice →</Link>
           </section>
         </div>
+
+        {contact ? <ContactFeedback address={contact} /> : null}
       </div>
     </main>
   );

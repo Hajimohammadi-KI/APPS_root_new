@@ -1,3 +1,4 @@
+import { containsTokenPhrase } from "@automaticity/learning-core/text";
 import { conversationTopics as curriculumTopics } from "@grammar/content";
 import type { SpokenChunk } from "@grammar/content";
 
@@ -22,51 +23,39 @@ export interface ConversationTopic {
 
 const levels = new Set<CefrLevel>(["A1", "A2", "B1", "B2", "C1", "C2"]);
 
-export const conversationTopics: readonly ConversationTopic[] = curriculumTopics.map((topic, index) => {
-  if (!levels.has(topic.level as CefrLevel)) {
-    throw new Error(`Unsupported CEFR level in conversation curriculum: ${topic.level}`);
-  }
+export const conversationTopics: readonly ConversationTopic[] =
+  curriculumTopics.map((topic, index) => {
+    if (!levels.has(topic.level as CefrLevel)) {
+      throw new Error(
+        `Unsupported CEFR level in conversation curriculum: ${topic.level}`,
+      );
+    }
 
-  return {
-    id: `en-${topic.level.toLowerCase()}-${String(index + 1).padStart(3, "0")}`,
-    language: "en",
-    path: "Complete English",
-    level: topic.level as CefrLevel,
-    skill: topic.skill,
-    category: topic.category,
-    topic: topic.topic,
-    task: topic.task,
-    goal: `Complete this ${topic.level} can-do task independently, use the target language accurately, and include at least two natural spoken chunks.`,
-    targetForm:
-      topic.targetGrammar === topic.level
-        ? `${topic.level} ${topic.skill} can-do production`
-        : topic.targetGrammar,
-    spokenChunks: topic.spokenChunks,
-    contentVersion: `27.3.21-${topic.level.toLowerCase()}-spoken-chunks`,
-    sourceId: "english-authored-conversation-curriculum-v27",
-  };
-});
-
-function canonicalSpokenText(value: string): string {
-  return value
-    .normalize("NFKC")
-    .replace(/[’‘]/gu, "'")
-    .toLocaleLowerCase("en")
-    .replace(/[^\p{L}\p{N}']+/gu, " ")
-    .trim()
-    .replace(/\s+/gu, " ");
-}
+    return {
+      id: `en-${topic.level.toLowerCase()}-${String(index + 1).padStart(3, "0")}`,
+      language: "en",
+      path: "Complete English",
+      level: topic.level as CefrLevel,
+      skill: topic.skill,
+      category: topic.category,
+      topic: topic.topic,
+      task: topic.task,
+      goal: `Complete this ${topic.level} can-do task independently, use the target language accurately, and include at least two natural spoken chunks.`,
+      targetForm:
+        topic.targetGrammar === topic.level
+          ? `${topic.level} ${topic.skill} can-do production`
+          : topic.targetGrammar,
+      spokenChunks: topic.spokenChunks,
+      contentVersion: `27.3.21-${topic.level.toLowerCase()}-spoken-chunks`,
+      sourceId: "english-authored-conversation-curriculum-v27",
+    };
+  });
 
 export function spokenChunksUsed(
   transcript: string,
   chunks: readonly SpokenChunk[],
 ): readonly SpokenChunk[] {
-  const canonicalTranscript = canonicalSpokenText(transcript);
-  if (!canonicalTranscript) return [];
-  return chunks.filter((chunk) => {
-    const anchor = canonicalSpokenText(chunk.text);
-    return anchor.length > 0 && canonicalTranscript.includes(anchor);
-  });
+  return chunks.filter((chunk) => containsTokenPhrase(transcript, chunk.text));
 }
 
 export const speechLocale: Readonly<Record<StudioLanguage, string>> = {
@@ -86,12 +75,21 @@ export const copy = {
     recorded: "Your recording is ready",
     record: "Record answer",
     transcript: "Your transcript",
-    transcriptPlaceholder: "Your spoken answer will appear here. You can review recognition errors before evaluation.",
-    evaluate: "Evaluate my answer",
+    transcriptPlaceholder:
+      "After recording, suggested words appear here. You can edit them or type your own words. This is not a pronunciation assessment.",
+    evaluate: "Check transcript grammar",
     evaluating: "Checking with LanguageTool…",
     saved: "Session saved on this device.",
-    providerUnavailable: "LanguageTool is unavailable. No evaluation was invented; please try again.",
-    pronunciation: "Not evaluated — an audio-analysis provider is required.",
+    savedWithoutAudio:
+      "Session saved on this device without the recording. To keep recordings, turn on “Save my recordings” in Settings.",
+    consentNotice:
+      "Evaluation sends your transcript (never the recording) to LanguageTool (languagetool.org). Online checks are off, so nothing has been sent.",
+    allowOnline: "Allow online checks and check transcript grammar",
+    flagged: "Flagged",
+    providerUnavailable:
+      "LanguageTool is unavailable. No evaluation was invented; please try again.",
+    pronunciation:
+      "No verified pronunciation grade. Any audio-model observations appear separately below the recording.",
   },
   de: {
     title: "Gesprächsstudio",
@@ -104,11 +102,20 @@ export const copy = {
     recorded: "Deine Aufnahme ist bereit",
     record: "Antwort aufnehmen",
     transcript: "Dein Transkript",
-    transcriptPlaceholder: "Deine gesprochene Antwort erscheint hier. Erkennungsfehler kannst du vor der Auswertung korrigieren.",
+    transcriptPlaceholder:
+      "Deine gesprochene Antwort erscheint hier. Erkennungsfehler kannst du vor der Auswertung korrigieren.",
     evaluate: "Antwort auswerten",
     evaluating: "LanguageTool prüft…",
     saved: "Sitzung wurde auf diesem Gerät gespeichert.",
-    providerUnavailable: "LanguageTool ist nicht erreichbar. Es wurde keine Auswertung erfunden; bitte versuche es erneut.",
-    pronunciation: "Nicht ausgewertet — dafür ist eine Audioanalyse erforderlich.",
+    savedWithoutAudio:
+      "Sitzung ohne Aufnahme auf diesem Gerät gespeichert. Um Aufnahmen zu behalten, aktiviere „Save my recordings“ in den Einstellungen.",
+    consentNotice:
+      "Die Auswertung sendet dein Transkript (nie die Aufnahme) an LanguageTool (languagetool.org). Online-Prüfungen sind aus, daher wurde nichts gesendet.",
+    allowOnline: "Online-Prüfung erlauben und auswerten",
+    flagged: "Markiert",
+    providerUnavailable:
+      "LanguageTool ist nicht erreichbar. Es wurde keine Auswertung erfunden; bitte versuche es erneut.",
+    pronunciation:
+      "Nicht ausgewertet — dafür ist eine Audioanalyse erforderlich.",
   },
 } as const;

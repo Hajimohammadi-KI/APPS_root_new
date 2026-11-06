@@ -13,7 +13,7 @@ test("current home and active daily route show one truthful learner state", asyn
   await expect(page.getByText("Verb be: am/is/are · A1")).toBeVisible();
   await expect(page.getByText("0 of 7 activities complete")).toBeVisible();
   await expect(page.getByText("0% verified mastery")).toBeVisible();
-  await expect(page.getByText("Local app service ready")).toBeVisible();
+  await expect(page.getByText("Practice on this device")).toBeVisible();
 });
 
 test("phase-three cards keep their status and CTA inside a narrow desktop layout", async ({

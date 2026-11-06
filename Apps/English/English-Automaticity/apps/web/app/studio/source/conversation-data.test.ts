@@ -1,7 +1,31 @@
 import { describe, expect, test } from "bun:test";
-import { conversationTopics, spokenChunksUsed } from "./conversation-data";
+import {
+  conversationTopics,
+  copy,
+  spokenChunksUsed,
+} from "./conversation-data";
+
+test("the transcript check does not advertise audio or pronunciation assessment", () => {
+  expect(copy.en.evaluate).toBe("Check transcript grammar");
+  expect(copy.en.transcriptPlaceholder).toContain(
+    "not a pronunciation assessment",
+  );
+});
 
 describe("natural spoken English chunks", () => {
+  test("W11 chunk anchors require complete words", () => {
+    const chunks = [
+      {
+        text: "in my view",
+        purpose: "opinion",
+        example: "In my view, it works.",
+      },
+    ];
+    expect(spokenChunksUsed("Within my viewpoint, it works.", chunks)).toEqual(
+      [],
+    );
+    expect(spokenChunksUsed("In my view, it works.", chunks)).toEqual(chunks);
+  });
   test("covers every conversation topic", () => {
     expect(conversationTopics).toHaveLength(72);
     expect(
@@ -10,7 +34,9 @@ describe("natural spoken English chunks", () => {
   });
 
   test("matches chunks used in a learner transcript", () => {
-    const topic = conversationTopics.find((candidate) => candidate.level === "A2");
+    const topic = conversationTopics.find(
+      (candidate) => candidate.level === "A2",
+    );
     expect(topic).toBeDefined();
 
     const matches = spokenChunksUsed(
@@ -25,7 +51,9 @@ describe("natural spoken English chunks", () => {
   });
 
   test("does not invent matches from unrelated language", () => {
-    const topic = conversationTopics.find((candidate) => candidate.level === "C2");
+    const topic = conversationTopics.find(
+      (candidate) => candidate.level === "C2",
+    );
     expect(topic).toBeDefined();
 
     expect(

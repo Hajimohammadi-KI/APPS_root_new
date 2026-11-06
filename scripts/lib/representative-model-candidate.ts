@@ -11,7 +11,7 @@ export interface RepresentativeRuntime {packs:CurriculumPack[];sourceHashes:Reco
 export async function loadRepresentativeRuntime(root:string):Promise<RepresentativeRuntime>{
  const packs:CurriculumPack[]=[],packHashes:Record<string,string>={},sourceHashes:Record<string,string>={};
  for(const language of ["en","de"] as const){
-  const path=`${language==="en"?"Apps/English/English-Automaticity":"Apps/Deutsch-Automaticity"}/apps/web/public/learning-core/curriculum-${language}.json`;
+  const path=`${language==="en"?"Apps/English/English-Automaticity":"Apps/Deutsch/Deutsch-Automaticity"}/apps/web/public/learning-core/curriculum-${language}.json`;
   const bytes=await readFile(resolve(root,path),"utf8");packHashes[path]=digest(bytes);packs.push(JSON.parse(bytes));
  }
  // Pin the shared assessment implementation and its local dependencies, not just its version label.

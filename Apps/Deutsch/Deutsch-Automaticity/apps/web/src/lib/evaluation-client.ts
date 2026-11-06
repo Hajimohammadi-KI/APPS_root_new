@@ -85,6 +85,7 @@ export async function requestEvaluation(
   try {
     const response = await fetch(`${request.apiBaseUrl}/evaluate`, {
       method: "POST",
+      signal: AbortSignal.timeout(15_000),
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
         text: request.text,

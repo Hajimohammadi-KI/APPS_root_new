@@ -97,7 +97,7 @@ body {
   }
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 899px) {
   .app-shell {
     display: block;
   }

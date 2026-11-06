@@ -1,6 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { normalizeApiOrigin } from "@/lib/api-origin";
+import {
+	readStoredState,
+	recoveryNamespace,
+	requestPersistentStorage,
+	writeStoredState,
+} from "@/lib/storage-persistence";
 import { syncLegacyPracticeInBrowser } from "@automaticity/learning-core/automaticity";
 import type { CefrLevel, GrammarUnit } from "@grammar/content";
 import {
@@ -47,6 +54,7 @@ export interface Settings {
 	honovrLanguage: "en";
 	saveAudio: boolean;
 	onlineFeedback: boolean;
+	englishVariant: "en-US" | "en-GB";
 	readingProfile: "standard" | "dyslexia";
 	textScale: 100 | 112 | 125;
 	readingRuler: boolean;
@@ -186,39 +194,39 @@ export interface AppState {
 	todayGrammar: { title: string; level: string; date: string } | null;
 }
 
-const STORAGE_KEY = "grammar-automaticity:v27";
+export const STORAGE_KEY = "grammar-automaticity:v27";
+export const STORAGE_RECOVERY_NAMESPACE = recoveryNamespace("en", STORAGE_KEY);
+const STATE_VERSION = 27;
 const LEGACY_KEY = "GrammarAutomaticityV11_en";
 const RETIRED_PRIVATE_STORAGE_KEY = "thesis-b2-sprint-v24";
 const CEFR_ORDER: readonly CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
+function getDefaultApiBaseUrl() {
+	return normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL);
+}
 
 function persistAppState(state: AppState) {
 	if (typeof window === "undefined") return false;
-	try {
-		const previous = localStorage.getItem(STORAGE_KEY);
-		if (previous !== null) JSON.parse(previous);
-		localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-		void syncLegacyPracticeInBrowser("en").catch((error) =>
-			window.dispatchEvent(
-				new CustomEvent("automaticity-sync-error", { detail: String(error) }),
-			),
-		);
-		return true;
-	} catch {
-		return false;
-	}
+	// An unreadable previous value was already quarantined during hydration,
+	// so saving never depends on parsing what is currently stored.
+	if (!writeStoredState(localStorage, STORAGE_KEY, state)) return false;
+	void syncLegacyPracticeInBrowser("en").catch((error) =>
+		window.dispatchEvent(
+			new CustomEvent("automaticity-sync-error", { detail: String(error) }),
+		),
+	);
+	return true;
 }
 
 export const DEFAULT_STATE: AppState = {
 	version: 27,
 	settings: {
-		apiBaseUrl:
-			process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
-			"http://127.0.0.1:4201",
+		apiBaseUrl: getDefaultApiBaseUrl(),
 		minWords: 12,
 		dailyStudyMinutes: 15,
 		honovrLanguage: "en",
-		saveAudio: true,
+		saveAudio: false,
 		onlineFeedback: false,
+		englishVariant: "en-US",
 		readingProfile: "dyslexia",
 		textScale: 112,
 		readingRuler: false,
@@ -324,10 +332,7 @@ export function normalizeAppState(value: unknown): AppState {
 		typeof settings.apiBaseUrl === "string" && settings.apiBaseUrl.trim()
 			? settings.apiBaseUrl.trim().replace(/\/$/, "")
 			: fallback.settings.apiBaseUrl;
-	const apiBaseUrl =
-		storedApiBaseUrl === "http://localhost:4201"
-			? fallback.settings.apiBaseUrl
-			: storedApiBaseUrl;
+	const apiBaseUrl = normalizeApiOrigin(storedApiBaseUrl, process.env.NEXT_PUBLIC_API_URL, typeof window === "undefined" ? undefined : window.location.hostname);
 	const todayGrammar =
 		isRecord(value.todayGrammar) &&
 		typeof value.todayGrammar.title === "string" &&
@@ -360,6 +365,8 @@ export function normalizeAppState(value: unknown): AppState {
 				typeof settings.onlineFeedback === "boolean"
 					? settings.onlineFeedback
 					: fallback.settings.onlineFeedback,
+			englishVariant:
+				settings.englishVariant === "en-GB" ? "en-GB" : "en-US",
 			readingProfile:
 				settings.readingProfile === "standard" ||
 				settings.readingProfile === "dyslexia"
@@ -744,6 +751,16 @@ export function adaptiveReviewInterval(
 	);
 }
 
+/** The settings toggles are the learner's consent; the profile shares them across apps. */
+export function profilePrivacy(state: AppState) {
+	return {
+		shareAcrossApps: state.learner.shareAcrossApps,
+		allowOnlineAI: state.settings.onlineFeedback,
+		storeAudio: state.settings.saveAudio,
+		includeEvidenceInExport: state.learner.includeEvidenceInExport,
+	};
+}
+
 export function buildEnglishEvidence(state: AppState): EvidenceSummary {
 	const counts = new Map<string, number>();
 	for (const attempt of state.attempts) {
@@ -786,6 +803,7 @@ const AppStoreContext = React.createContext<StoreValue | null>(null);
 
 export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	const [persistenceProblem, setPersistenceProblem] = React.useState(false);
+	const [recoveryNotice, setRecoveryNotice] = React.useState("");
 	const [state, setState] = React.useState<AppState>(DEFAULT_STATE);
 	const [hydrated, setHydrated] = React.useState(false);
 	const [profileReady, setProfileReady] = React.useState(false);
@@ -793,15 +811,24 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 
 	React.useEffect(() => {
 		localStorage.removeItem(RETIRED_PRIVATE_STORAGE_KEY);
-		const stored = localStorage.getItem(STORAGE_KEY);
-		if (stored) {
-			try {
-				setState(normalizeAppState(JSON.parse(stored)));
-			} catch {
-				setState(migrateLegacy());
-			}
+		const stored = readStoredState(
+			localStorage,
+			STORAGE_KEY,
+			STATE_VERSION,
+			STORAGE_RECOVERY_NAMESPACE,
+		);
+		if (stored.kind === "ok") {
+			setState(normalizeAppState(stored.value));
+			if (stored.newerSnapshotKey)
+				setRecoveryNotice(
+					"This progress was saved by a newer app version. An untouched copy was kept in this browser; update the app to use every feature.",
+				);
 		} else {
 			setState(migrateLegacy());
+			if (stored.kind === "corrupt")
+				setRecoveryNotice(
+					"The saved progress could not be read, so the app started from defaults. The unreadable copy was kept in this browser and is included in a Settings export.",
+				);
 		}
 		setHydrated(true);
 	}, []);
@@ -809,6 +836,23 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	React.useEffect(() => {
 		if (hydrated) setPersistenceProblem(!persistAppState(state));
 	}, [hydrated, state]);
+
+	React.useEffect(() => {
+		// Browsers grant persistent storage more readily after a user gesture,
+		// so the request waits for the first interaction instead of page load.
+		if (!hydrated) return;
+		const request = () => {
+			void requestPersistentStorage();
+			window.removeEventListener("pointerdown", request);
+			window.removeEventListener("keydown", request);
+		};
+		window.addEventListener("pointerdown", request, { once: true });
+		window.addEventListener("keydown", request, { once: true });
+		return () => {
+			window.removeEventListener("pointerdown", request);
+			window.removeEventListener("keydown", request);
+		};
+	}, [hydrated]);
 
 	React.useEffect(() => {
 		const root = document.documentElement;
@@ -881,12 +925,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 			const update = {
 				displayName: state.learner.displayName,
 				avatarDataUrl: state.learner.avatarDataUrl,
-				privacy: {
-					shareAcrossApps: state.learner.shareAcrossApps,
-					allowOnlineAI: state.learner.allowOnlineAI,
-					storeAudio: state.settings.saveAudio,
-					includeEvidenceInExport: state.learner.includeEvidenceInExport,
-				},
+				privacy: profilePrivacy(state),
 				...(state.learner.shareAcrossApps
 					? {
 							language: "english" as const,
@@ -1045,6 +1084,14 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 				>
 					Changes could not be saved. Keep this tab open and export your data
 					from Settings before trying again.
+				</p>
+			) : null}
+			{recoveryNotice ? (
+				<p
+					role="status"
+					className="border border-amber-700 bg-white p-4 text-amber-900"
+				>
+					{recoveryNotice}
 				</p>
 			) : null}
 			{children}

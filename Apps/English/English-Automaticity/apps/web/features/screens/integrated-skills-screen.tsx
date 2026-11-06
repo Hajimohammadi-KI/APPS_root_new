@@ -2,19 +2,14 @@
 
 import * as React from "react";
 import {
-  BookOpen,
-  Brain,
   Check,
   ChevronLeft,
   ChevronRight,
-  Clock3,
   Eye,
   EyeOff,
   Headphones,
   Mic2,
-  PenLine,
   Save,
-  ShieldCheck,
   Sparkles,
   Square,
   Volume2,
@@ -23,13 +18,13 @@ import {
   INTEGRATED_SKILLS,
   buildAutomaticitySteps,
   getIntegratedSkillsLevel,
-  integratedSkillsLevels,
   type CefrLevel,
   type IntegratedSkill,
   type IntegratedSkillsUnit,
 } from "@grammar/content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/ui/notice";
 import {
   Card,
   CardContent,
@@ -38,12 +33,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ScreenHeading } from "@/features/components/screen-heading";
 import { QSkillsResources } from "@/features/components/qskills-resources";
 import { useAppStore } from "@/features/store/app-store";
 import { requiredFirst, todayKey } from "@/lib/utils";
+import { LessonNavigator } from "./integrated-skills/lesson-navigator";
+import { skillMeta } from "./integrated-skills/display-meta";
 
 type SpeechRecognitionResultLike = {
   isFinal: boolean;
@@ -67,50 +63,6 @@ type SpeechRecognitionLike = {
 };
 
 type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
-
-const skillMeta: Record<
-  IntegratedSkill,
-  {
-    label: string;
-    description: string;
-    icon: typeof Headphones;
-    className: string;
-  }
-> = {
-  listening: {
-    label: "Listening",
-    description: "Understand, notice, recall, and explain",
-    icon: Headphones,
-    className: "border-sky-300 bg-sky-50 text-sky-950",
-  },
-  speaking: {
-    label: "Speaking",
-    description: "Repeat, reformulate, and speak without a script",
-    icon: Mic2,
-    className: "border-violet-300 bg-violet-50 text-violet-950",
-  },
-  reading: {
-    label: "Reading",
-    description: "Find meaning, evidence, and structure",
-    icon: BookOpen,
-    className: "border-blue-300 bg-blue-50 text-blue-950",
-  },
-  writing: {
-    label: "Writing",
-    description: "Build, revise, and transfer a clear message",
-    icon: PenLine,
-    className: "border-amber-300 bg-amber-50 text-amber-950",
-  },
-};
-
-const levelTone: Record<CefrLevel, string> = {
-  A1: "border-violet-500 bg-violet-700 text-white",
-  A2: "border-blue-500 bg-blue-700 text-white",
-  B1: "border-indigo-500 bg-indigo-700 text-white",
-  B2: "border-purple-500 bg-purple-800 text-white",
-  C1: "border-slate-600 bg-slate-800 text-white",
-  C2: "border-violet-700 bg-violet-950 text-white",
-};
 
 const REVIEW_DELAY_MS = 86_400_000;
 
@@ -486,280 +438,41 @@ export function IntegratedSkillsScreen({
         title="Integrated Skills Path"
       />
 
-      <details className="integrated-navigator overflow-hidden rounded-2xl border border-violet-300 bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 bg-violet-50/80 px-5 py-4 marker:content-none">
-          <span>
-            <span className="block text-sm font-black text-violet-900">
-              Lesson navigator
-            </span>
-            <span className="mt-1 block text-sm text-violet-950/75">
-              {level.cefr} · Unit {unit.number} · {skillMeta[skill].label} ·{" "}
-              {visibleSkills.length}/4 skills shown
-            </span>
-          </span>
-          <span aria-hidden className="text-lg font-black text-violet-800">
-            ▾
-          </span>
-        </summary>
-        <div className="space-y-4 border-t border-violet-200 p-4 sm:p-5">
-          {/* Multi-select is intentionally only a display filter. The active
-              evidence path remains one skill at a time, so evidence cannot be
-              accidentally mixed across listening, speaking, reading, and writing. */}
-          <section
-            aria-labelledby="skill-filter-label"
-            className="rounded-2xl border border-violet-200 bg-white p-4"
-          >
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2
-                  className="text-base font-black text-violet-950"
-                  id="skill-filter-label"
-                >
-                  Show skills in this navigator
-                </h2>
-                <p className="mt-1 text-sm leading-6 text-slate-700">
-                  Select one or more skills to keep the menu compact. Choose one
-                  card below to open its evidence path.
-                </p>
-              </div>
-              <Badge variant="secondary">{visibleSkills.length} selected</Badge>
-            </div>
-            <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              {INTEGRATED_SKILLS.map((candidate) => {
-                const meta = skillMeta[candidate];
-                const Icon = meta.icon;
-                const checked = visibleSkills.includes(candidate);
-                return (
-                  <label
-                    className={`flex min-h-12 cursor-pointer items-center gap-3 rounded-xl border px-3 py-2 text-sm font-bold transition-colors ${
-                      checked
-                        ? "border-violet-400 bg-violet-50 text-violet-950"
-                        : "border-slate-200 bg-white text-slate-700"
-                    }`}
-                    key={candidate}
-                  >
-                    <input
-                      aria-label={`Show ${meta.label} in the lesson navigator`}
-                      checked={checked}
-                      className="size-4 accent-violet-700"
-                      onChange={() => toggleVisibleSkill(candidate)}
-                      type="checkbox"
-                    />
-                    <Icon aria-hidden className="size-4 shrink-0" />
-                    {meta.label}
-                  </label>
-                );
-              })}
-            </div>
-          </section>
-          <Card className="border-violet-300 bg-violet-50/80">
-            <CardContent className="grid gap-4 pt-6 lg:grid-cols-[1fr_auto] lg:items-center">
-              <div>
-                <Badge className="bg-violet-800 text-white">
-                  Today · one calm mission
-                </Badge>
-                <h2 className="mt-3 text-2xl font-black text-violet-950">
-                  Make English usable without overload
-                </h2>
-                <p className="mt-2 max-w-3xl text-base leading-7 text-violet-950/80">
-                  Work on one visible action. Listen to every instruction,
-                  dictate instead of typing, save at any point, and return
-                  without losing your place.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  aria-pressed={missionMode === "standard"}
-                  onClick={() => setMissionMode("standard")}
-                  variant={missionMode === "standard" ? "default" : "outline"}
-                >
-                  <Clock3 aria-hidden className="size-4" /> 12-minute mission
-                </Button>
-                <Button
-                  aria-pressed={missionMode === "rescue"}
-                  onClick={() => setMissionMode("rescue")}
-                  variant={missionMode === "rescue" ? "default" : "outline"}
-                >
-                  <ShieldCheck aria-hidden className="size-4" /> Rescue: one
-                  step
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>1. Choose your level</CardTitle>
-              <CardDescription>
-                Start at a comfortable level. You can change it without deleting
-                progress.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              {integratedSkillsLevels.map((candidate) => (
-                <Button
-                  aria-pressed={candidate.cefr === level.cefr}
-                  className={
-                    candidate.cefr === level.cefr
-                      ? levelTone[candidate.cefr]
-                      : "min-h-12 bg-white text-slate-900"
-                  }
-                  key={candidate.cefr}
-                  onClick={() => chooseLevel(candidate.cefr)}
-                  variant="outline"
-                >
-                  {candidate.cefr}
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
-
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(280px,.36fr)]">
-            <Card>
-              <CardHeader>
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <Badge variant="secondary">
-                      {level.cefr} · {level.title}
-                    </Badge>
-                    <CardTitle className="mt-2">Level foundation</CardTitle>
-                    <CardDescription className="max-w-3xl text-base leading-7">
-                      {level.descriptor}
-                    </CardDescription>
-                  </div>
-                  <Badge>{levelProgress}% level evidence</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="grid gap-2 text-base leading-7 sm:grid-cols-2">
-                  {level.baseLessons.map((lesson) => (
-                    <li
-                      className="flex gap-2 rounded-xl bg-slate-50 p-3"
-                      key={lesson}
-                    >
-                      <Brain
-                        aria-hidden
-                        className="mt-1 size-4 shrink-0 text-violet-800"
-                      />
-                      {lesson}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-violet-200">
-              <CardHeader>
-                <CardTitle>Level quality gate</CardTitle>
-                <CardDescription>
-                  Completion requires performance and delayed recall—not opening
-                  lessons.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Progress
-                  aria-label={`${levelProgress}% level progress`}
-                  value={levelProgress}
-                />
-                <p className="text-sm font-bold">
-                  {completedInLevel} / {levelStepIds.length} evidence stages
-                </p>
-                <ul className="space-y-2 text-sm leading-6">
-                  {level.exitCriteria.map((criterion) => (
-                    <li className="flex gap-2" key={criterion}>
-                      <Check
-                        aria-hidden
-                        className="mt-1 size-4 shrink-0 text-violet-800"
-                      />
-                      {criterion}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>2. Choose one unit and one skill</CardTitle>
-              <CardDescription>
-                The four skills share one real-life outcome, but each has its
-                own evidence path.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
-              <label
-                className="block space-y-2 text-base font-bold"
-                htmlFor="integrated-unit"
-              >
-                Unit
-                <Select
-                  className="min-h-12 text-base"
-                  id="integrated-unit"
-                  onChange={(event) => chooseUnit(event.target.value)}
-                  value={unit.id}
-                >
-                  {level.units
-                    .filter((candidate) =>
-                      visibleUnitIds.includes(candidate.id),
-                    )
-                    .map((candidate) => (
-                      <option key={candidate.id} value={candidate.id}>
-                        {candidate.number}. {candidate.title}
-                      </option>
-                    ))}
-                </Select>
-              </label>
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {visibleSkills.map((candidate) => {
-                  const meta = skillMeta[candidate];
-                  const Icon = meta.icon;
-                  return (
-                    <button
-                      aria-pressed={candidate === skill}
-                      className={`min-h-28 rounded-2xl border-2 p-4 text-left transition-[border-color,background-color,transform] active:scale-[.98] ${
-                        candidate === skill
-                          ? meta.className
-                          : "border-slate-200 bg-white text-slate-900"
-                      }`}
-                      key={candidate}
-                      onClick={() => chooseSkill(candidate)}
-                      type="button"
-                    >
-                      <Icon aria-hidden className="size-5" />
-                      <strong className="mt-3 block text-base">
-                        {meta.label}
-                      </strong>
-                      <span className="mt-1 block text-sm leading-6 opacity-80">
-                        {meta.description}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </details>
+      <LessonNavigator
+        level={level}
+        unit={unit}
+        skill={skill}
+        visibleSkills={visibleSkills}
+        visibleUnitIds={visibleUnitIds}
+        missionMode={missionMode}
+        levelProgress={levelProgress}
+        completedInLevel={completedInLevel}
+        levelStepCount={levelStepIds.length}
+        toggleVisibleSkill={toggleVisibleSkill}
+        setMissionMode={setMissionMode}
+        chooseLevel={chooseLevel}
+        chooseUnit={chooseUnit}
+        chooseSkill={chooseSkill}
+      />
 
       <Card
-        className="overflow-hidden border-2 border-violet-300"
+        className="overflow-hidden border-2 border-worksheet-line!"
         id="active-mission"
       >
-        <CardHeader className="bg-violet-950 text-white">
+        <CardHeader className="bg-worksheet-ink! text-white!">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-violet-200">
+              <p className="text-sm font-bold text-white">
                 {level.cefr} · Unit {unit.number} · {skillMeta[skill].label}
               </p>
               <CardTitle className="mt-2 text-2xl text-white">
                 {unit.title}
               </CardTitle>
-              <CardDescription className="mt-2 max-w-3xl text-base leading-7 text-violet-100">
+              <CardDescription className="mt-2 max-w-3xl text-base leading-7 text-white">
                 {lessonGoal(unit, skill)}
               </CardDescription>
             </div>
-            <Badge className="bg-white text-violet-950">
+            <Badge className="bg-white text-worksheet-teal!">
               {pathProgress}% path
             </Badge>
           </div>
@@ -770,16 +483,16 @@ export function IntegratedSkillsScreen({
           />
         </CardHeader>
         <CardContent className="space-y-5 pt-6">
-          <details className="rounded-xl border border-violet-200 bg-white">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-black text-violet-950 marker:content-none">
+          <details className="rounded-xl border border-worksheet-line! bg-white">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 font-black text-worksheet-teal! marker:content-none">
               <span>
                 Lesson steps · {activeStep + 1}/7: {step.title}
               </span>
-              <span aria-hidden className="text-lg text-violet-800">
+              <span aria-hidden className="text-lg text-worksheet-teal!">
                 ▾
               </span>
             </summary>
-            <div className="grid gap-2 border-t border-violet-100 p-3 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-2 border-t border-worksheet-line! p-3 sm:grid-cols-2 xl:grid-cols-3">
               {steps.map((candidate, index) => (
                 <Button
                   aria-current={index === activeStep ? "step" : undefined}
@@ -804,20 +517,20 @@ export function IntegratedSkillsScreen({
 
           <section
             aria-labelledby="current-step-title"
-            className="rounded-2xl bg-violet-50 p-5 sm:p-6"
+            className="rounded-2xl bg-worksheet-cyan! p-5 sm:p-6"
           >
             <div className="flex gap-3">
-              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-violet-800 text-white">
+              <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-worksheet-teal! border-worksheet-teal! text-white!">
                 <SkillIcon aria-hidden className="size-5" />
               </span>
               <div>
                 <h2
-                  className="text-xl font-black text-violet-950"
+                  className="text-xl font-black text-worksheet-teal!"
                   id="current-step-title"
                 >
                   {step.title}
                 </h2>
-                <p className="mt-2 max-w-3xl text-base leading-7 text-violet-950/85">
+                <p className="mt-2 max-w-3xl text-base leading-7 text-worksheet-teal/85">
                   {step.instruction}
                 </p>
               </div>
@@ -838,7 +551,7 @@ export function IntegratedSkillsScreen({
                 <div>
                   <h3 className="text-base font-black">Lesson material</h3>
                   {skill === "listening" ? (
-                    <p className="mt-1 text-xs font-bold text-violet-700">
+                    <p className="mt-1 text-xs font-bold text-worksheet-teal!">
                       Original listening script written for this lesson
                     </p>
                   ) : null}
@@ -920,17 +633,17 @@ export function IntegratedSkillsScreen({
               )}
             </section>
 
-            <section className="rounded-2xl border border-violet-300 bg-white p-5">
+            <section className="rounded-2xl border border-worksheet-line! bg-white p-5">
               <h3 className="text-base font-black">Your evidence</h3>
               <p className="mt-2 text-base leading-7 text-slate-700">
                 {step.responsePrompt}
               </p>
               {reviewLocked ? (
-                <p className="mt-4 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm font-bold leading-6 text-amber-950">
+                <Notice className="mt-4 font-bold" tone="warning">
                   {reviewDue
                     ? `Delayed recall opens ${formatDueTime(reviewDue)}.`
                     : "Complete the transfer stage first. Your delayed recall will open the next day."}
-                </p>
+                </Notice>
               ) : null}
               <Textarea
                 aria-label="Integrated skills evidence"
@@ -1003,21 +716,21 @@ export function IntegratedSkillsScreen({
         </CardContent>
       </Card>
 
-      <details className="overflow-hidden rounded-2xl border border-sky-200 bg-sky-50/70 shadow-sm">
+      <details className="overflow-hidden rounded-2xl border border-worksheet-line! bg-worksheet-cyan/70 shadow-sm">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 marker:content-none">
           <span>
-            <span className="block text-base font-black text-sky-950">
+            <span className="block text-base font-black text-worksheet-teal!">
               QSkills companion material
             </span>
-            <span className="mt-1 block text-sm text-sky-950/75">
+            <span className="mt-1 block text-sm text-worksheet-teal/75">
               Optional local audio, video, and book files
             </span>
           </span>
-          <span aria-hidden className="text-lg font-black text-sky-900">
+          <span aria-hidden className="text-lg font-black text-worksheet-teal!">
             ▾
           </span>
         </summary>
-        <div className="border-t border-sky-200 p-4 sm:p-5">
+        <div className="border-t border-worksheet-line! p-4 sm:p-5">
           <QSkillsResources cefr={level.cefr} />
         </div>
       </details>
@@ -1062,7 +775,7 @@ export function IntegratedSkillsScreen({
               const checked = pendingUnitIds.includes(candidate.id);
               return (
                 <div
-                  className={`flex min-w-0 items-center gap-2 rounded-xl border p-3 ${checked ? "border-violet-400 bg-violet-50" : "border-slate-200 bg-white"}`}
+                  className={`flex min-w-0 items-center gap-2 rounded-xl border p-3 ${checked ? "border-worksheet-line bg-worksheet-cyan" : "border-slate-200 bg-white"}`}
                   key={candidate.id}
                 >
                   <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 text-sm font-bold">
@@ -1128,17 +841,17 @@ export function IntegratedSkillsScreen({
         </div>
       </details>
 
-      <Card className="border-blue-200 bg-blue-50/70">
+      <Card className="border-worksheet-line! bg-worksheet-cyan/70">
         <CardContent className="flex gap-3 pt-5">
           <Sparkles
             aria-hidden
-            className="mt-1 size-5 shrink-0 text-blue-900"
+            className="mt-1 size-5 shrink-0 text-worksheet-teal"
           />
           <div>
-            <h2 className="font-black text-blue-950">
+            <h2 className="font-black text-worksheet-teal!">
               Calm-learning protections are active
             </h2>
-            <p className="mt-1 text-base leading-7 text-blue-950/80">
+            <p className="mt-1 text-base leading-7 text-worksheet-teal/80">
               Large text, strong contrast, spoken instructions, dictation,
               untimed work, local saving, reduced writing pressure, and a
               one-step rescue mission are built into this path. Rest days do not

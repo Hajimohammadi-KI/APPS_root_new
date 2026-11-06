@@ -1,42 +1,42 @@
 "use client";
 
 import * as React from "react";
+import { usesDevicePractice } from "@/lib/api-origin";
 
-type ConnectionState = "checking" | "connected" | "offline";
+type ConnectionState = "checking" | "connected" | "offline" | "device";
 
 const statusCopy: Record<ConnectionState, string> = {
-	checking: "Checking app service",
+	device: "Practice on this device",
+  checking: "Checking app service",
 	connected: "Local app service ready",
 	offline: "Local app service unavailable",
 };
-
-function isLoopbackHost(hostname: string) {
-	return hostname === "127.0.0.1" || hostname === "localhost" || hostname === "::1";
-}
 
 export function ApiConnectionStatus({ baseUrl }: { baseUrl: string }) {
 	const [status, setStatus] = React.useState<ConnectionState>("checking");
 	const [retryRequest, setRetryRequest] = React.useState(0);
 
 	React.useEffect(() => {
+		if (usesDevicePractice(baseUrl, window.location.hostname)) {
+			setStatus("device");
+			return;
+		}
 		let active = true;
 		let timer: ReturnType<typeof setTimeout> | undefined;
-		const target = new URL(baseUrl, window.location.origin);
-		const isPublicWebUsingLocalService =
-			!isLoopbackHost(window.location.hostname) && isLoopbackHost(target.hostname);
-
-		if (isPublicWebUsingLocalService) {
+		let target: URL;
+		try {
+			target = new URL(baseUrl, window.location.origin);
+		} catch {
 			setStatus("offline");
 			return () => {
 				active = false;
 			};
 		}
-
 		async function checkConnection() {
 			const controller = new AbortController();
 			const timeout = setTimeout(() => controller.abort(), 2500);
 			try {
-				const response = await fetch(`${baseUrl.replace(/\/$/, "")}/api/health`, {
+				const response = await fetch(`${target.origin}${target.pathname.replace(/\/$/, "")}/api/health`, {
 					cache: "no-store",
 					signal: controller.signal,
 				});
@@ -62,13 +62,13 @@ export function ApiConnectionStatus({ baseUrl }: { baseUrl: string }) {
 			aria-label={status === "offline" ? "Retry local app service" : statusCopy[status]}
 			aria-live="polite"
 			className="hidden min-h-9 items-center gap-2 rounded-full border border-slate-300 bg-white px-3 text-xs font-bold text-slate-800 sm:inline-flex"
-			disabled={status === "checking"}
+			disabled={status === "checking" || status === "device"}
 			onClick={() => {
 				// Retry without reloading the page, which protects an unsaved learner answer.
 				setStatus("checking");
 				setRetryRequest((request) => request + 1);
 			}}
-			title={`${statusCopy[status]} · ${baseUrl}`}
+			title={status === "device" ? "Answers are saved on this device. The optional online assessment service is not configured." : `${statusCopy[status]} · ${baseUrl}`}
 			type="button"
 		>
 			<span
@@ -77,9 +77,9 @@ export function ApiConnectionStatus({ baseUrl }: { baseUrl: string }) {
 				style={{
 					backgroundColor:
 						status === "connected"
-							? "#15803d"
+							? "#3d5a9e"
 							: status === "offline"
-								? "#b91c1c"
+								? "#c05640"
 								: "#a16207",
 				}}
 			/>

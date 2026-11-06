@@ -5,7 +5,12 @@ import {
   validateModelAssessment,
 } from "./assessment";
 import { ResponseTimer } from "./media";
-import { selectDailyFocus, selectDailyTask } from "./selector";
+import {
+  selectDailyFocus,
+  selectDailyTask,
+  selectNextLearningTask,
+  shouldResumeSavedPractice,
+} from "./selector";
 import { type CurriculumPack, type PracticeTask } from "./curriculum";
 import { constructionsForLesson, validateCurriculum } from "./curriculum";
 import { type AttemptEvent } from "./contracts";
@@ -88,6 +93,330 @@ const pack: CurriculumPack = {
   })),
 };
 describe("scoped feedback and task selection", () => {
+  test("equally practised prompts retain the curriculum's authored priority", () => {
+    const unit = {
+      ...pack.units[0]!,
+      tasks: [
+        { ...task, id: "z-curated" },
+        { ...task, id: "a-legacy" },
+      ],
+    };
+    expect(
+      selectDailyTask(unit, reduceAutomaticityEvents([], "de", at), at).task
+        ?.id,
+    ).toBe("z-curated");
+  });
+  test("extra recall prompts do not delay the next learning stage", () => {
+    const unit = {
+      ...pack.units[0]!,
+      tasks: [
+        task,
+        { ...task, id: "another-recall" },
+        { ...task, id: "vary", stage: "vary" as const },
+        { ...task, id: "produce", stage: "produce" as const },
+      ],
+    };
+    const state = reduceAutomaticityEvents([attempt], "de", at);
+    expect(selectDailyTask(unit, state, at).task?.id).toBe("vary");
+    const varied = { ...attempt, id: "varied", task: unit.tasks[2]! };
+    expect(
+      selectDailyTask(
+        unit,
+        reduceAutomaticityEvents([attempt, varied], "de", at),
+        at,
+      ).task?.id,
+    ).toBe("produce");
+  });
+  test("a completed learning cycle returns to an unused prompt at its first stage", () => {
+    const tasks = [
+      task,
+      { ...task, id: "recall-two" },
+      { ...task, id: "vary", stage: "vary" as const },
+      { ...task, id: "produce", stage: "produce" as const },
+      { ...task, id: "transfer", stage: "transfer" as const },
+    ];
+    const events = [tasks[0]!, ...tasks.slice(2)].map((value, index) => ({
+      ...attempt,
+      id: `cycle-${index}`,
+      task: value,
+    }));
+    const state = reduceAutomaticityEvents(events, "de", at);
+    expect(
+      selectDailyTask({ ...pack.units[0]!, tasks }, state, at).task?.id,
+    ).toBe("recall-two");
+  });
+  test("an old task version cannot satisfy a new stage opportunity", () => {
+    const unit = {
+      ...pack.units[0]!,
+      tasks: [
+        { ...task, version: "2" },
+        { ...task, id: "vary", stage: "vary" as const },
+      ],
+    };
+    expect(
+      selectDailyTask(unit, reduceAutomaticityEvents([attempt], "de", at), at)
+        .task?.id,
+    ).toBe(task.id);
+  });
+  test("continuation checks other topics for overdue work before the current topic", () => {
+    const withTasks = {
+      ...pack,
+      units: pack.units.map((unit) => ({
+        ...unit,
+        tasks: [
+          { ...task, id: `${unit.id}.retrieve`, constructionId: unit.id },
+          {
+            ...task,
+            id: `${unit.id}.retain`,
+            constructionId: unit.id,
+            stage: "retain" as const,
+          },
+        ],
+      })),
+    };
+    const state = reduceAutomaticityEvents([attempt], "de", at);
+    state.progress[0]!.nextReviewAt = "2026-09-04T10:00:00Z";
+    const chosen = selectNextLearningTask(
+      withTasks,
+      state,
+      at,
+      "A1",
+      "de.c.003",
+    );
+    expect(chosen?.unit.id).toBe("de.c.001");
+    expect(chosen?.task?.id).toBe("de.c.001.retain");
+    expect(chosen?.reason).toBe("due_review");
+    state.progress[0]!.nextReviewAt = "2026-09-06T10:00:00Z";
+    expect(
+      selectNextLearningTask(withTasks, state, at, "A1", "de.c.003")?.unit.id,
+    ).toBe("de.c.003");
+  });
+  test("repairs in another topic outrank continuing fresh work", () => {
+    const failure = assessControlledTask(
+      {
+        ...attempt,
+        response: { ...attempt.response, text: "ich bin bereit." },
+      },
+      task,
+      at,
+      "repair-next",
+    );
+    const state = reduceAutomaticityEvents([attempt, failure], "de", at);
+    const withTasks = {
+      ...pack,
+      units: pack.units.map((unit) => ({
+        ...unit,
+        tasks: [{ ...task, constructionId: unit.id }],
+      })),
+    };
+    const chosen = selectNextLearningTask(
+      withTasks,
+      state,
+      at,
+      "A1",
+      "de.c.003",
+    );
+    expect(chosen?.unit.id).toBe("de.c.001");
+    expect(chosen?.reason).toBe("repair");
+    expect(chosen?.previousAttemptId).toBe(attempt.id);
+  });
+  test("the display limit never hides the sixth unresolved repair from another level", () => {
+    const units = Array.from({ length: 6 }, (_, index) => ({
+      ...pack.units[0]!,
+      id: `de.c.${index + 10}`,
+      level: "A1",
+      tasks: [
+        { ...task, id: `task-${index}`, constructionId: `de.c.${index + 10}` },
+      ],
+    }));
+    const progress = reduceAutomaticityEvents([attempt], "de", at).progress[0]!;
+    const state = {
+      attempts: [],
+      rejected: [],
+      progress: units.map((unit, index) => ({
+        ...progress,
+        constructionId: unit.id,
+        repairNeeded: true,
+        practiceFailures: 6 - index,
+        nextReviewAt: null,
+      })),
+    };
+    const all = { ...pack, units };
+    const sixth = {
+      ...state,
+      progress: state.progress.filter(
+        (row) => row.constructionId === units[5]!.id,
+      ),
+    };
+    expect(selectNextLearningTask(all, sixth, at, "C1")?.unit.id).toBe(
+      units[5]!.id,
+    );
+    // The first five have no runnable tasks; the sixth remains eligible.
+    const limited = {
+      ...all,
+      units: units.map((unit, index) =>
+        index < 5 ? { ...unit, tasks: [] } : unit,
+      ),
+    };
+    expect(selectNextLearningTask(limited, state, at, "C1")?.unit.id).toBe(
+      units[5]!.id,
+    );
+  });
+  test("an unavailable due mode cannot block another runnable overdue mode", () => {
+    const progress = reduceAutomaticityEvents([attempt], "de", at).progress[0]!;
+    const unit = {
+      ...pack.units[0]!,
+      tasks: [{ ...task, stage: "retain" as const }],
+    };
+    const state = {
+      attempts: [],
+      rejected: [],
+      progress: [
+        {
+          ...progress,
+          modality: "speaking" as const,
+          nextReviewAt: "2026-09-01T10:00:00Z",
+        },
+        { ...progress, nextReviewAt: "2026-09-02T10:00:00Z" },
+      ],
+    };
+    expect(selectDailyTask(unit, state, at).task?.modality).toBe("writing");
+    expect(selectDailyTask(unit, state, at).reason).toBe("due_review");
+  });
+  test("general entry advances completed or empty sessions but preserves work in progress", () => {
+    const empty = { submittedId: null, draft: "", audioId: null };
+    expect(shouldResumeSavedPractice(empty, "general")).toBe(false);
+    expect(
+      shouldResumeSavedPractice(
+        { ...empty, draft: "My unfinished answer" },
+        "general",
+      ),
+    ).toBe(true);
+    expect(
+      shouldResumeSavedPractice(
+        { ...empty, audioId: "saved-audio" },
+        "general",
+      ),
+    ).toBe(true);
+    expect(
+      shouldResumeSavedPractice(
+        { ...empty, draft: "Submitted answer", submittedId: "attempt" },
+        "general",
+      ),
+    ).toBe(false);
+    expect(shouldResumeSavedPractice(empty, "explicit_task")).toBe(true);
+    expect(
+      shouldResumeSavedPractice({ ...empty, submittedId: "attempt" }, "review"),
+    ).toBe(true);
+    expect(shouldResumeSavedPractice(empty, "general", true)).toBe(true);
+  });
+  test("a retired failed item repairs through its active replacement and keeps the original response link", () => {
+    const failure = assessControlledTask(
+      {
+        ...attempt,
+        response: { ...attempt.response, text: "ich bin bereit." },
+      },
+      task,
+      at,
+      "retired-failure",
+    );
+    const replacement = { ...task, id: "replacement" };
+    const unit = {
+      ...pack.units[0]!,
+      tasks: [task, replacement],
+      retiredTasks: [
+        {
+          taskId: task.id,
+          replacementTaskId: replacement.id,
+          retiredOn: "2026-09-05",
+          reason: "Revised prompt",
+        },
+      ],
+    };
+    const result = selectDailyTask(
+      unit,
+      reduceAutomaticityEvents([attempt, failure], "de", at),
+      at,
+    );
+    expect(result.task?.id).toBe("replacement");
+    expect(result.previousAttemptId).toBe(attempt.id);
+  });
+  test("due reviews prefer an unused active review item over the same repeated prompt", () => {
+    const oldTask = { ...task, id: "old-review", stage: "retain" as const };
+    const unseen = { ...oldTask, id: "fresh-review" };
+    const past = {
+      ...attempt,
+      task: oldTask,
+      at: "2026-09-01T10:00:00Z",
+      timing: { ...attempt.timing, startedAt: "2026-09-01T10:00:00Z" },
+    };
+    const state = reduceAutomaticityEvents([past], "de", at);
+    expect(
+      selectDailyTask(
+        { ...pack.units[0]!, tasks: [oldTask, unseen] },
+        state,
+        at,
+      ).task?.id,
+    ).toBe("fresh-review");
+  });
+  test("the learning path moves beyond recall without claiming unchecked mastery", () => {
+    const unit = {
+      ...pack.units[0]!,
+      tasks: [
+        task,
+        {
+          ...task,
+          id: "reserved",
+          stage: "vary" as const,
+          partition: "evaluation" as const,
+        },
+        { ...task, id: "variation", stage: "vary" as const },
+        { ...task, id: "production", stage: "produce" as const },
+        { ...task, id: "transfer", stage: "transfer" as const },
+        { ...task, id: "speech", modality: "speaking" as const },
+      ],
+    };
+    const state = reduceAutomaticityEvents([attempt], "de", at);
+    expect(selectDailyTask(unit, state, at).task?.id).toBe("variation");
+    expect(selectDailyTask(unit, state, at).reason).toBe("continued_practice");
+    const progressed = unit.tasks
+      .filter(
+        (row) => row.modality === "writing" && row.partition === "practice",
+      )
+      .map((row, index) => ({ ...attempt, id: `step-${index}`, task: row }));
+    expect(
+      selectDailyTask(unit, reduceAutomaticityEvents(progressed, "de", at), at)
+        .task?.id,
+    ).toBe("speech");
+    expect(state.progress[0]?.independentSuccesses).toBe(0);
+  });
+  test("a missing target needs repair without becoming an accuracy failure", () => {
+    const judgment = {
+      ...assessControlledTask(attempt, task, at, "missing-target"),
+      verdict: "target_not_observed" as const,
+      dimensions: {
+        grammar: "unknown" as const,
+        relevance: "pass" as const,
+        target: "not_observed" as const,
+        opportunities: 0,
+      },
+    };
+    const state = reduceAutomaticityEvents([attempt, judgment], "de", at);
+    const unit = { ...pack.units[0]!, tasks: [task] };
+    expect(state.rejected).toEqual([]);
+    expect(state.progress[0]?.repairNeeded).toBe(true);
+    expect(state.progress[0]?.accuracy).toBeNull();
+    expect(selectDailyTask(unit, state, at).previousAttemptId).toBe(attempt.id);
+    expect(
+      evidenceOverview(state, { ...pack, units: [unit] }).repairs[0]?.attemptId,
+    ).toBe(attempt.id);
+    const uncertain = reduceAutomaticityEvents(
+      [attempt, { ...judgment, uncertainty: true }],
+      "de",
+      at,
+    );
+    expect(uncertain.progress[0]?.repairNeeded).toBe(false);
+  });
   test("approved model tuples cannot cross content versions, modes or rubrics", () => {
     const proposal = assessControlledTask(attempt, task, at, "model-result");
     proposal.evaluator = {
@@ -296,6 +625,35 @@ describe("scoped feedback and task selection", () => {
     expect(result.repairs).toEqual([]);
     expect(result.reason).toBe("diagnostic");
     expect(selectDailyFocus(pack, [], at, "A1", 99)).toEqual(result);
+  });
+
+  test("a new learner starts in authored curriculum order across calendar days", () => {
+    const playablePack: CurriculumPack = {
+      ...pack,
+      units: pack.units.map((unit) => ({
+        ...unit,
+        tasks: [
+          { ...task, id: `${unit.id}.retrieve`, constructionId: unit.id },
+        ],
+      })),
+    };
+    for (const day of [
+      "2026-10-03T10:00:00Z",
+      "2026-10-04T10:00:00Z",
+      "2026-10-05T10:00:00Z",
+    ]) {
+      expect(
+        selectDailyFocus(pack, [], day, "A1").focus.map((unit) => unit.id),
+      ).toEqual(pack.units.slice(0, 2).map((unit) => unit.id));
+      expect(
+        selectNextLearningTask(
+          playablePack,
+          reduceAutomaticityEvents([], "de", day),
+          day,
+          "A1",
+        )?.unit.id,
+      ).toBe(pack.units[0]!.id);
+    }
   });
   test("practice errors can request repair before a mastery score exists", () => {
     const result = assessControlledTask(

@@ -1,0 +1,23 @@
+Local transcription assets
+
+The ONNX model files and tokenizer/configuration files under models/ are from
+onnx-community/whisper-base.en at revision
+51eefc0af78b103839eda9e7e4f4186acc6517fe:
+https://huggingface.co/onnx-community/whisper-base.en/tree/51eefc0af78b103839eda9e7e4f4186acc6517fe
+
+The model was converted from openai/whisper-base.en, licensed Apache-2.0:
+https://huggingface.co/openai/whisper-base.en
+See LICENSE-APACHE-2.0.txt.
+
+The bundled worker uses @huggingface/transformers 4.3.2, licensed Apache-2.0:
+https://github.com/huggingface/transformers.js
+See LICENSE-APACHE-2.0.txt.
+
+The wasm/ files are from onnxruntime-web
+1.31.0-dev.20260914-8d85527a0, licensed MIT:
+https://github.com/microsoft/onnxruntime
+See LICENSE-ONNXRUNTIME-MIT.txt.
+
+The local model estimates words from audio. Its transcript is editable and is
+not a pronunciation grade. Audio is processed in the browser; no speech
+recognition service receives the recording.

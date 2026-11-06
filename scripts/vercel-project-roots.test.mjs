@@ -16,13 +16,18 @@ test("every public target declares one explicit Vercel project root", async () =
   const projectNames = new Set();
   const rootDirectories = new Set();
 
-  assert.equal(publicTargets.length, 4);
+  // English, German, and Research PDF Studio. The Cross Repository Tracker is
+  // released from its own repository, not from here.
+  assert.equal(publicTargets.length, 3);
 
   for (const target of publicTargets) {
     const deployment = target.deployment;
 
     assert.equal(deployment?.provider, "vercel", `${target.id} must declare Vercel`);
-    assert.equal(deployment.rootDirectory, target.projectDir, `${target.id} root drifted`);
+    const expectedRoot = ["english", "german"].includes(target.id)
+      ? `${target.projectDir}/apps/web`
+      : target.projectDir;
+    assert.equal(deployment.rootDirectory, expectedRoot, `${target.id} root drifted`);
     assert.ok(deployment.projectName, `${target.id} needs a Vercel project name`);
     assert.ok(deployment.configFile, `${target.id} needs a tracked vercel.json`);
 
@@ -58,15 +63,15 @@ test("the Settings app is deliberately local-only", () => {
 test("nested language workspaces publish Next output at their Vercel project roots", async () => {
   const nestedLanguageConfigs = [
     "Apps/English/English-Automaticity/apps/web/next.config.mjs",
-    "Apps/Deutsch-Automaticity/apps/web/next.config.ts",
+    "Apps/Deutsch/Deutsch-Automaticity/apps/web/next.config.ts",
   ];
 
   for (const configPath of nestedLanguageConfigs) {
     const source = await readFile(path.join(repoRoot, configPath), "utf8");
 
-    // Vercel validates the framework default at the project root, while Next executes in apps/web.
+    // The framework and build command must use the same apps/web output directory.
     assert.match(source, /process\.env\.VERCEL/);
-    assert.match(source, /distDir:\s*["']\.\.\/\.\.\/\.next["']/);
+    assert.doesNotMatch(source, /distDir:\s*["']\.\.\//);
   }
 });
 
@@ -74,7 +79,6 @@ test("public smoke checks use the canonical production aliases", () => {
   const canonicalAliases = new Map([
     ["english", "https://english-grammar-automaticity-pwa.vercel.app/"],
     ["german", "https://deutschflow-grammar.vercel.app/"],
-    ["tracker", "https://study-tracker-plan-five.vercel.app/"],
     ["pdf", "https://research-pdf-studio.vercel.app/"],
   ]);
 

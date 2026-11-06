@@ -197,6 +197,11 @@ $configDirectory = Split-Path -Parent $configurationPath
 $projectRoot = Resolve-ConfiguredPath -Base $configDirectory -Value ([string]$config.projectRoot)
 $desktopProject = Resolve-ConfiguredPath -Base $configDirectory -Value ([string]$config.desktopProject)
 $readerProject = Resolve-ConfiguredPath -Base $configDirectory -Value ([string]$config.readerProject)
+# The English desktop installer embeds Research PDF Studio, a separate product.
+# A copied project folder points at it with ENGLISH_GRAMMAR_READER_PROJECT.
+if (-not [string]::IsNullOrWhiteSpace($env:ENGLISH_GRAMMAR_READER_PROJECT)) {
+  $readerProject = [System.IO.Path]::GetFullPath($env:ENGLISH_GRAMMAR_READER_PROJECT)
+}
 $iconSource = Resolve-ConfiguredPath -Base $configDirectory -Value ([string]$config.iconSource)
 $outputFile = Resolve-ConfiguredPath -Base $projectRoot -Value ([string]$config.outputFile)
 
@@ -241,8 +246,14 @@ Assert-HexColor -Name 'highlightSoftColor' -Value ([string]$config.highlightSoft
 if (-not (Test-Path -LiteralPath $desktopProject -PathType Container)) {
   throw "Electron desktop project does not exist: $desktopProject"
 }
-if (-not (Test-Path -LiteralPath $readerProject -PathType Container)) {
-  throw "PDF Reader project does not exist: $readerProject"
+# Research PDF Studio is a separate product. When it is available it is embedded
+# for offline PDF reading; otherwise the installer is built without it and the
+# desktop app opens the online reader instead.
+$includeReader = Test-Path -LiteralPath $readerProject -PathType Container
+if (-not $includeReader) {
+  Write-Warning ("PDF Reader project was not found: $readerProject. " +
+    'Building the installer without the embedded Research PDF Studio; the desktop app will use the online reader. ' +
+    'Set ENGLISH_GRAMMAR_READER_PROJECT to the Reader-PDF-App folder to embed it.')
 }
 if (-not (Test-Path -LiteralPath $iconSource -PathType Leaf)) {
   throw "Setup icon does not exist: $iconSource"
@@ -351,29 +362,33 @@ if (-not $SkipElectronBuild) {
     (Get-Sha256Hex -LiteralPath $webArchive),
     (New-Object System.Text.UTF8Encoding($false)))
 
-  Write-Host "[2/8] Building the deterministic local PDF Reader..."
-  Push-Location $readerProject
-  try {
-    & bun run build
-    if ($LASTEXITCODE -ne 0) {
-      throw "PDF Reader production build failed with exit code $LASTEXITCODE."
+  if ($includeReader) {
+    Write-Host "[2/8] Building the deterministic local PDF Reader..."
+    Push-Location $readerProject
+    try {
+      & bun run build
+      if ($LASTEXITCODE -ne 0) {
+        throw "PDF Reader production build failed with exit code $LASTEXITCODE."
+      }
+    } finally {
+      Pop-Location
     }
-  } finally {
-    Pop-Location
+    $readerPayloadRoot = Join-Path $localAppRoot 'reader'
+    Copy-DirectoryDereferenced `
+      -Source (Join-Path $readerProject 'dist') `
+      -Destination (Join-Path $readerPayloadRoot 'dist')
+    New-Item -ItemType Directory -Force -Path (Join-Path $readerPayloadRoot 'scripts') | Out-Null
+    Copy-Item `
+      -LiteralPath (Join-Path $readerProject 'scripts\start-local.mjs') `
+      -Destination (Join-Path $readerPayloadRoot 'scripts\start-local.mjs') `
+      -Force
+    Copy-Item `
+      -LiteralPath (Join-Path $readerProject 'package.json') `
+      -Destination (Join-Path $readerPayloadRoot 'package.json') `
+      -Force
+  } else {
+    Write-Host "[2/8] Skipping the embedded PDF Reader; the desktop app will open the online reader."
   }
-  $readerPayloadRoot = Join-Path $localAppRoot 'reader'
-  Copy-DirectoryDereferenced `
-    -Source (Join-Path $readerProject 'dist') `
-    -Destination (Join-Path $readerPayloadRoot 'dist')
-  New-Item -ItemType Directory -Force -Path (Join-Path $readerPayloadRoot 'scripts') | Out-Null
-  Copy-Item `
-    -LiteralPath (Join-Path $readerProject 'scripts\start-local.mjs') `
-    -Destination (Join-Path $readerPayloadRoot 'scripts\start-local.mjs') `
-    -Force
-  Copy-Item `
-    -LiteralPath (Join-Path $readerProject 'package.json') `
-    -Destination (Join-Path $readerPayloadRoot 'package.json') `
-    -Force
   New-Item -ItemType Directory -Force -Path (Join-Path $localAppRoot 'runtime') | Out-Null
   Copy-Item `
     -LiteralPath (Get-Command bun).Source `
@@ -490,22 +505,15 @@ if (Test-Path -LiteralPath $compatibilityLauncherArchive -PathType Leaf) {
   Write-Warning "Compatibility launcher archive is unavailable; retaining the newly built launcher."
 }
 
-$workspaceRoot = $null
-$workspaceCandidate = [System.IO.DirectoryInfo]$projectRoot
-while ($null -ne $workspaceCandidate) {
-  $packagerCandidate = Join-Path $workspaceCandidate.FullName 'shared\GoogleOAuthPackaging.ps1'
-  if (Test-Path -LiteralPath $packagerCandidate -PathType Leaf) {
-    $workspaceRoot = $workspaceCandidate.FullName
-    . $packagerCandidate
-    break
-  }
-  $workspaceCandidate = $workspaceCandidate.Parent
+# The packager and the desktop bridges live inside this project
+# (distribution\windows-release), so a copied project folder builds alone.
+$packagerScript = Join-Path $projectRoot 'distribution\windows-release\GoogleOAuthPackaging.ps1'
+if (-not (Test-Path -LiteralPath $packagerScript -PathType Leaf)) {
+  throw "The Google OAuth packager is missing from the project: $packagerScript"
 }
-if ([string]::IsNullOrWhiteSpace($workspaceRoot)) {
-  throw 'The shared Google OAuth packager could not be found.'
-}
+. $packagerScript
 Install-StudyGoogleOAuthResources `
-  -WorkspaceRoot $workspaceRoot `
+  -WorkspaceRoot $projectRoot `
   -ResourcesDirectory (Join-Path $portableApp 'resources') `
   -IncludeDesktopBridge
 

@@ -1,6 +1,11 @@
 import type { Language } from "./contracts";
 import type { CurriculumPack } from "./curriculum";
-import { reduceAutomaticityEvents, type EvidenceReduction } from "./evidence";
+import {
+  reduceAutomaticityEvents,
+  unresolvedRepairs,
+  type EvidenceReduction,
+} from "./evidence";
+import { repairTaskForAttempt } from "./selector";
 import { readAutomaticityEvents } from "./storage";
 
 /** Every surface derives actions from current judgments, never completion flags. */
@@ -38,26 +43,12 @@ export function evidenceOverview(
       ),
     };
   });
-  const repairs = reduction.progress
-    .filter((row) => row.repairNeeded)
-    .flatMap((progress) => {
-      const original = reduction.attempts
-        .filter(
-          (row) =>
-            row.attempt.task.constructionId === progress.constructionId &&
-            row.attempt.task.modality === progress.modality &&
-            row.checked,
-        )
-        .at(-1);
-      if (!original || original.assessment?.verdict !== "needs_repair")
-        return [];
-      const unit = pack.units.find((row) => row.id === progress.constructionId);
-      const task =
-        unit?.tasks.find((row) => row.id === original.attempt.task.id) ??
-        unit?.tasks.find(
-          (row) =>
-            row.stage === "retrieve" && row.modality === progress.modality,
-        );
+  const repairs = unresolvedRepairs(reduction.attempts)
+    .flatMap((original) => {
+      const unit = pack.units.find(
+        (row) => row.id === original.attempt.task.constructionId,
+      );
+      const task = unit ? repairTaskForAttempt(unit, original.attempt) : null;
       const query = new URLSearchParams({
         review: "1",
         attempt: original.attempt.id,
@@ -70,7 +61,7 @@ export function evidenceOverview(
         {
           attemptId: original.attempt.id,
           title: unit?.title ?? null,
-          modality: progress.modality,
+          modality: original.attempt.task.modality,
           href: `/practice?${query}`,
           at: original.attempt.at,
         },
@@ -79,6 +70,80 @@ export function evidenceOverview(
     .sort((a, b) => a.at.localeCompare(b.at))
     .slice(0, 3);
   return { modes, repairs };
+}
+type ModeView = ReturnType<typeof evidenceOverview>["modes"][number];
+export const SKILLS = [
+  "reading",
+  "listening",
+  "writing",
+  "speaking",
+  "interaction",
+  "transfer",
+] as const;
+/** Evidence per skill (R97). Reading, listening and interaction have no
+ * checked tasks yet, so they are reported as not measured rather than
+ * guessed from other skills; saved speech without a listener's review is
+ * practice, not evidence. */
+export function skillReport(modes: readonly ModeView[]): {
+  skill: (typeof SKILLS)[number];
+  status: "evidence" | "practice_only" | "none" | "not_measured";
+  checked: number;
+  accuracy: number | null;
+  delayed: number;
+  saved: number;
+}[] {
+  const transfer = modes.reduce((sum, mode) => sum + mode.transfer, 0);
+  return SKILLS.map((skill) => {
+    const mode = modes.find((row) => row.modality === skill);
+    if (mode)
+      return {
+        skill,
+        status: mode.assessed
+          ? "evidence"
+          : mode.attempts
+            ? "practice_only"
+            : "none",
+        checked: mode.assessed,
+        accuracy: mode.accuracy,
+        delayed: mode.delayed,
+        saved: mode.attempts,
+      };
+    return {
+      skill,
+      status:
+        skill === "transfer"
+          ? transfer
+            ? "evidence"
+            : "none"
+          : "not_measured",
+      checked: skill === "transfer" ? transfer : 0,
+      accuracy: null,
+      delayed: 0,
+      saved: 0,
+    };
+  });
+}
+const packs = new Map<Language, Promise<CurriculumPack>>();
+/** One download of the catalog per page, shared by the views that need it. */
+export function loadCurriculumPack(
+  language: Language,
+): Promise<CurriculumPack> {
+  let pending = packs.get(language);
+  if (!pending) {
+    pending = fetch(`/learning-core/curriculum-${language}.json`).then(
+      async (response) => {
+        if (!response.ok) throw new Error("Catalog unavailable");
+        const value = (await response.json()) as CurriculumPack;
+        if (value.language !== language || !Array.isArray(value.units))
+          throw new Error("Invalid catalog");
+        return value;
+      },
+    );
+    // A failed download is tried again by the next caller.
+    pending.catch(() => packs.delete(language));
+    packs.set(language, pending);
+  }
+  return pending;
 }
 /** Small shared DOM view used by static pages and React wrappers. */
 export function mountEvidenceOverview(
@@ -97,12 +162,13 @@ export function mountEvidenceOverview(
     if (text !== undefined) value.textContent = text;
     return value;
   };
+  root.className = "automaticity-overview";
   root.setAttribute(
     "aria-label",
     t("Independent learning evidence", "Unabhängige Lernnachweise"),
   );
   root.style.cssText =
-    "border:1px solid #b7cebf;border-radius:14px;padding:20px;margin:16px 0;background:#f6faf7;color:#20382b;line-height:1.55;overflow-wrap:anywhere";
+    "border-radius:14px;padding:20px;margin:16px 0;line-height:1.55;overflow-wrap:anywhere";
   const refresh = () => {
     if (!active || !pack) return;
     const read = readAutomaticityEvents(localStorage, language);
@@ -112,27 +178,91 @@ export function mountEvidenceOverview(
       new Date().toISOString(),
     );
     const view = evidenceOverview(reduced, pack);
+    // The daily sidebar must reflect the same ledger as independent practice.
+    // Empty evidence is unknown, never a fabricated 0% mastery score.
+    const dailySummary = document.querySelector<HTMLElement>(
+      "[data-learning-summary]",
+    );
+    if (dailySummary) {
+      const due = reduced.progress.filter(
+        (row) => row.nextReviewAt && Date.parse(row.nextReviewAt) <= Date.now(),
+      ).length;
+      const checked = view.modes.reduce((sum, mode) => sum + mode.assessed, 0);
+      const delayed = view.modes.reduce((sum, mode) => sum + mode.delayed, 0);
+      const transfer = view.modes.reduce((sum, mode) => sum + mode.transfer, 0);
+      const link = node(
+        "a",
+        t("Open your learning path", "Deinen Lernweg öffnen"),
+      );
+      link.href = "/practice";
+      dailySummary.replaceChildren(
+        node("h3", t("Your learning evidence", "Deine Lernnachweise")),
+        node(
+          "p",
+          `${reduced.attempts.length} ${t("saved responses", "gespeicherte Antworten")}`,
+        ),
+        node("p", `${due} ${t("due reviews", "fällige Wiederholungen")}`),
+        node(
+          "p",
+          checked
+            ? `${checked} ${t("independent checks", "unabhängige Prüfungen")}`
+            : t(
+                "Independent accuracy is not yet established.",
+                "Selbstständige Genauigkeit ist noch nicht belegt.",
+              ),
+        ),
+        node(
+          "p",
+          `${delayed} ${t("delayed successes", "erfolgreiche spätere Abrufe")} · ${transfer} ${t("new-context successes", "Erfolge in neuem Kontext")}`,
+        ),
+        link,
+      );
+    }
     root.replaceChildren(
       node(
         "h2",
         t(
-          "Your next practice and saved evidence",
-          "Deine nächste Übung und gespeicherten Nachweise",
+          "Independent practice and saved responses",
+          "Eigenständige Übungen und gespeicherte Antworten",
         ),
       ),
     );
-    const start = node("a", t("Continue practice", "Weiterüben"));
-    start.href = "/practice";
+    const context = new URLSearchParams(location.search);
+    const topic = context.get("topic");
+    const query = new URLSearchParams();
+    if (topic) query.set("topic", topic);
+    if (context.get("level")) query.set("level", context.get("level")!);
+    const start = node(
+      "a",
+      topic
+        ? t(
+            "Practise this topic independently",
+            "Dieses Thema eigenständig üben",
+          )
+        : t("Resume independent practice", "Eigenständige Übung fortsetzen"),
+    );
+    start.href = query.size ? `/practice?${query}` : "/practice";
+    start.className = "automaticity-primary-action";
     start.style.cssText =
-      "display:inline-block;padding:10px 14px;margin:8px 8px 12px 0;background:#176346;color:white;border-radius:8px";
+      "display:inline-block;padding:10px 14px;margin:8px 8px 12px 0";
     root.append(start);
     const review = node(
       "a",
       t("Review saved responses", "Gespeicherte Antworten prüfen"),
     );
     review.href = "/practice?review=1";
-    review.style.cssText = "display:inline-block;padding:10px 8px";
+    review.className = "automaticity-secondary-action";
+    review.style.cssText =
+      "display:inline-block;padding:10px 12px;margin:8px 8px 12px 0";
     root.append(review);
+    const transfer = node(
+      "a",
+      t("Transfer to another device", "Auf ein anderes Gerät übertragen"),
+    );
+    transfer.href = "/practice#backup-tools";
+    transfer.style.cssText =
+      "display:inline-block;padding:10px 12px;margin:8px 0 12px";
+    root.append(transfer);
     if (view.repairs.length) {
       root.append(node("h3", t("Next repairs", "Nächste Korrekturen")));
       const list = node("ul");
@@ -150,6 +280,55 @@ export function mountEvidenceOverview(
       }
       root.append(list);
     }
+    // R97: every skill is listed, so a skill without evidence is visible.
+    const names = {
+      reading: t("Reading", "Lesen"),
+      listening: t("Listening", "Hören"),
+      writing: t("Writing", "Schreiben"),
+      speaking: t("Speaking", "Sprechen"),
+      interaction: t("Interaction", "Interaktion"),
+      transfer: t("Transfer to new contexts", "Transfer in neue Kontexte"),
+    };
+    const count = (n: number, one: string, many: string) =>
+      `${n} ${n === 1 ? one : many}`;
+    const skills = node("section");
+    skills.dataset.skillReport = "true";
+    const skillList = node("ul");
+    for (const row of skillReport(view.modes)) {
+      const name = names[row.skill];
+      const item = node(
+        "li",
+        row.status === "not_measured"
+          ? t(
+              `${name}: not measured; the app has no checked tasks for this skill yet.`,
+              `${name}: nicht gemessen; die App hat dafür noch keine geprüften Aufgaben.`,
+            )
+          : row.status === "none"
+            ? t(`${name}: no evidence yet.`, `${name}: noch kein Nachweis.`)
+            : row.status === "practice_only"
+              ? t(
+                  `${name}: ${count(row.saved, "saved response", "saved responses")}, none checked yet.`,
+                  `${name}: ${count(row.saved, "gespeicherte Antwort", "gespeicherte Antworten")}, noch keine geprüft.`,
+                )
+              : row.skill === "transfer"
+                ? t(
+                    `${name}: ${count(row.checked, "success", "successes")} in a new context.`,
+                    `${name}: ${count(row.checked, "Erfolg", "Erfolge")} in neuem Kontext.`,
+                  )
+                : t(
+                    `${name}: ${count(row.checked, "independent check", "independent checks")}, ${Math.round((row.accuracy ?? 0) * 100)}% matched · ${count(row.delayed, "delayed success", "delayed successes")}.`,
+                    `${name}: ${count(row.checked, "unabhängige Prüfung", "unabhängige Prüfungen")}, ${Math.round((row.accuracy ?? 0) * 100)} % richtig · ${count(row.delayed, "verzögerter Erfolg", "verzögerte Erfolge")}.`,
+                  ),
+      );
+      item.dataset.skill = row.skill;
+      item.dataset.status = row.status;
+      skillList.append(item);
+    }
+    skills.append(
+      node("h3", t("Evidence by skill", "Nachweise nach Fertigkeit")),
+      skillList,
+    );
+    root.append(skills);
     const details = node("details"),
       summary = node(
         "summary",
@@ -177,15 +356,15 @@ export function mountEvidenceOverview(
           "p",
           mode.accuracy === null
             ? t("Accuracy not yet established", "Genauigkeit noch nicht belegt")
-            : `${Math.round(mode.accuracy * 100)}% · ${mode.assessed} ${t("independent checks", "unabhängige Prüfungen")}`,
+            : `${Math.round(mode.accuracy * 100)}% · ${mode.assessed} ${mode.assessed === 1 ? t("independent check", "unabhängige Prüfung") : t("independent checks", "unabhängige Prüfungen")}`,
         ),
         node(
           "p",
-          `${mode.attempts} ${t("saved attempts", "gespeicherte Versuche")} · ${mode.assisted} ${t("with recorded support", "mit erfasster Hilfe")}`,
+          `${mode.attempts} ${mode.attempts === 1 ? t("saved attempt", "gespeicherter Versuch") : t("saved attempts", "gespeicherte Versuche")} · ${mode.assisted} ${t("with recorded support", "mit erfasster Hilfe")}`,
         ),
         node(
           "p",
-          `${mode.delayed} ${t("delayed successes", "erfolgreiche verzögerte Abrufe")} · ${mode.transfer} ${t("new-context successes", "Erfolge in neuem Kontext")}`,
+          `${mode.delayed} ${mode.delayed === 1 ? t("delayed success", "erfolgreicher verzögerter Abruf") : t("delayed successes", "erfolgreiche verzögerte Abrufe")} · ${mode.transfer} ${mode.transfer === 1 ? t("new-context success", "Erfolg in neuem Kontext") : t("new-context successes", "Erfolge in neuem Kontext")}`,
         ),
         node(
           "p",
@@ -227,6 +406,19 @@ export function mountEvidenceOverview(
   };
   const fail = () => {
     if (active) {
+      const dailySummary = document.querySelector<HTMLElement>(
+        "[data-learning-summary]",
+      );
+      if (dailySummary)
+        dailySummary.replaceChildren(
+          node(
+            "p",
+            t(
+              "Learning evidence is temporarily unavailable. Open practice to check your saved history.",
+              "Lernnachweise sind vorübergehend nicht verfügbar. Öffne die Übung, um deinen gespeicherten Verlauf zu prüfen.",
+            ),
+          ),
+        );
       root.replaceChildren(
         node(
           "p",
@@ -247,12 +439,8 @@ export function mountEvidenceOverview(
       t("Loading saved practice…", "Gespeicherte Übungen werden geladen…"),
     ),
   );
-  void fetch(`/learning-core/curriculum-${language}.json`)
-    .then(async (response) => {
-      if (!response.ok) throw new Error("Catalog unavailable");
-      const value = (await response.json()) as CurriculumPack;
-      if (value.language !== language || !Array.isArray(value.units))
-        throw new Error("Invalid catalog");
+  void loadCurriculumPack(language)
+    .then((value) => {
       pack = value;
       refresh();
     })
@@ -266,11 +454,13 @@ export function mountEvidenceOverview(
   };
   window.addEventListener("storage", changed);
   window.addEventListener("automaticity-history-updated", changed);
+  window.addEventListener("language-topic-changed", changed);
   window.addEventListener("focus", changed);
   return () => {
     active = false;
     window.removeEventListener("storage", changed);
     window.removeEventListener("automaticity-history-updated", changed);
+    window.removeEventListener("language-topic-changed", changed);
     window.removeEventListener("focus", changed);
     root.replaceChildren();
   };

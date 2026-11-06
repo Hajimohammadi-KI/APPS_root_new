@@ -20,7 +20,7 @@ const publicRoot = (language) =>
     root,
     language === "en"
       ? "Apps/English/English-Automaticity/apps/web/public"
-      : "Apps/Deutsch-Automaticity/apps/web/public",
+      : "Apps/Deutsch/Deutsch-Automaticity/apps/web/public",
   );
 let language = "en";
 const server = createServer(async (request, response) => {
@@ -89,6 +89,24 @@ try {
             .map((key) => JSON.parse(localStorage.getItem(key))),
         language,
       );
+    // Collapsed sections are opened, as a learner would, before their controls are used.
+    const expand = async (en, de, target = page) => {
+      const summary = target.getByText(t(en, de), { exact: true });
+      if (!(await summary.evaluate((node) => node.parentElement.open)))
+        await summary.click();
+    };
+    const planOptions = (target = page) =>
+      expand(
+        "My plan & practice options",
+        "Mein Plan & Übungseinstellungen",
+        target,
+      );
+    const continuation = () =>
+      page.getByRole("button", {
+        name: new RegExp(
+          `^(?:${t("Repair before continuing|Continue learning path", "Vor dem Weitergehen korrigieren|Lernweg fortsetzen")})$`,
+        ),
+      });
     try {
       for (const asset of [
         "practice.js",
@@ -114,6 +132,7 @@ try {
         .locator("option")
         .count();
       assert.equal(count, language === "en" ? 124 : 156);
+      await planOptions();
       await page.locator("#daily-response-goal").focus();
       await page.locator("#daily-response-goal").selectOption("5");
       await expect(page.locator("#daily-response-goal")).toBeFocused();
@@ -159,6 +178,19 @@ try {
       );
       const first = (await events()).find((row) => row.type === "attempt");
       assert.equal(first.timing.source, "unavailable");
+      // Since W08 an unmatched closed answer is saved without a score; it is never accepted.
+      const firstVerdicts = (await events())
+        .filter(
+          (row) => row.type === "assessment" && row.attemptId === first.id,
+        )
+        .map((row) => row.verdict);
+      assert.ok(firstVerdicts.includes("not_assessed"));
+      assert.ok(!firstVerdicts.includes("pass"));
+      // The feedback names the unit's rule next to the marked differences.
+      await expect(page.locator(".answer-rule")).toHaveCount(1);
+      await expect(page.locator(".answer-rule")).toContainText(
+        language === "en" ? "Rule: " : "Regel: ",
+      );
       await action(
         "Try again as a repair",
         "Als Korrektur erneut versuchen",
@@ -177,15 +209,30 @@ try {
       );
       assert.equal(repaired.assistance.solutionRevealed, true);
       await page.locator("#daily-response-goal").selectOption("3");
-      await action("Produce", "Produzieren").click();
+      // R88: open writing is optional and opened through its explicit task link.
+      await expand(
+        "Optional writing and speaking",
+        "Optional schreiben und sprechen",
+      );
+      await page
+        .getByRole("link", {
+          name: `${t("Produce", "Produzieren")} · ${t("Write", "Schreiben")}`,
+          exact: true,
+        })
+        .click();
+      await expect(action("Save response", "Antwort speichern")).toBeVisible();
+      await expect(
+        action("Save and check", "Speichern und prüfen"),
+      ).toHaveCount(0);
       await page
         .locator("#practice-response")
         .fill("Synthetic open response for effort counting only");
-      await action("Save and check", "Speichern und prüfen").click();
+      await action("Save response", "Antwort speichern").click();
       await expect(page.locator("[data-daily-responses]")).toHaveAttribute(
         "data-daily-responses",
         "3",
       );
+      await planOptions();
       await expect(
         page.getByText(
           t(/Today's goal is reached/, /Dein Tagesziel ist erreicht/),
@@ -198,9 +245,13 @@ try {
         0,
       );
       row.checks.push(
-        "assisted repair and open responses count as effort without mastery; interrupted timing unavailable",
+        "unmatched closed answer saved unscored; assisted repair and optional open responses count as effort without mastery; interrupted timing unavailable",
       );
-      await action("Next task", "Nächste Aufgabe").click();
+      // A saved response continues on the main path, which offers only checked writing.
+      await continuation().click();
+      await expect(
+        action("Save and check", "Speichern und prüfen"),
+      ).toBeVisible();
       await page
         .locator("#practice-response")
         .fill("Synthetic draft retained through quota failure");
@@ -220,6 +271,7 @@ try {
         key,
       );
       await page.reload({ waitUntil: "domcontentloaded" });
+      await planOptions();
       await expect(
         page.getByText(
           t(
@@ -279,6 +331,7 @@ try {
       const other = await context.newPage();
       other.setDefaultNavigationTimeout(30000);
       await other.goto(`${base}/practice`, { waitUntil: "domcontentloaded" });
+      await planOptions(other);
       await expect(other.locator("#daily-response-goal")).toBeDisabled();
       await expect(
         other.getByRole("button", {
@@ -301,12 +354,15 @@ try {
           fullPage: true,
         });
       }
-      await page
-        .locator("details")
-        .filter({ has: page.locator("[lang=fa]") })
-        .locator("summary")
-        .click();
-      await expect(page.locator("[lang=fa]")).toHaveAttribute("dir", "rtl");
+      await planOptions();
+      // The support-language guide and prompts also carry lang=fa; target the Persian help itself.
+      const persianHelp = page.getByText("راهنمای فارسی", { exact: true });
+      await persianHelp.click();
+      const persianGuide = persianHelp.locator(
+        "xpath=following-sibling::p[@lang='fa']",
+      );
+      await expect(persianGuide).toBeVisible();
+      await expect(persianGuide).toHaveAttribute("dir", "rtl");
       await action("Finish for now", "Für heute pausieren").click();
       await action("Resume practice", "Weiterüben").click();
       await expect(page.locator("#practice-response")).toHaveValue(
@@ -363,6 +419,13 @@ try {
         return {
           title: unit.title,
           id: attempt.id,
+          checkedTaskIds: core
+            .activePracticeTasks(unit)
+            .filter(
+              (task) =>
+                task.partition === "practice" && core.isCheckedTask(task),
+            )
+            .map((task) => task.id),
           returnTaskId: core
             .activePracticeTasks(unit)
             .find(
@@ -374,15 +437,42 @@ try {
         };
       }, language);
       await page.reload({ waitUntil: "domcontentloaded" });
-      await page
+      await planOptions();
+      await expand("Other suggested topics", "Weitere Themenvorschläge");
+      const dueTopic = page
         .locator(".focus-list")
-        .getByRole("button", { name: seeded.title, exact: true })
+        .getByRole("button", { name: seeded.title, exact: true });
+      // R88: a due spoken review never pulls the main path into unscored speech.
+      await expect(
+        dueTopic.locator("xpath=following-sibling::p[1]"),
+      ).toHaveText(new RegExp(`^${t("Writing", "Schreiben")} · `));
+      await dueTopic.click();
+      await page.waitForURL((url) =>
+        seeded.checkedTaskIds.includes(url.searchParams.get("task")),
+      );
+      await expect(
+        action("Save and check", "Speichern und prüfen"),
+      ).toBeVisible();
+      // Spoken recall stays one explicit optional link away, saved without a score.
+      await expand(
+        "Optional writing and speaking",
+        "Optional schreiben und sprechen",
+      );
+      await page
+        .getByRole("link", {
+          name: `${t("Return later", "Später abrufen")} · ${t("Speak", "Sprechen")}`,
+          exact: true,
+        })
         .click();
+      await page.waitForURL(
+        (url) => url.searchParams.get("task") === seeded.returnTaskId,
+      );
       assert.equal(
         new URL(page.url()).searchParams.get("task"),
         seeded.returnTaskId,
       );
       await expect(action("Start recording", "Aufnahme starten")).toBeVisible();
+      await expect(action("Save response", "Antwort speichern")).toBeVisible();
       await page.addScriptTag({
         url: `${base}/learning-core/automaticity-v2.js`,
       });
@@ -457,13 +547,18 @@ try {
         };
       }, language);
       assert.equal(repairSeed.verdict, "needs_repair");
+      await planOptions();
       await page
         .getByLabel(t("Practice level", "Übungsniveau"), { exact: true })
         .selectOption("C1");
+      await expand("Other suggested topics", "Weitere Themenvorschläge");
       await page
         .locator(".focus-list")
         .getByRole("button", { name: repairSeed.title, exact: true })
         .click();
+      await page.waitForURL(
+        (url) => url.searchParams.get("task") === repairSeed.taskId,
+      );
       assert.equal(
         new URL(page.url()).searchParams.get("task"),
         repairSeed.taskId,
@@ -475,7 +570,7 @@ try {
       );
       assert.equal(linked.previousAttemptId, repairSeed.id);
       row.checks.push(
-        "due speaking recommendation opens speaking recall; changing level keeps repair visible and linked to original response",
+        "due spoken review keeps the main path on checked writing; speaking recall opens from its explicit optional link with recording and an honest save label; changing level keeps repair visible and linked to original response",
       );
       row.status = "passed";
     } catch (error) {

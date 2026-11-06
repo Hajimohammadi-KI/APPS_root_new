@@ -24,12 +24,36 @@ bun run build
 bun run start
 ```
 
+## Self-contained project folder
+
+This folder is the whole application. Copy it anywhere (or hand it to someone)
+and it installs, tests, builds, and deploys on its own:
+
+```powershell
+bun install --frozen-lockfile
+bun run check
+bun run build
+```
+
+Nothing is imported from outside the folder. The shared learning core, home
+screen, and mobile assets are kept as full copies under `packages/learning-core`,
+`apps/web/components`, and `apps/web/public/device-access`; the Windows
+installer helpers are under `distribution/windows-release`. Local Vercel links
+(`.vercel/`) and `node_modules/` are machine-specific and are not part of the
+hand-over.
+
+The Windows desktop installer (`bun run package:windows-exe`) can embed
+Research PDF Studio, a separate product, for offline PDF reading. If that
+project is not beside this one (or named by `ENGLISH_GRAMMAR_READER_PROJECT`),
+the installer is built without it and the desktop app opens the online reader
+at `https://research-pdf-studio.vercel.app/` instead.
+
 ## Free Vercel deployment
 
-The repository root contains `vercel.json` for the English production site.
-It declares `Apps/English/English-07082026` as Vercel's root directory,
-because `APPS_root_new` holds several independent apps and has no root
-`package.json`. Do not override that root directory in the Vercel dashboard.
+The Vercel project `english-grammar-automaticity-pwa` builds `apps/web` with
+`apps/web/vercel.json` (root directory `apps/web`, install from the project
+root). The `vercel.json` at the project root serves the same purpose when the
+project folder itself is the repository root.
 
 To run the preserved source application independently:
 
@@ -139,6 +163,17 @@ updates and normal uninstall.
 LanguageTool is routed through the NestJS backend. If it is unavailable, the
 app can still show a small set of offline corrections, but a blocking learning
 gate cannot pass until the full online assessment succeeds.
+
+## Central Study Tracker (AI explanations, DeepL)
+
+The `/api/ai` and `/api/deepl` routes proxy to the central Study Tracker.
+Configure it on the server only; browser-sent identity headers are ignored.
+
+| Variable | Purpose |
+|---|---|
+| `CENTRAL_STUDY_APP_URL` | Base URL of the tracker (default `http://127.0.0.1:4312`) |
+| `CENTRAL_STUDY_USER_ID` | Identity forwarded to the tracker when it is not in local mode |
+| `CENTRAL_STUDY_USER_EMAIL` | Optional e-mail identity forwarded alongside the id |
 
 ## Version 16 complete content
 

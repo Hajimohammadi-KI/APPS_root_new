@@ -4,77 +4,228 @@ import {
   type ConstructionUnit,
   type PracticeTask,
 } from "./curriculum";
-import type { ConstructionProgress, EvidenceReduction } from "./evidence";
+import {
+  unresolvedRepairs,
+  type ConstructionProgress,
+  type EvidenceReduction,
+} from "./evidence";
+import type { AttemptEvent } from "./contracts";
+import { constructionTargetMet } from "./learning-target";
+import { auditClosedTask } from "./curriculum-audit";
+export { shouldResumeSavedPractice } from "./practice-session";
 export interface DailySelection {
   focus: ConstructionUnit[];
   repairs: ConstructionProgress[];
   reason: "due_review" | "repair" | "diagnostic" | "continued_practice";
 }
+export interface TaskRecommendation {
+  task: PracticeTask | null;
+  previousAttemptId: string | null;
+  reason: DailySelection["reason"];
+}
+
+/** "checked" keeps the main path to responses with a deterministic check. */
+export type TaskScope = "all" | "checked";
+
+/** Closed written answers with an accepted solution; open, spoken and
+ * human-review tasks remain available as optional practice. */
+export function isCheckedTask(task: PracticeTask): boolean {
+  return (
+    task.modality === "writing" &&
+    task.answerPolicy === "closed" &&
+    task.acceptedAnswers.length > 0 &&
+    !task.constructionAssessment &&
+    !auditClosedTask(task).some((issue) => issue.severity === "error")
+  );
+}
+
+/** Attempts store only a task identity; judge them by their authored definition. */
+function attemptWasChecked(
+  unit: ConstructionUnit,
+  attempt: AttemptEvent,
+): boolean {
+  const definition = unit.tasks.find(
+    (task) =>
+      task.id === attempt.task.id && task.version === attempt.task.version,
+  );
+  return !!definition && isCheckedTask(definition);
+}
+
+/** Resolve a historical repair to a current practice item in the same response mode. */
+export function repairTaskForAttempt(
+  unit: ConstructionUnit,
+  original: AttemptEvent,
+  scope: TaskScope = "all",
+): PracticeTask | null {
+  if (
+    unit.id !== original.task.constructionId ||
+    unit.language !== original.language ||
+    (scope === "checked" && !attemptWasChecked(unit, original))
+  )
+    return null;
+  const tasks = activePracticeTasks(unit).filter(
+    (task) =>
+      task.partition === "practice" &&
+      task.modality === original.task.modality &&
+      (scope === "all" || isCheckedTask(task)),
+  );
+  const replacementId = unit.retiredTasks?.find(
+    (row) => row.taskId === original.task.id,
+  )?.replacementTaskId;
+  return (
+    tasks.find((task) => task.id === replacementId) ??
+    tasks.find(
+      (task) =>
+        task.id === original.task.id && task.version === original.task.version,
+    ) ??
+    tasks.find((task) => task.stage === "repair") ??
+    tasks.find((task) => task.stage === "retrieve") ??
+    null
+  );
+}
+
 /** Open the recommended mode and stage; held-out evaluation items stay out of daily practice. */
 export function selectDailyTask(
   unit: ConstructionUnit,
   state: EvidenceReduction,
   now: string,
-): {
-  task: PracticeTask | null;
-  previousAttemptId: string | null;
-  reason: "due_review" | "repair" | "diagnostic";
-} {
+  scope: TaskScope = "all",
+): TaskRecommendation {
   const tasks = activePracticeTasks(unit).filter(
-    (task) => task.partition === "practice",
+    (task) =>
+      task.partition === "practice" && (scope === "all" || isCheckedTask(task)),
   );
-  const rows = state.progress.filter((row) => row.constructionId === unit.id);
+  const history = state.attempts.filter(
+    (row) => row.attempt.task.constructionId === unit.id,
+  );
+  const pending = unresolvedRepairs(history);
+  // In the checked scope, only urgency that a checked task can serve counts;
+  // an open or spoken original never gains a checked replacement.
+  const rows = state.progress.filter(
+    (row) =>
+      row.constructionId === unit.id &&
+      (scope === "all" || row.modality === "writing"),
+  );
   const due = rows
     .filter(
       (row) =>
         row.nextReviewAt && Date.parse(row.nextReviewAt) <= Date.parse(now),
     )
-    .sort(
-      (a, b) => Date.parse(a.nextReviewAt!) - Date.parse(b.nextReviewAt!),
-    )[0];
-  const repair = rows.find((row) => row.repairNeeded);
-  // Repair the current error first within a construction, then return to its due mode.
-  const mode = (repair ?? due)?.modality ?? "writing";
-  const needsRepair = rows.some(
-    (row) => row.modality === mode && row.repairNeeded,
+    .sort((a, b) => Date.parse(a.nextReviewAt!) - Date.parse(b.nextReviewAt!));
+  const repairs = rows.filter(
+    (row) =>
+      row.repairNeeded &&
+      (scope === "all" ||
+        pending.some(
+          (item) =>
+            item.attempt.task.modality === row.modality &&
+            attemptWasChecked(unit, item.attempt),
+        )),
   );
-  const original = needsRepair
-    ? state.attempts
-        .filter(
+  const rankedTasks = (candidates: PracticeTask[]) =>
+    candidates
+      .map((candidate) => {
+        const tried = history.filter(
           (row) =>
-            row.attempt.task.constructionId === unit.id &&
-            row.attempt.task.modality === mode &&
-            ["needs_repair", "target_not_observed"].includes(
-              row.assessment?.verdict ?? "",
-            ),
-        )
-        .sort((a, b) => Date.parse(b.attempt.at) - Date.parse(a.attempt.at))[0]
-        ?.attempt
-    : undefined;
-  const originalTask = original
-    ? tasks.find(
-        (task) =>
-          task.id === original.task.id &&
-          task.version === original.task.version,
-      )
-    : undefined;
-  const reason = needsRepair ? "repair" : due ? "due_review" : "diagnostic";
-  const stage =
-    reason === "repair"
-      ? "repair"
-      : reason === "due_review"
-        ? "retain"
-        : "retrieve";
-  return {
-    task:
+            row.attempt.task.id === candidate.id &&
+            row.attempt.task.version === candidate.version,
+        );
+        return {
+          task: candidate,
+          count: tried.length,
+          last: Math.max(0, ...tried.map((row) => Date.parse(row.attempt.at))),
+        };
+      })
+      .sort(
+        (a, b) =>
+          a.count - b.count ||
+          a.last - b.last ||
+          a.task.id.localeCompare(b.task.id),
+      );
+  // Try every urgent modality. A missing speaking task must not hide a due writing task.
+  for (const row of [...repairs, ...due.filter((row) => !row.repairNeeded)]) {
+    const reason = row.repairNeeded ? "repair" : "due_review";
+    const original = row.repairNeeded
+      ? pending.find(
+          (item) =>
+            item.attempt.task.modality === row.modality &&
+            (scope === "all" || attemptWasChecked(unit, item.attempt)),
+        )?.attempt
+      : undefined;
+    const originalTask = original
+      ? repairTaskForAttempt(unit, original, scope)
+      : undefined;
+    const stage = row.repairNeeded ? "repair" : "retain";
+    const selected =
       originalTask ??
-      tasks.find((task) => task.modality === mode && task.stage === stage) ??
-      tasks.find(
-        (task) => task.modality === mode && task.stage === "retrieve",
-      ) ??
-      null,
-    previousAttemptId: original?.id ?? null,
-    reason,
+      rankedTasks(
+        tasks.filter(
+          (candidate) =>
+            candidate.modality === row.modality && candidate.stage === stage,
+        ),
+      )[0]?.task ??
+      rankedTasks(
+        tasks.filter(
+          (candidate) =>
+            candidate.modality === row.modality &&
+            candidate.stage === "retrieve",
+        ),
+      )[0]?.task;
+    if (selected)
+      return {
+        task: selected,
+        previousAttemptId: original?.id ?? null,
+        reason,
+      };
+  }
+  if (repairs.length || due.length)
+    return {
+      task: null,
+      previousAttemptId: null,
+      reason: repairs.length ? "repair" : "due_review",
+    };
+  // Order opportunities by stage, not catalog size. Completing a response is
+  // practice; its assessment and independence still determine mastery separately.
+  const cycle = ["retrieve", "vary", "produce", "transfer"];
+  const candidates = tasks.filter((task) => cycle.includes(task.stage));
+  const currentHistory = history.filter((row) =>
+    candidates.some(
+      (candidate) =>
+        candidate.id === row.attempt.task.id &&
+        candidate.version === row.attempt.task.version,
+    ),
+  );
+  const ranked = candidates
+    .map((task) => {
+      const tried = history.filter(
+        (row) =>
+          row.attempt.task.id === task.id &&
+          row.attempt.task.version === task.version,
+      );
+      return {
+        task,
+        stageCount: currentHistory.filter(
+          (row) =>
+            row.attempt.task.stage === task.stage &&
+            row.attempt.task.modality === task.modality,
+        ).length,
+        count: tried.length,
+        last: Math.max(0, ...tried.map((row) => Date.parse(row.attempt.at))),
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.stageCount - b.stageCount ||
+        Number(a.task.modality === "speaking") -
+          Number(b.task.modality === "speaking") ||
+        cycle.indexOf(a.task.stage) - cycle.indexOf(b.task.stage) ||
+        a.count - b.count ||
+        a.last - b.last,
+    );
+  return {
+    task: ranked[0]?.task ?? tasks[0] ?? null,
+    previousAttemptId: null,
+    reason: history.length ? "continued_practice" : "diagnostic",
   };
 }
 const seed = (value: string) =>
@@ -83,13 +234,12 @@ const seed = (value: string) =>
     2166136261,
   );
 /** Small, explainable baseline policy. No reward model chooses learning evidence. */
-export function selectDailyFocus(
+function rankDailyFocus(
   pack: CurriculumPack,
   progress: readonly ConstructionProgress[],
   now: string,
   level: string,
-  limit = 2,
-): DailySelection {
+) {
   const known = new Set(
     pack.units
       .filter((unit) => unit.language === pack.language)
@@ -98,6 +248,7 @@ export function selectDailyFocus(
   const scopedProgress = progress.filter((row) =>
     known.has(row.constructionId),
   );
+  const newLearner = !scopedProgress.some((row) => row.attempts > 0);
   const repairs = scopedProgress
     .filter(
       (row) =>
@@ -115,8 +266,7 @@ export function selectDailyFocus(
         rows.findIndex(
           (other) => other.constructionId === row.constructionId,
         ) === index,
-    )
-    .slice(0, 5);
+    );
   const byId = new Map<string, ConstructionProgress[]>();
   for (const row of scopedProgress)
     byId.set(row.constructionId, [
@@ -143,7 +293,7 @@ export function selectDailyFocus(
         ),
   );
   const ranked = (eligible.length ? eligible : pack.units)
-    .map((unit) => {
+    .map((unit, curriculumOrder) => {
       const rows = byId.get(unit.id) ?? [];
       const dueDates = rows.flatMap((row) =>
         row.nextReviewAt && Date.parse(row.nextReviewAt) <= Date.parse(now)
@@ -156,6 +306,7 @@ export function selectDailyFocus(
       const tried = rows.reduce((n, row) => n + row.attempts, 0);
       return {
         unit,
+        curriculumOrder,
         due,
         dueAt,
         repair,
@@ -179,13 +330,25 @@ export function selectDailyFocus(
         (a.dueAt !== null && b.dueAt !== null ? a.dueAt - b.dueAt : 0) ||
         Number(b.repair) - Number(a.repair) ||
         a.unexploredPreparation - b.unexploredPreparation ||
+        (newLearner ? a.curriculumOrder - b.curriculumOrder : 0) ||
         a.score - b.score ||
         a.unit.id.localeCompare(b.unit.id),
     );
+  return { ranked, repairs };
+}
+
+export function selectDailyFocus(
+  pack: CurriculumPack,
+  progress: readonly ConstructionProgress[],
+  now: string,
+  level: string,
+  limit = 2,
+): DailySelection {
+  const { ranked, repairs } = rankDailyFocus(pack, progress, now, level);
   const selected = ranked.slice(0, Math.max(1, Math.min(2, limit)));
   return {
     focus: selected.map((row) => row.unit),
-    repairs,
+    repairs: repairs.slice(0, 5),
     reason: selected.some((row) => row.due)
       ? "due_review"
       : selected.some((row) => row.repair)
@@ -194,4 +357,38 @@ export function selectDailyFocus(
           ? "diagnostic"
           : "continued_practice",
   };
+}
+
+/** One next-step policy across entry, today's focus and post-response continuation. */
+export function selectNextLearningTask(
+  pack: CurriculumPack,
+  state: EvidenceReduction,
+  now: string,
+  level: string,
+  preferredUnitId?: string,
+  scope: TaskScope = "all",
+): (TaskRecommendation & { unit: ConstructionUnit }) | null {
+  const { ranked } = rankDailyFocus(pack, state.progress, now, level);
+  const preferred = pack.units.find(
+    (unit) => unit.id === preferredUnitId && unit.language === pack.language,
+  );
+  const unfinished = ranked.filter(
+    (row) => !constructionTargetMet(state, row.unit),
+  );
+  const candidates = [
+    ...ranked.filter((row) => row.due || row.repair).map((row) => row.unit),
+    ...(preferred && !constructionTargetMet(state, preferred)
+      ? [preferred]
+      : []),
+    ...unfinished.map((row) => row.unit),
+    ...ranked.map((row) => row.unit),
+  ];
+  const seen = new Set<string>();
+  for (const unit of candidates) {
+    if (seen.has(unit.id) || unit.language !== pack.language) continue;
+    seen.add(unit.id);
+    const choice = selectDailyTask(unit, state, now, scope);
+    if (choice.task) return { unit, ...choice };
+  }
+  return null;
 }

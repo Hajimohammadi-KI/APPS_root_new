@@ -7,6 +7,7 @@ import { BookOpen, ExternalLink, Globe2, Mic2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { PageHeader } from "@/components/page-header";
 import {
   Card,
   CardContent,
@@ -104,20 +105,16 @@ export function ResourceHub() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="section-kicker">Vertiefen, üben & prüfen</p>
-        <h1 className="section-title">Lernmaterial & direkte Themenlinks</h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-          Jede Karte gehört zu genau einem Niveau und einem konkreten Thema. Sie
-          führt ohne erneute Suche direkt zur passenden Erklärung, Übung oder
-          Gesprächsaufgabe.
-        </p>
-      </div>
+      <PageHeader
+        description="Jede Karte gehört zu genau einem Niveau und einem konkreten Thema. Sie führt ohne erneute Suche direkt zur passenden Erklärung, Übung oder Gesprächsaufgabe."
+        kicker="Vertiefen, üben & prüfen"
+        title="Lernmaterial & direkte Themenlinks"
+      />
 
-      <Card className="border-violet-900/10 bg-violet-50/60">
+      <Card className="border-worksheet-teal/10 bg-worksheet-cyan/60">
         <CardContent className="flex items-start gap-3">
-          <Globe2 className="mt-0.5 size-5 shrink-0 text-violet-700" />
-          <p className="text-sm leading-6 text-violet-950">
+          <Globe2 className="mt-0.5 size-5 shrink-0 text-worksheet-teal" />
+          <p className="text-sm leading-6 text-worksheet-teal!">
             Starte mit einem einzelnen Niveau. Wähle danach ein Thema aus der
             Themenliste oder öffne eine der darunterliegenden Lektionen.
           </p>
@@ -181,7 +178,7 @@ export function ResourceHub() {
         {rows.map((resource) => (
           <Card
             key={resource.id}
-            className="[contain-intrinsic-size:0_260px] [content-visibility:auto] transition-colors hover:border-violet-300"
+            className="[contain-intrinsic-size:0_260px] [content-visibility:auto] transition-colors hover:border-worksheet-line"
           >
             <CardHeader>
               <div className="mb-2 flex flex-wrap gap-2">

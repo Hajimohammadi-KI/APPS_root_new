@@ -242,19 +242,6 @@ body {
   background: linear-gradient(135deg, #9b73cd, #7651a3);
 }
 
-.daily-mission-hero [class*="text-sky-50"] {
-  color: rgb(255 255 255 / 80%);
-}
-
-.daily-mission-hero [class*="bg-sky-400"] {
-  background: rgb(255 255 255 / 12%);
-  color: #fff;
-}
-
-.daily-mission-hero [class*="bg-sky-50"] {
-  background: #f8f1fd;
-}
-
 .method-ribbon {
   display: flex;
   flex-wrap: wrap;
@@ -407,4 +394,133 @@ body {
 
 .german-sidebar-section nav a[aria-current="page"] {
   box-shadow: 0 8px 18px rgb(93 58 142 / 20%);
+}
+
+/* Gemeinsamer Produktvertrag: cremefarbene Flächen, Indigo-Aktionen,
+   beige Sekundärflächen, einheitliche Schrift und konsistentes Feedback. */
+:root {
+  --app-font: "Segoe UI Variable", "Segoe UI", Inter, system-ui, sans-serif;
+  --background: #faf8f4;
+  --foreground: #1f2937;
+  --card: #ffffff;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --primary: #3d5a9e;
+  --primary-foreground: #ffffff;
+  --secondary: #efe7da;
+  --secondary-foreground: #23395b;
+  --muted: #f3efe8;
+  --muted-foreground: #5e6673;
+  --accent: #efe7da;
+  --accent-foreground: #23395b;
+  --destructive: #c05640;
+  --border: #d8d1c5;
+  --input: #c8c0b4;
+  --ring: #3d5a9e;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #3d5a9e;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #efe7da;
+  --sidebar-accent-foreground: #23395b;
+  --sidebar-border: #d8d1c5;
+  --sidebar-ring: #3d5a9e;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--app-font);
+}
+
+.german-app-sidebar {
+  border-right-color: color-mix(in srgb, var(--primary) 18%, var(--border));
+  background: linear-gradient(180deg, #ffffff 0%, var(--background) 100%);
+  box-shadow: 18px 0 44px rgb(31 41 55 / 6%);
+}
+
+.german-app-topbar {
+  border-bottom-color: color-mix(in srgb, var(--primary) 16%, var(--border));
+  background: rgb(250 248 244 / 92%);
+  box-shadow: 0 8px 28px rgb(31 41 55 / 5%);
+}
+
+.german-sidebar-section,
+.german-sidebar-trigger,
+.german-sidebar-section nav a {
+  border-color: color-mix(in srgb, var(--primary) 16%, var(--border));
+}
+
+.german-sidebar-trigger,
+.german-sidebar-section nav a {
+  color: #23395b;
+}
+
+.german-sidebar-trigger:hover,
+.german-sidebar-section nav a:hover {
+  background: color-mix(in srgb, var(--secondary) 72%, white);
+  color: #23395b;
+}
+
+.german-sidebar-section nav a[aria-current="page"] {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  box-shadow: inset 3px 0 0 var(--primary);
+}
+
+:where(
+  button,
+  [role="button"],
+  select,
+  summary,
+  nav a[href],
+  a[class*="button"],
+  a.action
+) {
+  font-family: inherit;
+  line-height: 1.25;
+}
+
+:where(
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  select:not(:disabled),
+  summary,
+  nav a[href],
+  a[class*="button"],
+  a.action
+) {
+  cursor: pointer;
+}
+
+:where(button:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+}
+
+:where(
+  button,
+  [role="button"],
+  select,
+  summary,
+  nav a[href],
+  a[class*="button"],
+  a.action
+):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary) 42%, transparent);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  :where(
+    button:not(:disabled),
+    [role="button"]:not([aria-disabled="true"]),
+    select:not(:disabled),
+    summary,
+    nav a[href],
+    a[class*="button"],
+    a.action
+  ):hover {
+    transform: translateY(-1px);
+  }
 }

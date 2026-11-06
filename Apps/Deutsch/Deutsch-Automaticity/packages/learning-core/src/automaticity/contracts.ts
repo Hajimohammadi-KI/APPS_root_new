@@ -91,6 +91,12 @@ export interface AssessmentEvent {
   correction: string | null;
   spans: { start: number; end: number; explanation: string }[];
   supersedes: string | null;
+  /** A reviewer separately verifies the original audio and a verbatim transcript. */
+  audioReview?: {
+    audioSha256: string;
+    transcriptSha256: string;
+    transcriptVerified: true;
+  };
 }
 
 export interface ExposureEvent {
@@ -331,6 +337,15 @@ export function parseAutomaticityEvent(
         (evaluator.reviewId === null || nonempty(evaluator.reviewId)),
       "Invalid evaluator",
     );
+    if (value.audioReview !== undefined)
+      assert(
+        isRecord(value.audioReview) &&
+          validHash(value.audioReview.audioSha256) &&
+          validHash(value.audioReview.transcriptSha256) &&
+          value.audioReview.transcriptVerified === true &&
+          evaluator.kind === "human",
+        "Invalid original-audio review",
+      );
     assert(
       typeof value.uncertainty === "boolean" &&
         (value.confidence === null ||

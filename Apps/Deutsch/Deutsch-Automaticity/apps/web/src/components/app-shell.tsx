@@ -1,25 +1,24 @@
 "use client";
-import { AutomaticityEvidenceSummary } from "@/features/progress/automaticity-evidence-summary";
-
-import { ChevronDown, Clock3, Folder, Settings } from "lucide-react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-
-import { AppNavigation } from "@/components/app-navigation";
+import {
+  persianRouteGuide,
+  readSupportLanguage,
+  saveSupportLanguage,
+  type SupportLanguage,
+} from "@automaticity/learning-core/automaticity";
+import { LearningNavigation } from "@/components/learning-navigation";
+import { navigationConfig } from "@/components/navigation-config";
 import { ApiConnectionStatus } from "@/components/api-connection-status";
 import { Brand } from "@/components/brand";
+import { Disclosure } from "@/components/ui/disclosure";
 import { MobileNavigation } from "@/components/mobile-navigation";
-import { Badge } from "@/components/ui/badge";
 import { InstallAppButton } from "@/features/pwa/install-app-button";
-import {
-  coreNavigation,
-  libraryNavigation,
-  primaryNavigation,
-  secondaryNavigation,
-} from "@/lib/navigation";
+import { primaryNavigation, secondaryNavigation } from "@/lib/navigation";
 import { UserGuideButton } from "@/components/user-guide";
 import { NeuroReader } from "@/components/neuro-reader";
 import { useLearnerState } from "@/features/learner-state/learner-state-provider";
+import { AutomaticityEvidenceSummary } from "@/features/progress/automaticity-evidence-summary";
 
 export function AppShell({
   children,
@@ -27,159 +26,185 @@ export function AppShell({
   const pathname = usePathname();
   const router = useRouter();
   const { state, updateSettings } = useLearnerState();
-  const [openGroups, setOpenGroups] = useState({
-    practice: true,
-    learning: true,
-    evidence: true,
-    settings: true,
-  });
-  const allNavigation = [
-    ...coreNavigation,
-    ...libraryNavigation,
-    ...secondaryNavigation,
-  ];
+  const [supportLanguage, setSupportLanguage] =
+    useState<SupportLanguage | null>(null);
+  const [languageSaveFailed, setLanguageSaveFailed] = useState(false);
+  const [homeMenuPinned, setHomeMenuPinned] = useState(false);
+  useEffect(() => {
+    try {
+      setHomeMenuPinned(
+        localStorage.getItem("deutschflow:home-menu-pinned") === "true",
+      );
+    } catch {
+      // The menu remains usable for this visit.
+    }
+  }, []);
+  const updateHomeMenuPin = (pinned: boolean) => {
+    setHomeMenuPinned(pinned);
+    try {
+      localStorage.setItem("deutschflow:home-menu-pinned", String(pinned));
+    } catch {
+      // Keep the chosen layout for this visit.
+    }
+  };
+  useEffect(() => {
+    const refresh = () => setSupportLanguage(readSupportLanguage("de"));
+    refresh();
+    window.addEventListener("storage", refresh);
+    window.addEventListener("automaticity:support-language", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("automaticity:support-language", refresh);
+    };
+  }, []);
+  const persianGuide =
+    supportLanguage === "fa" ? persianRouteGuide(pathname, "de") : null;
   const current =
-    allNavigation.find((item) =>
+    [...primaryNavigation, ...secondaryNavigation].find((item) =>
       item.href === "/" ? pathname === "/" : pathname.startsWith(item.href),
-    ) ?? coreNavigation[0]!;
-  const CurrentIcon = current.icon;
-  const practiceNavigation = [
-    primaryNavigation[0]!,
-    primaryNavigation[2]!,
-    primaryNavigation[3]!,
-  ];
-  const learningNavigation = [
-    primaryNavigation[4]!,
-    secondaryNavigation[0]!,
-    secondaryNavigation[1]!,
-  ];
-  const evidenceNavigation = [primaryNavigation[6]!, primaryNavigation[7]!];
-  const settingsNavigation = secondaryNavigation.filter((item) =>
-    ["/einstellungen", "/lehrkraft"].includes(item.href),
-  );
-  const groups = [
-    {
-      id: "practice",
-      title: "Tägliche Praxis",
-      caption: "Heute üben und sprechen",
-      icon: Clock3,
-      items: practiceNavigation,
-    },
-    {
-      id: "learning",
-      title: "Lernpfade",
-      caption: "Grammatik und Deutsch lernen",
-      icon: Settings,
-      items: learningNavigation,
-    },
-    {
-      id: "evidence",
-      title: "Lernnachweise",
-      caption: "Fehler und Aufnahmen",
-      icon: Clock3,
-      items: evidenceNavigation,
-    },
-    {
-      id: "settings",
-      title: "App und Einstellungen",
-      caption: "Speicher und persönliche Optionen",
-      icon: Folder,
-      items: settingsNavigation,
-    },
-  ] as const;
-
+    ) ?? primaryNavigation[0];
+  const extraTitle: Record<string, string> = {
+    "/automatik": "Automatik",
+    "/themen": "Themen",
+    "/klassik": "Klassische Übungen",
+    "/deutsch-mit-marija": "Deutsch mit Marija",
+    "/offline": "Offline",
+  };
+  const currentLabel =
+    [...navigationConfig.de.main, ...navigationConfig.de.more].find(
+      (item) => item.href === pathname,
+    )?.label ??
+    extraTitle[pathname] ??
+    (pathname.startsWith("/deutsch-mit-marija/uebung/")
+      ? "Übung mit Marija"
+      : pathname === navigationConfig.de.settings
+        ? "Einstellungen"
+        : current.label);
   return (
     <div className="min-h-screen">
-      {/* Keyboard users can bypass repeated navigation and land on the single main region. */}
       <a className="skip-link" href="#main-content">
         Zum Hauptinhalt springen
       </a>
-      <aside className="german-app-sidebar fixed inset-y-0 left-0 z-30 hidden border-r bg-sidebar/95 backdrop-blur xl:flex xl:flex-col">
-        <a
-          href="/practice"
-          className="m-3 rounded-xl bg-blue-700 px-4 py-3 text-sm font-semibold text-white"
-        >
-          Eigenständig Grammatik üben
-        </a>
-        <div className="px-2">
-          <Brand />
-        </div>
+      <aside className="german-app-sidebar fixed inset-y-0 left-0 z-30 hidden border-r min-[900px]:flex min-[900px]:flex-col">
+        <Brand />
         <div className="german-sidebar-groups mt-7 flex-1">
-          {groups.map((group) => {
-            const GroupIcon = group.icon;
-            const expanded = openGroups[group.id];
-            return (
-              <section className="german-sidebar-section" key={group.id}>
-                <p className="german-sidebar-label">{group.title}</p>
-                <button
-                  aria-expanded={expanded}
-                  className="german-sidebar-trigger"
-                  onClick={() =>
-                    setOpenGroups((current) => ({
-                      ...current,
-                      [group.id]: !current[group.id],
-                    }))
-                  }
-                  type="button"
-                >
-                  <GroupIcon className="size-5" aria-hidden="true" />
-                  <span>{group.caption}</span>
-                  <ChevronDown className="ms-auto size-4" aria-hidden="true" />
-                </button>
-                {expanded ? (
-                  <AppNavigation ariaLabel={group.title} items={group.items} />
-                ) : null}
-              </section>
-            );
-          })}
+          <LearningNavigation language="de" current={pathname} />
         </div>
       </aside>
-
-      <div className="min-w-0 xl:pl-[310px]">
-        <header className="german-app-topbar sticky top-0 z-20 border-b bg-background/88 backdrop-blur-xl">
-          <div className="flex min-h-16 flex-wrap items-center justify-between gap-2 px-4 py-2 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3 xl:hidden">
-              <MobileNavigation />
-              <Brand compact />
+      <div className="german-shell-body">
+        <header className="german-app-topbar sticky top-0 z-20 border-b">
+          <div className="german-topbar-row flex items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="german-mobile-navigation min-[900px]:hidden">
+                <MobileNavigation
+                  homePinned={homeMenuPinned}
+                  onPinHomeMenu={() => updateHomeMenuPin(true)}
+                />
+              </div>
+              <strong className="topbar-title text-sm">{currentLabel}</strong>
             </div>
-            <div className="hidden items-center gap-3 xl:flex">
-              <span className="grid size-9 place-items-center rounded-xl border border-primary/20 bg-secondary text-primary">
-                <CurrentIcon className="size-4.5" aria-hidden="true" />
-              </span>
-              <span>
-                <strong className="block text-sm">{current.label}</strong>
-                <span className="block text-xs text-muted-foreground">
-                  {current.subtitle}
-                </span>
-              </span>
-            </div>
-            <div className="flex min-w-0 items-center gap-2 justify-self-end">
-              <ApiConnectionStatus />
-              <NeuroReader
-                onOpenSettings={() => router.push("/einstellungen")}
-                onToggleReadingRuler={(readingRuler) =>
-                  updateSettings({ readingRuler })
-                }
-                settings={state.settings}
-              />
-              <UserGuideButton />
-              <InstallAppButton surface="header" />
-              <Badge variant="secondary" className="hidden xl:inline-flex">
-                v20.8 · aktuelle Version
-              </Badge>
-            </div>
+            <details className="app-tools">
+              <summary>Hilfe & Werkzeuge</summary>
+              <div className="app-tools-panel">
+                <p>Lesen, Installation und Verbindung</p>
+                <label className="flex w-full flex-col gap-2 rounded-xl border border-slate-200 p-3">
+                  <span className="font-semibold">
+                    زبان مادری برای راهنما · Muttersprache
+                  </span>
+                  <select
+                    className="min-h-11 rounded-lg border border-slate-300 bg-white px-3"
+                    data-native-language-select=""
+                    value={supportLanguage ?? "fa"}
+                    onChange={(event) => {
+                      const selected = event.currentTarget.value;
+                      if (
+                        selected !== "fa" &&
+                        selected !== "en" &&
+                        selected !== "de"
+                      )
+                        return;
+                      if (!saveSupportLanguage("de", selected)) {
+                        setLanguageSaveFailed(true);
+                        return;
+                      }
+                      setLanguageSaveFailed(false);
+                      setSupportLanguage(selected);
+                      window.dispatchEvent(
+                        new CustomEvent("automaticity:support-language", {
+                          detail: { target: "de", language: selected },
+                        }),
+                      );
+                    }}
+                  >
+                    <option value="fa">فارسی</option>
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                  </select>
+                </label>
+                {languageSaveFailed ? (
+                  <p role="status">زبان راهنما در این مرورگر ذخیره نشد.</p>
+                ) : null}
+                <ApiConnectionStatus />
+                <NeuroReader
+                  onOpenSettings={() => router.push("/einstellungen")}
+                  onToggleReadingRuler={(readingRuler) =>
+                    updateSettings({ readingRuler })
+                  }
+                  settings={state.settings}
+                />
+                <UserGuideButton />
+                <InstallAppButton surface="header" />
+              </div>
+            </details>
           </div>
         </header>
         <main
-          className="german-app-main mx-auto w-full max-w-7xl overflow-x-clip px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
+          className="german-app-main mx-auto w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-8"
           id="main-content"
           tabIndex={-1}
         >
+          {pathname === "/" && homeMenuPinned ? (
+            <section
+              className="pinned-home-navigation"
+              data-pinned-home-navigation=""
+              aria-label="Angeheftete Lernnavigation"
+            >
+              <LearningNavigation
+                language="de"
+                current="/"
+                onPinToggle={() => updateHomeMenuPin(false)}
+                pinned
+              />
+            </section>
+          ) : null}
+          {persianGuide ? (
+            <section
+              className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-right leading-7"
+              lang="fa"
+              dir="rtl"
+              aria-label="راهنمای فارسی این صفحه"
+            >
+              <h2 className="mb-2 font-bold">{persianGuide.title}</h2>
+              <ol className="list-decimal space-y-1 ps-6">
+                {persianGuide.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+              <a
+                className="mt-3 inline-block font-semibold underline"
+                href={persianGuide.next.href}
+              >
+                {persianGuide.next.label} ←
+              </a>
+            </section>
+          ) : null}
           {children}
           {["/studio", "/fehler", "/wiederholungen", "/lehrkraft"].includes(
             pathname,
           ) ? (
-            <AutomaticityEvidenceSummary />
+            <Disclosure summary="Antworten & Lernnachweise">
+              <AutomaticityEvidenceSummary />
+            </Disclosure>
           ) : null}
         </main>
       </div>

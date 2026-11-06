@@ -40,7 +40,7 @@ const updateConfig = JSON.parse(
   ),
 ) as Record<string, string>;
 const updaterSource = readFileSync(
-  resolve(projectRoot, "../../shared/windows-release/check-for-updates.ps1"),
+  resolve(projectRoot, "distribution/windows-release/check-for-updates.ps1"),
   "utf8",
 );
 
@@ -266,11 +266,28 @@ describe("Windows installation roadmap", () => {
     for (const resource of desktopPackage.build.extraResources) {
       expect(resource.from).not.toMatch(/^[A-Za-z]:[\\/]/);
       expect(resource.from).not.toContain("APPS_root");
+      // electron-builder resolves extraResources from the desktop package directory.
+      const resolved = resolve(
+        projectRoot,
+        "distribution/windows-desktop",
+        resource.from,
+      );
+      expect(existsSync(resolved)).toBe(true);
+      // Every installer input lives inside this project, so copying the project folder is enough.
+      expect(resolved.startsWith(projectRoot)).toBe(true);
+    }
+    expect(buildScript).not.toContain("shared\\GoogleOAuthPackaging.ps1");
+    expect(buildScript).toContain(
+      "distribution\\windows-release\\GoogleOAuthPackaging.ps1",
+    );
+    for (const file of [
+      "GoogleOAuthPackaging.ps1",
+      "publish-language-update.ps1",
+      "setup-language-payload.ps1",
+      "check-for-updates.ps1",
+    ]) {
       expect(
-        existsSync(
-          // electron-builder resolves extraResources from the desktop package directory.
-          resolve(projectRoot, "distribution/windows-desktop", resource.from),
-        ),
+        existsSync(resolve(projectRoot, "distribution/windows-release", file)),
       ).toBe(true);
     }
     const icon = readFileSync(
@@ -304,5 +321,45 @@ describe("Windows installation roadmap", () => {
     expect(updaterSource).toContain("Expand-SafeArchive");
     expect(updaterSource).toContain("setupSha256");
     expect(updaterSource).toContain("payloadSha256");
+  });
+});
+
+describe("Windows update channel", () => {
+  const read = (path: string) =>
+    readFileSync(resolve(projectRoot, path), "utf8");
+  const git = (...args: string[]) =>
+    Bun.spawnSync(["git", ...args], { cwd: projectRoot })
+      .stdout.toString()
+      .trim();
+  // owner/name of the repository this code is published from.
+  const repository = git("config", "--get", "remote.origin.url")
+    .replace(/^(?:https:\/\/github\.com\/|git@github\.com:)/u, "")
+    .replace(/\.git$/u, "");
+  const projectPath = git("rev-parse", "--show-prefix");
+  test("reads its update file from where this project publishes it", () => {
+    expect(repository).toMatch(/^[\w.-]+\/[\w.-]+$/u);
+    const updateConfig = JSON.parse(
+      read("distribution/windows-modern/update-config.json"),
+    ) as Record<string, string>;
+    expect(updateConfig.defaultManifestUrl).toBe(
+      `https://raw.githubusercontent.com/${repository}/main/${projectPath}releases/deutschflow-update.json`,
+    );
+    expect(
+      read("distribution/windows-release/publish-language-update.ps1"),
+    ).toContain(`https://github.com/${repository}/releases/download/`);
+    // The update file itself may be committed; only packages stay out of git.
+    expect(
+      Bun.spawnSync(
+        ["git", "check-ignore", "-q", "releases/deutschflow-update.json"],
+        {
+          cwd: projectRoot,
+        },
+      ).exitCode,
+    ).toBe(1);
+  });
+  test("a missing update file means nothing is published yet, not an error", () => {
+    const check = read("distribution/windows-release/check-for-updates.ps1");
+    expect(check).toContain("No update has been published yet.");
+    expect(check).toContain("Es wurde noch kein Update veröffentlicht.");
   });
 });

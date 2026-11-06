@@ -233,3 +233,36 @@ test("speaking requires original audio review and an unedited bound transcript",
     ),
   ).toBeNull();
 });
+
+test("a qualified reviewer can bind a manual verbatim transcript to its original recording", async () => {
+  const f = await fixture("en", true);
+  f.attempt.response.originalTranscriptSha256 = null;
+  const result = await qualifyHumanReview(
+    f.attempt,
+    f.pack,
+    f.manifest,
+    "Independent reviewer",
+    f.at,
+    {
+      sha256: f.attempt.audio!.sha256,
+      confirmed: true,
+      transcriptSha256: f.attempt.response.sha256,
+    },
+  );
+  expect(result?.scopeApproved).toBe(true);
+  expect(
+    await qualifyHumanReview(
+      f.attempt,
+      f.pack,
+      f.manifest,
+      "Independent reviewer",
+      f.at,
+      {
+        sha256: f.attempt.audio!.sha256,
+        confirmed: true,
+        transcriptSha256: "c".repeat(64),
+      },
+    ),
+  ).toBeNull();
+  expect(f.attempt.response.originalTranscriptSha256).toBeNull();
+});

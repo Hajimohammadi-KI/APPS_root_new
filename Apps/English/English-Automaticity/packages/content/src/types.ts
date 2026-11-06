@@ -25,7 +25,19 @@ export type GrammarResource = [
   description: string,
   role: GrammarResourceRole,
 ];
-export type GrammarExercise = [prompt: string, answer: string];
+/** Further complete answers the Grammar Lab accepts besides the stored one. */
+export interface GrammarExerciseMetadata {
+  acceptedAnswers?: string[];
+  /** Reviewed wrong forms; the Lab marks one for repair with its explanation. */
+  rejectedAnswers?: { answer: string; explanation: string }[];
+  /** An expected answer is checked even when the prompt names no gap or correction. */
+  answerRole?: "expected" | "inspiration";
+}
+export type GrammarExercise = [
+  prompt: string,
+  answer: string,
+  metadata?: GrammarExerciseMetadata,
+];
 
 export interface GrammarUnit {
   level: CefrLevel;

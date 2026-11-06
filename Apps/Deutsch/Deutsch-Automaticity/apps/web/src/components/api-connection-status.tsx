@@ -2,36 +2,34 @@
 
 import { useEffect, useState } from "react";
 
-import { API_BASE_URL, API_HEALTH_URL } from "@/lib/api-config";
+import {
+  API_BASE_URL,
+  API_HEALTH_URL,
+  CONFIGURED_API_URL,
+} from "@/lib/api-config";
 
-type ConnectionState = "checking" | "connected" | "offline";
+import { usesDevicePractice } from "@/lib/api-origin";
+
+type ConnectionState = "checking" | "connected" | "offline" | "device";
 
 const statusCopy: Record<ConnectionState, string> = {
+  device: "Üben auf diesem Gerät",
   checking: "Lokaler App-Dienst wird geprüft",
   connected: "Lokaler App-Dienst bereit",
   offline: "Lokaler App-Dienst nicht erreichbar",
 };
-
-function isLoopbackHost(hostname: string) {
-  return (
-    hostname === "127.0.0.1" || hostname === "localhost" || hostname === "::1"
-  );
-}
 
 export function ApiConnectionStatus() {
   const [status, setStatus] = useState<ConnectionState>("checking");
   const [retryRequest, setRetryRequest] = useState(0);
 
   useEffect(() => {
+    if (usesDevicePractice(CONFIGURED_API_URL, window.location.hostname)) {
+      setStatus("device");
+      return;
+    }
     let active = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
-
-    if (!isLoopbackHost(window.location.hostname)) {
-      setStatus("offline");
-      return () => {
-        active = false;
-      };
-    }
 
     async function checkConnection() {
       const controller = new AbortController();
@@ -66,14 +64,18 @@ export function ApiConnectionStatus() {
       }
       aria-live="polite"
       className="hidden min-h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-bold text-foreground lg:inline-flex"
-      disabled={status === "checking"}
+      disabled={status === "checking" || status === "device"}
       onClick={() => {
         // Erneut prüfen, ohne die Seite und damit einen ungespeicherten
         // Lernschritt neu zu laden.
         setStatus("checking");
         setRetryRequest((request) => request + 1);
       }}
-      title={`${statusCopy[status]} · Bestätigt nur den lokalen API-Dienst, nicht KI- oder Übersetzungsanbieter. · ${API_BASE_URL}`}
+      title={
+        status === "device"
+          ? "Antworten werden auf diesem Gerät gespeichert. Der optionale Online-Prüfdienst ist nicht eingerichtet."
+          : `${statusCopy[status]} · ${API_BASE_URL}`
+      }
       type="button"
     >
       <span
@@ -82,9 +84,9 @@ export function ApiConnectionStatus() {
         style={{
           backgroundColor:
             status === "connected"
-              ? "#15803d"
+              ? "#3d5a9e"
               : status === "offline"
-                ? "#b91c1c"
+                ? "#c05640"
                 : "#a16207",
         }}
       />

@@ -14,15 +14,19 @@ import {
 import type { GrammarUnit } from "@grammar/content";
 
 import { Button } from "@/components/ui/button";
+import { Disclosure } from "@/components/ui/disclosure";
 import { LearningAccordion } from "@/components/learning-accordion";
+import { saveSupportLanguage } from "@automaticity/learning-core/automaticity";
 
 import {
   grammarCoachFor,
   isGrammarSupportLanguage,
   type GrammarSupportLanguage,
 } from "./grammar-learning-coach";
-
-const LANGUAGE_KEY = "deutschflow:honovr-language";
+import {
+  grammarLegacyLanguageKey,
+  resolveGrammarSupportLanguage,
+} from "./grammar-support-preference";
 
 const uiCopy = {
   de: {
@@ -30,7 +34,7 @@ const uiCopy = {
     title: "Aktiver Grammatik-Abruf",
     summary:
       "Kurz lesen, abdecken, selbst erinnern, vergleichen und gezielt reparieren.",
-    language: "Erklärungssprache (HONOVR)",
+    language: "Sprache der Erklärung",
     retrieval: [
       "Kurz lesen",
       "Regel abdecken",
@@ -60,7 +64,7 @@ const uiCopy = {
     title: "Active grammar recall",
     summary:
       "Read briefly, hide the rule, recall, compare, and repair one difference.",
-    language: "Explanation language (HONOVR)",
+    language: "Explanation language",
     retrieval: [
       "Read briefly",
       "Hide the rule",
@@ -90,7 +94,7 @@ const uiCopy = {
     title: "بازیابی فعال گرامر",
     summary:
       "کوتاه بخوان، قانون را ببند، از حافظه بگو، مقایسه کن و فقط یک خطا را اصلاح کن.",
-    language: "زبان توضیح (HONOVR)",
+    language: "زبان توضیح",
     retrieval: [
       "کوتاه بخوان",
       "قانون را ببند",
@@ -137,8 +141,15 @@ export function GrammarLanguageCoach({
   const isPersian = supportLanguage === "fa";
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(LANGUAGE_KEY);
-    if (isGrammarSupportLanguage(saved)) setSupportLanguage(saved);
+    const refresh = () =>
+      setSupportLanguage(resolveGrammarSupportLanguage(window.localStorage));
+    refresh();
+    window.addEventListener("storage", refresh);
+    window.addEventListener("automaticity:support-language", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("automaticity:support-language", refresh);
+    };
   }, []);
 
   useEffect(() => {
@@ -157,7 +168,17 @@ export function GrammarLanguageCoach({
   function changeLanguage(value: string) {
     if (!isGrammarSupportLanguage(value)) return;
     setSupportLanguage(value);
-    window.localStorage.setItem(LANGUAGE_KEY, value);
+    saveSupportLanguage("de", value, window.localStorage);
+    try {
+      window.localStorage.setItem(grammarLegacyLanguageKey, value);
+    } catch {
+      // Keep the selection for this visit when browser storage is unavailable.
+    }
+    window.dispatchEvent(
+      new CustomEvent("automaticity:support-language", {
+        detail: { target: "de", language: value },
+      }),
+    );
   }
 
   function closeRuleAndStartRecall() {
@@ -177,7 +198,7 @@ export function GrammarLanguageCoach({
       <div className="grid gap-4" dir={isPersian ? "rtl" : "ltr"}>
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div className="max-w-2xl text-start">
-            <p className="text-sm font-semibold text-violet-900">
+            <p className="text-sm font-semibold text-worksheet-teal!">
               {coach.title}
             </p>
             <p className="mt-1 leading-7">{coach.goal}</p>
@@ -208,11 +229,11 @@ export function GrammarLanguageCoach({
             return (
               <li
                 aria-current={active ? "step" : undefined}
-                className={`rounded-xl border p-3 text-sm leading-5 ${active ? "border-violet-500 bg-violet-100 text-violet-950 ring-2 ring-violet-200" : completed ? "border-violet-200 bg-violet-50 text-violet-950" : "bg-background text-muted-foreground"}`}
+                className={`rounded-xl border p-3 text-sm leading-5 ${active ? "border-worksheet-teal bg-worksheet-cyan! text-worksheet-teal! ring-2 ring-worksheet-line" : completed ? "border-worksheet-line bg-worksheet-cyan! text-worksheet-teal" : "bg-background text-muted-foreground"}`}
                 key={label}
               >
                 <span className="mb-2 flex items-center justify-between gap-2">
-                  <span className="grid size-7 place-items-center rounded-full bg-white font-semibold text-violet-950 shadow-sm">
+                  <span className="grid size-7 place-items-center rounded-full bg-white font-semibold text-worksheet-teal shadow-sm">
                     {completed ? <Check className="size-4" /> : index + 1}
                   </span>
                   <StepIcon aria-hidden="true" className="size-4" />
@@ -223,7 +244,7 @@ export function GrammarLanguageCoach({
           })}
         </ol>
 
-        <div className="rounded-xl border border-violet-300 bg-violet-50/70 p-4 text-violet-950">
+        <div className="rounded-xl border border-worksheet-line! bg-worksheet-cyan/70 p-4 text-worksheet-teal!">
           {studyVisible ? (
             <>
               <p className="text-xs font-semibold tracking-[0.14em] uppercase">
@@ -276,7 +297,7 @@ export function GrammarLanguageCoach({
           ) : (
             <>
               <p className="font-semibold leading-7">{coach.comparePrompt}</p>
-              <p className="mt-2 flex items-start gap-2 text-sm leading-6 text-violet-900">
+              <p className="mt-2 flex items-start gap-2 text-sm leading-6 text-worksheet-teal!">
                 <Eye className="mt-1 size-4 shrink-0" />
                 {ui.repairHelp}
               </p>
@@ -294,10 +315,12 @@ export function GrammarLanguageCoach({
           )}
         </div>
 
-        <details className="rounded-xl border bg-background p-3">
-          <summary className="cursor-pointer font-medium">
-            {ui.strategy}
-          </summary>
+        <Disclosure
+          className="bg-background p-3"
+          summary={ui.strategy}
+          summaryClassName="font-medium"
+          variant="boxed"
+        >
           <div className="mt-3 text-start">
             <ol className="grid gap-2 sm:grid-cols-2">
               {coach.steps.map((step, index) => (
@@ -316,7 +339,7 @@ export function GrammarLanguageCoach({
               {coach.sourceNote}
             </p>
           </div>
-        </details>
+        </Disclosure>
 
         <p className="text-sm leading-6 text-muted-foreground">{ui.review}</p>
       </div>

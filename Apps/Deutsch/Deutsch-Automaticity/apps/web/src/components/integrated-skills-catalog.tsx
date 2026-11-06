@@ -1,9 +1,10 @@
 "use client";
 
-import { FERTIGKEITEN, cefrCurriculum, grammarUnits } from "@grammar/content";
+import { FERTIGKEITEN, cefrCurriculum } from "@grammar/content";
 import { useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { IntegratedSkillsPathCards } from "./integrated-skills-path-cards";
 
 type LevelId = (typeof cefrCurriculum)[number]["stufe"];
 type SkillId = (typeof FERTIGKEITEN)[number];
@@ -58,10 +59,10 @@ export function IntegratedSkillsCatalog() {
           learners can choose several levels and skills without scrolling past
           unrelated content. Apply keeps tentative checkbox changes reversible. */}
       <details
-        className="group overflow-hidden rounded-3xl border border-violet-300 bg-card shadow-sm"
+        className="group overflow-hidden rounded-3xl border border-worksheet-line! bg-card shadow-sm"
         ref={pickerRef}
       >
-        <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 bg-violet-50/80 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:p-6">
+        <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 bg-worksheet-cyan/80 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:p-6">
           <span className="min-w-0">
             <strong className="block text-lg">Lernpfad auswählen</strong>
             <span className="mt-1 block text-sm text-muted-foreground">
@@ -102,7 +103,7 @@ export function IntegratedSkillsCatalog() {
                 <label
                   className={`flex min-w-0 cursor-pointer items-start gap-3 rounded-2xl border p-3 text-sm ${
                     pendingLevels.includes(level.stufe)
-                      ? "border-violet-400 bg-violet-50"
+                      ? "border-worksheet-line bg-worksheet-cyan"
                       : "bg-background"
                   }`}
                   key={level.stufe}
@@ -110,7 +111,7 @@ export function IntegratedSkillsCatalog() {
                   <input
                     aria-label={`Niveau ${level.stufe} anzeigen`}
                     checked={pendingLevels.includes(level.stufe)}
-                    className="mt-1 size-4 shrink-0 accent-violet-700"
+                    className="mt-1 size-4 shrink-0 accent-worksheet-teal"
                     onChange={() =>
                       setPendingLevels((current) =>
                         toggleValue(current, level.stufe),
@@ -143,7 +144,7 @@ export function IntegratedSkillsCatalog() {
                 <label
                   className={`flex min-h-11 cursor-pointer items-center gap-3 rounded-xl border px-3 py-2 text-sm font-bold ${
                     pendingSkills.includes(skill)
-                      ? "border-violet-400 bg-violet-50"
+                      ? "border-worksheet-line bg-worksheet-cyan"
                       : "bg-background"
                   }`}
                   key={skill}
@@ -151,7 +152,7 @@ export function IntegratedSkillsCatalog() {
                   <input
                     aria-label={`${skill} anzeigen`}
                     checked={pendingSkills.includes(skill)}
-                    className="size-4 shrink-0 accent-violet-700"
+                    className="size-4 shrink-0 accent-worksheet-teal"
                     onChange={() =>
                       setPendingSkills((current) => toggleValue(current, skill))
                     }
@@ -202,90 +203,10 @@ export function IntegratedSkillsCatalog() {
         Angezeigt: {visibleLevels.join(", ")} · {visibleSkills.join(", ")}
       </p>
 
-      <section className="grid gap-4" aria-label="Ausgewählte Lernpfade">
-        {selectedLevels.map((level) => {
-          const grammarCount = grammarUnits.filter(
-            (unit) => unit.level === level.stufe,
-          ).length;
-          return (
-            <details
-              className="group overflow-hidden rounded-3xl border bg-card shadow-sm"
-              data-level={level.stufe}
-              key={level.stufe}
-            >
-              <summary className="flex cursor-pointer list-none items-center gap-4 p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:p-6">
-                <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-primary text-xl font-black text-primary-foreground">
-                  {level.stufe}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <strong className="block text-xl">
-                    {level.themen.length} Themen · {grammarCount}{" "}
-                    Grammatikbereiche
-                  </strong>
-                  <span className="mt-1 line-clamp-2 block text-sm text-muted-foreground">
-                    {level.ziel}
-                  </span>
-                </span>
-                <span className="text-sm font-bold text-primary group-open:hidden">
-                  Öffnen
-                </span>
-                <span className="hidden text-sm font-bold text-primary group-open:inline">
-                  Schließen
-                </span>
-              </summary>
-
-              <div className="border-t p-5 sm:p-6">
-                <div className="grid gap-4 lg:grid-cols-2">
-                  <article className="rounded-2xl border bg-secondary/35 p-5">
-                    <h2 className="text-lg font-bold">
-                      Themen und Lebensbereiche
-                    </h2>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {level.themen.map((topic) => (
-                        <span
-                          className="rounded-full border bg-background px-3 py-1.5 text-sm font-medium"
-                          key={topic}
-                        >
-                          {topic}
-                        </span>
-                      ))}
-                    </div>
-                  </article>
-                  <article className="rounded-2xl border bg-secondary/35 p-5">
-                    <h2 className="text-lg font-bold">Aktiver Wortschatz</h2>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {level.wortschatz.map((word) => (
-                        <span
-                          className="rounded-full bg-primary/10 px-3 py-1.5 text-sm font-semibold text-primary"
-                          key={word}
-                        >
-                          {word}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="mt-5 text-sm">
-                      <strong>Aussprache:</strong> {level.aussprache}
-                    </p>
-                  </article>
-                </div>
-
-                <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                  {visibleSkills.map((skill) => (
-                    <article className="rounded-2xl border p-4" key={skill}>
-                      <p className="text-xs font-black uppercase tracking-[0.14em] text-primary">
-                        {skill}
-                      </p>
-                      <p className="mt-2 text-sm leading-6">
-                        {level.kannBeschreibungen[skill]}
-                      </p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </details>
-          );
-        })}
-      </section>
+      <IntegratedSkillsPathCards
+        levels={selectedLevels}
+        skills={visibleSkills}
+      />
     </div>
   );
 }

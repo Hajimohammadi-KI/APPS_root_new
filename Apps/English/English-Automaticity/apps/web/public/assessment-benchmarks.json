@@ -1,0 +1,4092 @@
+{
+  "schemaVersion": 1,
+  "release": "2026.10.03.12",
+  "sources": [
+    {
+      "name": "Write & Improve",
+      "url": "https://www.cl.cam.ac.uk/research/nl/bea2019st/",
+      "scope": "نوشتار انگلیسی با اصلاح انسانی؛ آزمون قبلی از W&I توسعه، و R56 از بخش آموزش با جداسازی نویسندگان",
+      "license": "پژوهش و آموزش غیرتجاری؛ متن داده در اپ منتشر نمی‌شود",
+      "receipt": "wi-locness",
+      "sha256": "d5cbf68cda3da0c3af69dd672614d07287bfe996b87da0c75051d5349d76c666",
+      "bytes": 6120469
+    },
+    {
+      "name": "Falko–MERLIN",
+      "url": "https://github.com/adrianeboyd/boyd-wnut2018",
+      "scope": "نوشتار زبان‌آموز آلمانی؛ آزمون قبلی از بخش آزمون رسمی، توسعهٔ R56 از بخش آموزش و نمونهٔ نهاییِ رزروشده از بخش توسعهٔ رسمی",
+      "license": "Falko: CC BY 3.0؛ MERLIN: CC BY-SA 4.0",
+      "receipt": "falko-merlin",
+      "sha256": "55210ac71a939d61bea61713bc256c84b4574be7ecce4e64ac3da105968a61bc",
+      "bytes": 85667586
+    },
+    {
+      "name": "SpeechOcean762",
+      "url": "https://openslr.org/101/",
+      "scope": "۵۰۰۰ صدای انگلیسی با پنج ارزیاب؛ زبان مادری گویندگان ماندارین",
+      "license": "CC BY 4.0",
+      "receipt": "speechocean762",
+      "sha256": "876c34b828c2ebcc35ba2ff1ba5947d50e6b0162fc4a4af91db0942422b3bdd5",
+      "bytes": 520810923
+    }
+  ],
+  "credits": [
+    "Helen Yannakoudakis, Øistein E. Andersen, Ardeshir Geranpayeh, Ted Briscoe and Diane Nicholls (2018). Developing an automated writing placement system for ESL learners. Applied Measurement in Education, 31(3), 251–267.",
+    "Adriane Boyd (2018). Using Wikipedia Edits in Low Resource Grammatical Error Correction. WNUT 2018. Falko and MERLIN corpus contributors.",
+    "Junbo Zhang et al. (2021). speechocean762: An Open-Source Non-native English Speech Corpus For Pronunciation Assessment. Interspeech 2021.",
+    "Haeyoung Lee, Sunhee Kim and Minhwa Chung (2024). Analysis of Various Self-Supervised Learning Models for Automatic Pronunciation Assessment. APSIPA ASC 2024."
+  ],
+  "writing": {
+    "schemaVersion": 1,
+    "completedAt": "2026-10-03T04:46:38.076Z",
+    "predictionsSha256": "18fd0d849a40bfa000db7549f67f5006b84e3665ab1b23a4fb7171bdc8523c74",
+    "publicSubset": "Write & Improve and Falko–MERLIN only. LOCNESS-derived results remain local because its publication terms request sending an offprint, which is not authorized. Subsetting is a licensing decision, not model selection.",
+    "counts": {
+      "completed": 453
+    },
+    "languages": {
+      "en": {
+        "candidate": {
+          "count": 197,
+          "errors": 101,
+          "clean": 96,
+          "falseAccept": 19,
+          "trueAccept": 67,
+          "falseAcceptanceRate": 0.18811881188118812,
+          "correctAcceptanceRate": 0.6979166666666666,
+          "abstentions": 15,
+          "coverage": 0.9238578680203046,
+          "falseAcceptance95": {
+            "low": 0.12387125256857148,
+            "high": 0.27522142785906156
+          },
+          "correctAcceptance95": {
+            "low": 0.5999149981303159,
+            "high": 0.7806884150093544
+          },
+          "detectedErrors": 74,
+          "errorDetection95": {
+            "low": 0.6390055396933065,
+            "high": 0.8092903971305228
+          },
+          "protocolVersion": 2,
+          "diagnosticScreenPassed": false
+        },
+        "contradictoryCorrect": 8,
+        "contradictoryIncorrect": 5,
+        "postHocConsistencySensitivity": {
+          "count": 197,
+          "errors": 101,
+          "clean": 96,
+          "falseAccept": 13,
+          "trueAccept": 65,
+          "falseAcceptanceRate": 0.12871287128712872,
+          "correctAcceptanceRate": 0.6770833333333334,
+          "abstentions": 28,
+          "coverage": 0.8578680203045685,
+          "falseAcceptance95": {
+            "low": 0.07678714443671886,
+            "high": 0.20784699892951097
+          },
+          "correctAcceptance95": {
+            "low": 0.5782983099894397,
+            "high": 0.7622415859776339
+          },
+          "detectedErrors": 72,
+          "errorDetection95": {
+            "low": 0.6181195096913985,
+            "high": 0.7920235814452965
+          },
+          "protocolVersion": 2,
+          "diagnosticScreenPassed": false
+        }
+      },
+      "de": {
+        "candidate": {
+          "count": 256,
+          "errors": 128,
+          "clean": 128,
+          "falseAccept": 19,
+          "trueAccept": 87,
+          "falseAcceptanceRate": 0.1484375,
+          "correctAcceptanceRate": 0.6796875,
+          "abstentions": 33,
+          "coverage": 0.87109375,
+          "falseAcceptance95": {
+            "low": 0.09713463115350009,
+            "high": 0.22022729122631057
+          },
+          "correctAcceptance95": {
+            "low": 0.5946341124452171,
+            "high": 0.7542697938939907
+          },
+          "detectedErrors": 91,
+          "errorDetection95": {
+            "low": 0.6271668442501395,
+            "high": 0.7824160023219742
+          },
+          "protocolVersion": 2,
+          "diagnosticScreenPassed": false
+        },
+        "contradictoryCorrect": 14,
+        "contradictoryIncorrect": 7,
+        "postHocConsistencySensitivity": {
+          "count": 256,
+          "errors": 128,
+          "clean": 128,
+          "falseAccept": 15,
+          "trueAccept": 77,
+          "falseAcceptanceRate": 0.1171875,
+          "correctAcceptanceRate": 0.6015625,
+          "abstentions": 54,
+          "coverage": 0.7890625,
+          "falseAcceptance95": {
+            "low": 0.07231682349355734,
+            "high": 0.18436615865334754
+          },
+          "correctAcceptance95": {
+            "low": 0.5149824068759288,
+            "high": 0.6822241488810148
+          },
+          "detectedErrors": 90,
+          "errorDetection95": {
+            "low": 0.6189947723495539,
+            "high": 0.7754183391643332
+          },
+          "protocolVersion": 2,
+          "diagnosticScreenPassed": false
+        }
+      }
+    },
+    "releaseEligible": false
+  },
+  "passReview": {
+    "schemaVersion": 1,
+    "completedAt": "2026-10-03T11:12:17.690Z",
+    "configurationSha256": "1b27f2d8cb461d3135a78b926f23982cc8d6facba34bf1e5a06304d340e94303",
+    "parentPredictionsSha256": "324447b8da4c910d8e3aec3920861dc6c1bcdf7badfbda3e611b90876c50ba75",
+    "predictionsSha256": "aa3bbd63a0feab38021635502fd0769e43554e4568f64b118957a5b1d87efffc",
+    "count": 453,
+    "textCheckCases": 225,
+    "languages": {
+      "en": {
+        "previous": {
+          "count": 197,
+          "errors": 101,
+          "clean": 96,
+          "falseAccept": 19,
+          "trueAccept": 67,
+          "falseAcceptanceRate": 0.18811881188118812,
+          "correctAcceptanceRate": 0.6979166666666666,
+          "abstentions": 15,
+          "coverage": 0.9238578680203046,
+          "falseAcceptance95": {
+            "low": 0.12387125256857148,
+            "high": 0.27522142785906156
+          },
+          "correctAcceptance95": {
+            "low": 0.5999149981303159,
+            "high": 0.7806884150093544
+          },
+          "detectedErrors": 74,
+          "errorDetection95": {
+            "low": 0.6390055396933065,
+            "high": 0.8092903971305228
+          },
+          "protocolVersion": 3,
+          "diagnosticScreenPassed": false
+        },
+        "twoTaskReviews": {
+          "count": 197,
+          "errors": 101,
+          "clean": 96,
+          "falseAccept": 26,
+          "trueAccept": 68,
+          "falseAcceptanceRate": 0.25742574257425743,
+          "correctAcceptanceRate": 0.7083333333333334,
+          "abstentions": 103,
+          "coverage": 0.47715736040609136,
+          "falseAcceptance95": {
+            "low": 0.1821524234251967,
+            "high": 0.3504752169074069
+          },
+          "correctAcceptance95": {
+            "low": 0.6108010969781356,
+            "high": 0.7898340747478333
+          },
+          "detectedErrors": 0,
+          "errorDetection95": {
+            "low": 0,
+            "high": 0.03664064639985608
+          },
+          "protocolVersion": 3,
+          "diagnosticScreenPassed": false
+        },
+        "candidate": {
+          "count": 197,
+          "errors": 101,
+          "clean": 96,
+          "falseAccept": 14,
+          "trueAccept": 55,
+          "falseAcceptanceRate": 0.13861386138613863,
+          "correctAcceptanceRate": 0.5729166666666666,
+          "abstentions": 128,
+          "coverage": 0.350253807106599,
+          "falseAcceptance95": {
+            "low": 0.08439988610512009,
+            "high": 0.21931068010467694
+          },
+          "correctAcceptance95": {
+            "low": 0.47304314124416946,
+            "high": 0.6671791688599197
+          },
+          "detectedErrors": 0,
+          "errorDetection95": {
+            "low": 0,
+            "high": 0.03664064639985608
+          },
+          "protocolVersion": 3,
+          "diagnosticScreenPassed": false
+        }
+      },
+      "de": {
+        "previous": {
+          "count": 256,
+          "errors": 128,
+          "clean": 128,
+          "falseAccept": 19,
+          "trueAccept": 87,
+          "falseAcceptanceRate": 0.1484375,
+          "correctAcceptanceRate": 0.6796875,
+          "abstentions": 33,
+          "coverage": 0.87109375,
+          "falseAcceptance95": {
+            "low": 0.09713463115350009,
+            "high": 0.22022729122631057
+          },
+          "correctAcceptance95": {
+            "low": 0.5946341124452171,
+            "high": 0.7542697938939907
+          },
+          "detectedErrors": 91,
+          "errorDetection95": {
+            "low": 0.6271668442501395,
+            "high": 0.7824160023219742
+          },
+          "protocolVersion": 3,
+          "diagnosticScreenPassed": false
+        },
+        "twoTaskReviews": {
+          "count": 256,
+          "errors": 128,
+          "clean": 128,
+          "falseAccept": 38,
+          "trueAccept": 93,
+          "falseAcceptanceRate": 0.296875,
+          "correctAcceptanceRate": 0.7265625,
+          "abstentions": 125,
+          "coverage": 0.51171875,
+          "falseAcceptance95": {
+            "low": 0.22458166083566666,
+            "high": 0.3810052276504461
+          },
+          "correctAcceptance95": {
+            "low": 0.6435923144931466,
+            "high": 0.7963300021954198
+          },
+          "detectedErrors": 0,
+          "errorDetection95": {
+            "low": 0,
+            "high": 0.029136956273508416
+          },
+          "protocolVersion": 3,
+          "diagnosticScreenPassed": false
+        },
+        "candidate": {
+          "count": 256,
+          "errors": 128,
+          "clean": 128,
+          "falseAccept": 17,
+          "trueAccept": 70,
+          "falseAcceptanceRate": 0.1328125,
+          "correctAcceptanceRate": 0.546875,
+          "abstentions": 169,
+          "coverage": 0.33984375,
+          "falseAcceptance95": {
+            "low": 0.08460228531840389,
+            "high": 0.20242016694495388
+          },
+          "correctAcceptance95": {
+            "low": 0.4605263667221713,
+            "high": 0.6304920436271872
+          },
+          "detectedErrors": 0,
+          "errorDetection95": {
+            "low": 0,
+            "high": 0.029136956273508416
+          },
+          "protocolVersion": 3,
+          "diagnosticScreenPassed": false
+        }
+      }
+    },
+    "releaseEligible": false,
+    "limitations": "Offline staged diagnostic on the same development cases: reuse frozen outcomes of the unchanged first two requests, then invoke the added text-only checker for every retained pass. Remaining timeout is 60 seconds minus recorded parent elapsed time; this is not end-to-end latency validation. All three reviews use the same model and can repeat errors. No independent holdout, app-task qualification or human release approval."
+  },
+  "contextEvaluation": {
+    "developmentCandidates": [
+      {
+        "name": "Qwen3-14B · direct",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T11:48:34.123Z",
+          "split": "development",
+          "mode": "direct",
+          "configSha256": "53dba5302e0a1df0df422c1cedb2a7254358d707ae8cb31e234b6fcf95565cad",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "5b763dcf2015bbdeec80cc4307511cc63de2ddef6d9fa70c41e5b9c824d4399b",
+          "count": 128,
+          "failures": {
+            "Missing definite correction evidence": 24,
+            "Evidence not in original target": 9
+          },
+          "latencyMs": {
+            "median": 2966,
+            "p95": 9298
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 3,
+                "trueAccept": 20,
+                "falseAcceptanceRate": 0.09375,
+                "correctAcceptanceRate": 0.625,
+                "abstentions": 14,
+                "coverage": 0.78125,
+                "falseAcceptance95": {
+                  "low": 0.032401551298366194,
+                  "high": 0.24218154728387864
+                },
+                "correctAcceptance95": {
+                  "low": 0.4525440735307745,
+                  "high": 0.7706611269054578
+                },
+                "detectedErrors": 23,
+                "errorDetection95": {
+                  "low": 0.5462549057408342,
+                  "high": 0.8443541950225723
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 20,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.625,
+                  "abstentions": 8,
+                  "coverage": 0.75,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.4525440735307745,
+                    "high": 0.7706611269054578
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.1,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 1,
+                  "coverage": 0.9,
+                  "falseAcceptance95": {
+                    "low": 0.017876213095072896,
+                    "high": 0.4041500267952385
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 8,
+                  "errorDetection95": {
+                    "low": 0.49016247153664183,
+                    "high": 0.9433178485456247
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 21,
+                  "errors": 21,
+                  "clean": 0,
+                  "falseAccept": 2,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.09523809523809523,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 5,
+                  "coverage": 0.7619047619047619,
+                  "falseAcceptance95": {
+                    "low": 0.02651876743807452,
+                    "high": 0.2891413907391826
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 14,
+                  "errorDetection95": {
+                    "low": 0.4537345197425524,
+                    "high": 0.8280524739491653
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 1,
+                  "errors": 1,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.7934506856227626
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 1,
+                  "errorDetection95": {
+                    "low": 0.20654931437723745,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 1,
+                "trueAccept": 11,
+                "falseAcceptanceRate": 0.03125,
+                "correctAcceptanceRate": 0.34375,
+                "abstentions": 19,
+                "coverage": 0.703125,
+                "falseAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "correctAcceptance95": {
+                  "low": 0.20410437924433172,
+                  "high": 0.5168891202103778
+                },
+                "detectedErrors": 26,
+                "errorDetection95": {
+                  "low": 0.6469084479862404,
+                  "high": 0.9111045531043405
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 11,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.34375,
+                  "abstentions": 14,
+                  "coverage": 0.5625,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.20410437924433172,
+                    "high": 0.5168891202103778
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 20,
+                  "errors": 20,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 4,
+                  "coverage": 0.8,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.16112515805281938
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 16,
+                  "errorDetection95": {
+                    "low": 0.5839825677481064,
+                    "high": 0.919342337420202
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.2775327998628892
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 10,
+                  "errorDetection95": {
+                    "low": 0.7224672001371107,
+                    "high": 0.9999999999999999
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 2,
+                  "errors": 2,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.5,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 1,
+                  "coverage": 0.5,
+                  "falseAcceptance95": {
+                    "low": 0.09453120573423074,
+                    "high": 0.9054687942657693
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 0,
+                  "errorDetection95": {
+                    "low": 0,
+                    "high": 0.6576197724933469
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Evidence quotation validates localization syntax only, not correctness of the proposed repair. Diagnostic only; no app target/meaning qualification."
+        }
+      },
+      {
+        "name": "Qwen3-14B · thinking",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T12:06:12.701Z",
+          "split": "development",
+          "mode": "thinking",
+          "candidateFingerprint": "b83fd30c8263e21814b69a8efcebcfb8422dfa25b8586fff1f8f27fe49a1ae50",
+          "configSha256": "0b2101633d15b11e6b129b4dfffc2a4694ff711e337ece44f10170667663b25d",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "02f45da23b2339aa35840e4df3a1dfc099032e9b564d8dc32c7ce4df8fc28d0d",
+          "count": 128,
+          "failures": {
+            "Evidence not in original target": 6,
+            "Missing definite correction evidence": 3
+          },
+          "latencyMs": {
+            "median": 21836,
+            "p95": 35128
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 7,
+                "trueAccept": 23,
+                "falseAcceptanceRate": 0.21875,
+                "correctAcceptanceRate": 0.71875,
+                "abstentions": 5,
+                "coverage": 0.921875,
+                "falseAcceptance95": {
+                  "low": 0.11023836252604186,
+                  "high": 0.3875499364924353
+                },
+                "correctAcceptance95": {
+                  "low": 0.5462549057408342,
+                  "high": 0.8443541950225723
+                },
+                "detectedErrors": 23,
+                "errorDetection95": {
+                  "low": 0.5462549057408342,
+                  "high": 0.8443541950225723
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "morphology-syntax-present": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.1,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 1,
+                  "coverage": 0.9,
+                  "falseAcceptance95": {
+                    "low": 0.017876213095072896,
+                    "high": 0.4041500267952385
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 8,
+                  "errorDetection95": {
+                    "low": 0.49016247153664183,
+                    "high": 0.9433178485456247
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 23,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.71875,
+                  "abstentions": 3,
+                  "coverage": 0.90625,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.5462549057408342,
+                    "high": 0.8443541950225723
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 21,
+                  "errors": 21,
+                  "clean": 0,
+                  "falseAccept": 6,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.2857142857142857,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 1,
+                  "coverage": 0.9523809523809523,
+                  "falseAcceptance95": {
+                    "low": 0.1381386295212213,
+                    "high": 0.49956380716085597
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 14,
+                  "errorDetection95": {
+                    "low": 0.4537345197425524,
+                    "high": 0.8280524739491653
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 1,
+                  "errors": 1,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.7934506856227626
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 1,
+                  "errorDetection95": {
+                    "low": 0.20654931437723745,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 2,
+                "trueAccept": 18,
+                "falseAcceptanceRate": 0.0625,
+                "correctAcceptanceRate": 0.5625,
+                "abstentions": 5,
+                "coverage": 0.921875,
+                "falseAcceptance95": {
+                  "low": 0.017310567031640967,
+                  "high": 0.2014712314415458
+                },
+                "correctAcceptance95": {
+                  "low": 0.3932559113685198,
+                  "high": 0.7183466888495963
+                },
+                "detectedErrors": 28,
+                "errorDetection95": {
+                  "low": 0.7193169451834978,
+                  "high": 0.9502986561251991
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 18,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.5625,
+                  "abstentions": 3,
+                  "coverage": 0.90625,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.3932559113685198,
+                    "high": 0.7183466888495963
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 20,
+                  "errors": 20,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.05,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 2,
+                  "coverage": 0.9,
+                  "falseAcceptance95": {
+                    "low": 0.008881448800795402,
+                    "high": 0.23613119344674205
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 17,
+                  "errorDetection95": {
+                    "low": 0.6395811352592431,
+                    "high": 0.9476312541037835
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.2775327998628892
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 10,
+                  "errorDetection95": {
+                    "low": 0.7224672001371107,
+                    "high": 0.9999999999999999
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 2,
+                  "errors": 2,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.5,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0.09453120573423074,
+                    "high": 0.9054687942657693
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 1,
+                  "errorDetection95": {
+                    "low": 0.09453120573423074,
+                    "high": 0.9054687942657693
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Evidence quotation validates localization syntax only, not correctness of the proposed repair. Diagnostic only; no app target/meaning qualification."
+        }
+      },
+      {
+        "name": "Qwen3.5-9B · direct",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T12:10:45.211Z",
+          "split": "development",
+          "mode": "direct",
+          "candidateFingerprint": "c4b445f178e0c2c794e131db54cc5d33925548e846f5004374e000dc24a21995",
+          "configSha256": "502b255e0dc37d4d9dbc550a32d28732f5c736e9286ee619d4a77d4eb9aa090f",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "172327db9fa6cf3e7eda78edd1ecd2d5df0d9912df86506c8adc17e31afb2cc7",
+          "count": 128,
+          "failures": {
+            "Missing definite correction evidence": 30,
+            "Evidence not in original target": 26,
+            "Contradictory correct verdict": 1,
+            "Malformed assessment": 1
+          },
+          "latencyMs": {
+            "median": 2825,
+            "p95": 14307
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 1,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.03125,
+                "abstentions": 33,
+                "coverage": 0.484375,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "detectedErrors": 23,
+                "errorDetection95": {
+                  "low": 0.5462549057408342,
+                  "high": 0.8443541950225723
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 1,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.03125,
+                  "abstentions": 24,
+                  "coverage": 0.25,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.005537860164003122,
+                    "high": 0.15744263820012558
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 2,
+                  "coverage": 0.8,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.2775327998628892
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 8,
+                  "errorDetection95": {
+                    "low": 0.49016247153664183,
+                    "high": 0.9433178485456247
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 21,
+                  "errors": 21,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 7,
+                  "coverage": 0.6666666666666666,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.154639018924847
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 14,
+                  "errorDetection95": {
+                    "low": 0.4537345197425524,
+                    "high": 0.8280524739491653
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 1,
+                  "errors": 1,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.7934506856227626
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 1,
+                  "errorDetection95": {
+                    "low": 0.20654931437723745,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 0,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0,
+                "abstentions": 25,
+                "coverage": 0.609375,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "detectedErrors": 27,
+                "errorDetection95": {
+                  "low": 0.682458504024696,
+                  "high": 0.9313557971749429
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0,
+                  "abstentions": 20,
+                  "coverage": 0.375,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0,
+                    "high": 0.1071791982550706
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 20,
+                  "errors": 20,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 3,
+                  "coverage": 0.85,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.16112515805281938
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 17,
+                  "errorDetection95": {
+                    "low": 0.6395811352592431,
+                    "high": 0.9476312541037835
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 2,
+                  "coverage": 0.8,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.2775327998628892
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 8,
+                  "errorDetection95": {
+                    "low": 0.49016247153664183,
+                    "high": 0.9433178485456247
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 2,
+                  "errors": 2,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.6576197724933469
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 2,
+                  "errorDetection95": {
+                    "low": 0.34238022750665303,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Evidence quotation validates localization syntax only, not correctness of the proposed repair. Diagnostic only; no app target/meaning qualification."
+        }
+      },
+      {
+        "name": "Qwen3.5-9B · thinking",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T12:26:38.324Z",
+          "split": "development",
+          "mode": "thinking",
+          "candidateFingerprint": "c5e9cdea8972062d87f867fa659d47d2fab41fab4ed8ddb0fcc7b5eb3407b246",
+          "configSha256": "11a0cef70e1943b10cfc4904c4855b6b6858a50d8ab8710a586c56b51e3362d7",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "dcc1adffe95b0223d131e3054d65cdcd66cccbe8c9cb02dcbcd891be4fe924ba",
+          "count": 128,
+          "failures": {
+            "Evidence not in original target": 16,
+            "Contradictory correct verdict": 5,
+            "Missing definite correction evidence": 7
+          },
+          "latencyMs": {
+            "median": 26493,
+            "p95": 28180
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 6,
+                "trueAccept": 20,
+                "falseAcceptanceRate": 0.1875,
+                "correctAcceptanceRate": 0.625,
+                "abstentions": 17,
+                "coverage": 0.734375,
+                "falseAcceptance95": {
+                  "low": 0.08889544689565954,
+                  "high": 0.3530915520137596
+                },
+                "correctAcceptance95": {
+                  "low": 0.4525440735307745,
+                  "high": 0.7706611269054578
+                },
+                "detectedErrors": 16,
+                "errorDetection95": {
+                  "low": 0.33630882869327483,
+                  "high": 0.6636911713067252
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 20,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.625,
+                  "abstentions": 7,
+                  "coverage": 0.78125,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.4525440735307745,
+                    "high": 0.7706611269054578
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.1,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 4,
+                  "coverage": 0.6,
+                  "falseAcceptance95": {
+                    "low": 0.017876213095072896,
+                    "high": 0.4041500267952385
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 5,
+                  "errorDetection95": {
+                    "low": 0.236593090512564,
+                    "high": 0.7634069094874361
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 21,
+                  "errors": 21,
+                  "clean": 0,
+                  "falseAccept": 5,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.23809523809523808,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 6,
+                  "coverage": 0.7142857142857143,
+                  "falseAcceptance95": {
+                    "low": 0.10628013022636468,
+                    "high": 0.4509117368295075
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 10,
+                  "errorDetection95": {
+                    "low": 0.2834400610153417,
+                    "high": 0.6763046541715557
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 1,
+                  "errors": 1,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.7934506856227626
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 1,
+                  "errorDetection95": {
+                    "low": 0.20654931437723745,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 8,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.25,
+                "abstentions": 11,
+                "coverage": 0.828125,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.1325240091850904,
+                  "high": 0.4210655899424448
+                },
+                "detectedErrors": 29,
+                "errorDetection95": {
+                  "low": 0.7578184527161212,
+                  "high": 0.9675984487016337
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 8,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.25,
+                  "abstentions": 8,
+                  "coverage": 0.75,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.1325240091850904,
+                    "high": 0.4210655899424448
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 20,
+                  "errors": 20,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 2,
+                  "coverage": 0.9,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.16112515805281938
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 18,
+                  "errorDetection95": {
+                    "low": 0.6989663547715128,
+                    "high": 0.9721335187862319
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 1,
+                  "coverage": 0.9,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.2775327998628892
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 9,
+                  "errorDetection95": {
+                    "low": 0.5958499732047615,
+                    "high": 0.9821237869049271
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 2,
+                  "errors": 2,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.6576197724933469
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 2,
+                  "errorDetection95": {
+                    "low": 0.34238022750665303,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Evidence quotation validates localization syntax only, not correctness of the proposed repair. Diagnostic only; no app target/meaning qualification."
+        }
+      },
+      {
+        "name": "Qwen3.5-9B · evidence first",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T12:31:58.896Z",
+          "split": "development",
+          "mode": "direct",
+          "candidateFingerprint": "271003d9367c3a7668f22eef7cfe0c472c637ffe73157e7e96114daa7fc53a57",
+          "configSha256": "cdc1dd831df1c1a1a24ee3ccf90f9a8156a57f6a953675ca4991e28fa2d9e82a",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "f102da3f45d05c91b6785c5ff77d3d90882dcbf82d98e36d5a9a64eb0bdee5e0",
+          "count": 128,
+          "failures": {
+            "Evidence not in original target": 18,
+            "Malformed assessment": 1
+          },
+          "latencyMs": {
+            "median": 1937,
+            "p95": 6862
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 6,
+                "trueAccept": 23,
+                "falseAcceptanceRate": 0.1875,
+                "correctAcceptanceRate": 0.71875,
+                "abstentions": 8,
+                "coverage": 0.875,
+                "falseAcceptance95": {
+                  "low": 0.08889544689565954,
+                  "high": 0.3530915520137596
+                },
+                "correctAcceptance95": {
+                  "low": 0.5462549057408342,
+                  "high": 0.8443541950225723
+                },
+                "detectedErrors": 21,
+                "errorDetection95": {
+                  "low": 0.4831108797896222,
+                  "high": 0.7958956207556682
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 23,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.71875,
+                  "abstentions": 3,
+                  "coverage": 0.90625,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.5462549057408342,
+                    "high": 0.8443541950225723
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.1,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 1,
+                  "coverage": 0.9,
+                  "falseAcceptance95": {
+                    "low": 0.017876213095072896,
+                    "high": 0.4041500267952385
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 8,
+                  "errorDetection95": {
+                    "low": 0.49016247153664183,
+                    "high": 0.9433178485456247
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 21,
+                  "errors": 21,
+                  "clean": 0,
+                  "falseAccept": 5,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.23809523809523808,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 4,
+                  "coverage": 0.8095238095238095,
+                  "falseAcceptance95": {
+                    "low": 0.10628013022636468,
+                    "high": 0.4509117368295075
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 12,
+                  "errorDetection95": {
+                    "low": 0.3654655436930671,
+                    "high": 0.7553003107462404
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 1,
+                  "errors": 1,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.7934506856227626
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 1,
+                  "errorDetection95": {
+                    "low": 0.20654931437723745,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 1,
+                "trueAccept": 15,
+                "falseAcceptanceRate": 0.03125,
+                "correctAcceptanceRate": 0.46875,
+                "abstentions": 12,
+                "coverage": 0.8125,
+                "falseAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "correctAcceptance95": {
+                  "low": 0.30869387108068835,
+                  "high": 0.6355048288102536
+                },
+                "detectedErrors": 22,
+                "errorDetection95": {
+                  "low": 0.5143332169904459,
+                  "high": 0.8204745836639026
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62,
+              "slices": {
+                "no-correction": {
+                  "count": 32,
+                  "errors": 0,
+                  "clean": 32,
+                  "falseAccept": 0,
+                  "trueAccept": 15,
+                  "falseAcceptanceRate": null,
+                  "correctAcceptanceRate": 0.46875,
+                  "abstentions": 3,
+                  "coverage": 0.90625,
+                  "falseAcceptance95": null,
+                  "correctAcceptance95": {
+                    "low": 0.30869387108068835,
+                    "high": 0.6355048288102536
+                  },
+                  "detectedErrors": 0,
+                  "errorDetection95": null,
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "morphology-syntax-present": {
+                  "count": 20,
+                  "errors": 20,
+                  "clean": 0,
+                  "falseAccept": 1,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0.05,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 7,
+                  "coverage": 0.65,
+                  "falseAcceptance95": {
+                    "low": 0.008881448800795402,
+                    "high": 0.23613119344674205
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 12,
+                  "errorDetection95": {
+                    "low": 0.3865815007622531,
+                    "high": 0.781193467627183
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "other-or-contextual": {
+                  "count": 10,
+                  "errors": 10,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 2,
+                  "coverage": 0.8,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.2775327998628892
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 8,
+                  "errorDetection95": {
+                    "low": 0.49016247153664183,
+                    "high": 0.9433178485456247
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                },
+                "orthography-only": {
+                  "count": 2,
+                  "errors": 2,
+                  "clean": 0,
+                  "falseAccept": 0,
+                  "trueAccept": 0,
+                  "falseAcceptanceRate": 0,
+                  "correctAcceptanceRate": null,
+                  "abstentions": 0,
+                  "coverage": 1,
+                  "falseAcceptance95": {
+                    "low": 0,
+                    "high": 0.6576197724933469
+                  },
+                  "correctAcceptance95": null,
+                  "detectedErrors": 2,
+                  "errorDetection95": {
+                    "low": 0.34238022750665303,
+                    "high": 1
+                  },
+                  "protocolVersion": 3,
+                  "diagnosticScreenPassed": false
+                }
+              }
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Evidence quotation validates localization syntax only, not correctness of the proposed repair. Diagnostic only; no app target/meaning qualification."
+        }
+      }
+    ],
+    "data": {
+      "schemaVersion": 1,
+      "createdAt": "2026-10-03T11:51:19.123Z",
+      "inputs": {
+        "./prepare-context-writing.ts": "019e894fb2f87dff6e5aa602c434eac76e23b8840bee480cc16438de0e0393a9",
+        "./context-data.ts": "911d22842c3500c522300882074617187237b988d21cf4a09b5255bbc1c78ed8",
+        "./core.ts": "82c809ff7dfda54786699600bfa25740f0b5edb5b3cded9228abe196c7594396",
+        "./runs/writing-qwen3-4b-v1/cases.jsonl": "8d53ba64e620f583d218a4ed224880ce3b3a5dadd423616a8b4a40f4191c3058",
+        "./data/english/wi+locness/json/A.dev.json": "d6e2dc418bab05e37e66f52f84f78f760ff5e3d5198eec7816142e7915377ebc",
+        "./data/english/wi+locness/json/B.dev.json": "af8d6b8337ecd9617dba8857fda1e0112dd592c7bc389a05a5189a500e955720",
+        "./data/english/wi+locness/json/C.dev.json": "aec9c8b435849379dca10d168aa4d0eaab067c2a88c9a415ef5e8871d3af4022",
+        "./data/english/wi+locness/json/A.train.json": "443ba24134e3e0df2e0c4c4dcb56d240141288b0357b7505f9ec5172274db096",
+        "./data/english/wi+locness/m2/A.train.gold.bea19.m2": "79cf56f7bd2ab22624e0308c205722ba9e2fe9a1b9dc1df7b35c3f9dba3a8497",
+        "./data/english/wi+locness/json/B.train.json": "67170247c7a18cd725554af8dcb5f324ecbd978dca011f03d8132f210ff93546",
+        "./data/english/wi+locness/m2/B.train.gold.bea19.m2": "22465faee67ca87329d5fde7555e8a24fcf6d968511b13ebf74882eccd3a836f",
+        "./data/english/wi+locness/json/C.train.json": "e10ee9b01d85d2c143ff008e1ea30267108a4811ea396dd61fd846685340a76c",
+        "./data/english/wi+locness/m2/C.train.gold.bea19.m2": "66aea2af43dcf7e0022dcfd703743e802076149f4d6433d82b758d74e123ecd3",
+        "./data/german/data/source/falko-id-ctok-zh1.txt.train": "48cd20dd031652a516b8533efaad29a49f7b8149558ca355c2bef0586c1752f9",
+        "./data/german/data/source/merlin-id-ctok-zh1.txt.train": "5e5b19cbfcbb30253217c87539db193f6f90d3ffee72cd339ee5d7cceefe0d3a",
+        "./data/german/data/fm-train.m2": "c555ddf98af689e7613b596c18f2461f1b03fab286599866ba5a0907ea555ed7",
+        "./data/german/data/source/falko-id-ctok-zh1.txt.dev": "2f162519f0bfc40d74a23e3c9e3ca0a816f37bb82d22afb7ffc25d82375d8aa6",
+        "./data/german/data/source/merlin-id-ctok-zh1.txt.dev": "f0aea607f108816b0cef41d250c33e4bccefe5bfb66aeb69007ad4ffa3e49b27",
+        "./data/german/data/fm-dev.m2": "24541dd8b6172083456f7e8cf4543a6225d8a285ebc9245030d73bbb4bd921d4"
+      },
+      "selections": {
+        "development": {
+          "count": 128,
+          "sha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "groups": 124,
+          "authors": 62,
+          "available": {
+            "en": {
+              "error": 10109,
+              "clean": 4633
+            },
+            "de": {
+              "error": 14831,
+              "clean": 3648
+            }
+          }
+        },
+        "holdout": {
+          "count": 512,
+          "sha256": "60df3b027dc8cec3164e3c0672afb8d1aff237c4427666263e64499d74517be6",
+          "groups": 336,
+          "authors": 218,
+          "available": {
+            "en": {
+              "error": 10374,
+              "clean": 4739
+            },
+            "de": {
+              "error": 1951,
+              "clean": 465
+            }
+          }
+        }
+      },
+      "excluded": {
+        "ambiguous reference": 1437,
+        "en missing unique surface or author": 574,
+        "length bounds": 721,
+        "en ambiguous alignment": 1063,
+        "previously inspected group, author or surface": 843,
+        "de empty original segment": 1,
+        "de ambiguous alignment": 577,
+        "de missing unique surface": 22
+      },
+      "seed": "r56-selection / r56-split",
+      "maximumTargetsPerDocument": 4,
+      "context": "Original-only 1000 characters before and after uniquely aligned target; gold edits never input. German punctuation whitespace detokenized.",
+      "labels": "Original all-edit/no-correction labels unchanged. Annotation slices are not human re-adjudication.",
+      "splitPolicy": "EN official train partition by hashed author. DE official train for development, unused official dev for holdout. Exclude old groups, known EN authors and targets; exclude cross-split group/author/target duplicates before sampling.",
+      "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification."
+    },
+    "holdout": null,
+    "holdoutState": "unused",
+    "productionApproved": false
+  },
+  "differentFamilyEvaluation": {
+    "candidate": {
+      "name": "Gemma 4 26B-A4B · direct",
+      "run": "writing-edits-gemma4-26b-development-direct-v1",
+      "report": {
+        "schemaVersion": 1,
+        "completedAt": "2026-10-03T21:34:57.166Z",
+        "split": "development",
+        "mode": "direct",
+        "candidateFingerprint": "f3400abc4547f453316d0111ea76758ce0b9888bb22ace24c9a63e74d6bad739",
+        "configSha256": "c699c2f399dfc055b16b787d25c0576bd5913460ccc3673b813d12e2b8c271b6",
+        "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+        "predictionsSha256": "a26507d770df49989caa136d870f4fcbf581eb13931ac1623025280d5db9d7cf",
+        "count": 128,
+        "attemptedPhases": 256,
+        "requestsStarted": 256,
+        "structurallyValidCalls": 230,
+        "completionDiagnostics": {
+          "finishReasons": {
+            "stop": 256
+          },
+          "reasoningResponses": 0,
+          "reasoningCharacters": 0,
+          "finalCharacters": 67242,
+          "responsesWithUsage": 256,
+          "promptTokens": 169822,
+          "completionTokens": 17308,
+          "requestsNotStarted": 0,
+          "timeoutFailures": 0
+        },
+        "explicitUncertaintyCalls": 0,
+        "bothPhasesAssessed": 108,
+        "failures": {
+          "Edit makes no substantive change": 6,
+          "Uncertain output contains a correction": 5,
+          "Overlapping edits": 12,
+          "Edit quotation absent or ambiguous": 2,
+          "Invalid edit fields": 1
+        },
+        "latencyMs": {
+          "median": 11459,
+          "p95": 28665
+        },
+        "languages": {
+          "en": {
+            "candidate": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 3,
+              "trueAccept": 23,
+              "falseAcceptanceRate": 0.09375,
+              "correctAcceptanceRate": 0.71875,
+              "abstentions": 22,
+              "coverage": 0.65625,
+              "falseAcceptance95": {
+                "low": 0.032401551298366194,
+                "high": 0.24218154728387864
+              },
+              "correctAcceptance95": {
+                "low": 0.5462549057408342,
+                "high": 0.8443541950225723
+              },
+              "detectedErrors": 13,
+              "errorDetection95": {
+                "low": 0.2551963484266544,
+                "high": 0.5773997512461713
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "firstPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 3,
+              "trueAccept": 23,
+              "falseAcceptanceRate": 0.09375,
+              "correctAcceptanceRate": 0.71875,
+              "abstentions": 6,
+              "coverage": 0.90625,
+              "falseAcceptance95": {
+                "low": 0.032401551298366194,
+                "high": 0.24218154728387864
+              },
+              "correctAcceptance95": {
+                "low": 0.5462549057408342,
+                "high": 0.8443541950225723
+              },
+              "detectedErrors": 25,
+              "errorDetection95": {
+                "low": 0.6124500635075647,
+                "high": 0.8897616374739581
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "reviewPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 7,
+              "trueAccept": 27,
+              "falseAcceptanceRate": 0.21875,
+              "correctAcceptanceRate": 0.84375,
+              "abstentions": 1,
+              "coverage": 0.984375,
+              "falseAcceptance95": {
+                "low": 0.11023836252604186,
+                "high": 0.3875499364924353
+              },
+              "correctAcceptance95": {
+                "low": 0.682458504024696,
+                "high": 0.9313557971749429
+              },
+              "detectedErrors": 24,
+              "errorDetection95": {
+                "low": 0.5789344100575552,
+                "high": 0.8674759908149096
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "groups": 62
+          },
+          "de": {
+            "candidate": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 0,
+              "trueAccept": 10,
+              "falseAcceptanceRate": 0,
+              "correctAcceptanceRate": 0.3125,
+              "abstentions": 30,
+              "coverage": 0.53125,
+              "falseAcceptance95": {
+                "low": 0,
+                "high": 0.1071791982550706
+              },
+              "correctAcceptance95": {
+                "low": 0.17952541633609734,
+                "high": 0.4856667830095541
+              },
+              "detectedErrors": 16,
+              "errorDetection95": {
+                "low": 0.33630882869327483,
+                "high": 0.6636911713067252
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "firstPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 0,
+              "trueAccept": 10,
+              "falseAcceptanceRate": 0,
+              "correctAcceptanceRate": 0.3125,
+              "abstentions": 10,
+              "coverage": 0.84375,
+              "falseAcceptance95": {
+                "low": 0,
+                "high": 0.1071791982550706
+              },
+              "correctAcceptance95": {
+                "low": 0.17952541633609734,
+                "high": 0.4856667830095541
+              },
+              "detectedErrors": 30,
+              "errorDetection95": {
+                "low": 0.7985287685584542,
+                "high": 0.982689432968359
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "reviewPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 1,
+              "trueAccept": 18,
+              "falseAcceptanceRate": 0.03125,
+              "correctAcceptanceRate": 0.5625,
+              "abstentions": 9,
+              "coverage": 0.859375,
+              "falseAcceptance95": {
+                "low": 0.005537860164003122,
+                "high": 0.15744263820012558
+              },
+              "correctAcceptance95": {
+                "low": 0.3932559113685198,
+                "high": 0.7183466888495963
+              },
+              "detectedErrors": 26,
+              "errorDetection95": {
+                "low": 0.6469084479862404,
+                "high": 0.9111045531043405
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "groups": 62
+          }
+        },
+        "releaseEligible": false,
+        "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Two reviews share a model and are correlated. First-pass results are diagnostic only. Exact quotation/reconstruction does not certify linguistic validity. No app task/meaning qualification."
+      },
+      "diagnostics": {
+        "en": {
+          "falseCorrections": 3,
+          "firstFalseCorrections": 7,
+          "reviewFalseCorrections": 5,
+          "reviewDisagreements": 16
+        },
+        "de": {
+          "falseCorrections": 8,
+          "firstFalseCorrections": 14,
+          "reviewFalseCorrections": 10,
+          "reviewDisagreements": 16
+        }
+      },
+      "scopeDiagnostics": {
+        "quotedEdits": 278,
+        "uniqueTargetQuotes": 276,
+        "ambiguousTargetQuotes": 2,
+        "contextOnlyQuotes": 0,
+        "absentQuotes": 0,
+        "unchangedEdits": 10,
+        "unreadablePhases": 0
+      },
+      "referenceAdjudication": {
+        "status": "not-independently-adjudicated",
+        "sourceCorrectionDisagreements": [
+          {
+            "language": "en",
+            "annotationTypes": [
+              "R:ADJ"
+            ]
+          },
+          {
+            "language": "en",
+            "annotationTypes": [
+              "M:PUNCT",
+              "R:PREP",
+              "R:NOUN:NUM"
+            ]
+          },
+          {
+            "language": "en",
+            "annotationTypes": [
+              "R:VERB"
+            ]
+          }
+        ]
+      }
+    },
+    "holdoutState": "unused",
+    "productionApproved": false
+  },
+  "reasoningEvaluation": {
+    "candidate": {
+      "name": "Qwen3.5-27B · bounded reasoning",
+      "run": "writing-edits-27b-development-thinking-v1",
+      "report": {
+        "schemaVersion": 1,
+        "completedAt": "2026-10-03T20:43:26.661Z",
+        "split": "development",
+        "mode": "thinking",
+        "candidateFingerprint": "d6fb0e07b040fd7beba66e0e12f02233bd90676e7081c0279f5fe972b5c0036d",
+        "configSha256": "f7e20f28dac11db6046a4a518f290d7537e681c9fa0b28ab7e5c617baceb8100",
+        "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+        "predictionsSha256": "32f30a1822649c923de1f3e7376f2065b143f819f9bb7484cfc6c33a9fb43448",
+        "count": 128,
+        "attemptedPhases": 256,
+        "requestsStarted": 256,
+        "structurallyValidCalls": 217,
+        "completionDiagnostics": {
+          "finishReasons": {
+            "stop": 232,
+            "no-finish-reason": 24
+          },
+          "reasoningResponses": 232,
+          "reasoningCharacters": 737960,
+          "finalCharacters": 51797,
+          "responsesWithUsage": 232,
+          "promptTokens": 148943,
+          "completionTokens": 192787,
+          "requestsNotStarted": 0,
+          "timeoutFailures": 24
+        },
+        "explicitUncertaintyCalls": 0,
+        "bothPhasesAssessed": 97,
+        "failures": {
+          "The operation timed out.": 24,
+          "Uncertain output contains a correction": 5,
+          "Overlapping edits": 6,
+          "Edit makes no substantive change": 2,
+          "Edit quotation absent or ambiguous": 2
+        },
+        "latencyMs": {
+          "median": 214904,
+          "p95": 240016
+        },
+        "languages": {
+          "en": {
+            "candidate": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 5,
+              "trueAccept": 27,
+              "falseAcceptanceRate": 0.15625,
+              "correctAcceptanceRate": 0.84375,
+              "abstentions": 22,
+              "coverage": 0.65625,
+              "falseAcceptance95": {
+                "low": 0.0686442028250571,
+                "high": 0.3175414959753039
+              },
+              "correctAcceptance95": {
+                "low": 0.682458504024696,
+                "high": 0.9313557971749429
+              },
+              "detectedErrors": 8,
+              "errorDetection95": {
+                "low": 0.1325240091850904,
+                "high": 0.4210655899424448
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "firstPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 7,
+              "trueAccept": 28,
+              "falseAcceptanceRate": 0.21875,
+              "correctAcceptanceRate": 0.875,
+              "abstentions": 2,
+              "coverage": 0.96875,
+              "falseAcceptance95": {
+                "low": 0.11023836252604186,
+                "high": 0.3875499364924353
+              },
+              "correctAcceptance95": {
+                "low": 0.7193169451834978,
+                "high": 0.9502986561251991
+              },
+              "detectedErrors": 23,
+              "errorDetection95": {
+                "low": 0.5462549057408342,
+                "high": 0.8443541950225723
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "reviewPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 7,
+              "trueAccept": 29,
+              "falseAcceptanceRate": 0.21875,
+              "correctAcceptanceRate": 0.90625,
+              "abstentions": 7,
+              "coverage": 0.890625,
+              "falseAcceptance95": {
+                "low": 0.11023836252604186,
+                "high": 0.3875499364924353
+              },
+              "correctAcceptance95": {
+                "low": 0.7578184527161212,
+                "high": 0.9675984487016337
+              },
+              "detectedErrors": 18,
+              "errorDetection95": {
+                "low": 0.3932559113685198,
+                "high": 0.7183466888495963
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "groups": 62
+          },
+          "de": {
+            "candidate": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 1,
+              "trueAccept": 15,
+              "falseAcceptanceRate": 0.03125,
+              "correctAcceptanceRate": 0.46875,
+              "abstentions": 42,
+              "coverage": 0.34375,
+              "falseAcceptance95": {
+                "low": 0.005537860164003122,
+                "high": 0.15744263820012558
+              },
+              "correctAcceptance95": {
+                "low": 0.30869387108068835,
+                "high": 0.6355048288102536
+              },
+              "detectedErrors": 4,
+              "errorDetection95": {
+                "low": 0.04970134387480073,
+                "high": 0.2806830548165022
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "firstPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 1,
+              "trueAccept": 18,
+              "falseAcceptanceRate": 0.03125,
+              "correctAcceptanceRate": 0.5625,
+              "abstentions": 10,
+              "coverage": 0.84375,
+              "falseAcceptance95": {
+                "low": 0.005537860164003122,
+                "high": 0.15744263820012558
+              },
+              "correctAcceptance95": {
+                "low": 0.3932559113685198,
+                "high": 0.7183466888495963
+              },
+              "detectedErrors": 27,
+              "errorDetection95": {
+                "low": 0.682458504024696,
+                "high": 0.9313557971749429
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "reviewPass": {
+              "count": 64,
+              "errors": 32,
+              "clean": 32,
+              "falseAccept": 1,
+              "trueAccept": 21,
+              "falseAcceptanceRate": 0.03125,
+              "correctAcceptanceRate": 0.65625,
+              "abstentions": 20,
+              "coverage": 0.6875,
+              "falseAcceptance95": {
+                "low": 0.005537860164003122,
+                "high": 0.15744263820012558
+              },
+              "correctAcceptance95": {
+                "low": 0.4831108797896222,
+                "high": 0.7958956207556682
+              },
+              "detectedErrors": 16,
+              "errorDetection95": {
+                "low": 0.33630882869327483,
+                "high": 0.6636911713067252
+              },
+              "protocolVersion": 3,
+              "diagnosticScreenPassed": false
+            },
+            "groups": 62
+          }
+        },
+        "releaseEligible": false,
+        "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Two reviews share a model and are correlated. First-pass results are diagnostic only. Exact quotation/reconstruction does not certify linguistic validity. No app task/meaning qualification."
+      },
+      "diagnostics": {
+        "en": {
+          "falseCorrections": 2,
+          "firstFalseCorrections": 4,
+          "reviewFalseCorrections": 3,
+          "reviewDisagreements": 14
+        },
+        "de": {
+          "falseCorrections": 2,
+          "firstFalseCorrections": 8,
+          "reviewFalseCorrections": 6,
+          "reviewDisagreements": 19
+        }
+      },
+      "scopeDiagnostics": {
+        "quotedEdits": 196,
+        "uniqueTargetQuotes": 194,
+        "ambiguousTargetQuotes": 1,
+        "contextOnlyQuotes": 0,
+        "absentQuotes": 1,
+        "unchangedEdits": 2,
+        "unreadablePhases": 24
+      },
+      "referenceAdjudication": {
+        "status": "not-independently-adjudicated",
+        "sourceCorrectionDisagreements": [
+          {
+            "language": "de",
+            "annotationTypes": [
+              "R:ORTH"
+            ]
+          },
+          {
+            "language": "en",
+            "annotationTypes": [
+              "R:ADJ"
+            ]
+          },
+          {
+            "language": "en",
+            "annotationTypes": [
+              "M:PUNCT",
+              "R:DET"
+            ]
+          },
+          {
+            "language": "en",
+            "annotationTypes": [
+              "M:PUNCT",
+              "R:PREP",
+              "R:NOUN:NUM"
+            ]
+          },
+          {
+            "language": "en",
+            "annotationTypes": [
+              "R:VERB"
+            ]
+          },
+          {
+            "language": "en",
+            "annotationTypes": [
+              "M:NOUN",
+              "R:VERB:TENSE"
+            ]
+          }
+        ]
+      }
+    },
+    "holdoutState": "unused",
+    "productionApproved": false
+  },
+  "editEvaluation": {
+    "candidates": [
+      {
+        "name": "Qwen3-14B · necessary edits",
+        "run": "writing-edits-14b-development-direct-v1",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T15:26:38.750Z",
+          "split": "development",
+          "mode": "direct",
+          "candidateFingerprint": "ed4599e0e0977de238499d05f5c0e0dd551c4015871883d3cd28403b53897e60",
+          "configSha256": "cfa04aa3743b8e0e0843401761ddc2ecde125061782d9210ba761a49af06cff0",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "df55b25acb3de7f2c8689a863f619076b3c1cf3e61e1e1ec6f20735c309c5cfd",
+          "count": 128,
+          "attemptedPhases": 256,
+          "requestsStarted": 256,
+          "structurallyValidCalls": 79,
+          "failures": {
+            "Edit quotation absent or ambiguous": 131,
+            "Edit makes no substantive change": 43,
+            "Overlapping edits": 1,
+            "Uncertain output contains a correction": 2
+          },
+          "latencyMs": {
+            "median": 20059,
+            "p95": 51651
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 2,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.0625,
+                "abstentions": 49,
+                "coverage": 0.234375,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.017310567031640967,
+                  "high": 0.2014712314415458
+                },
+                "detectedErrors": 11,
+                "errorDetection95": {
+                  "low": 0.20410437924433172,
+                  "high": 0.5168891202103778
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "firstPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 2,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.0625,
+                "abstentions": 42,
+                "coverage": 0.34375,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.017310567031640967,
+                  "high": 0.2014712314415458
+                },
+                "detectedErrors": 17,
+                "errorDetection95": {
+                  "low": 0.3644951711897464,
+                  "high": 0.6913061289193116
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "reviewPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 5,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.15625,
+                "abstentions": 43,
+                "coverage": 0.328125,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.0686442028250571,
+                  "high": 0.3175414959753039
+                },
+                "detectedErrors": 13,
+                "errorDetection95": {
+                  "low": 0.2551963484266544,
+                  "high": 0.5773997512461713
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 1,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.03125,
+                "abstentions": 55,
+                "coverage": 0.140625,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "detectedErrors": 7,
+                "errorDetection95": {
+                  "low": 0.11023836252604186,
+                  "high": 0.3875499364924353
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "firstPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 1,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.03125,
+                "abstentions": 46,
+                "coverage": 0.28125,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "detectedErrors": 15,
+                "errorDetection95": {
+                  "low": 0.30869387108068835,
+                  "high": 0.6355048288102536
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "reviewPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 2,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.0625,
+                "abstentions": 46,
+                "coverage": 0.28125,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.017310567031640967,
+                  "high": 0.2014712314415458
+                },
+                "detectedErrors": 15,
+                "errorDetection95": {
+                  "low": 0.30869387108068835,
+                  "high": 0.6355048288102536
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Two reviews share a model and are correlated. First-pass results are diagnostic only. Exact quotation/reconstruction does not certify linguistic validity. No app task/meaning qualification."
+        },
+        "diagnostics": {
+          "en": {
+            "falseCorrections": 2,
+            "firstFalseCorrections": 3,
+            "reviewFalseCorrections": 3,
+            "reviewDisagreements": 3
+          },
+          "de": {
+            "falseCorrections": 1,
+            "firstFalseCorrections": 2,
+            "reviewFalseCorrections": 1,
+            "reviewDisagreements": 7
+          }
+        },
+        "scopeDiagnostics": {
+          "quotedEdits": 933,
+          "uniqueTargetQuotes": 244,
+          "ambiguousTargetQuotes": 0,
+          "contextOnlyQuotes": 660,
+          "absentQuotes": 29,
+          "unchangedEdits": 124,
+          "unreadablePhases": 0
+        },
+        "referenceAdjudication": {
+          "status": "not-independently-adjudicated",
+          "sourceCorrectionDisagreements": []
+        }
+      },
+      {
+        "name": "Qwen3.5-27B · necessary edits",
+        "run": "writing-edits-27b-development-direct-v2",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T15:57:15.196Z",
+          "split": "development",
+          "mode": "direct",
+          "candidateFingerprint": "052c9f9ea72e1e5912cda6b2114631d5390bc4ef863d6064534918dcfef378cf",
+          "configSha256": "cbe193e6475c0d99f427cabea45fb9d47daaa6591549c65447690a4d60634ffa",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "ce867b7f1cc10c74d581729d2295b1900d18f4b5ec746a27fbeb5d0c7a14c071",
+          "count": 128,
+          "attemptedPhases": 256,
+          "requestsStarted": 256,
+          "structurallyValidCalls": 189,
+          "failures": {
+            "Overlapping edits": 12,
+            "Edit quotation absent or ambiguous": 22,
+            "Edit makes no substantive change": 26,
+            "Uncertain output contains a correction": 2,
+            "Invalid edit fields": 2,
+            "Incomplete or changed model response": 3
+          },
+          "latencyMs": {
+            "median": 35710,
+            "p95": 116688
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 1,
+                "trueAccept": 16,
+                "falseAcceptanceRate": 0.03125,
+                "correctAcceptanceRate": 0.5,
+                "abstentions": 33,
+                "coverage": 0.484375,
+                "falseAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "correctAcceptance95": {
+                  "low": 0.33630882869327483,
+                  "high": 0.6636911713067252
+                },
+                "detectedErrors": 12,
+                "errorDetection95": {
+                  "low": 0.22933887309454212,
+                  "high": 0.5474559264692255
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "firstPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 1,
+                "trueAccept": 16,
+                "falseAcceptanceRate": 0.03125,
+                "correctAcceptanceRate": 0.5,
+                "abstentions": 15,
+                "coverage": 0.765625,
+                "falseAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "correctAcceptance95": {
+                  "low": 0.33630882869327483,
+                  "high": 0.6636911713067252
+                },
+                "detectedErrors": 25,
+                "errorDetection95": {
+                  "low": 0.6124500635075647,
+                  "high": 0.8897616374739581
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "reviewPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 4,
+                "trueAccept": 19,
+                "falseAcceptanceRate": 0.125,
+                "correctAcceptanceRate": 0.59375,
+                "abstentions": 13,
+                "coverage": 0.796875,
+                "falseAcceptance95": {
+                  "low": 0.04970134387480073,
+                  "high": 0.2806830548165022
+                },
+                "correctAcceptance95": {
+                  "low": 0.42260024875382873,
+                  "high": 0.7448036515733456
+                },
+                "detectedErrors": 23,
+                "errorDetection95": {
+                  "low": 0.5462549057408342,
+                  "high": 0.8443541950225723
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 1,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.03125,
+                "abstentions": 37,
+                "coverage": 0.421875,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "detectedErrors": 14,
+                "errorDetection95": {
+                  "low": 0.2816533111504036,
+                  "high": 0.6067440886314801
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "firstPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 1,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.03125,
+                "abstentions": 19,
+                "coverage": 0.703125,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "detectedErrors": 26,
+                "errorDetection95": {
+                  "low": 0.6469084479862404,
+                  "high": 0.9111045531043405
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "reviewPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 0,
+                "trueAccept": 2,
+                "falseAcceptanceRate": 0,
+                "correctAcceptanceRate": 0.0625,
+                "abstentions": 20,
+                "coverage": 0.6875,
+                "falseAcceptance95": {
+                  "low": 0,
+                  "high": 0.1071791982550706
+                },
+                "correctAcceptance95": {
+                  "low": 0.017310567031640967,
+                  "high": 0.2014712314415458
+                },
+                "detectedErrors": 24,
+                "errorDetection95": {
+                  "low": 0.5789344100575552,
+                  "high": 0.8674759908149096
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Two reviews share a model and are correlated. First-pass results are diagnostic only. Exact quotation/reconstruction does not certify linguistic validity. No app task/meaning qualification."
+        },
+        "diagnostics": {
+          "en": {
+            "falseCorrections": 2,
+            "firstFalseCorrections": 7,
+            "reviewFalseCorrections": 5,
+            "reviewDisagreements": 13
+          },
+          "de": {
+            "falseCorrections": 12,
+            "firstFalseCorrections": 18,
+            "reviewFalseCorrections": 18,
+            "reviewDisagreements": 14
+          }
+        },
+        "scopeDiagnostics": {
+          "quotedEdits": 456,
+          "uniqueTargetQuotes": 368,
+          "ambiguousTargetQuotes": 2,
+          "contextOnlyQuotes": 80,
+          "absentQuotes": 6,
+          "unchangedEdits": 40,
+          "unreadablePhases": 3
+        },
+        "referenceAdjudication": {
+          "status": "not-independently-adjudicated",
+          "sourceCorrectionDisagreements": [
+            {
+              "language": "en",
+              "annotationTypes": [
+                "R:VERB"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name": "Qwen3.5-27B · target last",
+        "run": "writing-edits-27b-development-direct-v3",
+        "report": {
+          "schemaVersion": 1,
+          "completedAt": "2026-10-03T16:21:39.434Z",
+          "split": "development",
+          "mode": "direct",
+          "candidateFingerprint": "886860a7c1ffa566bc6a180061a50c8987c91301c91506c0dea965b37a25483a",
+          "configSha256": "f69b37d702b159e8b011d357edb21961c63d135255b310fbb87bc2a4cd3fa747",
+          "selectionSha256": "d1c6c63f7e5e3a2a5c0e8fba0d4647aa7845276c35bb36769102c65721187e1c",
+          "predictionsSha256": "a644a5921afa60e7df0ea6f0065ae46a1155f8f48fc4c3bb4df801f8b2ac85ec",
+          "count": 128,
+          "attemptedPhases": 256,
+          "requestsStarted": 256,
+          "structurallyValidCalls": 232,
+          "failures": {
+            "Edit makes no substantive change": 7,
+            "Edit quotation absent or ambiguous": 6,
+            "Invalid edit fields": 3,
+            "Incomplete or changed model response": 4,
+            "Overlapping edits": 2,
+            "The operation timed out.": 1,
+            "Uncertain output contains a correction": 1
+          },
+          "latencyMs": {
+            "median": 22157,
+            "p95": 115577
+          },
+          "languages": {
+            "en": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 5,
+                "trueAccept": 30,
+                "falseAcceptanceRate": 0.15625,
+                "correctAcceptanceRate": 0.9375,
+                "abstentions": 15,
+                "coverage": 0.765625,
+                "falseAcceptance95": {
+                  "low": 0.0686442028250571,
+                  "high": 0.3175414959753039
+                },
+                "correctAcceptance95": {
+                  "low": 0.7985287685584542,
+                  "high": 0.982689432968359
+                },
+                "detectedErrors": 13,
+                "errorDetection95": {
+                  "low": 0.2551963484266544,
+                  "high": 0.5773997512461713
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "firstPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 5,
+                "trueAccept": 30,
+                "falseAcceptanceRate": 0.15625,
+                "correctAcceptanceRate": 0.9375,
+                "abstentions": 5,
+                "coverage": 0.921875,
+                "falseAcceptance95": {
+                  "low": 0.0686442028250571,
+                  "high": 0.3175414959753039
+                },
+                "correctAcceptance95": {
+                  "low": 0.7985287685584542,
+                  "high": 0.982689432968359
+                },
+                "detectedErrors": 22,
+                "errorDetection95": {
+                  "low": 0.5143332169904459,
+                  "high": 0.8204745836639026
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "reviewPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 7,
+                "trueAccept": 31,
+                "falseAcceptanceRate": 0.21875,
+                "correctAcceptanceRate": 0.96875,
+                "abstentions": 4,
+                "coverage": 0.9375,
+                "falseAcceptance95": {
+                  "low": 0.11023836252604186,
+                  "high": 0.3875499364924353
+                },
+                "correctAcceptance95": {
+                  "low": 0.8425573617998744,
+                  "high": 0.9944621398359969
+                },
+                "detectedErrors": 21,
+                "errorDetection95": {
+                  "low": 0.4831108797896222,
+                  "high": 0.7958956207556682
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62
+            },
+            "de": {
+              "candidate": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 1,
+                "trueAccept": 15,
+                "falseAcceptanceRate": 0.03125,
+                "correctAcceptanceRate": 0.46875,
+                "abstentions": 25,
+                "coverage": 0.609375,
+                "falseAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "correctAcceptance95": {
+                  "low": 0.30869387108068835,
+                  "high": 0.6355048288102536
+                },
+                "detectedErrors": 16,
+                "errorDetection95": {
+                  "low": 0.33630882869327483,
+                  "high": 0.6636911713067252
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "firstPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 1,
+                "trueAccept": 15,
+                "falseAcceptanceRate": 0.03125,
+                "correctAcceptanceRate": 0.46875,
+                "abstentions": 5,
+                "coverage": 0.921875,
+                "falseAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "correctAcceptance95": {
+                  "low": 0.30869387108068835,
+                  "high": 0.6355048288102536
+                },
+                "detectedErrors": 29,
+                "errorDetection95": {
+                  "low": 0.7578184527161212,
+                  "high": 0.9675984487016337
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "reviewPass": {
+                "count": 64,
+                "errors": 32,
+                "clean": 32,
+                "falseAccept": 1,
+                "trueAccept": 19,
+                "falseAcceptanceRate": 0.03125,
+                "correctAcceptanceRate": 0.59375,
+                "abstentions": 10,
+                "coverage": 0.84375,
+                "falseAcceptance95": {
+                  "low": 0.005537860164003122,
+                  "high": 0.15744263820012558
+                },
+                "correctAcceptance95": {
+                  "low": 0.42260024875382873,
+                  "high": 0.7448036515733456
+                },
+                "detectedErrors": 24,
+                "errorDetection95": {
+                  "low": 0.5789344100575552,
+                  "high": 0.8674759908149096
+                },
+                "protocolVersion": 3,
+                "diagnosticScreenPassed": false
+              },
+              "groups": 62
+            }
+          },
+          "releaseEligible": false,
+          "limitations": "German author identity unavailable beyond document IDs. Within-document observations correlated; sentence Wilson bounds descriptive. Public pretraining exposure unknown. New holdout is untouched by this workflow, not proven uncontaminated. Not app-task qualification. Two reviews share a model and are correlated. First-pass results are diagnostic only. Exact quotation/reconstruction does not certify linguistic validity. No app task/meaning qualification."
+        },
+        "diagnostics": {
+          "en": {
+            "falseCorrections": 1,
+            "firstFalseCorrections": 2,
+            "reviewFalseCorrections": 1,
+            "reviewDisagreements": 10
+          },
+          "de": {
+            "falseCorrections": 7,
+            "firstFalseCorrections": 14,
+            "reviewFalseCorrections": 10,
+            "reviewDisagreements": 14
+          }
+        },
+        "scopeDiagnostics": {
+          "quotedEdits": 241,
+          "uniqueTargetQuotes": 235,
+          "ambiguousTargetQuotes": 1,
+          "contextOnlyQuotes": 0,
+          "absentQuotes": 5,
+          "unchangedEdits": 11,
+          "unreadablePhases": 5
+        },
+        "referenceAdjudication": {
+          "status": "not-independently-adjudicated",
+          "sourceCorrectionDisagreements": [
+            {
+              "language": "de",
+              "annotationTypes": [
+                "R:ORTH"
+              ]
+            },
+            {
+              "language": "en",
+              "annotationTypes": [
+                "M:DET"
+              ]
+            },
+            {
+              "language": "en",
+              "annotationTypes": [
+                "R:ADJ"
+              ]
+            },
+            {
+              "language": "en",
+              "annotationTypes": [
+                "M:PUNCT",
+                "R:DET"
+              ]
+            },
+            {
+              "language": "en",
+              "annotationTypes": [
+                "R:VERB"
+              ]
+            },
+            {
+              "language": "en",
+              "annotationTypes": [
+                "M:NOUN",
+                "R:VERB:TENSE"
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "interruptedRuns": [
+      {
+        "run": "writing-edits-27b-development-direct-v1",
+        "nextVersion": "v2",
+        "status": "interrupted",
+        "reason": "Operational restart before inspecting candidate metrics: 48 GPU layers used 12878/16311 MiB but only about 4.2 generated tokens/s per slot; increase offload to 58 with unchanged prompts/data/criteria.",
+        "gpuLayers": 48,
+        "stoppedAt": "2026-10-03T17:29:39.3820225+02:00",
+        "qualityResult": "Incomplete; never used for model selection"
+      }
+    ],
+    "holdoutState": "unused",
+    "productionApproved": false
+  },
+  "audio": {
+    "schemaVersion": 1,
+    "completedAt": "2026-10-03T04:46:38.487Z",
+    "kind": "individual-recording diagnostic of published checkpoint",
+    "source": "https://github.com/hy310/ssl_finetuning",
+    "casesSha256": "f4de6d61a4937c0234436ef2226bfc8dd7119b6ad28b5e31ca27785d2b4b2dc8",
+    "predictionsSha256": "1ce013e2269a1f51f69c852fa2bf8c6e065bac54dd09bcee5e5468b5394e3492",
+    "testRecordings": 2500,
+    "completed": 2500,
+    "valid": 2500,
+    "failures": 0,
+    "coverage": 1,
+    "speakers": 125,
+    "dimensions": {
+      "accuracy": {
+        "candidate": {
+          "count": 2500,
+          "mae": 0.8299922807693482,
+          "correlation": 0.6695480929212045,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMeanBaseline": {
+          "count": 2500,
+          "mae": 1.1610713599999671,
+          "correlation": null,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMean": 7.6184,
+        "outOfRange": 0
+      },
+      "fluency": {
+        "candidate": {
+          "count": 2500,
+          "mae": 0.6866428845405579,
+          "correlation": 0.7506402280450157,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMeanBaseline": {
+          "count": 2500,
+          "mae": 1.0959932800000105,
+          "correlation": null,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMean": 7.7284,
+        "outOfRange": 0
+      },
+      "prosodic": {
+        "candidate": {
+          "count": 2500,
+          "mae": 0.6827514310836792,
+          "correlation": 0.7489895562683023,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMeanBaseline": {
+          "count": 2500,
+          "mae": 1.1375680000000121,
+          "correlation": null,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMean": 7.4224,
+        "outOfRange": 0
+      },
+      "total": {
+        "candidate": {
+          "count": 2500,
+          "mae": 0.7979967837333679,
+          "correlation": 0.6971298591741185,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMeanBaseline": {
+          "count": 2500,
+          "mae": 1.1901699200000007,
+          "correlation": null,
+          "diagnosticScreenPassed": false
+        },
+        "trainingMean": 7.1812,
+        "outOfRange": 0
+      }
+    },
+    "cohortsByOriginalSourceCodes": {
+      "age": {
+        "6": {
+          "count": 240,
+          "dimensions": {
+            "accuracy": {
+              "count": 240,
+              "mae": 0.8327831010023753,
+              "correlation": 0.17084123590401748,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 240,
+              "mae": 0.7250504930814107,
+              "correlation": 0.3374141272957708,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 240,
+              "mae": 0.7422588368256887,
+              "correlation": 0.2650934604070273,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 240,
+              "mae": 0.8468440035978954,
+              "correlation": 0.18558613548758818,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "7": {
+          "count": 240,
+          "dimensions": {
+            "accuracy": {
+              "count": 240,
+              "mae": 1.0714880923430126,
+              "correlation": 0.31744552974629475,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 240,
+              "mae": 0.9122749328613281,
+              "correlation": 0.4940717116987141,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 240,
+              "mae": 0.8660174389680226,
+              "correlation": 0.4999627743913917,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 240,
+              "mae": 1.0996223787466686,
+              "correlation": 0.3788180527131521,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "8": {
+          "count": 120,
+          "dimensions": {
+            "accuracy": {
+              "count": 120,
+              "mae": 0.6830393234888713,
+              "correlation": 0.3441774581284326,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 120,
+              "mae": 0.6344682097434997,
+              "correlation": 0.3892877277214595,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 120,
+              "mae": 0.5896875500679016,
+              "correlation": 0.4880277264147388,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 120,
+              "mae": 0.6073587735493978,
+              "correlation": 0.3470147167008245,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "9": {
+          "count": 160,
+          "dimensions": {
+            "accuracy": {
+              "count": 160,
+              "mae": 0.5510073572397232,
+              "correlation": 0.4927783358773123,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 160,
+              "mae": 0.5860157936811448,
+              "correlation": 0.4896055520804481,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 160,
+              "mae": 0.5397009998559952,
+              "correlation": 0.6043704100572447,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 160,
+              "mae": 0.5528018951416016,
+              "correlation": 0.48589516669217303,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "10": {
+          "count": 80,
+          "dimensions": {
+            "accuracy": {
+              "count": 80,
+              "mae": 0.563523405790329,
+              "correlation": 0.20941049455546448,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 80,
+              "mae": 0.5305164158344269,
+              "correlation": 0.6005003752718142,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 80,
+              "mae": 0.4526860177516937,
+              "correlation": 0.3688886805368141,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 80,
+              "mae": 0.573849219083786,
+              "correlation": 0.24851003228431479,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "11": {
+          "count": 120,
+          "dimensions": {
+            "accuracy": {
+              "count": 120,
+              "mae": 0.8767248253027599,
+              "correlation": 0.3010865161116633,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 120,
+              "mae": 0.563027822971344,
+              "correlation": 0.7816759739466438,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 120,
+              "mae": 0.6916274468104044,
+              "correlation": 0.7383093086808045,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 120,
+              "mae": 0.8944161335627238,
+              "correlation": 0.47259214071359046,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "12": {
+          "count": 80,
+          "dimensions": {
+            "accuracy": {
+              "count": 80,
+              "mae": 0.9456020474433899,
+              "correlation": 0.5035497129072422,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 80,
+              "mae": 0.9332738220691681,
+              "correlation": 0.4067071029024053,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 80,
+              "mae": 0.7684800267219544,
+              "correlation": 0.49223295022865754,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 80,
+              "mae": 0.9757656931877137,
+              "correlation": 0.4805246981914454,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "13": {
+          "count": 20,
+          "dimensions": {
+            "accuracy": {
+              "count": 20,
+              "mae": 0.40052571296691897,
+              "correlation": 0.3744528563784191,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 20,
+              "mae": 0.5066240310668946,
+              "correlation": 0.2838230719333831,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 20,
+              "mae": 0.5336960554122925,
+              "correlation": -0.07813214786815086,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 20,
+              "mae": 0.4306914806365967,
+              "correlation": -0.0410133771314168,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "14": {
+          "count": 40,
+          "dimensions": {
+            "accuracy": {
+              "count": 40,
+              "mae": 0.5870893716812133,
+              "correlation": -0.04242226480588266,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 40,
+              "mae": 0.4948691725730896,
+              "correlation": 0.21388039950264637,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 40,
+              "mae": 0.43774449825286865,
+              "correlation": 0.4059837311005966,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 40,
+              "mae": 0.4843118071556091,
+              "correlation": 0.18422597618797568,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "15": {
+          "count": 180,
+          "dimensions": {
+            "accuracy": {
+              "count": 180,
+              "mae": 0.5825641685061984,
+              "correlation": 0.18602959862912352,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 180,
+              "mae": 0.5340445703930325,
+              "correlation": 0.3574816797646372,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 180,
+              "mae": 0.5926151990890502,
+              "correlation": 0.4565050787306323,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 180,
+              "mae": 0.6509494384129842,
+              "correlation": 0.24726557777778937,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "19": {
+          "count": 120,
+          "dimensions": {
+            "accuracy": {
+              "count": 120,
+              "mae": 0.5728511095046998,
+              "correlation": 0.32838984387000547,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 120,
+              "mae": 0.5109906872113545,
+              "correlation": 0.3619568231805834,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 120,
+              "mae": 0.3784829338391622,
+              "correlation": 0.5623814520787751,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 120,
+              "mae": 0.4477825323740641,
+              "correlation": 0.38260237463600566,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "20": {
+          "count": 220,
+          "dimensions": {
+            "accuracy": {
+              "count": 220,
+              "mae": 0.8291197776794433,
+              "correlation": 0.8285808063610761,
+              "diagnosticScreenPassed": true
+            },
+            "fluency": {
+              "count": 220,
+              "mae": 0.708194223317233,
+              "correlation": 0.8865234230677531,
+              "diagnosticScreenPassed": true
+            },
+            "prosodic": {
+              "count": 220,
+              "mae": 0.6743269877000289,
+              "correlation": 0.890950691399673,
+              "diagnosticScreenPassed": true
+            },
+            "total": {
+              "count": 220,
+              "mae": 0.7228500106117942,
+              "correlation": 0.8667621708966488,
+              "diagnosticScreenPassed": true
+            }
+          }
+        },
+        "21": {
+          "count": 220,
+          "dimensions": {
+            "accuracy": {
+              "count": 220,
+              "mae": 1.0955335183577104,
+              "correlation": 0.7043209205529432,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 220,
+              "mae": 0.7348871144381437,
+              "correlation": 0.8441848719960011,
+              "diagnosticScreenPassed": true
+            },
+            "prosodic": {
+              "count": 220,
+              "mae": 0.8532850633968007,
+              "correlation": 0.8048456888368667,
+              "diagnosticScreenPassed": true
+            },
+            "total": {
+              "count": 220,
+              "mae": 0.9991810874505477,
+              "correlation": 0.7536814997455535,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "22": {
+          "count": 80,
+          "dimensions": {
+            "accuracy": {
+              "count": 80,
+              "mae": 0.6698550045490265,
+              "correlation": 0.7179074229680131,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 80,
+              "mae": 0.5562076985836029,
+              "correlation": 0.8715709924596936,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 80,
+              "mae": 0.6466734826564788,
+              "correlation": 0.8460405553041622,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 80,
+              "mae": 0.7004043102264405,
+              "correlation": 0.7794548509254378,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "23": {
+          "count": 80,
+          "dimensions": {
+            "accuracy": {
+              "count": 80,
+              "mae": 0.9521064937114716,
+              "correlation": 0.21029898393468657,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 80,
+              "mae": 0.7856927216053009,
+              "correlation": 0.251639714060234,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 80,
+              "mae": 0.865174674987793,
+              "correlation": 0.20056752526926738,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 80,
+              "mae": 0.9654410004615783,
+              "correlation": 0.29136426234413976,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "24": {
+          "count": 60,
+          "dimensions": {
+            "accuracy": {
+              "count": 60,
+              "mae": 1.063901416460673,
+              "correlation": 0.7578503549151314,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 60,
+              "mae": 0.6260724147160848,
+              "correlation": 0.9014016374022757,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 60,
+              "mae": 0.5649642705917358,
+              "correlation": 0.9221296822327014,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 60,
+              "mae": 0.8530413985252381,
+              "correlation": 0.8516347349372297,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "25": {
+          "count": 120,
+          "dimensions": {
+            "accuracy": {
+              "count": 120,
+              "mae": 0.987493751446406,
+              "correlation": 0.7193266889275894,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 120,
+              "mae": 0.7161184151967367,
+              "correlation": 0.8480988861853331,
+              "diagnosticScreenPassed": true
+            },
+            "prosodic": {
+              "count": 120,
+              "mae": 0.7136323849360148,
+              "correlation": 0.8446662460702515,
+              "diagnosticScreenPassed": true
+            },
+            "total": {
+              "count": 120,
+              "mae": 0.9466354012489319,
+              "correlation": 0.7752446178151225,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "26": {
+          "count": 40,
+          "dimensions": {
+            "accuracy": {
+              "count": 40,
+              "mae": 1.3482728362083436,
+              "correlation": 0.5435810071988697,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 40,
+              "mae": 0.6924412250518799,
+              "correlation": 0.6902454602190004,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 40,
+              "mae": 0.6328551054000855,
+              "correlation": 0.5204717674774746,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 40,
+              "mae": 1.2118778824806213,
+              "correlation": 0.5227391616400234,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "27": {
+          "count": 20,
+          "dimensions": {
+            "accuracy": {
+              "count": 20,
+              "mae": 0.31943817138671876,
+              "correlation": -0.5704671541508489,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 20,
+              "mae": 0.46323723793029786,
+              "correlation": 0.2534442311416878,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 20,
+              "mae": 0.3156313419342041,
+              "correlation": -0.28256521590748,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 20,
+              "mae": 0.3997026920318604,
+              "correlation": -0.22117423736057787,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "28": {
+          "count": 20,
+          "dimensions": {
+            "accuracy": {
+              "count": 20,
+              "mae": 0.8634716987609863,
+              "correlation": -0.2824431308111065,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 20,
+              "mae": 0.9961276531219483,
+              "correlation": 0.2652878213550404,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 20,
+              "mae": 0.6891367912292481,
+              "correlation": 0.25966842598224804,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 20,
+              "mae": 0.5374985218048096,
+              "correlation": -0.08175697018969588,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "29": {
+          "count": 40,
+          "dimensions": {
+            "accuracy": {
+              "count": 40,
+              "mae": 1.0111820697784424,
+              "correlation": 0.8441230412821944,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 40,
+              "mae": 0.4855040192604065,
+              "correlation": 0.8496359578262265,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 40,
+              "mae": 0.6890709519386291,
+              "correlation": 0.762301720572005,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 40,
+              "mae": 1.0105461478233337,
+              "correlation": 0.8430720073468563,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "30": {
+          "count": 40,
+          "dimensions": {
+            "accuracy": {
+              "count": 40,
+              "mae": 1.0618420541286469,
+              "correlation": 0.8158818792688185,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 40,
+              "mae": 0.9038217663764954,
+              "correlation": 0.7305069963041715,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 40,
+              "mae": 0.8475470662117004,
+              "correlation": 0.7682609590648884,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 40,
+              "mae": 0.9689586400985718,
+              "correlation": 0.8058389686817978,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "32": {
+          "count": 20,
+          "dimensions": {
+            "accuracy": {
+              "count": 20,
+              "mae": 0.8811585903167725,
+              "correlation": 0.0035011977862618696,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 20,
+              "mae": 1.6063606977462768,
+              "correlation": 0.5017884552911014,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 20,
+              "mae": 1.2053468227386475,
+              "correlation": 0.3736504491241944,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 20,
+              "mae": 0.9530930280685425,
+              "correlation": 0.09551155154168897,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "33": {
+          "count": 20,
+          "dimensions": {
+            "accuracy": {
+              "count": 20,
+              "mae": 0.49298901557922364,
+              "correlation": 0.4156901235970443,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 20,
+              "mae": 0.5035471677780151,
+              "correlation": 0.4795831618853889,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 20,
+              "mae": 0.688748049736023,
+              "correlation": 0.6002448588473562,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 20,
+              "mae": 0.3721320152282715,
+              "correlation": 0.781517493900036,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "35": {
+          "count": 40,
+          "dimensions": {
+            "accuracy": {
+              "count": 40,
+              "mae": 1.1054400324821472,
+              "correlation": 0.751623615831002,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 40,
+              "mae": 0.600907301902771,
+              "correlation": 0.8765860578218849,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 40,
+              "mae": 0.6610081672668457,
+              "correlation": 0.8494385990678828,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 40,
+              "mae": 1.0374021410942078,
+              "correlation": 0.7768949163564618,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "37": {
+          "count": 40,
+          "dimensions": {
+            "accuracy": {
+              "count": 40,
+              "mae": 0.6723241865634918,
+              "correlation": 0.9246010493998443,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 40,
+              "mae": 0.8147761523723602,
+              "correlation": 0.9609750090879817,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 40,
+              "mae": 0.7423611044883728,
+              "correlation": 0.9263575403156739,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 40,
+              "mae": 0.571948128938675,
+              "correlation": 0.9448816518810673,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "38": {
+          "count": 20,
+          "dimensions": {
+            "accuracy": {
+              "count": 20,
+              "mae": 0.5248598575592041,
+              "correlation": 0.009723803421512293,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 20,
+              "mae": 0.34337410926818845,
+              "correlation": -0.04641382952890034,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 20,
+              "mae": 0.4233377933502197,
+              "correlation": -0.11315310207110163,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 20,
+              "mae": 0.46901164054870603,
+              "correlation": 0.13498866477638677,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "43": {
+          "count": 20,
+          "dimensions": {
+            "accuracy": {
+              "count": 20,
+              "mae": 0.5840078830718994,
+              "correlation": -0.26266442370066134,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 20,
+              "mae": 0.7615123987197876,
+              "correlation": -0.08095934129734243,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 20,
+              "mae": 0.8451340675354004,
+              "correlation": -0.14186761124815003,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 20,
+              "mae": 0.638358187675476,
+              "correlation": 0.029650085469321706,
+              "diagnosticScreenPassed": false
+            }
+          }
+        }
+      },
+      "gender": {
+        "f": {
+          "count": 1160,
+          "dimensions": {
+            "accuracy": {
+              "count": 1160,
+              "mae": 0.8466874772104723,
+              "correlation": 0.7137783593602296,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 1160,
+              "mae": 0.6631180335735453,
+              "correlation": 0.8042871184284784,
+              "diagnosticScreenPassed": true
+            },
+            "prosodic": {
+              "count": 1160,
+              "mae": 0.6854776037150416,
+              "correlation": 0.784618040488772,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 1160,
+              "mae": 0.7936401506950115,
+              "correlation": 0.752646847848947,
+              "diagnosticScreenPassed": false
+            }
+          }
+        },
+        "m": {
+          "count": 1340,
+          "dimensions": {
+            "accuracy": {
+              "count": 1340,
+              "mae": 0.8155397226561362,
+              "correlation": 0.6207005453797688,
+              "diagnosticScreenPassed": false
+            },
+            "fluency": {
+              "count": 1340,
+              "mae": 0.7070076809000613,
+              "correlation": 0.7025121618539713,
+              "diagnosticScreenPassed": false
+            },
+            "prosodic": {
+              "count": 1340,
+              "mae": 0.6803914607460819,
+              "correlation": 0.7169471563745802,
+              "diagnosticScreenPassed": false
+            },
+            "total": {
+              "count": 1340,
+              "mae": 0.801768197408363,
+              "correlation": 0.6400915822492387,
+              "diagnosticScreenPassed": false
+            }
+          }
+        }
+      }
+    },
+    "latencyMs": {
+      "median": 39,
+      "p95": 69
+    },
+    "diagnosticScreenPassed": false,
+    "releaseEligible": false,
+    "limitations": [
+      "The published development code evaluates the official test set each epoch; this is not an untouched qualification set.",
+      "Single-recording unpadded inference intentionally differs from the author's padded batch inference to avoid dependence on other recordings.",
+      "Only native-Mandarin English read speech; no evidence for German, Persian-L1 or spontaneous grammar.",
+      "Weight redistribution/deployment license not explicit in the model card; local research only."
+    ]
+  },
+  "audioData": {
+    "schemaVersion": 1,
+    "createdAt": "2026-10-03T04:34:35.318Z",
+    "corpus": "SpeechOcean762 / OpenSLR 101 original release",
+    "source": "https://openslr.org/101/",
+    "license": "CC-BY-4.0",
+    "casesSha256": "f4de6d61a4937c0234436ef2226bfc8dd7119b6ad28b5e31ca27785d2b4b2dc8",
+    "recordings": 5000,
+    "train": 2500,
+    "test": 2500,
+    "trainSpeakers": 125,
+    "testSpeakers": 125,
+    "overlappingSpeakers": 0,
+    "duplicateAudio": 0,
+    "allWavDecodedHeaders": true,
+    "totalHours": 5.5674327777777775,
+    "durationSeconds": {
+      "min": 1.59,
+      "max": 20.408
+    },
+    "ratingsPerUtterance": 5,
+    "scales": {
+      "accuracy": "0–10",
+      "fluency": "0–10",
+      "prosodic": "0–10",
+      "total": "0–10",
+      "completeness": "aggregate 0–10; individual binary 0/1; not used by candidate"
+    },
+    "modelScope": "English read speech, native Mandarin learners, children and adults",
+    "qualifiesGerman": false,
+    "qualifiesSpontaneousSpeech": false,
+    "qualifiesGrammar": false
+  },
+  "productionEvaluatorApproved": false,
+  "microphone": {
+    "pageAvailable": true,
+    "testDate": "2026-10-03",
+    "agentHardwareTest": "Windows PCM capture and driver playback completed; browser app test pending",
+    "method": "WinMM, physical input devices, PCM mono 48 kHz 16-bit; no simulated microphone",
+    "audioUploaded": false,
+    "rawAudioSaved": false,
+    "browserAppTest": "not performed: no connected browser",
+    "phoneTabletTest": "not performed",
+    "speechClarityConfirmed": false,
+    "audiblePlaybackConfirmed": false,
+    "pronunciationOrFluencyEvaluated": false,
+    "defaultInput": {
+      "durationSeconds": 5,
+      "samples": 240000,
+      "rmsDbfs": -49.52118002493626,
+      "clippedSamples": 0
+    },
+    "driverPlayback": {
+      "bufferCompleted": true,
+      "durationSeconds": 5,
+      "sampleGain": 0.25,
+      "audibilityConfirmed": false
+    },
+    "reopenAfterReleasePassed": true,
+    "inputs": [
+      {
+        "name": "Microphone (UGREEN Camera Audio",
+        "durationSeconds": 3,
+        "samples": 144000,
+        "rmsDbfs": -51.53071672042274,
+        "clippedSamples": 0,
+        "captureCompleted": true,
+        "deviceClosed": true,
+        "interpretation": "low signal; clear speech not confirmed"
+      },
+      {
+        "name": "Microphone (2- EPOS PC 8 USB)",
+        "durationSeconds": 3,
+        "samples": 144000,
+        "rmsDbfs": -96.19326925138691,
+        "clippedSamples": 0,
+        "captureCompleted": true,
+        "deviceClosed": true,
+        "interpretation": "near-silence; clear speech not confirmed"
+      }
+    ],
+    "limitations": [
+      "OS capture does not validate browser getUserMedia or MediaRecorder.",
+      "No human speech reference or acoustic loopback was used.",
+      "Low signal does not identify a hardware fault or confirm the mute setting."
+    ],
+    "browserFollowUp": {
+      "date": "2026-10-03",
+      "browser": "Connected Chrome",
+      "scope": "Local app UI with synthetic draft; no audio uploaded",
+      "cancelPassed": true,
+      "permissionTimeoutRecoveryPassed": true,
+      "practiceDraftPreservedOnCancel": true,
+      "browserRecordingConfirmed": false,
+      "audiblePlaybackConfirmed": false,
+      "limitation": "Permission did not resolve; browser permission popup is outside the available page controls. Earlier hardware results above remain historical."
+    }
+  }
+}

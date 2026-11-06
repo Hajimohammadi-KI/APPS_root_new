@@ -256,7 +256,12 @@ function normalize(value: string) {
 function controlEntry(target: EventTarget | null): HelpEntry | null {
   if (!(target instanceof Element)) return null;
   const element = target.closest<HTMLElement>(interactiveSelector);
-  if (!element || element.closest(`#${TOOLTIP_ID}`)) return null;
+  if (
+    !element ||
+    element.closest(`#${TOOLTIP_ID}`) ||
+    element.closest("[data-no-context-help]")
+  )
+    return null;
   const custom = element.dataset.contextHelp;
   if (custom) return { term: "Hinweis zu dieser Option", meaning: custom };
   const label = (
@@ -307,14 +312,22 @@ function wordAtPoint(x: number, y: number) {
   return null;
 }
 
+function cardHalfWidth() {
+  const rem =
+    parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+  return Math.min(28 * rem, window.innerWidth - 2 * rem) / 2;
+}
+
 function positionFor(rect: DOMRect, entry: HelpEntry): TooltipState {
   const above = rect.bottom > window.innerHeight * 0.64;
   return {
     key: `hilfe:${entry.term}:${Math.round(rect.left)}:${Math.round(rect.top)}`,
     entry,
+    // Keep the whole card inside the viewport: the card is centred on `left`,
+    // so the clamp must use half of its real width (28rem cap, see 101-design-contract.css).
     left: Math.min(
-      Math.max(rect.left + rect.width / 2, 184),
-      window.innerWidth - 184,
+      Math.max(rect.left + rect.width / 2, cardHalfWidth() + 16),
+      window.innerWidth - cardHalfWidth() - 16,
     ),
     top: above ? rect.top - 12 : rect.bottom + 12,
     above,

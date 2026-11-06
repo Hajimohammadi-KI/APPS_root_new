@@ -14,7 +14,7 @@ const loadPack = async (language: string) => {
   const app =
     language === "en"
       ? "Apps/English/English-Automaticity"
-      : "Apps/Deutsch-Automaticity";
+      : "Apps/Deutsch/Deutsch-Automaticity";
   return JSON.parse(
     await readFile(
       resolve(

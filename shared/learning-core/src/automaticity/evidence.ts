@@ -1,3 +1,4 @@
+import { hasReviewedAudio } from "./audio-review";
 import {
   parseAutomaticityEvent,
   type AssessmentEvent,
@@ -49,6 +50,54 @@ export interface EvidenceReduction {
 const DAY = 86_400_000;
 const time = (at: string) => Date.parse(at);
 
+/** Keep each unresolved response until its own checked retry or repair succeeds. */
+export function unresolvedRepairs(
+  rows: readonly ReducedAttempt[],
+): ReducedAttempt[] {
+  const ordered = [...rows].sort(
+    (a, b) =>
+      time(a.attempt.at) - time(b.attempt.at) ||
+      a.attempt.id.localeCompare(b.attempt.id),
+  );
+  const byId = new Map(ordered.map((row) => [row.attempt.id, row]));
+  const pending = new Map<string, ReducedAttempt>();
+  for (const row of ordered) {
+    const failed =
+      (row.checked && row.assessment?.verdict === "needs_repair") ||
+      (row.assessment?.verdict === "target_not_observed" &&
+        !row.assessment.uncertainty &&
+        row.assessment.evaluator.kind !== "self");
+    if (!failed && !row.success) continue;
+    const ancestors = new Set<string>();
+    let child = row.attempt;
+    while (child.previousAttemptId && !ancestors.has(child.previousAttemptId)) {
+      const parent = byId.get(child.previousAttemptId)?.attempt;
+      if (
+        !parent ||
+        parent.language !== child.language ||
+        parent.task.constructionId !== child.task.constructionId ||
+        parent.task.modality !== child.task.modality ||
+        time(parent.at) >= time(child.at)
+      )
+        break;
+      ancestors.add(parent.id);
+      child = parent;
+    }
+    for (const [id, older] of pending) {
+      const sameTask =
+        older.attempt.language === row.attempt.language &&
+        older.attempt.task.constructionId === row.attempt.task.constructionId &&
+        older.attempt.task.modality === row.attempt.task.modality &&
+        older.attempt.task.id === row.attempt.task.id &&
+        older.attempt.task.version === row.attempt.task.version &&
+        time(older.attempt.at) < time(row.attempt.at);
+      if (sameTask || ancestors.has(id)) pending.delete(id);
+    }
+    if (failed) pending.set(row.attempt.id, row);
+  }
+  return [...pending.values()];
+}
+
 /** Rebuild from immutable events; failed and overturned attempts remain in history. */
 export function reduceAutomaticityEvents(
   raw: readonly unknown[],
@@ -97,7 +146,12 @@ export function reduceAutomaticityEvents(
       event.taskVersion !== attempt.task.version ||
       event.rubricVersion !== attempt.task.rubricVersion ||
       time(event.at) < time(attempt.at) ||
-      event.spans.some((span) => span.end > attempt.response.text.length)
+      event.spans.some((span) => span.end > attempt.response.text.length) ||
+      (event.audioReview !== undefined &&
+        (attempt.task.modality !== "speaking" ||
+          !attempt.audio ||
+          event.audioReview.audioSha256 !== attempt.audio.sha256 ||
+          event.audioReview.transcriptSha256 !== attempt.response.sha256))
     ) {
       rejected.push({
         id: event.id,
@@ -198,7 +252,9 @@ export function reduceAutomaticityEvents(
         attempt.audio.bytes > 0 &&
         attempt.audio.durationMs > 0 &&
         !attempt.response.transcriptEdited &&
-        attempt.response.originalTranscriptSha256 === attempt.response.sha256
+        (attempt.response.originalTranscriptSha256 ===
+          attempt.response.sha256 ||
+          hasReviewedAudio(attempt, assessment))
       );
     const independent =
       attempt.task.version !== "legacy-import-1" &&
@@ -292,9 +348,7 @@ export function reduceAutomaticityEvents(
         .filter(
           (row) => row.checked && row.assessment?.verdict === "needs_repair",
         ).length,
-      repairNeeded:
-        rows.filter((row) => row.checked).at(-1)?.assessment?.verdict ===
-        "needs_repair",
+      repairNeeded: unresolvedRepairs(rows).length > 0,
       independentAssessed: eligible.length,
       independentSuccesses: wins.length,
       accuracy: eligible.length ? wins.length / eligible.length : null,

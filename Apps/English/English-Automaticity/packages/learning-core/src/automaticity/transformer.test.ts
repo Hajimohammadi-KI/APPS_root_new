@@ -18,6 +18,7 @@ import {
 } from "./transformer-route";
 import { createTransformerClient } from "./transformer-client";
 import { assessControlledTask } from "./assessment";
+import { confirmsUnchangedText } from "./text-pass-check";
 
 const config: TransformerConfig = {
   candidateId: "fixture-model",
@@ -147,6 +148,249 @@ const mock = (
       ],
       ...extra,
     })) as typeof fetch;
+
+const passingFeedback = {
+  verdict: "pass",
+  grammar: "pass",
+  targetObserved: true,
+  meaningPreserved: true,
+  feedback: "The sentence is correct.",
+  minimalCorrection: null,
+  styleRewrite: null,
+  spans: [],
+};
+
+test("a false pass is withheld when the separate review finds an error", async () => {
+  const requests: { messages: { content: string }[] }[] = [];
+  const transport = (async (_url: unknown, init?: RequestInit) => {
+    requests.push(JSON.parse(String(init?.body)));
+    return mock(requests.length === 1 ? passingFeedback : rawFeedback)(
+      config.endpoint,
+    );
+  }) as typeof fetch;
+  const original = await attempt();
+  const result = await assessWithQualifiedTransformer(
+    original,
+    task,
+    config,
+    await approval(),
+    transport,
+  );
+  expect(requests).toHaveLength(2);
+  expect(requests[0]!.messages[0]!.content).not.toBe(
+    requests[1]!.messages[0]!.content,
+  );
+  // The second review sees the original input, not the first judgment.
+  expect(requests[1]!.messages[1]).toEqual(requests[0]!.messages[1]);
+  expect(result.verdict).toBe("not_assessed");
+  expect(result.dimensions.grammar).toBe("unknown");
+  expect(result.uncertainty).toBe(true);
+  expect(result.correction).toBeNull();
+  expect(result.spans).toEqual([]);
+});
+
+test("agreeing task reviews and a clean text check can accept a correct alternative", async () => {
+  let calls = 0;
+  const result = await proposeTransformerFeedback(
+    { ...input, response: "I enjoy drinking tea." },
+    config,
+    (async () => {
+      calls++;
+      return mock(
+        calls === 3
+          ? { verdict: "correct", correction: "I enjoy drinking tea." }
+          : passingFeedback,
+      )(config.endpoint);
+    }) as typeof fetch,
+  );
+  expect(calls).toBe(3);
+  expect(result.verdict).toBe("pass");
+});
+
+test("a text check vetoes a repeated false pass without issuing an unverified correction", async () => {
+  for (const value of [
+    { verdict: "incorrect", correction: "I like tea." },
+    { verdict: "correct", correction: "I like tea." },
+    { verdict: "uncertain", correction: input.response },
+    { verdict: "correct", correction: input.response, approved: true },
+    null,
+  ]) {
+    let calls = 0;
+    const result = await proposeTransformerFeedback(input, config, (async (
+      _url: unknown,
+      init?: RequestInit,
+    ) => {
+      calls++;
+      if (calls < 3) return mock(passingFeedback)(config.endpoint);
+      const body = JSON.parse(String(init?.body));
+      expect(JSON.parse(body.messages[1].content)).toEqual({
+        language: "en",
+        text: input.response,
+      });
+      return value === null
+        ? new Response("offline", { status: 503 })
+        : mock(value)(config.endpoint);
+    }) as typeof fetch);
+    expect(calls).toBe(3);
+    expect(result.verdict).toBe("not_assessed");
+    expect(result.minimalCorrection).toBeNull();
+  }
+  expect(
+    confirmsUnchangedText(
+      { verdict: "correct", correction: "  Ich trinke Tee im Cafe\u0301. " },
+      "Ich trinke Tee im Café.",
+    ),
+  ).toBe(true);
+});
+
+test("missing, uncertain or inconsistent second review cannot retain a pass", async () => {
+  for (const second of [
+    null,
+    { ...passingFeedback, verdict: "not_assessed", grammar: "unknown" },
+    { ...passingFeedback, meaningPreserved: false },
+    {
+      ...passingFeedback,
+      verdict: "target_not_observed",
+      targetObserved: false,
+    },
+  ]) {
+    let calls = 0;
+    const result = await proposeTransformerFeedback(
+      input,
+      config,
+      (async () => {
+        calls++;
+        if (calls === 1) return mock(passingFeedback)(config.endpoint);
+        return second === null
+          ? new Response("offline", { status: 503 })
+          : mock(second)(config.endpoint);
+      }) as typeof fetch,
+    );
+    expect(calls).toBe(2);
+    expect(result.verdict).toBe("not_assessed");
+  }
+});
+
+test("a definite repair requires a fresh agreeing review and preserves its evidence", async () => {
+  let calls = 0;
+  const requests: { messages: { content: string }[] }[] = [];
+  const signals: (AbortSignal | null | undefined)[] = [];
+  const result = await proposeTransformerFeedback(input, config, (async (
+    _url: unknown,
+    init?: RequestInit,
+  ) => {
+    calls++;
+    requests.push(JSON.parse(String(init?.body)));
+    signals.push(init?.signal);
+    return mock()(config.endpoint);
+  }) as typeof fetch);
+  expect(calls).toBe(2);
+  expect(requests[1]!.messages[0]!.content).not.toBe(
+    requests[0]!.messages[0]!.content,
+  );
+  expect(requests[1]!.messages[1]).toEqual(requests[0]!.messages[1]);
+  expect(signals[1]).toBe(signals[0]);
+  expect(result.verdict).toBe("needs_repair");
+  expect(result.minimalCorrection).toBe("I like tea.");
+});
+
+test("unconfirmed, stylistic or meaning-changing repair stays unscored", async () => {
+  for (const second of [
+    passingFeedback,
+    { ...passingFeedback, verdict: "not_assessed", grammar: "unknown" },
+    { ...rawFeedback, minimalCorrection: "I liked tea." },
+    { ...rawFeedback, meaningPreserved: false },
+    { ...rawFeedback, meaningPreserved: null },
+    { ...rawFeedback, targetObserved: false },
+    { ...rawFeedback, targetObserved: null },
+    { ...rawFeedback, minimalCorrection: "I Like tea." },
+    { ...rawFeedback, minimalCorrection: "I like tea!" },
+    { ...rawFeedback, minimalCorrection: input.response },
+    null,
+  ]) {
+    let calls = 0;
+    const result = await proposeTransformerFeedback(
+      input,
+      config,
+      (async () => {
+        calls++;
+        if (calls === 1) return mock()(config.endpoint);
+        return second === null
+          ? new Response("offline", { status: 503 })
+          : mock(second)(config.endpoint);
+      }) as typeof fetch,
+    );
+    expect(calls).toBe(2);
+    expect(result.verdict).toBe("not_assessed");
+    expect(result.grammar).toBe("unknown");
+    expect(result.minimalCorrection).toBeNull();
+    expect(result.spans).toEqual([]);
+  }
+});
+
+test("repair review cannot preserve missing judgments or a changed model identity", async () => {
+  for (const unknownField of ["targetObserved", "meaningPreserved"] as const) {
+    const result = await proposeTransformerFeedback(
+      input,
+      config,
+      mock({ ...rawFeedback, [unknownField]: null }),
+    );
+    expect(result.verdict).toBe("not_assessed");
+    expect(result.minimalCorrection).toBeNull();
+  }
+  let calls = 0;
+  const result = await proposeTransformerFeedback(input, config, (async () => {
+    calls++;
+    return mock(
+      rawFeedback,
+      calls === 2 ? { system_fingerprint: "changed" } : {},
+    )(config.endpoint);
+  }) as typeof fetch);
+  expect(result.verdict).toBe("not_assessed");
+  expect(result.styleRewrite).toBeNull();
+  expect(result.spans).toEqual([]);
+});
+
+test("repair comparison allows whitespace normalization without changing German case", async () => {
+  let calls = 0;
+  const result = await proposeTransformerFeedback(input, config, (async () => {
+    calls++;
+    return mock({
+      ...rawFeedback,
+      minimalCorrection: calls === 2 ? "  I   like tea.  " : "I like tea.",
+    })(config.endpoint);
+  }) as typeof fetch);
+  expect(result.verdict).toBe("needs_repair");
+});
+
+test("both reviews share one deadline and a failed second review is unscored in the installed route", async () => {
+  const signals: (AbortSignal | null | undefined)[] = [];
+  const original = await attempt();
+  const handler = createTransformerRoute({
+    language: "en",
+    loadRelease: release,
+    loadPack: async () => pack(),
+    transport: (async (_url: unknown, init?: RequestInit) => {
+      signals.push(init?.signal);
+      return signals.length === 1
+        ? mock(passingFeedback)(config.endpoint)
+        : new Response("offline", { status: 503 });
+    }) as typeof fetch,
+  });
+  const response = await handler(
+    new Request("http://localhost/api/automaticity/transformer", {
+      method: "POST",
+      body: JSON.stringify({ attempt: original }),
+    }),
+  );
+  const body = await response.json();
+  expect(signals).toHaveLength(2);
+  expect(signals[0]).toBeInstanceOf(AbortSignal);
+  expect(signals[1]).toBe(signals[0]);
+  expect(body.assessment.verdict).toBe("not_assessed");
+  expect(body.assessment.uncertainty).toBe(true);
+  expect(body.assessment.responseSha256).toBe(original.response.sha256);
+});
 test("real transport shape wraps minimal correction into the shared contract; style stays separate", async () => {
   const original = await attempt(),
     before = JSON.stringify(original);
@@ -162,6 +406,46 @@ test("real transport shape wraps minimal correction into the shared contract; st
   expect(result.evaluator.scopeApproved).toBe(true);
   expect(JSON.stringify(original)).toBe(before);
   expect(result.responseSha256).toBe(original.response.sha256);
+});
+test("unchanged corrections cannot produce a grammatical repair verdict", async () => {
+  for (const correction of [
+    input.response,
+    `  ${input.response}  `,
+    "I   likes tea.",
+  ]) {
+    expect(() =>
+      parseTransformerFeedback(
+        { ...feedback, minimalCorrection: correction },
+        input,
+      ),
+    ).toThrow();
+    await expect(
+      assessWithQualifiedTransformer(
+        await attempt(),
+        task,
+        config,
+        await approval(),
+        mock({ ...rawFeedback, minimalCorrection: correction }),
+      ),
+    ).rejects.toThrow("must change the response");
+  }
+  expect(() =>
+    parseTransformerFeedback(
+      {
+        ...feedback,
+        minimalCorrection: "Ich trinke Tee im Café.",
+        spans: [
+          {
+            start: 0,
+            end: 3,
+            original: "Ich",
+            explanation: "Synthetic evidence.",
+          },
+        ],
+      },
+      { ...input, language: "de", response: "Ich trinke Tee im Cafe\u0301." },
+    ),
+  ).toThrow();
 });
 for (const change of [
   "approval",
@@ -569,6 +853,100 @@ test("offline discovery and provider errors preserve the local result", async ()
     }),
   );
   expect((await response.json()).assessment).toBeNull();
+});
+test("discovery recovers after a transient outage without another practice attempt", async () => {
+  const record = await attempt(),
+    baseline = assessControlledTask(record, task, at, "baseline");
+  let time = 0,
+    calls = 0,
+    online = false;
+  const handler = createTransformerRoute({
+    language: "en",
+    loadRelease: release,
+    loadPack: async () => pack(),
+    transport: mock(),
+  });
+  const client = createTransformerClient(
+    (async (url: unknown, init?: RequestInit) => {
+      calls++;
+      if (!online) throw Error("offline");
+      return handler(new Request("http://localhost" + String(url), init));
+    }) as typeof fetch,
+    () => time,
+  );
+  expect(await client(record, baseline)).toBeNull();
+  online = true;
+  time = 4999;
+  expect(await client(record, baseline)).toBeNull();
+  expect(calls).toBe(1);
+  time = 5001;
+  const checked = await client(record, baseline);
+  expect(checked?.attemptId).toBe(record.id);
+  expect(checked?.supersedes).toBe(baseline.id);
+  expect(checked?.verdict).toBe("needs_repair");
+  expect(calls).toBe(3);
+});
+test("explicit retry refreshes discovery immediately and never substitutes another response", async () => {
+  const record = await attempt(),
+    baseline = assessControlledTask(record, task, at, "baseline");
+  let online = false;
+  const before = JSON.stringify(record);
+  const handler = createTransformerRoute({
+    language: "en",
+    loadRelease: release,
+    loadPack: async () => pack(),
+    transport: mock(),
+  });
+  const client = createTransformerClient(
+    (async (url: unknown, init?: RequestInit) => {
+      if (!online) return Response.json({ enabled: false, approvals: [] });
+      return handler(new Request("http://localhost" + String(url), init));
+    }) as typeof fetch,
+    () => 0,
+  );
+  expect(await client(record, baseline)).toBeNull();
+  online = true;
+  expect(
+    (await client(record, baseline, { refreshCapabilities: true }))?.verdict,
+  ).toBe("needs_repair");
+  expect(
+    await client(record, { ...baseline, attemptId: "another" }),
+  ).toBeNull();
+  expect(
+    await client(record, {
+      ...baseline,
+      evaluator: { ...baseline.evaluator, kind: "human" },
+    }),
+  ).toBeNull();
+  expect(JSON.stringify(record)).toBe(before);
+});
+test("unsuccessful HTTP responses cannot advertise or award a qualified assessment", async () => {
+  for (const failedMethod of ["GET", "POST"]) {
+    const record = await attempt(),
+      baseline = assessControlledTask(record, task, at, "baseline");
+    const handler = createTransformerRoute({
+      language: "en",
+      loadRelease: release,
+      loadPack: async () => pack(),
+      transport: mock(),
+    });
+    let posts = 0;
+    const client = createTransformerClient((async (
+      url: unknown,
+      init?: RequestInit,
+    ) => {
+      const method = init?.method ?? "GET";
+      if (method === "POST") posts++;
+      const response = await handler(
+        new Request("http://localhost" + String(url), init),
+      );
+      return method === failedMethod
+        ? new Response(await response.text(), { status: 503 })
+        : response;
+    }) as typeof fetch);
+    expect(await client(record, baseline)).toBeNull();
+    expect(posts).toBe(failedMethod === "GET" ? 0 : 1);
+  }
 });
 test("cross-origin requests and stale releases cannot invoke the model", async () => {
   let calls = 0;

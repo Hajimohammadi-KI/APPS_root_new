@@ -1,7 +1,11 @@
 @import "tailwindcss";
+
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@import "./styles/00-design-system.css";
+@import "./styles/01-components.css";
+@import "./styles/02-layout.css";
 @import "./styles/00-foundation.css";
 @import "./styles/pages/dashboard.css";
 @import "./styles/pages/dashboard-v2.css";
@@ -13,3 +17,27 @@
 @import "./styles/91-accessibility.css";
 @import "./styles/99-visual-refresh-overrides.css";
 @import "./styles/100-interaction-direction.css";
+@import "./styles/101-design-contract.css";
+@import "./styles/pages/learning-home.css";
+
+@import "./styles/pages/learning-chrome.css";
+
+@import "./styles/102-calm-theme.css";
+@import "./styles/103-worksheet.css";
+
+@theme {
+  /* Worksheet palette (R74): the one source for colour utilities such as bg-worksheet-cyan. */
+  --color-worksheet-paper: #ffffff;
+  --color-worksheet-ink: #08364a;
+  --color-worksheet-teal: #007f83;
+  --color-worksheet-teal-hover: #00676b;
+  --color-worksheet-cyan: #eaf6f7;
+  --color-worksheet-yellow: #fff5d7;
+  --color-worksheet-line: #dce9e8;
+  --color-worksheet-muted: #526a73;
+  --color-worksheet-success: #ecfdf5;
+  --color-worksheet-success-strong: #d1fae5;
+  --color-worksheet-success-ink: #065f46;
+  --color-worksheet-success-ink-strong: #064e3b;
+  --color-worksheet-success-line: #a7d9c1;
+}

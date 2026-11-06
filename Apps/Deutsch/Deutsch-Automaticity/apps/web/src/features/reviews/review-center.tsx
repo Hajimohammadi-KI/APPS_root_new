@@ -29,6 +29,9 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { MissionRail, MissionTile } from "@/components/ui/mission-tiles";
+import { Notice } from "@/components/ui/notice";
+import { PageHeader } from "@/components/page-header";
 import {
   Card,
   CardContent,
@@ -62,8 +65,13 @@ function speak(text: string) {
 }
 
 export function ReviewCenter() {
-  const { state, completeReview, markActivity, recordAttempt } =
-    useLearnerState();
+  const {
+    state,
+    completeReview,
+    markActivity,
+    recordAttempt,
+    recordErrorRepairHelp,
+  } = useLearnerState();
   const totalReviews = state.reviews.length;
   const masteredReviews = state.reviews.filter(
     (review) => review.mastered,
@@ -145,6 +153,9 @@ export function ReviewCenter() {
         taskPrompt: `Rufe die gespeicherte Korrektur zu „${selected.topic}“ ohne Nachsehen ab.`,
         spellingAffectsMastery: state.settings.spellingAffectsMastery,
       });
+      if (selected.sourceType === "error_item" && selected.sourceId) {
+        recordErrorRepairHelp(selected.sourceId);
+      }
       setReport(result);
       const closed = analyzeClosedAnswer(answer, selected.corrected);
       if (result.accuracyScore === null && closed.correct !== true) {
@@ -181,8 +192,8 @@ export function ReviewCenter() {
           correctedText: result.corrected,
           targetHit: exact && result.targetHit,
           accuracyScore: exact ? 100 : 40,
-          attemptVerified: true,
-          assessedBy: state.learner.allowOnlineAI ? "online" : "deterministic",
+          attemptVerified: result.verified,
+          assessedBy: result.online ? "online" : "offline",
           sessionMinutes: normalizeDailySessionMinutes(
             state.settings.dailyStudyMinutes,
           ),
@@ -196,7 +207,7 @@ export function ReviewCenter() {
         inputText: answer.trim(),
         correctedText: result.corrected,
         targetHit: exact && result.targetHit,
-        verified: true,
+        verified: result.verified,
         accuracyScore: exact ? 100 : 40,
         ...(timedActive ? { latencyMs: (8 - secondsLeft) * 1_000 } : {}),
       });
@@ -248,18 +259,15 @@ export function ReviewCenter() {
     <div className="space-y-6">
       <a
         href="/practice?review=1"
-        className="inline-block rounded-xl bg-blue-700 px-4 py-3 text-white"
+        className="inline-block rounded-xl bg-worksheet-teal! border-worksheet-teal! text-white! px-4 py-3"
       >
         Antworten aus eigenständigen Übungen prüfen und wiederholen
       </a>
-      <div>
-        <p className="section-kicker">Langzeitgedächtnis</p>
-        <h1 className="section-title">Wiederholungen</h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-          Gespeicherte Korrekturen und abgeschlossene Grammatikthemen folgen dem
-          ursprünglichen festen Lernrhythmus.
-        </p>
-      </div>
+      <PageHeader
+        description="Gespeicherte Korrekturen und abgeschlossene Grammatikthemen folgen dem ursprünglichen festen Lernrhythmus."
+        kicker="Langzeitgedächtnis"
+        title="Wiederholungen"
+      />
 
       <Card>
         <CardHeader>
@@ -277,29 +285,17 @@ export function ReviewCenter() {
         </CardContent>
       </Card>
 
-      <section aria-label="Wiederholungsmissionen" className="space-y-2">
-        <h2 className="text-sm font-semibold text-sky-900">Schnellmissionen</h2>
-        <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
-          <article className="min-w-56 rounded-xl border bg-card p-3 text-sm shadow-sm">
-            <strong className="block">Mission 1</strong>
-            <span className="text-muted-foreground">
-              Heute mindestens 1 fällige Wiederholung abschließen.
-            </span>
-          </article>
-          <article className="min-w-56 rounded-xl border bg-card p-3 text-sm shadow-sm">
-            <strong className="block">Mission 2</strong>
-            <span className="text-muted-foreground">
-              Priorität auf zeitkritische Abrufe setzen.
-            </span>
-          </article>
-          <article className="min-w-56 rounded-xl border bg-card p-3 text-sm shadow-sm">
-            <strong className="block">Mission 3</strong>
-            <span className="text-muted-foreground">
-              Mastered: {masteredReviews} von {totalReviews}
-            </span>
-          </article>
-        </div>
-      </section>
+      <MissionRail label="Wiederholungsmissionen">
+        <MissionTile title="Mission 1">
+          Heute mindestens 1 fällige Wiederholung abschließen.
+        </MissionTile>
+        <MissionTile title="Mission 2">
+          Priorität auf zeitkritische Abrufe setzen.
+        </MissionTile>
+        <MissionTile title="Mission 3">
+          Mastered: {masteredReviews} von {totalReviews}
+        </MissionTile>
+      </MissionRail>
 
       <Card>
         <CardHeader>
@@ -341,7 +337,7 @@ export function ReviewCenter() {
                 type="button"
                 className={`rounded-xl border p-3 text-left ${
                   selected?.id === review.id
-                    ? "border-primary bg-sky-50"
+                    ? "border-primary bg-worksheet-cyan"
                     : "hover:bg-muted/50"
                 }`}
                 onClick={() => {
@@ -370,7 +366,7 @@ export function ReviewCenter() {
             ))}
             {due.length === 0 && (
               <div className="py-8 text-center">
-                <span className="mx-auto grid size-12 place-items-center rounded-full bg-sky-100 text-sky-700">
+                <span className="mx-auto grid size-12 place-items-center rounded-full bg-worksheet-cyan! text-worksheet-teal">
                   <Repeat2 className="size-5" />
                 </span>
                 <p className="mt-3 text-sm font-semibold">
@@ -405,7 +401,7 @@ export function ReviewCenter() {
                     role="timer"
                     className={`rounded-xl border p-3 text-sm font-semibold ${
                       secondsLeft > 0
-                        ? "border-blue-200 bg-blue-50 text-blue-950"
+                        ? "border-worksheet-line bg-worksheet-cyan! text-worksheet-teal"
                         : "border-amber-300 bg-amber-50 text-amber-950"
                     }`}
                   >
@@ -439,17 +435,21 @@ export function ReviewCenter() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => speak(selected.corrected)}
+                    onClick={() => {
+                      if (
+                        selected.sourceType === "error_item" &&
+                        selected.sourceId
+                      ) {
+                        recordErrorRepairHelp(selected.sourceId);
+                      }
+                      speak(selected.corrected);
+                    }}
                   >
                     <Volume2 data-icon="inline-start" />
                     Lösung anhören
                   </Button>
                 </div>
-                {message && (
-                  <p role="status" className="rounded-xl border p-3 text-sm">
-                    {message}
-                  </p>
-                )}
+                {message && <Notice role="status">{message}</Notice>}
                 {report && (
                   <div className="rounded-xl bg-muted/50 p-3 text-sm">
                     <strong>

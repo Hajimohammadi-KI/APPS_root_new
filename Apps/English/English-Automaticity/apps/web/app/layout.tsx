@@ -1,9 +1,11 @@
 import { LearningRecoveryBoundary } from "@/features/components/learning-recovery-boundary";
 import type { Metadata, Viewport } from "next";
 import { AppStoreProvider } from "@/features/store/app-store";
+import { StandaloneLearningHeader } from "@/components/standalone-learning-header";
 import { ContextualHoverHelp } from "@/features/components/contextual-hover-help";
 import { GlobalReadingRuler } from "@/features/components/global-reading-ruler";
 import { DeepLSelectionTranslator } from "@/features/components/deepl-selection-translator";
+import { PersianStandaloneGuide } from "@/features/components/persian-standalone-guide";
 import { GuardedNudge } from "@/features/adherence/guarded-nudge";
 import "./globals.css";
 
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   colorScheme: "light",
-  themeColor: "#155eef",
+  themeColor: "#2d477d",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -55,13 +57,17 @@ export default function RootLayout({
     // learning aids opt into RTL only on their own scoped containers.
     <html lang="en" dir="ltr">
       <body>
-        <LearningRecoveryBoundary><AppStoreProvider>
-          {children}
-          <GlobalReadingRuler />
-          <ContextualHoverHelp />
-          <DeepLSelectionTranslator />
-          <GuardedNudge />
-        </AppStoreProvider></LearningRecoveryBoundary>
+        <LearningRecoveryBoundary>
+          <AppStoreProvider>
+            <StandaloneLearningHeader />
+            {children}
+            <PersianStandaloneGuide />
+            <GlobalReadingRuler />
+            <ContextualHoverHelp />
+            <DeepLSelectionTranslator />
+            <GuardedNudge />
+          </AppStoreProvider>
+        </LearningRecoveryBoundary>
       </body>
     </html>
   );

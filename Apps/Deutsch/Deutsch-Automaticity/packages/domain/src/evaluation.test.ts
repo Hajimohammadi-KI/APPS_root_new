@@ -15,6 +15,12 @@ const perfekt = {
 } as const;
 
 describe("answer language and orthography boundaries", () => {
+  it("W09 punctuation and Persian digits do not turn German letters into another script", () => {
+    expect(detectAnswerLanguage("Ich lerne heute؛ wir üben ۲ Sätze؟")).toBe(
+      "de",
+    );
+    expect(detectAnswerLanguage("Ich lerne فارسی")).toBe("other");
+  });
   it.each([
     "Hello my friend",
     "Bonjour tout le monde",
@@ -86,6 +92,11 @@ describe("answer language and orthography boundaries", () => {
     ["das Lernen macht Spaß.", "Das Lernen macht Spaß."],
     ["Sie kommt?", "Sie kommt."],
     ["Ich weiß dass er kommt.", "Ich weiß, dass er kommt."],
+    ["Bist du bereit?.", "Bist du bereit?"],
+    ["Du bist bereit!.", "Du bist bereit!"],
+    ["Du bist bereit...", "Du bist bereit."],
+    ["Du bist bereit. .", "Du bist bereit."],
+    ["Du bist bereit... .", "Du bist bereit..."],
   ])("preserves meaningful orthography: %s", (answer, expected) => {
     expect(analyzeClosedAnswer(answer, expected).correct).toBe(false);
   });
@@ -95,6 +106,13 @@ describe("answer language and orthography boundaries", () => {
       analyzeClosedAnswer("  Die  Tu\u0308r ist offen  ", "Die Tür ist offen.")
         .correct,
     ).toBe(true);
+    for (const expected of [
+      "Bist du bereit?",
+      "Du bist bereit!",
+      "Du bist bereit...",
+    ]) {
+      expect(analyzeClosedAnswer(expected, expected).correct).toBe(true);
+    }
   });
 });
 

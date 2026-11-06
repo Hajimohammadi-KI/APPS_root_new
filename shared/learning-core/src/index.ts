@@ -3,6 +3,7 @@ export const LEARNING_DATA_EXPORT_KIND =
   "automaticity.learning-data-export" as const;
 
 export * from "./adherence";
+export * from "./text";
 export * from "./booster";
 export * from "./content-quality";
 export * from "./fsrs-shadow";
@@ -512,7 +513,9 @@ export function buildAttemptVerticalSlice(
       targetHit: input.targetHit,
       accuracyScore: clampScore(input.accuracyScore),
       fluencyScore:
-        input.mode === "speaking" ? clampScore(input.fluencyScore ?? 0) : null,
+        input.mode === "speaking" && input.fluencyScore != null
+          ? clampScore(input.fluencyScore)
+          : null,
     },
     gates: {
       realProduction,

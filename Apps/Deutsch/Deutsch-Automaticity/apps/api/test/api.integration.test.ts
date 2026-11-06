@@ -13,9 +13,17 @@ import { AppModule } from '../src/app.module';
 
 describe('HTTP API', () => {
   let app: INestApplication | undefined;
+  let unavailableService: ReturnType<typeof Bun.serve> | undefined;
+  const originalLanguageToolUrl = process.env.LANGUAGE_TOOL_URL;
 
   afterEach(async () => {
     await app?.close();
+    unavailableService?.stop(true);
+    if (originalLanguageToolUrl === undefined) {
+      delete process.env.LANGUAGE_TOOL_URL;
+    } else {
+      process.env.LANGUAGE_TOOL_URL = originalLanguageToolUrl;
+    }
   });
 
   it('serves health and bootstrap contracts over HTTP', async () => {
@@ -47,7 +55,12 @@ describe('HTTP API', () => {
       grammarUnits: 144,
     });
 
-    process.env.LANGUAGE_TOOL_URL = 'http://127.0.0.1:1/v2/check';
+    unavailableService = Bun.serve({
+      hostname: '127.0.0.1',
+      port: 0,
+      fetch: () => new Response('Unavailable', { status: 503 }),
+    });
+    process.env.LANGUAGE_TOOL_URL = `${unavailableService.url}v2/check`;
     const evaluationResponse = await fetch(`${baseUrl}/evaluate`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
@@ -67,5 +80,7 @@ describe('HTTP API', () => {
     );
     expect(evaluation.online).toBe(false);
     expect(evaluation.ok).toBe(false);
-  });
+    // Booting the full Nest application takes about one second alone but
+    // more than the 5 s default when every workspace tests in parallel.
+  }, 30_000);
 });

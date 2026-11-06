@@ -6,6 +6,8 @@ import { grammarUnits } from "@grammar/content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Notice } from "@/components/ui/notice";
+import { PageHeading } from "@/components/ui/page-heading";
 import {
   Empty,
   EmptyDescription,
@@ -70,19 +72,23 @@ export function ErrorsScreen() {
 
   return (
     <div className="page-stack">
-      <a href="/practice?review=1" className="inline-block rounded-xl bg-blue-700 px-4 py-3 text-white">Review and repair responses from independent practice</a>
-      <div className="page-heading">
-        <div>
-          <h1>Error Workshop</h1>
-          <p>
-            Personal language errors are organized, merged, and re-practiced as
-            correction, explanation, review, and transfer.
-          </p>
-        </div>
-        <Badge variant={errors.length > 0 ? "warning" : "success"}>
-          {errors.length} {filter === "all" ? "saved" : "active"}
-        </Badge>
-      </div>
+      <Button asChild className="w-fit">
+        <a href="/practice?review=1">
+          Review and repair responses from independent practice
+        </a>
+      </Button>
+      <Button asChild className="w-fit" variant="outline">
+        <a href="/practice?notebook=1">Practise the error-notebook exercises</a>
+      </Button>
+      <PageHeading
+        actions={
+          <Badge variant={errors.length > 0 ? "warning" : "success"}>
+            {errors.length} {filter === "all" ? "saved" : "active"}
+          </Badge>
+        }
+        description="Personal language errors are organized, merged, and re-practiced as correction, explanation, review, and transfer."
+        title="Error Workshop"
+      />
 
       <Card>
         <CardContent className="pt-5">
@@ -159,18 +165,18 @@ export function ErrorsScreen() {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 md:grid-cols-2">
-                  <div className="rounded-xl border border-red-200 bg-red-50 p-3">
+                  <Notice tone="danger">
                     <p className="text-xs font-bold uppercase text-red-700">
                       Original
                     </p>
                     <p className="mt-1 text-sm">{selected.originalText}</p>
-                  </div>
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-                    <p className="text-xs font-bold uppercase text-emerald-700">
+                  </Notice>
+                  <Notice tone="success">
+                    <p className="text-xs font-bold uppercase text-worksheet-success-ink!">
                       Corrected
                     </p>
                     <p className="mt-1 text-sm">{selected.correctedText}</p>
-                  </div>
+                  </Notice>
                 </div>
                 <p className="mt-3 text-sm leading-6">
                   <strong>Reason:</strong> {selected.explanation}

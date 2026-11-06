@@ -1,8 +1,19 @@
 import grammarData from "./data/grammar.json";
+import { knownContentRepair } from "@automaticity/learning-core/content-repairs";
+import {
+  checkedPracticeFor,
+  controlledPracticeFor,
+  contentRevisionFor,
+  gapCueRevisionsFor,
+} from "@automaticity/learning-core/content-revisions";
+import { gapFill, normalizeText } from "@automaticity/learning-core/text";
 import topicsData from "./data/topics.json";
+import { labGapCueFor } from "./lab-gap-cues";
 import {
   classifyGrammarContent,
+  closedHint,
   completeControlledExercises,
+  feedbackDimensionsFor,
   type GrammarContentType,
   type GrammarExercise,
 } from "./exercise-completion";
@@ -176,8 +187,232 @@ type LegacyGrammarUnit = Omit<GrammarUnit, "explanation">;
 const legacyGrammarUnits =
   grammarData as unknown as readonly LegacyGrammarUnit[];
 
+/** The same authored 2026-11-01 revision as the independent learning path;
+ * the controlled exercises are generated from these fields. */
+function reviseUnit<
+  T extends {
+    readonly title: string;
+    readonly commonError: string;
+    readonly repairTest: string;
+    readonly examples: readonly string[];
+  },
+>(unit: T): T {
+  const revision = contentRevisionFor("de", unit.title);
+  if (!revision) return unit;
+  const repair = revision.repair;
+  return {
+    ...unit,
+    ...(revision.examples ? { examples: [...revision.examples] } : {}),
+    ...(repair
+      ? {
+          commonError: `${repair.source} → ${repair.answer}`,
+          repairTest: repair.answer,
+        }
+      : {}),
+  };
+}
+
+/** Show the authored instruction and accept its alternatives. A source that is
+ * acceptable German is never presented under "Nicht richtig". */
+function withRevisedCorrection(
+  title: string,
+  exercises: readonly GrammarExercise[],
+): readonly GrammarExercise[] {
+  const repair = contentRevisionFor("de", title)?.repair;
+  const [correction, ...rest] = exercises;
+  const metadata = correction?.[2];
+  if (!repair || !metadata) return exercises;
+  const prompt = repair.transformation
+    ? {
+        Deutsch: repair.prompt,
+        English: `Follow this German instruction and write the complete answer in German: ${repair.prompt}`,
+        فارسی: `طبق این دستور آلمانی عمل کن و پاسخ کامل را به آلمانی بنویس: ${repair.prompt}`,
+      }
+    : { ...metadata.prompt, Deutsch: repair.prompt };
+  return [
+    [
+      repair.prompt,
+      repair.answer,
+      {
+        ...metadata,
+        prompt,
+        ...(repair.alternatives?.length
+          ? { acceptedAnswers: [...repair.alternatives] }
+          : {}),
+      },
+    ],
+    ...rest,
+  ];
+}
+
+/** The learning path's visible cue for a one-gap exercise that had none. The
+ * German frame keeps its translations; only the sentence after it changes. */
+function withGapCues(
+  title: string,
+  exercises: readonly GrammarExercise[],
+): readonly GrammarExercise[] {
+  const revisions = gapCueRevisionsFor("de", title);
+  return exercises.map((exercise, index) => {
+    const [old, oldAnswer, metadata] = exercise;
+    // A Lab row is written for this Lab exercise; it wins over the path's item.
+    const cue = labGapCueFor(title, index, old) ?? revisions.get(index);
+    const [answer, ...alternatives] = cue?.answers ?? [
+      oldAnswer,
+      ...(metadata?.acceptedAnswers ?? []),
+    ];
+    // A revision that keeps the stored answer must fit this exercise's gap; one
+    // with its own answer may also replace a closed choice or ordering task.
+    if (
+      !cue ||
+      !metadata ||
+      metadata.mode !== "closed_recall" ||
+      (cue.answers
+        ? false
+        : !/_{2,}/u.test(old) || gapFill(cue.prompt, answer!) === null)
+    )
+      return exercise;
+    // The instruction ends at its first colon; the sentence may contain more.
+    const task = old.slice(old.indexOf(":") + 1).trim();
+    const frame = old.slice(0, old.length - task.length);
+    const prompt =
+      cue.prompt.startsWith(frame) &&
+      Object.values(metadata.prompt).every((text) => text.endsWith(task))
+        ? (Object.fromEntries(
+            Object.entries(metadata.prompt).map(([language, text]) => [
+              language,
+              text.slice(0, text.length - task.length) +
+                cue.prompt.slice(frame.length),
+            ]),
+          ) as typeof metadata.prompt)
+        : {
+            Deutsch: cue.prompt,
+            English: `Follow this German instruction and write the complete answer in German: ${cue.prompt}`,
+            فارسی: `طبق این دستور آلمانی عمل کن و پاسخ کامل را به آلمانی بنویس: ${cue.prompt}`,
+          };
+    const { acceptedAnswers: _, ...rest } = metadata;
+    return [
+      cue.prompt,
+      answer!,
+      {
+        ...rest,
+        prompt,
+        ...(alternatives.length ? { acceptedAnswers: alternatives } : {}),
+      },
+    ];
+  });
+}
+
+/** The error-notebook items of the learning path, after every
+ * earlier exercise so saved Lab progress keeps its positions. */
+function withNotebookItems(
+  title: string,
+  contentType: GrammarContentType,
+  exercises: readonly GrammarExercise[],
+): readonly GrammarExercise[] {
+  const prompts = new Set(exercises.map(([prompt]) => prompt));
+  const hint = closedHint(contentType);
+  const added = checkedPracticeFor("de", title)
+    .filter((row) => row.notebook && !prompts.has(row.prompt))
+    .map<GrammarExercise>(({ prompt, answers, rejected }) => {
+      const [answer, ...alternatives] = answers;
+      return [
+        prompt,
+        answer!,
+        {
+          mode: "closed_recall",
+          contentType,
+          validation: "exact",
+          answerRole: "expected",
+          prompt: {
+            Deutsch: prompt,
+            English: `Follow this German instruction and write the complete answer in German: ${prompt}`,
+            فارسی: `طبق این دستور آلمانی عمل کن و پاسخ کامل را به آلمانی بنویس: ${prompt}`,
+          },
+          hint: {
+            Deutsch: `Aus dem Fehlerheft. ${hint.Deutsch}`,
+            English: `From the error notebook. ${hint.English}`,
+            فارسی: `از دفتر خطا. ${hint.فارسی}`,
+          },
+          feedbackDimensions: feedbackDimensionsFor(contentType),
+          minimumSentences: 1,
+          outputLanguage: "de",
+          ...(alternatives.length ? { acceptedAnswers: alternatives } : {}),
+          ...(rejected ? { rejectedAnswers: rejected } : {}),
+        },
+      ];
+    });
+  const result = [...exercises, ...added];
+  const controlled: GrammarExercise[] = [];
+  for (const { prompt, answers, rejected } of controlledPracticeFor(
+    "de",
+    title,
+  ).filter((row) => !prompts.has(row.prompt))) {
+    const [answer, ...alternatives] = answers;
+    const existingIndex = result.findIndex(
+      ([, key, metadata]) =>
+        metadata?.mode === "closed_recall" &&
+        normalizeText(key) === normalizeText(answer!) &&
+        (metadata.acceptedAnswers ?? []).every((value) =>
+          answers.some((form) => normalizeText(form) === normalizeText(value)),
+        ),
+    );
+    if (existingIndex >= 0) {
+      const existing = result[existingIndex]!;
+      result[existingIndex] = [
+        existing[0],
+        existing[1],
+        {
+          ...existing[2]!,
+          rejectedAnswers: [
+            ...(existing[2]?.rejectedAnswers ?? []),
+            ...rejected.map((wrong) => ({ ...wrong })),
+          ],
+        },
+      ];
+      continue;
+    }
+    controlled.push([
+      prompt,
+      answer!,
+      {
+        mode: "closed_recall",
+        contentType,
+        validation: "exact",
+        answerRole: "expected",
+        prompt: {
+          Deutsch: prompt,
+          English: `Follow this German instruction and write the complete answer in German: ${prompt}`,
+          فارسی: `طبق این دستور آلمانی عمل کن و پاسخ کامل را به آلمانی بنویس: ${prompt}`,
+        },
+        hint: { ...hint },
+        feedbackDimensions: feedbackDimensionsFor(contentType),
+        minimumSentences: 1,
+        outputLanguage: "de",
+        acceptedAnswers: [...alternatives],
+        rejectedAnswers: rejected.map((wrong) => ({ ...wrong })),
+      },
+    ]);
+  }
+  return [...result, ...controlled];
+}
+
 export const grammarUnits: readonly GrammarUnit[] = [
-  ...legacyGrammarUnits.map((unit) => {
+  ...legacyGrammarUnits.map((original) => {
+    const repair = knownContentRepair("de", original.title);
+    const unit = reviseUnit(
+      repair
+        ? {
+            ...original,
+            commonError: `${repair.source} → ${repair.answer}`,
+            repairTest: repair.answer,
+            exercises: original.exercises.map<GrammarExercise>((exercise) =>
+              exercise[0] === repair.legacyPrompt
+                ? [repair.prompt, repair.answer]
+                : exercise,
+            ),
+          }
+        : original,
+    );
     const explanation =
       grammarExplanations[unit.title as keyof typeof grammarExplanations];
 
@@ -185,21 +420,54 @@ export const grammarUnits: readonly GrammarUnit[] = [
       throw new Error(`Missing complete explanation for "${unit.title}".`);
     }
 
+    const contentType = classifyGrammarContent(unit);
     return repairGermanGrammarLinks({
       ...unit,
-      contentType: classifyGrammarContent(unit),
-      exercises: completeControlledExercises(unit),
+      contentType,
+      exercises: withNotebookItems(
+        unit.title,
+        contentType,
+        withGapCues(
+          unit.title,
+          withRevisedCorrection(unit.title, completeControlledExercises(unit)),
+        ),
+      ),
       explanation,
     });
   }),
-  ...supplementalGrammarUnits.map((unit) =>
-    repairGermanGrammarLinks({
+  ...supplementalGrammarUnits.map((original) => {
+    const unit = reviseUnit(original);
+    const contentType = classifyGrammarContent(unit);
+    return repairGermanGrammarLinks({
       ...unit,
-      contentType: classifyGrammarContent(unit),
-      exercises: completeControlledExercises(unit),
-    }),
-  ),
+      contentType,
+      exercises: withNotebookItems(
+        unit.title,
+        contentType,
+        withGapCues(
+          unit.title,
+          withRevisedCorrection(unit.title, completeControlledExercises(unit)),
+        ),
+      ),
+    });
+  }),
 ];
+
+/** The payload of public/replacements/de/grammar-catalog.js for the browser Grammar Lab. */
+export const browserGrammarCatalog = grammarUnits.map((unit) => ({
+  level: unit.level,
+  title: unit.title,
+  contentType: unit.contentType,
+  rule: unit.rule,
+  explanation: unit.explanation,
+  examples: unit.examples,
+  commonError: unit.commonError,
+  exercises: unit.exercises,
+  testAnswer: unit.testAnswer,
+  recallTest: unit.recallTest,
+  repairTest: unit.repairTest,
+  transferTest: unit.transferTest,
+}));
 
 export const catalogSummary = {
   topicCount: speakingTopics.length,

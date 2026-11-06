@@ -12,6 +12,9 @@ import {
 } from "react";
 
 import {
+  applyErrorRepairHelp,
+  applyErrorRepairResult,
+  closeErrorRepairHelp,
   canCompleteDailyStep,
   createInitialLearnerState,
   getDailyPlan,
@@ -23,6 +26,7 @@ import {
   recordMasteryAttempt,
   recordMasteryReview,
   setMasteryCriticalErrors,
+  STRICT_REPAIR_POLICY_VERSION,
   type ErrorClass,
   type ErrorRecord,
   type LearnerProfilePreferences,
@@ -46,6 +50,20 @@ import {
   readLearnerProfile,
   type EvidenceSummary,
 } from "@/lib/learner-profile";
+import {
+  readStoredState,
+  recoveryNamespace,
+  requestPersistentStorage,
+  writeStoredState,
+} from "@/lib/storage-persistence";
+
+// The stored learner state carries no version field today. A future state
+// that declares a higher version is snapshotted before normalization.
+const LEARNER_STATE_VERSION = 1;
+export const STORAGE_RECOVERY_NAMESPACE = recoveryNamespace(
+  "de",
+  LEGACY_STORAGE_KEY,
+);
 
 interface CreateErrorInput {
   readonly topic: string;
@@ -90,6 +108,8 @@ interface LearnerStateContextValue {
     confidence?: ReviewConfidence,
   ) => void;
   readonly recordErrorRepair: (errorId: string, successful: boolean) => void;
+  readonly recordErrorRepairHelp: (errorId: string) => void;
+  readonly recordErrorRepairHelpClosed: (errorId: string) => void;
   readonly setMastery: (title: string, mastery: MasteryRecord) => void;
   readonly importState: (value: unknown) => void;
   readonly resetState: () => void;
@@ -161,20 +181,34 @@ export function LearnerStateProvider({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [persistenceProblem, setPersistenceProblem] = useState(false);
+  const [recoveryNotice, setRecoveryNotice] = useState("");
   const [state, setState] = useState<LearnerState>(createInitialLearnerState);
   const [hydrated, setHydrated] = useState(false);
   const [profileReady, setProfileReady] = useState(false);
 
   useEffect(() => {
     let nextState: LearnerState;
-    try {
-      const stored = localStorage.getItem(LEGACY_STORAGE_KEY);
-      nextState = normalizeLearnerState(stored ? JSON.parse(stored) : null);
-    } catch {
+    let notice = "";
+    const stored = readStoredState(
+      localStorage,
+      LEGACY_STORAGE_KEY,
+      LEARNER_STATE_VERSION,
+      STORAGE_RECOVERY_NAMESPACE,
+    );
+    if (stored.kind === "ok") {
+      nextState = normalizeLearnerState(stored.value);
+      if (stored.newerSnapshotKey)
+        notice =
+          "Dieser Fortschritt stammt aus einer neueren App-Version. Eine unveränderte Kopie bleibt in diesem Browser; aktualisiere die App, um alle Funktionen zu nutzen.";
+    } else {
       nextState = createInitialLearnerState();
+      if (stored.kind === "corrupt")
+        notice =
+          "Der gespeicherte Fortschritt war nicht lesbar, daher startet die App mit Standardwerten. Die unlesbare Kopie bleibt in diesem Browser und ist in einem Export aus den Einstellungen enthalten.";
     }
     const timer = window.setTimeout(() => {
       setState(nextState);
+      setRecoveryNotice(notice);
       setHydrated(true);
     }, 0);
     return () => window.clearTimeout(timer);
@@ -182,10 +216,9 @@ export function LearnerStateProvider({
 
   useLayoutEffect(() => {
     if (hydrated) {
-      try {
-        const previous = localStorage.getItem(LEGACY_STORAGE_KEY);
-        if (previous !== null) JSON.parse(previous);
-        localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(state));
+      // An unreadable previous value was already quarantined during
+      // hydration, so saving never depends on parsing what is stored.
+      if (writeStoredState(localStorage, LEGACY_STORAGE_KEY, state)) {
         void syncLegacyPracticeInBrowser("de").catch((error) =>
           window.dispatchEvent(
             new CustomEvent("automaticity-sync-error", {
@@ -194,11 +227,28 @@ export function LearnerStateProvider({
           ),
         );
         setPersistenceProblem(false);
-      } catch {
+      } else {
         setPersistenceProblem(true);
       }
     }
   }, [hydrated, state]);
+
+  useEffect(() => {
+    // Browsers grant persistent storage more readily after a user gesture,
+    // so the request waits for the first interaction instead of page load.
+    if (!hydrated) return;
+    const request = () => {
+      void requestPersistentStorage();
+      window.removeEventListener("pointerdown", request);
+      window.removeEventListener("keydown", request);
+    };
+    window.addEventListener("pointerdown", request, { once: true });
+    window.addEventListener("keydown", request, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", request);
+      window.removeEventListener("keydown", request);
+    };
+  }, [hydrated]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -502,37 +552,45 @@ export function LearnerStateProvider({
       const nextErrors: readonly ErrorRecord[] = existing
         ? current.errors.map((row) =>
             row.id === existing.id
-              ? {
-                  ...row,
-                  date: new Date(now).toISOString(),
-                  original: error.original,
-                  corrected: error.corrected,
-                  explanation: error.explanation,
-                  occurrenceCount: row.occurrenceCount + 1,
-                  lastSeenAt: now,
-                  repairStatus: "scheduled",
-                  nextRepairAt: now,
-                  critical: error.critical ?? row.critical,
-                }
+              ? applyErrorRepairHelp(
+                  {
+                    ...row,
+                    date: new Date(now).toISOString(),
+                    original: error.original,
+                    corrected: error.corrected,
+                    explanation: error.explanation,
+                    occurrenceCount: row.occurrenceCount + 1,
+                    lastSeenAt: now,
+                    repairStatus: "scheduled",
+                    successfulRepairs: 0,
+                    nextRepairAt: now,
+                    critical: error.critical ?? row.critical,
+                  },
+                  now,
+                )
               : row,
           )
         : [
             ...current.errors,
-            {
-              id: errorId,
-              date: new Date(now).toISOString(),
-              topic: error.topic,
-              original: error.original,
-              corrected: error.corrected,
-              errorClass: error.errorClass,
-              explanation: error.explanation,
-              occurrenceCount: 1,
-              lastSeenAt: now,
-              repairStatus: "new",
-              nextRepairAt: now,
-              successfulRepairs: 0,
-              critical: error.critical ?? error.errorClass !== "spelling",
-            },
+            applyErrorRepairHelp(
+              {
+                id: errorId,
+                date: new Date(now).toISOString(),
+                topic: error.topic,
+                original: error.original,
+                corrected: error.corrected,
+                errorClass: error.errorClass,
+                explanation: error.explanation,
+                occurrenceCount: 1,
+                lastSeenAt: now,
+                repairStatus: "new",
+                nextRepairAt: now,
+                successfulRepairs: 0,
+                repairPolicyVersion: STRICT_REPAIR_POLICY_VERSION,
+                critical: error.critical ?? error.errorClass !== "spelling",
+              },
+              now,
+            ),
           ];
       const reviewExists = current.reviews.some(
         (review) =>
@@ -737,21 +795,14 @@ export function LearnerStateProvider({
             if (error.id !== selected.sourceId) {
               return error;
             }
-            const successfulRepairs = successful
-              ? error.successfulRepairs + 1
-              : 0;
-            return {
-              ...error,
-              successfulRepairs,
-              repairStatus: successful
-                ? successfulRepairs >= 2
-                  ? ("fixed" as const)
-                  : ("improving" as const)
-                : ("scheduled" as const),
+            return applyErrorRepairResult(error, {
+              source: "legacy_review",
+              successful,
+              checkedAt: now.getTime(),
               nextRepairAt:
                 progress.dueAt?.getTime() ??
                 now.getTime() + DAY_IN_MILLISECONDS,
-            };
+            });
           });
         }
 
@@ -790,21 +841,15 @@ export function LearnerStateProvider({
         if (!selected) {
           return current;
         }
-        const successfulRepairs = successful
-          ? selected.successfulRepairs + 1
-          : 0;
+        const checkedAt = Date.now();
         const nextErrors = current.errors.map((error) =>
           error.id === errorId
-            ? {
-                ...error,
-                successfulRepairs,
-                repairStatus: successful
-                  ? successfulRepairs >= 2
-                    ? ("fixed" as const)
-                    : ("improving" as const)
-                  : ("scheduled" as const),
-                nextRepairAt: Date.now() + DAY_IN_MILLISECONDS,
-              }
+            ? applyErrorRepairResult(error, {
+                source: "strict_reference",
+                successful,
+                checkedAt,
+                nextRepairAt: checkedAt + DAY_IN_MILLISECONDS,
+              })
             : error,
         );
         return {
@@ -822,6 +867,42 @@ export function LearnerStateProvider({
     },
     [],
   );
+
+  const recordErrorRepairHelp = useCallback((errorId: string) => {
+    setState((current) => {
+      const selected = current.errors.find((error) => error.id === errorId);
+      if (!selected) return current;
+      const helpedAt = Date.now();
+      const nextErrors = current.errors.map((error) =>
+        error.id === errorId ? applyErrorRepairHelp(error, helpedAt) : error,
+      );
+      return {
+        ...current,
+        errors: nextErrors,
+        mastery: {
+          ...current.mastery,
+          [selected.topic]: setMasteryCriticalErrors(
+            current.mastery[selected.topic],
+            countActiveCriticalErrors(nextErrors, selected.topic),
+          ),
+        },
+      };
+    });
+  }, []);
+
+  const recordErrorRepairHelpClosed = useCallback((errorId: string) => {
+    setState((current) => {
+      const selected = current.errors.find((error) => error.id === errorId);
+      if (!selected?.repairHelpOpen) return current;
+      const closedAt = Date.now();
+      return {
+        ...current,
+        errors: current.errors.map((error) =>
+          error.id === errorId ? closeErrorRepairHelp(error, closedAt) : error,
+        ),
+      };
+    });
+  }, []);
 
   const setMastery = useCallback((title: string, mastery: MasteryRecord) => {
     setState((current) => ({
@@ -859,6 +940,8 @@ export function LearnerStateProvider({
       advanceReview,
       completeReview,
       recordErrorRepair,
+      recordErrorRepairHelp,
+      recordErrorRepairHelpClosed,
       setMastery,
       importState,
       resetState,
@@ -874,6 +957,8 @@ export function LearnerStateProvider({
       markActivity,
       recordAttempt,
       recordErrorRepair,
+      recordErrorRepairHelp,
+      recordErrorRepairHelpClosed,
       resetState,
       scheduleReview,
       setDailyAnswer,
@@ -896,6 +981,14 @@ export function LearnerStateProvider({
           Änderungen konnten nicht gespeichert werden. Lass diesen Tab offen und
           exportiere deine Daten in den Einstellungen, bevor du es erneut
           versuchst.
+        </p>
+      ) : null}
+      {recoveryNotice ? (
+        <p
+          role="status"
+          className="border border-amber-700 bg-white p-4 text-amber-900"
+        >
+          {recoveryNotice}
         </p>
       ) : null}
       {children}

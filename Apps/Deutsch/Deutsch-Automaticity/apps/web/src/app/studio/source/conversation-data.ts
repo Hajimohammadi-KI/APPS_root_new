@@ -67,6 +67,12 @@ export const copy = {
     evaluate: "Antwort auswerten",
     evaluating: "LanguageTool prüft…",
     saved: "Sitzung wurde auf diesem Gerät gespeichert.",
+    savedWithoutAudio:
+      "Sitzung ohne Aufnahme auf diesem Gerät gespeichert. Um Aufnahmen zu behalten, aktiviere „Eigene Aufnahmen lokal speichern“ in den Einstellungen.",
+    consentNotice:
+      "Die Auswertung sendet dein Transkript (nie die Aufnahme) an LanguageTool (languagetool.org). Online-Prüfungen sind aus, daher wurde nichts gesendet.",
+    allowOnline: "Online-Prüfung erlauben und auswerten",
+    flagged: "Markiert",
     providerUnavailable:
       "LanguageTool ist nicht erreichbar. Es wurde keine Auswertung erfunden; bitte versuche es erneut.",
     pronunciation:

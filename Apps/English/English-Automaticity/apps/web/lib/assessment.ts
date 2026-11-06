@@ -1,4 +1,6 @@
 import type { GrammarUnit, GrammarResource } from "@grammar/content";
+import { writingIssues } from "@automaticity/learning-core/writing-rules";
+import { detectTextLanguage } from "@automaticity/learning-core/text";
 import type { ErrorClass, Settings } from "@/features/store/app-store";
 import { wordCount } from "@/lib/utils";
 
@@ -223,8 +225,6 @@ function parseAssessmentResponse(
 const OFFLINE_RULES: Array<[RegExp, string]> = [
   [/\bshe don't\b/gi, "she doesn't"],
   [/\bhe don't\b/gi, "he doesn't"],
-  [/\bdoesn't ([a-z]+)s\b/gi, "doesn't $1"],
-  [/\bdid ([a-z]+)ed\b/gi, "did $1"],
   [/\bmore better\b/gi, "better"],
 ];
 
@@ -239,7 +239,28 @@ function localGrammarAssessment(
   text: string,
   grammar: EvaluationOptions["grammar"],
 ) {
-  const matches: LanguageToolMatch[] = [];
+  const matches: LanguageToolMatch[] = writingIssues(text, "en").map(
+    (issue) => ({
+      message: issue.message,
+      offset: issue.start,
+      length: issue.end - issue.start,
+      replacements: [{ value: issue.replacement }],
+      rule: { id: issue.ruleId, category: { id: "GRAMMAR", name: "Grammar" } },
+    }),
+  );
+  const language = detectTextLanguage(text);
+  if (language === "fa" || language === "de")
+    matches.push({
+      message:
+        "Write the response in English. This text has not been assessed for correctness.",
+      offset: 0,
+      length: text.length,
+      replacements: [],
+      rule: {
+        id: "LOCAL_OUTPUT_LANGUAGE",
+        category: { id: "GRAMMAR", name: "Grammar" },
+      },
+    });
   let corrected = text;
   const malformedPresentPerfect = text.match(
     /\b(i|you|we|they|he|she|it)\s+(have|has)\s+not\s+still\s+(?:an?\s+)?activity\s+same\s+([a-z]+)\s+tried\b/i,
@@ -666,7 +687,10 @@ export async function evaluateResponse(
     const response = await fetch(`${settings.apiBaseUrl}/api/assessment`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ text, language: "en-US" }),
+      body: JSON.stringify({
+        text,
+        language: settings.englishVariant === "en-GB" ? "en-GB" : "en-US",
+      }),
       signal: controller.signal,
     });
     if (!response.ok)
@@ -735,10 +759,10 @@ export async function evaluateResponse(
   const grammarIssues = correction.matches.filter(
     (match) => issueType(match) === "Grammar",
   );
-  const knownLanguageIssues = correction.online
-    ? (!settings.spellingAffectsMastery || spelling.length === 0) &&
-      grammarIssues.length === 0
-    : !correction.changed;
+  const knownLanguageIssues =
+    grammarIssues.length === 0 &&
+    (!settings.spellingAffectsMastery || spelling.length === 0) &&
+    (correction.online || !correction.changed);
   const pass = knownLanguageIssues && targetSatisfied && complete && relevant;
   const masteryEligible = correction.online && pass;
   const issuePenalty = Math.min(

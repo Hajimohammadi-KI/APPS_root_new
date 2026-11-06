@@ -32,6 +32,7 @@ Apps/Study-Tracker/public/expose.pdf -filter -diff -merge -text
 Apps/**/apple-touch-icon.png -filter -diff -merge -text
 Apps/**/icon-192.png -filter -diff -merge -text
 Apps/**/icon-512.png -filter -diff -merge -text
+Apps/**/icon-512-generated.png -filter -diff -merge -text
 Apps/Study-Tracker/public/icon-maskable-512.png -filter -diff -merge -text
 Apps/**/automaticity-journey-hero.png -filter -diff -merge -text
 Apps/**/automaticity-progress-story.png -filter -diff -merge -text
@@ -47,3 +48,26 @@ Apps/Study-Tracker/**/*.sh text eol=lf
 # repository. Keep it outside LFS so an exhausted LFS quota cannot break the
 # consent-based updater. The SHA-256 is published in the adjacent manifest.
 releases/CrossRepositoryCodeIntelligence-*-Version2-final.zip -filter -diff -merge -text
+
+# Benchmark hashes must survive a Windows checkout with core.autocrlf=true.
+research/assessment-benchmark/*.ts text eol=lf
+research/assessment-benchmark/runs/**/*.snapshot -text
+
+# Generated roadmaps are checked byte-for-byte before either language app builds.
+# Keep a Windows checkout identical to the generator and Linux deployment.
+docs/language-apps-roadmap.html text eol=lf
+docs/LANGUAGE-APPS-IMPROVEMENT-ROADMAP.md text eol=lf
+Apps/English/English-Automaticity/apps/web/public/roadmap.html text eol=lf
+Apps/Deutsch/Deutsch-Automaticity/apps/web/public/roadmap.html text eol=lf
+
+# Local speech assets have pinned byte hashes, including their vocabulary JSON.
+shared/learning-core/browser/local-phoneme/** -text
+Apps/**/packages/learning-core/browser/local-phoneme/** -text
+Apps/**/apps/web/public/learning-core/local-phoneme/** -text
+shared/learning-core/src/vendor/hama-js/engine.js -text
+Apps/**/packages/learning-core/src/vendor/hama-js/engine.js -text
+# The English offline transcription model must deploy as real pinned bytes.
+# Global *.onnx LFS rules would publish a small pointer when LFS is unavailable.
+Apps/English/English-Automaticity/apps/web/public/local-transcription/** -filter -diff -merge -text
+# The public ASR regression fixture must remain readable without an LFS fetch.
+scripts/fixtures/openslr101-011860256.wav -filter -diff -merge -text

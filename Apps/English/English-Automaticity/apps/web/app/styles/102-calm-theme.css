@@ -1,0 +1,476 @@
+/* R74–R76: worksheet presentation. Important declarations resolve earlier
+   visual contracts; teaching content and all learner state remain untouched. */
+:root {
+  --worksheet-paper: #ffffff;
+  --worksheet-ink: #08364a;
+  --worksheet-teal: #007f83;
+  --worksheet-teal-hover: #00676b;
+  --worksheet-cyan: #eaf6f7;
+  --worksheet-yellow: #fff5d7;
+  --worksheet-line: #dce9e8;
+  --worksheet-muted: #526a73;
+  --worksheet-shadow: 0 4px 14px rgba(8, 54, 74, 0.055);
+  --calm-font:
+    "Segoe UI Variable", "Segoe UI", Tahoma, Inter, system-ui, sans-serif;
+  --calm-bg: var(--worksheet-paper);
+  --calm-surface: #fff;
+  --calm-surface-2: var(--worksheet-cyan);
+  --calm-line: var(--worksheet-line);
+  --calm-line-strong: #98c9c8;
+  --calm-ink: var(--worksheet-ink);
+  --calm-muted: var(--worksheet-muted);
+  --calm-primary: var(--worksheet-teal);
+  --calm-primary-hover: var(--worksheet-teal-hover);
+  --calm-primary-soft: var(--worksheet-cyan);
+  --background: var(--worksheet-paper) !important;
+  --foreground: var(--worksheet-ink) !important;
+  --card: #fff !important;
+  --card-foreground: var(--worksheet-ink);
+  --popover: #fff;
+  --popover-foreground: var(--worksheet-ink);
+  --primary: var(--worksheet-teal) !important;
+  --primary-foreground: #fff !important;
+  --secondary: var(--worksheet-cyan) !important;
+  --secondary-foreground: var(--worksheet-ink);
+  --muted: var(--worksheet-cyan) !important;
+  --muted-foreground: var(--worksheet-muted) !important;
+  --accent: var(--worksheet-yellow);
+  --accent-foreground: var(--worksheet-ink);
+  --border: var(--worksheet-line) !important;
+  --input: #b8d2d1 !important;
+  --ring: var(--worksheet-teal) !important;
+  --screen-accent: var(--worksheet-teal) !important;
+  --screen-accent-strong: var(--worksheet-teal-hover) !important;
+  --shadow-card: var(--worksheet-shadow);
+  --color-bg-primary: var(--worksheet-paper);
+  --color-bg-secondary: var(--worksheet-cyan);
+  --color-bg-tertiary: var(--worksheet-yellow);
+  --color-text-primary: var(--worksheet-ink);
+  --color-text-secondary: var(--worksheet-muted);
+  --color-text-interactive: var(--worksheet-teal);
+}
+html,
+body {
+  background: var(--worksheet-paper) !important;
+}
+body {
+  color: var(--worksheet-ink) !important;
+}
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--calm-font) !important;
+  font-weight: 750;
+  letter-spacing: -0.015em;
+}
+
+/* Existing shell layouts and responsive navigation are preserved. */
+.app-shell[data-screen],
+.german-app-main,
+.german-app-topbar {
+  --primary: var(--worksheet-teal) !important;
+  --screen-accent: var(--worksheet-teal) !important;
+  --screen-accent-strong: var(--worksheet-teal-hover) !important;
+  --screen-soft: var(--worksheet-cyan) !important;
+  --screen-glow: transparent !important;
+}
+.app-sidebar,
+.german-app-sidebar {
+  background: #fff !important;
+  border-color: var(--worksheet-line) !important;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.app-main,
+.german-shell-body {
+  background: var(--worksheet-paper);
+}
+.app-topbar,
+.german-app-topbar {
+  background: #fff !important;
+  border-bottom: 1px solid var(--worksheet-line);
+  box-shadow: none;
+}
+.brand-icon,
+.brand-logo,
+.german-app-sidebar .brand-logo {
+  background: var(--worksheet-teal) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  border-radius: 50%;
+}
+.topbar-screen-icon {
+  background: var(--worksheet-cyan);
+  color: var(--worksheet-teal);
+  border-radius: 50%;
+}
+.learning-navigation a:hover,
+.learning-navigation summary:hover {
+  background: var(--worksheet-cyan);
+  color: var(--worksheet-ink);
+}
+.learning-navigation a[aria-current="page"] {
+  background: var(--worksheet-teal);
+  border-color: var(--worksheet-teal);
+  color: #fff;
+  box-shadow: none;
+  border-radius: 18px;
+}
+.learning-navigation .ln-label,
+.learning-navigation .ln-roadmap {
+  color: var(--worksheet-muted);
+}
+.learning-navigation .ln-more,
+.learning-navigation .ln-settings,
+.learning-navigation .ln-more ul {
+  border-color: var(--worksheet-line);
+}
+.app-tools > summary,
+.app-tools-panel,
+.quiet-disclosure {
+  background: #fff;
+  border-color: var(--worksheet-line);
+  color: var(--worksheet-ink);
+}
+.app-tools > summary:hover,
+.app-tools[open] > summary {
+  background: var(--worksheet-cyan);
+  border-color: #98c9c8;
+}
+.quiet-disclosure {
+  border-radius: 20px;
+  box-shadow: var(--worksheet-shadow);
+}
+.quiet-disclosure > summary {
+  color: var(--worksheet-ink);
+}
+
+/* Navy page titles and teal teaching-section tabs. */
+.app-content .page-heading,
+.learning-page-intro,
+.learning-progress-page > header,
+.settings-page > header {
+  background: #fff !important;
+  background-image: none !important;
+  border-color: var(--worksheet-line) !important;
+  border-radius: 24px;
+  box-shadow: var(--worksheet-shadow);
+}
+.app-content .page-heading h1,
+.learning-page-intro h1,
+.learning-progress-page > header h1,
+.settings-page > header h1 {
+  color: var(--worksheet-ink);
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+.learning-progress-page > header > p:first-child {
+  color: var(--worksheet-teal);
+}
+.learning-card,
+[data-slot="card"] {
+  background: #fff;
+  color: var(--worksheet-ink);
+  border: 1px solid var(--worksheet-line);
+  border-radius: 22px;
+  box-shadow: var(--worksheet-shadow);
+}
+.learning-card > div:first-child > h3,
+[data-slot="card-header"] [data-slot="card-title"] {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 16px 16px 6px 16px;
+  background: var(--worksheet-teal);
+  color: #fff;
+  line-height: 1.4;
+  font-size: 1.0625rem;
+}
+.learning-card > div:first-child > h3 svg,
+[data-slot="card-title"] svg {
+  color: inherit !important;
+}
+
+/* Resolve the earlier utility palette without recoloring destructive controls. */
+[class~="bg-primary"],
+.automaticity-primary-action,
+.dashboard-hero-actions > :first-child,
+.german-install-button {
+  background: var(--worksheet-teal);
+  border-color: var(--worksheet-teal);
+  color: #fff;
+}
+
+/* Home: a real next action, cyan activity cells and a yellow method panel. */
+.learning-home {
+  --lh-ink: var(--worksheet-ink);
+  --lh-muted: var(--worksheet-muted);
+  --lh-primary: var(--worksheet-teal);
+  --lh-primary-hover: var(--worksheet-teal-hover);
+  --lh-line: var(--worksheet-line);
+  --lh-paper: #fff;
+  --lh-soft: var(--worksheet-cyan);
+}
+.learning-home .lh-heading h1 {
+  font-size: clamp(2rem, 3.2vw, 3rem);
+  font-weight: 800;
+}
+.learning-home .lh-hero {
+  background: #fff !important;
+  border-color: var(--worksheet-line) !important;
+  color: var(--worksheet-ink);
+  box-shadow: var(--worksheet-shadow);
+  border-radius: 24px;
+}
+.learning-home .lh-hero h2,
+.learning-home .lh-method h3 {
+  color: var(--worksheet-ink);
+  font-weight: 800;
+}
+.learning-home .lh-hero-copy h2 {
+  font-size: clamp(1.75rem, 2.6vw, 2.5rem);
+}
+.learning-home .lh-hero-copy > p,
+.learning-home .lh-method,
+.learning-home .lh-method > p,
+.learning-home .lh-local {
+  color: var(--worksheet-muted);
+}
+.learning-home .lh-hero-copy > .lh-eyebrow {
+  color: var(--worksheet-teal);
+}
+.learning-home .lh-method {
+  background: var(--worksheet-yellow);
+  border-color: var(--worksheet-line);
+}
+.learning-home .lh-method li > span {
+  background: var(--worksheet-teal);
+  border-color: var(--worksheet-teal);
+  color: #fff;
+}
+.learning-home .lh-primary {
+  background: var(--worksheet-teal) !important;
+  color: #fff !important;
+  border-color: var(--worksheet-teal) !important;
+  border-radius: 16px;
+  box-shadow: none;
+}
+.learning-home .lh-primary:hover {
+  background: var(--worksheet-teal-hover) !important;
+}
+.learning-home .lh-status-mark {
+  background: var(--worksheet-teal);
+  box-shadow: none;
+}
+.learning-home .lh-metric,
+.learning-home .lh-days,
+.learning-home .lh-empty,
+.learning-home .lh-course-list > a,
+.learning-home .lh-evidence {
+  border-radius: 20px;
+  box-shadow: var(--worksheet-shadow);
+}
+.learning-home .lh-metric {
+  background: var(--worksheet-cyan);
+}
+.learning-home .lh-course-icon {
+  border-radius: 50%;
+  background: var(--worksheet-teal);
+  color: #fff;
+}
+.learning-home .lh-section-heading h2 {
+  display: inline-block;
+  background: var(--worksheet-teal);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 16px 16px 6px 16px;
+  font-size: 1.125rem;
+}
+.learning-home .lh-metric:hover,
+.learning-home .lh-course-list > a:hover {
+  box-shadow: var(--worksheet-shadow) !important;
+  transform: none;
+}
+.learning-home .lh-empty {
+  background: var(--worksheet-yellow);
+}
+.learning-home .lh-metric progress,
+.learning-home .lh-metric progress::-webkit-progress-bar {
+  background: var(--worksheet-line);
+}
+
+/* Editable written answers use dashed boundaries. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+    [type="file"]
+  ),
+select,
+textarea {
+  min-height: 44px;
+  border-color: #b8d2d1;
+  background-color: #fff;
+  color: var(--worksheet-ink);
+}
+textarea {
+  border-style: dashed;
+  border-width: 1px;
+  border-radius: 14px;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--worksheet-teal);
+}
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+.automaticity-primary-action,
+.automaticity-secondary-action {
+  min-height: 44px;
+}
+button:not(:disabled):hover,
+[role="button"]:not([aria-disabled="true"]):hover,
+summary:hover {
+  transform: none;
+  box-shadow: none;
+}
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.learning-navigation :is(a, summary):focus-visible,
+.app-tools > summary:focus-visible {
+  outline: 3px solid var(--worksheet-teal);
+  outline-offset: 3px;
+}
+.settings-choice,
+.settings-number,
+.settings-device-grid article,
+.settings-backup-guide article,
+.settings-intention {
+  border-color: var(--worksheet-line);
+  background: var(--worksheet-cyan);
+  border-radius: 16px;
+}
+.settings-choice:has(input:checked),
+.settings-toggle:has(input:checked) {
+  border-color: var(--worksheet-teal);
+  background: var(--worksheet-cyan);
+  box-shadow: none;
+}
+.settings-choice input,
+.settings-toggle input {
+  accent-color: var(--worksheet-teal);
+}
+.settings-choice:focus-within,
+.settings-toggle:focus-within {
+  outline: 3px solid var(--worksheet-teal);
+  outline-offset: 3px;
+}
+.settings-measurement-summary,
+.settings-intentions-empty,
+.settings-nudge-consent {
+  background: var(--worksheet-yellow);
+  border-color: var(--worksheet-line);
+}
+.settings-device-grid article svg {
+  color: var(--worksheet-teal);
+}
+.settings-intention-eyebrow {
+  color: var(--worksheet-teal);
+}
+.automaticity-overview {
+  background: #fff !important;
+  border-color: var(--worksheet-line) !important;
+  color: var(--worksheet-ink) !important;
+  border-radius: 22px;
+  box-shadow: var(--worksheet-shadow);
+}
+.automaticity-overview h2,
+.automaticity-overview h3,
+.automaticity-overview summary {
+  color: var(--worksheet-ink) !important;
+}
+.automaticity-secondary-action {
+  border-color: #98c9c8 !important;
+  background: var(--worksheet-cyan) !important;
+  color: var(--worksheet-ink) !important;
+}
+.neuro-ruler-toggle,
+.standalone-neuro-ruler-toggle {
+  border-color: var(--worksheet-line) !important;
+  background: #fff !important;
+  color: var(--worksheet-ink) !important;
+  box-shadow: none !important;
+}
+.persian-word-help-card {
+  border-color: var(--worksheet-teal) !important;
+  color: var(--worksheet-ink) !important;
+  box-shadow: var(--worksheet-shadow) !important;
+}
+.persian-word-help-term {
+  background: var(--worksheet-yellow) !important;
+  color: var(--worksheet-ink) !important;
+}
+.persian-word-help-section strong,
+.persian-word-help-example strong {
+  color: var(--worksheet-teal) !important;
+}
+@media (max-width: 640px) {
+  .learning-card,
+  [data-slot="card"],
+  .learning-home .lh-hero {
+    border-radius: 20px;
+  }
+  .learning-card > div:first-child > h3,
+  [data-slot="card-header"] [data-slot="card-title"] {
+    padding: 9px 12px;
+    font-size: 1rem;
+  }
+  .learning-home .lh-heading h1 {
+    font-size: 2rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .learning-home *,
+  .learning-navigation *,
+  .conversation-page * {
+    animation: none;
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .learning-card,
+  [data-slot="card"],
+  textarea {
+    border-color: CanvasText;
+  }
+  .learning-home .lh-primary,
+  .learning-navigation a[aria-current="page"] {
+    border: 2px solid ButtonText;
+  }
+}
+/* The rail width must match the reserved grid column at desktop sizes. */
+@media (min-width: 900px) {
+  .app-shell[data-screen] {
+    display: grid;
+    grid-template-columns: 264px minmax(0, 1fr);
+  }
+  .app-shell[data-screen] .app-sidebar {
+    width: 264px;
+    max-width: 264px;
+  }
+}
+@media (max-width: 899px) {
+  .app-shell[data-screen] {
+    display: block;
+  }
+  .app-shell[data-screen] .app-sidebar {
+    width: min(300px, calc(100vw - 20px));
+  }
+}

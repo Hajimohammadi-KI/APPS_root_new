@@ -1,5 +1,4 @@
 {
   "schemaVersion": 1,
-  "scope": "Recorded content reviews and per-task evaluator approvals for exact English/German curriculum versions. Empty until actual human review is supplied. This ledger never activates a runtime evaluator.",
   "reviews": []
 }

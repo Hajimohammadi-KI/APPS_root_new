@@ -2,6 +2,7 @@ import { describe, expect, it } from "bun:test";
 
 import {
   FERTIGKEITEN,
+  browserGrammarCatalog,
   cefrCurriculum,
   catalogSummary,
   deutschMitMarijaSharedWithMeUrl,
@@ -24,7 +25,64 @@ import {
   releasedGermanMediationB1,
 } from "./index";
 import { assessMediationContentRelease } from "@automaticity/learning-core";
+import {
+  checkedPracticeFor,
+  controlledPracticeFor,
+} from "@automaticity/learning-core/content-revisions";
+import { gapFill } from "@automaticity/learning-core/text";
+import { LAB_GAP_CUES } from "./lab-gap-cues";
 import { isRetiredGermanResource } from "./resource-links";
+
+describe("browser grammar catalog", () => {
+  it("liefert dem Grammatiklabor im Browser genau den erzeugten Katalog", async () => {
+    const source = await Bun.file(
+      new URL(
+        "../../../apps/web/public/replacements/de/grammar-catalog.js",
+        import.meta.url,
+      ),
+    ).text();
+    const prefix = "window.GERMAN_GRAMMAR_UNITS = ";
+    expect(source.startsWith(prefix)).toBe(true);
+    expect(
+      JSON.parse(source.slice(prefix.length).trim().replace(/;$/u, "")),
+    ).toEqual(JSON.parse(JSON.stringify(browserGrammarCatalog)));
+  });
+  it("zeigt in jeder Lückenübung, welches Wort fehlt", () => {
+    // The last row for an exercise is the one shown.
+    const latest = new Map(
+      LAB_GAP_CUES.map((row) => [`${row[0]}#${row[1]}`, row] as const),
+    );
+    for (const [title, index, sentence] of latest.values()) {
+      const exercise = grammarUnits.find((unit) => unit.title === title)
+        ?.exercises[index];
+      expect(`${title}#${index}: ${exercise?.[0]}`).toEndWith(` ${sentence}`);
+      expect(exercise?.[2]?.prompt.English).toEndWith(` ${sentence}`);
+      if (/_{2,}/u.test(sentence))
+        expect(gapFill(exercise![0], exercise![1])).not.toBeNull();
+    }
+    // No closed exercise of a unit repeats another one's sentence.
+    for (const unit of grammarUnits) {
+      const answers = unit.exercises
+        .filter(([, , metadata]) => metadata?.mode === "closed_recall")
+        .map(([, answer]) =>
+          answer.toLocaleLowerCase("de").replace(/[.!?]\s*$/u, ""),
+        );
+      const repeated = answers.length - new Set(answers).size;
+      expect(`${unit.title}: ${repeated}`).toBe(
+        `${unit.title}: ${unit.title === "es gibt mit Akkusativ" ? 1 : 0}`,
+      );
+    }
+    const exercise = grammarUnits.find(
+      (unit) => unit.title === "Satzklammer im einfachen Hauptsatz",
+    )!.exercises[1]!;
+    expect(exercise[0]).toEndWith(
+      "Ich ___ jeden Morgen um sieben Uhr auf. (aufstehen)",
+    );
+    expect(exercise[2]?.prompt.فارسی).toEndWith(
+      "Ich ___ jeden Morgen um sieben Uhr auf. (aufstehen)",
+    );
+  });
+});
 
 describe("legacy content extraction", () => {
   it("hält den B1-Mediationspiloten bis zur unabhängigen menschlichen Prüfung zurück", () => {
@@ -144,8 +202,22 @@ describe("legacy content extraction", () => {
 
     for (const unit of grammarUnits) {
       expect(unit.contentType).toBeDefined();
-      expect(unit.exercises).toHaveLength(5);
-      const closed = unit.exercises.slice(0, 4);
+      // The learner's error-notebook items follow the five exercises, so
+      // saved Lab progress keeps its positions; they are checked recall.
+      const notebook = checkedPracticeFor("de", unit.title).filter(
+        (row) => row.notebook,
+      );
+      const focused = controlledPracticeFor("de", unit.title).filter((row) =>
+        unit.exercises.some(([prompt]) => prompt === row.prompt),
+      );
+      expect(unit.exercises.slice(5).map(([prompt]) => prompt)).toEqual(
+        [...notebook, ...focused].map((row) => row.prompt),
+      );
+      expect(unit.exercises).toHaveLength(5 + notebook.length + focused.length);
+      const closed = [
+        ...unit.exercises.slice(0, 4),
+        ...unit.exercises.slice(5),
+      ];
       const open = unit.exercises[4];
 
       for (const exercise of closed) {

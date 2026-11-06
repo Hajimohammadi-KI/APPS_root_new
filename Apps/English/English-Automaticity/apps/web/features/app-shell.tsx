@@ -1,543 +1,505 @@
 "use client";
-import {AutomaticityEvidenceSummary} from "./components/automaticity-evidence-summary";
+import { AutomaticityEvidenceSummary } from "./components/automaticity-evidence-summary";
 
 import * as React from "react";
-import dynamic from "next/dynamic";
 import {
-	BookOpenText,
-	BrainCircuit,
-	ChevronDown,
-	CircleAlert,
-	CloudDownload,
-	Flame,
-	FileMusic,
-	BookMarked,
-	Clock3,
-	Folder,
-	House,
-	LibraryBig,
-	Menu,
-	MessagesSquare,
-	Settings,
-	Languages,
-	GraduationCap,
-	X,
+  persianRouteGuide,
+  readSupportLanguage,
+  saveSupportLanguage,
+  type SupportLanguage,
+} from "@automaticity/learning-core/automaticity";
+import { LearningNavigation } from "@/components/learning-navigation";
+import { navigationConfig } from "@/components/navigation-config";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import {
+  BookOpenText,
+  BrainCircuit,
+  CircleAlert,
+  CloudDownload,
+  Flame,
+  FileMusic,
+  BookMarked,
+  House,
+  LibraryBig,
+  Menu,
+  MessagesSquare,
+  Settings,
+  Languages,
+  GraduationCap,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Disclosure } from "@/components/ui/disclosure";
 import { AppUpdateNotice } from "@/features/components/app-update-notice";
 import { ApiConnectionStatus } from "@/features/components/api-connection-status";
 import { InstallAppControl } from "@/features/components/install-app-control";
 import { NeuroReader } from "@/features/components/neuro-reader";
 import { DashboardV2Screen } from "@/features/screens/dashboard-v2-screen";
+import {
+  canonicalScreenId,
+  type ScreenId,
+  type ScreenParams,
+  screenHref,
+  screenPaths,
+} from "@/features/navigation/screen-routes";
 import { useAppStore } from "@/features/store/app-store";
 import { UserGuideButton } from "@/features/user-guide";
 
 const AutomaticityScreen = dynamic(() =>
-	import("@/features/screens/automaticity-screen").then(
-		(module) => module.AutomaticityScreen,
-	),
+  import("@/features/screens/automaticity-screen").then(
+    (module) => module.AutomaticityScreen,
+  ),
 );
 const ResourcesScreen = dynamic(() =>
-	import("@/features/screens/resources-screen").then(
-		(module) => module.ResourcesScreen,
-	),
+  import("@/features/screens/resources-screen").then(
+    (module) => module.ResourcesScreen,
+  ),
 );
 const IntegratedSkillsScreen = dynamic(() =>
-	import("@/features/screens/integrated-skills-screen").then(
-		(module) => module.IntegratedSkillsScreen,
-	),
+  import("@/features/screens/integrated-skills-screen").then(
+    (module) => module.IntegratedSkillsScreen,
+  ),
 );
 const ErrorsScreen = dynamic(() =>
-	import("@/features/screens/errors-screen").then(
-		(module) => module.ErrorsScreen,
-	),
+  import("@/features/screens/errors-screen").then(
+    (module) => module.ErrorsScreen,
+  ),
 );
 const AudioScreen = dynamic(() =>
-	import("@/features/screens/audio-screen").then(
-		(module) => module.AudioScreen,
-	),
+  import("@/features/screens/audio-screen").then(
+    (module) => module.AudioScreen,
+  ),
 );
 
-type ScreenId =
-	| "home"
-	| "studio"
-	| "daily"
-	| "progress"
-	| "grammar"
-	| "integrated-skills"
-	| "resources"
-	| "errors"
-	| "library"
-	| "notebook"
-	| "flashcards"
-	| "settings"
-	| "teacher";
-
 interface NavigationItem {
-	id: ScreenId;
-	label: string;
-	subtitle: string;
-	icon: React.ComponentType<{ className?: string }>;
+  id: ScreenId;
+  label: string;
+  subtitle: string;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const homeNavigation: NavigationItem = {
-	id: "home",
-	label: "Home",
-	subtitle: "Progress and next step",
-	icon: House,
+  id: "home",
+  label: "Home",
+  subtitle: "Progress and next step",
+  icon: House,
 };
 
 const navigation: NavigationItem[] = [
-	homeNavigation,
-	{
-		id: "daily",
-		label: "Today’s Practice",
-		subtitle: "Adaptive recall and automaticity",
-		icon: Flame,
-	},
-	{
-		id: "studio",
-		label: "Conversation Studio",
-		subtitle: "Speak, correct, and repeat",
-		icon: MessagesSquare,
-	},
-	{
-		id: "grammar",
-		label: "Grammar Lab",
-		subtitle: "112 units from A1 to C2",
-		icon: BookOpenText,
-	},
-	{
-		id: "resources",
-		label: "Learning Resources",
-		subtitle: "43 direct source collections",
-		icon: CloudDownload,
-	},
-	{
-		id: "integrated-skills",
-		label: "Integrated Skills",
-		subtitle: "A1-C2 · 72 units · 4 skills",
-		icon: LibraryBig,
-	},
-	{
-		id: "errors",
-		label: "Error Workshop",
-		subtitle: "Fix recurring errors with focus",
-		icon: CircleAlert,
-	},
-	{
-		id: "progress",
-		label: "Progress Evidence",
-		subtitle: "Mastery, transfer, and delayed recall",
-		icon: BrainCircuit,
-	},
-	{
-		id: "library",
-		label: "Audio Library",
-		subtitle: "Review your spoken progress",
-		icon: FileMusic,
-	},
-	{
-		id: "notebook",
-		label: "Notebook & PDF Reader",
-		subtitle: "Read, highlight, comment, and save",
-		icon: BookMarked,
-	},
-	{
-		id: "flashcards",
-		label: "Vocabulary & Flashcards",
-		subtitle: "LexiBridge recall and spaced review",
-		icon: Languages,
-	},
-	{
-		id: "settings",
-		label: "Settings",
-		subtitle: "Learning, storage, and platform",
-		icon: Settings,
-	},
-	{
-		id: "teacher",
-		label: "Teacher Studio",
-		subtitle: "Manage content and human recordings",
-		icon: GraduationCap,
-	},
+  homeNavigation,
+  {
+    id: "daily",
+    label: "Today's Practice",
+    subtitle: "Adaptive recall and automaticity",
+    icon: Flame,
+  },
+  {
+    id: "studio",
+    label: "Conversation Studio",
+    subtitle: "Speak, correct, and repeat",
+    icon: MessagesSquare,
+  },
+  {
+    id: "grammar",
+    label: "Grammar Lab",
+    subtitle: "112 units from A1 to C2",
+    icon: BookOpenText,
+  },
+  {
+    id: "resources",
+    label: "Learning Resources",
+    subtitle: "43 direct source collections",
+    icon: CloudDownload,
+  },
+  {
+    id: "integrated-skills",
+    label: "Integrated Skills",
+    subtitle: "A1-C2 · 72 units · 4 skills",
+    icon: LibraryBig,
+  },
+  {
+    id: "errors",
+    label: "Error Workshop",
+    subtitle: "Fix recurring errors with focus",
+    icon: CircleAlert,
+  },
+  {
+    id: "progress",
+    label: "Progress Evidence",
+    subtitle: "Mastery, transfer, and delayed recall",
+    icon: BrainCircuit,
+  },
+  {
+    id: "library",
+    label: "Audio Library",
+    subtitle: "Review your spoken progress",
+    icon: FileMusic,
+  },
+  {
+    id: "notebook",
+    label: "Notebook & PDF Reader",
+    subtitle: "Read, highlight, comment, and save",
+    icon: BookMarked,
+  },
+  {
+    id: "flashcards",
+    label: "Vocabulary & Flashcards",
+    subtitle: "LexiBridge recall and spaced review",
+    icon: Languages,
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    subtitle: "Learning, storage, and platform",
+    icon: Settings,
+  },
+  {
+    id: "teacher",
+    label: "Teacher Studio",
+    subtitle: "Manage content and human recordings",
+    icon: GraduationCap,
+  },
 ];
 
-type NavigationGroupId = "practice" | "curriculum" | "evidence" | "system";
-
-interface NavigationGroup {
-	id: NavigationGroupId;
-	label: string;
-	caption: string;
-	icon: React.ComponentType<{ className?: string }>;
-	items: NavigationItem[];
+// ── Progress screen ────────────────────────────────────────────────────────────
+function ProgressScreen() {
+  return (
+    <div className="learning-progress-page">
+      <header>
+        <p>YOUR LEARNING RECORD</p>
+        <h1>Progress you can see.</h1>
+        <p>
+          Review saved work, find what needs attention and check the evidence
+          behind each result.
+        </p>
+      </header>
+      <AutomaticityEvidenceSummary />
+      <Disclosure summary="Additional practice & earlier learning tools">
+        <AutomaticityScreen />
+      </Disclosure>
+    </div>
+  );
 }
 
-const navigationGroups: NavigationGroup[] = [
-	{
-		id: "practice",
-		label: "Daily Practice",
-		caption: "Practice and speak today",
-		icon: Clock3,
-		items: navigation.slice(0, 3),
-	},
-	{
-		id: "curriculum",
-		label: "Learning Paths",
-		caption: "Grammar and English study",
-		icon: Settings,
-		items: navigation.filter((item) =>
-			["grammar", "integrated-skills", "resources"].includes(item.id),
-		),
-	},
-	{
-		id: "evidence",
-		label: "Learning Evidence",
-		caption: "Errors and recordings",
-		icon: Clock3,
-		items: navigation.filter((item) =>
-			["errors", "progress", "library", "notebook", "flashcards"].includes(
-				item.id,
-			),
-		),
-	},
-	{
-		id: "system",
-		label: "App and Settings",
-		caption: "Storage and personal options",
-		icon: Folder,
-		items: navigation.filter((item) => ["settings", "teacher"].includes(item.id)),
-	},
-];
+// ── AppShell ───────────────────────────────────────────────────────────────────
+export function AppShell({ screen = "home" }: { screen?: ScreenId }) {
+  const { state, mutate } = useAppStore();
+  const router = useRouter();
+  const [supportLanguage, setSupportLanguage] =
+    React.useState<SupportLanguage | null>(null);
+  const [languageSaveFailed, setLanguageSaveFailed] = React.useState(false);
+  React.useEffect(() => {
+    const refresh = () => setSupportLanguage(readSupportLanguage("en"));
+    refresh();
+    window.addEventListener("storage", refresh);
+    window.addEventListener("automaticity:support-language", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("automaticity:support-language", refresh);
+    };
+  }, []);
+  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [homeMenuPinned, setHomeMenuPinned] = React.useState(false);
+  React.useEffect(() => {
+    try {
+      setHomeMenuPinned(
+        localStorage.getItem("english-automaticity:home-menu-pinned") ===
+          "true",
+      );
+    } catch {
+      // The menu still works for this visit when storage is unavailable.
+    }
+  }, []);
+  const updateHomeMenuPin = React.useCallback((pinned: boolean) => {
+    setHomeMenuPinned(pinned);
+    setMenuOpen(false);
+    try {
+      localStorage.setItem(
+        "english-automaticity:home-menu-pinned",
+        String(pinned),
+      );
+    } catch {
+      // Keep the chosen layout for this visit.
+    }
+  }, []);
+  const sidebarRef = React.useRef<HTMLElement>(null);
+  const current =
+    navigation.find((item) => item.id === screen) ?? homeNavigation;
+  const CurrentIcon = current.icon;
+  const currentLabel =
+    [...navigationConfig.en.main, ...navigationConfig.en.more].find(
+      (item) => item.href === screenPaths[screen],
+    )?.label ?? current.label;
 
-const defaultOpenGroups: Record<NavigationGroupId, boolean> = {
-	practice: true,
-	curriculum: true,
-	evidence: true,
-	system: true,
-};
+  React.useEffect(() => {
+    if (!menuOpen) return;
+    if (window.matchMedia("(max-width: 860px)").matches) {
+      sidebarRef.current
+        ?.querySelector<HTMLElement>(".learning-navigation a")
+        ?.focus();
+    }
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        window.setTimeout(
+          () => document.getElementById("mobile-menu-trigger")?.focus(),
+          0,
+        );
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
 
-function isScreenId(value: string | null): value is ScreenId {
-	return navigation.some((item) => item.id === value);
-}
+  const trapMobileMenuFocus = React.useCallback(
+    (event: React.KeyboardEvent<HTMLElement>) => {
+      if (
+        event.key !== "Tab" ||
+        !menuOpen ||
+        !window.matchMedia("(max-width: 860px)").matches
+      ) {
+        return;
+      }
+      const focusable = [
+        ...(sidebarRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], summary, button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? []),
+      ].filter((node) => node.getClientRects().length > 0);
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+    },
+    [menuOpen],
+  );
 
-const replacementRoutes: Partial<Record<ScreenId, string>> = {
-	daily: "/daily",
-	studio: "/studio",
-	grammar: "/grammar",
-	notebook: "/notebook",
-	flashcards: "/flashcards",
-	settings: "/settings",
-	teacher: "/teacher",
-};
+  const navigate = React.useCallback(
+    (target: string, params: ScreenParams = {}) => {
+      const canonicalTarget = canonicalScreenId(target);
+      if (!canonicalTarget) return;
+      setMenuOpen(false);
+      router.push(screenHref(canonicalTarget, params));
+    },
+    [router],
+  );
 
-function replacementUrl(
-	target: ScreenId,
-	params: Iterable<readonly [string, string]>,
-) {
-	const route = replacementRoutes[target];
-	if (!route) return null;
-	const url = new URL(route, window.location.origin);
-	for (const [key, value] of params) {
-		if (key !== "screen") url.searchParams.set(key, value);
-	}
-	return `${url.pathname}${url.search}${url.hash}`;
-}
+  const currentPath = screenPaths[screen];
+  const persianGuide =
+    supportLanguage === "fa" ? persianRouteGuide(currentPath, "en") : null;
 
-export function AppShell() {
-	const { state, mutate } = useAppStore();
-	const [screen, setScreen] = React.useState<ScreenId>("home");
-	const [menuOpen, setMenuOpen] = React.useState(false);
-	const [openGroups, setOpenGroups] =
-		React.useState<Record<NavigationGroupId, boolean>>(defaultOpenGroups);
-	const sidebarRef = React.useRef<HTMLElement>(null);
-	const current =
-		navigation.find((item) => item.id === screen) ?? homeNavigation;
-	const CurrentIcon = current.icon;
+  return (
+    <div className="app-shell" data-screen={screen}>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
 
-	React.useEffect(() => {
-		const restoreScreen = () => {
-			const url = new URL(window.location.href);
-			const requestedTarget = url.searchParams.get("screen");
-			const target =
-				requestedTarget === "automaticity" ? "daily" : requestedTarget;
-			if (isScreenId(target) && replacementRoutes[target]) {
-				const targetUrl = replacementUrl(target, url.searchParams.entries());
-				window.location.replace(targetUrl ?? replacementRoutes[target]);
-				return;
-			}
-			if (isScreenId(target)) {
-				if (requestedTarget !== target) {
-					url.searchParams.set("screen", target);
-					window.history.replaceState({ screen: target }, "", url);
-				}
-				setScreen(target);
-			} else {
-				if (target) {
-					url.searchParams.delete("screen");
-					window.history.replaceState({ screen: "home" }, "", url);
-				}
-				setScreen("home");
-			}
-			setMenuOpen(false);
-		};
-		restoreScreen();
-		window.addEventListener("popstate", restoreScreen);
-		return () => {
-			window.removeEventListener("popstate", restoreScreen);
-		};
-	}, []);
+      {/* ── Sidebar ─────────────────────────────────────────────────────── */}
+      <aside
+        aria-label={menuOpen ? "English learning navigation" : undefined}
+        aria-modal={menuOpen || undefined}
+        className="app-sidebar"
+        data-open={menuOpen}
+        onKeyDown={trapMobileMenuFocus}
+        ref={sidebarRef}
+        role={menuOpen ? "dialog" : undefined}
+      >
+        <div
+          className="brand-mark"
+          data-context-help="Automaticity means using English accurately and quickly without rebuilding every rule in your head."
+        >
+          <span className="brand-icon">
+            <BrainCircuit aria-hidden className="size-5" />
+          </span>
+          <span className="brand-copy">
+            <strong>English Automaticity</strong>
+            <span>Measurable daily language practice</span>
+          </span>
+        </div>
+        <LearningNavigation
+          language="en"
+          current={currentPath}
+          onNavigate={() => setMenuOpen(false)}
+          onPinToggle={
+            screen === "home" && menuOpen
+              ? () => updateHomeMenuPin(true)
+              : undefined
+          }
+        />
+      </aside>
 
-	React.useEffect(() => {
-		const group = navigationGroups.find((candidate) =>
-			candidate.items.some((item) => item.id === screen),
-		);
-		if (!group) return;
-		setOpenGroups((currentGroups) =>
-			currentGroups[group.id]
-				? currentGroups
-				: { ...currentGroups, [group.id]: true },
-		);
-	}, [screen]);
+      {menuOpen ? (
+        <button
+          aria-label="Close navigation"
+          className="sidebar-scrim"
+          onClick={() => setMenuOpen(false)}
+          type="button"
+        />
+      ) : null}
 
-	React.useEffect(() => {
-		if (!menuOpen) return;
-		if (window.matchMedia("(max-width: 860px)").matches) {
-			sidebarRef.current
-				?.querySelector<HTMLElement>(".nav-button, .nav-group-trigger")
-				?.focus();
-		}
-		const closeOnEscape = (event: KeyboardEvent) => {
-			if (event.key === "Escape") {
-				setMenuOpen(false);
-				window.setTimeout(
-					() => document.getElementById("mobile-menu-trigger")?.focus(),
-					0,
-				);
-			}
-		};
-		window.addEventListener("keydown", closeOnEscape);
-		return () => window.removeEventListener("keydown", closeOnEscape);
-	}, [menuOpen]);
+      {/* ── Main ────────────────────────────────────────────────────────── */}
+      <main className="app-main" id="main-content" tabIndex={-1}>
+        <header className="app-topbar">
+          <div className="flex min-w-0 items-center gap-3">
+            <Button
+              aria-expanded={
+                screen === "home" && homeMenuPinned ? undefined : menuOpen
+              }
+              aria-label={
+                screen === "home" && homeMenuPinned
+                  ? "Go to pinned menu"
+                  : menuOpen
+                    ? "Close navigation"
+                    : "Open navigation"
+              }
+              className="mobile-menu"
+              id="mobile-menu-trigger"
+              onClick={() => {
+                if (screen === "home" && homeMenuPinned) {
+                  document
+                    .querySelector("[data-pinned-home-navigation]")
+                    ?.scrollIntoView({ block: "start" });
+                  return;
+                }
+                setMenuOpen((value) => !value);
+              }}
+              size="icon"
+              variant="outline"
+            >
+              {menuOpen ? <X aria-hidden /> : <Menu aria-hidden />}
+            </Button>
+            <span className="topbar-screen-icon">
+              <CurrentIcon aria-hidden className="size-4" />
+            </span>
+            <div className="min-w-0">
+              <p className="topbar-title truncate text-sm font-extrabold">
+                {currentLabel}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {current.subtitle}
+              </p>
+            </div>
+          </div>
 
-	const trapMobileMenuFocus = React.useCallback(
-		(event: React.KeyboardEvent<HTMLElement>) => {
-			if (
-				event.key !== "Tab" ||
-				!menuOpen ||
-				!window.matchMedia("(max-width: 860px)").matches
-			) {
-				return;
-			}
-			const focusable = [
-				...(sidebarRef.current?.querySelectorAll<HTMLElement>(
-					'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-				) ?? []),
-			];
-			if (!focusable.length) return;
-			const first = focusable[0];
-			const last = focusable.at(-1);
-			if (event.shiftKey && document.activeElement === first) {
-				event.preventDefault();
-				last?.focus();
-			} else if (!event.shiftKey && document.activeElement === last) {
-				event.preventDefault();
-				first?.focus();
-			}
-		},
-		[menuOpen],
-	);
+          <details className="app-tools">
+            <summary>Tools &amp; help</summary>
+            <div className="app-tools-panel">
+              <label className="flex w-full flex-col gap-2 rounded-xl border border-slate-200 p-3">
+                <span className="font-semibold">
+                  Native language for explanations · زبان مادری
+                </span>
+                <select
+                  className="min-h-11 rounded-lg border border-slate-300 bg-white px-3"
+                  data-native-language-select=""
+                  value={supportLanguage ?? "fa"}
+                  onChange={(event) => {
+                    const selected = event.currentTarget.value;
+                    if (
+                      selected !== "fa" &&
+                      selected !== "en" &&
+                      selected !== "de"
+                    )
+                      return;
+                    if (!saveSupportLanguage("en", selected)) {
+                      setLanguageSaveFailed(true);
+                      return;
+                    }
+                    setLanguageSaveFailed(false);
+                    setSupportLanguage(selected);
+                    window.dispatchEvent(
+                      new CustomEvent("automaticity:support-language", {
+                        detail: { target: "en", language: selected },
+                      }),
+                    );
+                  }}
+                >
+                  <option value="fa">فارسی</option>
+                  <option value="en">English</option>
+                  <option value="de">Deutsch</option>
+                </select>
+              </label>
+              {languageSaveFailed ? (
+                <p role="status">
+                  The explanation language could not be saved in this browser.
+                </p>
+              ) : null}
+              <ApiConnectionStatus baseUrl={state.settings.apiBaseUrl} />
+              <NeuroReader
+                onOpenSettings={() => navigate("settings")}
+                onToggleReadingRuler={(enabled) =>
+                  mutate((draft) => {
+                    draft.settings.readingRuler = enabled;
+                  })
+                }
+                settings={state.settings}
+              />
+              <UserGuideButton navigate={navigate} />
+              <InstallAppControl />
+            </div>
+          </details>
+        </header>
 
-	const navigate = React.useCallback(
-		(target: string, params: Record<string, string | null> = {}) => {
-			const canonicalTarget = target === "automaticity" ? "daily" : target;
-			if (!isScreenId(canonicalTarget)) return;
-			const replacementRoute = replacementUrl(
-				canonicalTarget,
-				Object.entries(params).filter(
-					(entry): entry is [string, string] => entry[1] !== null,
-				),
-			);
-			if (replacementRoute) {
-				window.location.assign(replacementRoute);
-				return;
-			}
-			const url = new URL(window.location.href);
-			if (canonicalTarget === "home") url.searchParams.delete("screen");
-			else url.searchParams.set("screen", canonicalTarget);
-			Object.entries(params).forEach(([key, value]) => {
-				if (value === null) url.searchParams.delete(key);
-				else url.searchParams.set(key, value);
-			});
-			window.history.pushState({ screen: canonicalTarget }, "", url);
-			setScreen(canonicalTarget);
-			setMenuOpen(false);
-			const reduceMotion = window.matchMedia(
-				"(prefers-reduced-motion: reduce)",
-			).matches;
-			window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
-		},
-		[],
-	);
+        {/* ── Content ─────────────────────────────────────────────────── */}
+        <div className="app-content" data-screen={screen}>
+          {screen === "home" && homeMenuPinned ? (
+            <section
+              className="pinned-home-navigation"
+              data-pinned-home-navigation=""
+              aria-label="Pinned learning navigation"
+            >
+              <LearningNavigation
+                language="en"
+                current="/"
+                onPinToggle={() => updateHomeMenuPin(false)}
+                pinned
+              />
+            </section>
+          ) : null}
+          {persianGuide ? (
+            <section
+              className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-right leading-7"
+              lang="fa"
+              dir="rtl"
+              aria-label="راهنمای فارسی این صفحه"
+            >
+              <h2 className="mb-2 font-bold">{persianGuide.title}</h2>
+              <ol className="list-decimal space-y-1 ps-6">
+                {persianGuide.steps.map((step) => (
+                  <li key={step}>{step}</li>
+                ))}
+              </ol>
+              <a
+                className="mt-3 inline-block font-semibold underline"
+                href={persianGuide.next.href}
+              >
+                {persianGuide.next.label} ←
+              </a>
+            </section>
+          ) : null}
+          {screen === "errors" && (
+            <Disclosure summary="Saved responses & learning evidence">
+              <AutomaticityEvidenceSummary />
+            </Disclosure>
+          )}
 
-	return (
-		<div className="app-shell" data-screen={screen}>
-			<a className="skip-link" href="#main-content">
-				Skip to main content
-			</a>
-			<aside
-				aria-label={menuOpen ? "English learning navigation" : undefined}
-				aria-modal={menuOpen || undefined}
-				className="app-sidebar"
-				data-open={menuOpen}
-				onKeyDown={trapMobileMenuFocus}
-				ref={sidebarRef}
-				role={menuOpen ? "dialog" : undefined}
-			>
-				<div
-					className="brand-mark"
-					data-context-help="Automaticity means using English accurately and quickly without rebuilding every rule in your head."
-				>
-					<span className="brand-icon">
-						<BrainCircuit aria-hidden className="size-5" />
-					</span>
-					<span className="brand-copy">
-						<strong>English Automaticity</strong>
-						<span>Measurable daily language practice</span>
-					</span>
-				</div>
-				<nav aria-label="Product navigation" className="sidebar-nav">
-					{navigationGroups.map((group) => {
-						const expanded = openGroups[group.id];
-						const GroupIcon = group.icon;
-						const groupIsActive = group.items.some(
-							(item) => item.id === screen,
-						);
-						return (
-							<section
-								className="nav-group"
-								data-active={groupIsActive}
-								key={group.id}
-							>
-								<p className="nav-section-label">{group.label}</p>
-								<button
-									aria-controls={`nav-group-${group.id}`}
-									aria-expanded={expanded}
-									className="nav-group-trigger"
-									onClick={() =>
-										setOpenGroups((groups) => ({
-											...groups,
-											[group.id]: !groups[group.id],
-										}))
-									}
-									type="button"
-								>
-									<GroupIcon aria-hidden className="nav-group-icon size-5" />
-									<span className="nav-group-copy">
-										<strong>{group.caption}</strong>
-									</span>
-									<ChevronDown
-										aria-hidden
-										className="nav-group-chevron size-4"
-									/>
-								</button>
-								{expanded ? (
-									<div className="nav-group-panel" id={`nav-group-${group.id}`}>
-										{group.items.map((item) => {
-											const Icon = item.icon;
-											return (
-												<a
-													className="nav-button"
-													data-active={item.id === screen}
-												href={replacementRoutes[item.id] ?? (item.id === "home" ? "/" : `/?screen=${item.id}`)}
-													key={item.id}
-													onClick={(event) => {
-														if (
-															event.button !== 0 ||
-															event.metaKey ||
-															event.ctrlKey ||
-															event.shiftKey ||
-															event.altKey
-														) {
-															return;
-														}
-														event.preventDefault();
-														navigate(item.id);
-													}}
-												>
-													<Icon aria-hidden className="size-4.5" />
-													{item.label}
-												</a>
-											);
-										})}
-									</div>
-								) : null}
-							</section>
-						);
-					})}
-				</nav>
-			</aside>
-			{menuOpen ? (
-				<button
-					aria-label="Close navigation"
-					className="sidebar-scrim"
-					onClick={() => setMenuOpen(false)}
-					type="button"
-				/>
-			) : null}
-			<main className="app-main" id="main-content" tabIndex={-1}>
-        <a href="/practice" className="mb-4 inline-block rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white">Practise grammar with your own responses</a>
-				<header className="app-topbar">
-					<div className="flex min-w-0 items-center gap-3">
-						<Button
-							aria-expanded={menuOpen}
-							aria-label={menuOpen ? "Close navigation" : "Open navigation"}
-							className="mobile-menu"
-							id="mobile-menu-trigger"
-							onClick={() => setMenuOpen((value) => !value)}
-							size="icon"
-							variant="outline"
-						>
-							{menuOpen ? <X aria-hidden /> : <Menu aria-hidden />}
-						</Button>
-						<span className="topbar-screen-icon">
-							<CurrentIcon aria-hidden className="size-4" />
-						</span>
-						<div className="min-w-0">
-							<p className="truncate text-sm font-extrabold">{current.label}</p>
-							<p className="truncate text-xs text-muted-foreground">
-								{current.subtitle}
-							</p>
-						</div>
-					</div>
-					<div className="flex items-center gap-2">
-						<ApiConnectionStatus baseUrl={state.settings.apiBaseUrl} />
-						<NeuroReader
-							onOpenSettings={() => navigate("settings")}
-							onToggleReadingRuler={(enabled) =>
-								mutate((draft) => {
-									draft.settings.readingRuler = enabled;
-								})
-							}
-							settings={state.settings}
-						/>
-						<UserGuideButton navigate={navigate} />
-						<InstallAppControl />
-					</div>
-				</header>
-				<div className="app-content" data-screen={screen}>
-{["errors", "progress"].includes(screen) ? <AutomaticityEvidenceSummary /> : null}
-					{screen === "home" ? <DashboardV2Screen navigate={navigate} /> : null}
-					{screen === "progress" ? <AutomaticityScreen /> : null}
-					{screen === "integrated-skills" ? (
-						<IntegratedSkillsScreen navigate={navigate} />
-					) : null}
-					{screen === "resources" ? <ResourcesScreen /> : null}
-					{screen === "errors" ? <ErrorsScreen /> : null}
-					{screen === "library" ? <AudioScreen /> : null}
-				</div>
-				<AppUpdateNotice />
-			</main>
-		</div>
-	);
+          {screen === "home" && <DashboardV2Screen />}
+          {screen === "progress" && <ProgressScreen />}
+          {screen === "integrated-skills" && (
+            <IntegratedSkillsScreen navigate={navigate} />
+          )}
+          {screen === "resources" && <ResourcesScreen />}
+          {screen === "errors" && <ErrorsScreen />}
+          {screen === "library" && <AudioScreen />}
+        </div>
+
+        <AppUpdateNotice />
+      </main>
+    </div>
+  );
 }

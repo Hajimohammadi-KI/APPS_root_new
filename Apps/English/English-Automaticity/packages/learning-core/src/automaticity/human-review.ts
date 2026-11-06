@@ -36,7 +36,11 @@ export async function qualifyHumanReview(
   raw: unknown,
   reviewerName: string,
   at: string,
-  audioReview: { sha256: string; confirmed: boolean } | null = null,
+  audioReview: {
+    sha256: string;
+    confirmed: boolean;
+    transcriptSha256?: string;
+  } | null = null,
 ): Promise<AssessmentEvent["evaluator"] | null> {
   if (
     !validDate(at) ||
@@ -116,7 +120,8 @@ export async function qualifyHumanReview(
       !attempt.audio.bytes ||
       !attempt.audio.durationMs ||
       attempt.response.transcriptEdited ||
-      attempt.response.originalTranscriptSha256 !== attempt.response.sha256 ||
+      (attempt.response.originalTranscriptSha256 !== attempt.response.sha256 &&
+        audioReview?.transcriptSha256 !== attempt.response.sha256) ||
       !audioReview?.confirmed ||
       audioReview.sha256 !== attempt.audio.sha256)
   )

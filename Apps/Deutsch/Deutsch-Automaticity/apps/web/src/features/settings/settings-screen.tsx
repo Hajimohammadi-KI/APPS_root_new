@@ -34,6 +34,13 @@ import {
   type MeasurementConsent,
 } from "@automaticity/learning-core";
 import type { LearnerSettings } from "@grammar/domain";
+import {
+  backupReminder,
+  persistentStorageStatus,
+  recordBackup,
+  requestPersistentStorage,
+  type PersistenceStatus,
+} from "@/lib/storage-persistence";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,8 +51,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { InstallAppButton } from "@/features/pwa/install-app-button";
+import { ContentReviewLinkCard } from "@/features/settings/content-review-link-card";
+import { DeleteAllDataCard } from "@/features/settings/delete-all-data-card";
 import { ImplementationIntentionsCard } from "@/features/settings/implementation-intentions-card";
-import { useLearnerState } from "@/features/learner-state/learner-state-provider";
+import {
+  STORAGE_RECOVERY_NAMESPACE,
+  useLearnerState,
+} from "@/features/learner-state/learner-state-provider";
 
 const TEXT_SIZES: readonly {
   value: LearnerSettings["textScale"];
@@ -71,6 +83,12 @@ export function SettingsScreen() {
   const [measurementBaseline, setMeasurementBaseline] =
     useState<MeasurementBaseline | null>(null);
   const [measurementStatus, setMeasurementStatus] = useState("");
+  const [persistence, setPersistence] = useState<PersistenceStatus | null>(
+    null,
+  );
+  const [reminder, setReminder] = useState<ReturnType<
+    typeof backupReminder
+  > | null>(null);
   const { settings } = state;
 
   useEffect(() => {
@@ -78,13 +96,25 @@ export function SettingsScreen() {
     enforceMeasurementRetention(window.localStorage, new Date().toISOString());
     setMeasurementConsent(readMeasurementConsent(window.localStorage));
     setMeasurementBaseline(readMeasurementBaseline(window.localStorage));
+    setReminder(
+      backupReminder(
+        window.localStorage,
+        STORAGE_RECOVERY_NAMESPACE,
+        new Date(),
+      ),
+    );
+    void persistentStorageStatus().then(setPersistence);
   }, [hydrated]);
+
+  async function keepStorage() {
+    setPersistence(await requestPersistentStorage());
+  }
 
   if (!hydrated) {
     return (
       <div
         aria-busy="true"
-        className="rounded-3xl border border-violet-200 bg-white p-5 shadow-sm sm:p-7"
+        className="rounded-3xl border border-worksheet-line! bg-white p-5 shadow-sm sm:p-7"
       >
         <h1 className="text-3xl font-black tracking-tight">Einstellungen</h1>
         <p className="mt-2 text-muted-foreground">
@@ -189,7 +219,8 @@ export function SettingsScreen() {
     );
   }
 
-  async function exportData() {
+  /** True once a complete backup was downloaded. */
+  async function exportData(): Promise<boolean> {
     setExportStatus("");
     try {
       const backup = await captureCompleteBackup(
@@ -211,12 +242,23 @@ export function SettingsScreen() {
       setExportStatus(
         "Vollständige Sicherung mit Entwürfen, Nachweisen und Aufnahmen heruntergeladen.",
       );
+      const now = new Date();
+      recordBackup(
+        window.localStorage,
+        STORAGE_RECOVERY_NAMESPACE,
+        now.toISOString(),
+      );
+      setReminder(
+        backupReminder(window.localStorage, STORAGE_RECOVERY_NAMESPACE, now),
+      );
+      return true;
     } catch (error) {
       setExportStatus(
         error instanceof Error
           ? error.message
           : "Die Sicherung ist fehlgeschlagen.",
       );
+      return false;
     }
   }
 
@@ -264,8 +306,8 @@ export function SettingsScreen() {
 
   return (
     <div className="settings-page space-y-5">
-      <header className="rounded-3xl border border-violet-200 bg-gradient-to-br from-white via-violet-50/70 to-sky-50/70 p-5 shadow-sm sm:p-7">
-        <Badge className="bg-violet-100 text-violet-800">
+      <header className="rounded-3xl border border-worksheet-line! p-5 shadow-sm sm:p-7">
+        <Badge className="bg-worksheet-cyan! text-worksheet-teal!">
           Lokal und automatisch gespeichert
         </Badge>
         <h1 className="mt-3 text-3xl font-black tracking-tight">
@@ -282,7 +324,7 @@ export function SettingsScreen() {
           <CardHeader>
             <CardTitle>
               <h2 className="flex items-center gap-2">
-                <Eye className="size-5 text-violet-700" />
+                <Eye className="size-5 text-worksheet-teal" />
                 Lesen &amp; Fokus
               </h2>
             </CardTitle>
@@ -344,7 +386,7 @@ export function SettingsScreen() {
           <CardHeader>
             <CardTitle>
               <h2 className="flex items-center gap-2">
-                <Gauge className="size-5 text-violet-700" />
+                <Gauge className="size-5 text-worksheet-teal" />
                 Tägliche Praxis
               </h2>
             </CardTitle>
@@ -413,13 +455,14 @@ export function SettingsScreen() {
         <CardHeader>
           <CardTitle>
             <h2 className="flex items-center gap-2">
-              <ShieldCheck className="size-5 text-emerald-700" />
+              <ShieldCheck className="size-5 text-worksheet-success-ink" />
               Optionale Wirksamkeitsmessung
             </h2>
           </CardTitle>
           <CardDescription>
-            Getrennter, widerrufbarer Forschungs-Export für Sprech- und
-            Schreibresultate. Es wird nichts automatisch hochgeladen.
+            Wenn du helfen möchtest zu prüfen, ob diese App dein Sprechen und
+            Schreiben verbessert, kannst du eine anonyme Zusammenfassung deiner
+            Übungen herunterladen. Es wird nichts automatisch gesendet.
           </CardDescription>
         </CardHeader>
         <CardContent className="settings-controls">
@@ -436,24 +479,24 @@ export function SettingsScreen() {
                 Ich willige in die optionale Wirksamkeitsmessung ein
               </strong>
               <small>
-                Enthalten: zufällige lokale Teilnehmer-ID, Ereignis- und
-                Nachweis-IDs, Zeitstempel, Versionen, Scores, Gates und – falls
-                vorhanden – Herkunft einer menschlichen Bewertung.
-                Ausgeschlossen: Antworttext, Transkript, Audio, E-Mail,
-                Hardware-ID und freie Absichten.
+                Die Zusammenfassung enthält nur Zahlen: eine zufällige ID für
+                dieses Gerät, Datum und Uhrzeit, App-Versionen, Ergebnisse,
+                bestandene Prüfungen und ob eine Person eine Antwort beurteilt
+                hat. Sie enthält nie deine Antworten, Transkripte, Aufnahmen,
+                E-Mail-Adresse oder Gerätekennung.
               </small>
             </span>
           </label>
           <div className="settings-measurement-summary">
             <p>
-              Nur lokal auf diesem Gerät, höchstens 365 Tage. Eine Übertragung
-              erfolgt nur durch deinen manuellen Download. Widerruf stoppt den
-              Export.
+              Die Zusammenfassung bleibt höchstens 365 Tage auf diesem Gerät und
+              verlässt es nur, wenn du die Datei herunterlädst. Nach einem
+              Widerruf kann keine weitere Datei exportiert werden.
             </p>
             <p>
-              Ausgangsmessung:{" "}
-              {measurementBaseline ? "erfasst" : "nicht erfasst"}.
-              Kohortenstatistik: N/A — keine Produktionstelemetrie verbunden.
+              Ausgangswert:{" "}
+              {measurementBaseline ? "erfasst" : "noch nicht erfasst"}. Diese
+              App sammelt im Hintergrund keine Nutzungsstatistiken.
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -491,7 +534,7 @@ export function SettingsScreen() {
         <CardHeader>
           <CardTitle>
             <h2 className="flex items-center gap-2">
-              <MonitorDown className="size-5 text-violet-700" />
+              <MonitorDown className="size-5 text-worksheet-teal" />
               Auf deinem Gerät installieren
             </h2>
           </CardTitle>
@@ -526,7 +569,7 @@ export function SettingsScreen() {
         <CardHeader>
           <CardTitle>
             <h2 className="flex items-center gap-2">
-              <ShieldCheck className="size-5 text-emerald-700" />
+              <ShieldCheck className="size-5 text-worksheet-success-ink" />
               Datenschutz &amp; Sicherung
             </h2>
           </CardTitle>
@@ -544,21 +587,21 @@ export function SettingsScreen() {
             }
           />
           <div className="grid gap-3 md:grid-cols-3">
-            <article className="grid min-w-0 gap-1 rounded-2xl border border-violet-200 bg-violet-50/60 p-3">
+            <article className="grid min-w-0 gap-1 rounded-2xl border border-worksheet-line! bg-worksheet-cyan/60 p-3">
               <strong>1. Kopie exportieren</strong>
               <span className="text-sm leading-relaxed text-muted-foreground">
                 Lädt Fortschritt, Antworten und Nachweise gemeinsam als
                 JSON-Sicherungsdatei herunter.
               </span>
             </article>
-            <article className="grid min-w-0 gap-1 rounded-2xl border border-violet-200 bg-violet-50/60 p-3">
+            <article className="grid min-w-0 gap-1 rounded-2xl border border-worksheet-line! bg-worksheet-cyan/60 p-3">
               <strong>2. Lokal aufbewahren</strong>
               <span className="text-sm leading-relaxed text-muted-foreground">
                 Die Datei bleibt am gewählten Ort auf deinem Gerät. Diese App
                 lädt sie nicht in einen Cloud-Dienst hoch.
               </span>
             </article>
-            <article className="grid min-w-0 gap-1 rounded-2xl border border-violet-200 bg-violet-50/60 p-3">
+            <article className="grid min-w-0 gap-1 rounded-2xl border border-worksheet-line! bg-worksheet-cyan/60 p-3">
               <strong>3. Zum Wiederherstellen importieren</strong>
               <span className="text-sm leading-relaxed text-muted-foreground">
                 Wähle die Datei später aus. Vor dem Ersetzen des lokalen
@@ -567,7 +610,7 @@ export function SettingsScreen() {
             </article>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={exportData}>
+            <Button onClick={() => void exportData()}>
               <Download />
               Lerndaten exportieren
             </Button>
@@ -586,15 +629,45 @@ export function SettingsScreen() {
               ref={importInputRef}
               type="file"
             />
+            <p className="text-sm text-muted-foreground" role="status">
+              {reminder?.lastBackupAt
+                ? `Letzte Sicherung: ${new Date(reminder.lastBackupAt).toLocaleDateString("de-DE")}.`
+                : "Aus diesem Browser wurde noch keine Sicherung exportiert."}
+              {reminder?.overdue
+                ? " Exportiere eine frische Sicherung; der Fortschritt liegt nur auf diesem Gerät."
+                : ""}
+            </p>
+            <p className="text-sm text-muted-foreground" role="status">
+              {persistence === null
+                ? "Prüfe, ob dieser Browser den Fortschritt vor automatischer Bereinigung schützt …"
+                : !persistence.supported
+                  ? "Dieser Browser kann lokalen Fortschritt nicht garantiert behalten; exportiere regelmäßig Sicherungen."
+                  : persistence.persisted
+                    ? "Speicher ist dauerhaft markiert: Der Browser löscht den Fortschritt nicht, um Platz zu schaffen."
+                    : "Speicher ist noch nicht dauerhaft; bei Platzmangel kann der Browser den Fortschritt löschen."}
+              {persistence?.supported && !persistence.persisted ? (
+                <Button
+                  className="ml-2"
+                  onClick={() => void keepStorage()}
+                  size="sm"
+                  variant="outline"
+                >
+                  Fortschritt auf diesem Gerät behalten
+                </Button>
+              ) : null}
+            </p>
             {exportStatus ? (
-              <p aria-live="polite" className="text-sm text-emerald-800">
+              <p
+                aria-live="polite"
+                className="text-sm text-worksheet-success-ink!"
+              >
                 {exportStatus}
               </p>
             ) : null}
             {importStatus ? (
               <p
                 aria-live="polite"
-                className="text-sm font-semibold text-violet-800"
+                className="text-sm font-semibold text-worksheet-teal!"
                 role="status"
               >
                 {importStatus}
@@ -603,6 +676,8 @@ export function SettingsScreen() {
           </div>
         </CardContent>
       </Card>
+      <ContentReviewLinkCard />
+      <DeleteAllDataCard onExport={exportData} />
     </div>
   );
 }

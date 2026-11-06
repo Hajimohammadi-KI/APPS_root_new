@@ -1,10 +1,29 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "english-automaticity-automaticity-v2-20260905e-models-20260905";
+const CACHE = "english-automaticity-web-2026.11.06.2";
 const PRECACHE = [
+  "/learning-core/text.js",
+  "/device-access/learning-path.js",
+  "/device-access/grammar-drafts.js",
+  "/device-access/writing.js",
+  "/device-access/writing.css",
+  "/device-access/grammar-layout.js",
+  "/device-access/mobile-drawer.js",
+  "/device-access/mobile-drawer.css",
+  "/assessment-benchmarks.html",
+  "/assessment-benchmarks.json",
+  "/microphone-check.html",
+  "/microphone-check.js",
   "/practice",
   "/learning-core/practice.js",
   "/learning-core/overview.js",
   "/learning-core/practice.css",
+  "/learning-core/support-language.js",
+  "/device-access/explanation-language.css",
+  "/device-access/worksheet.css",
+  "/device-access/calm-theme.css",
+  "/device-access/page-chrome.css",
+  "/device-access/navigation-config.js",
+  "/device-access/page-chrome.js",
   "/learning-core/curriculum-en.json",
   "/",
   "/daily",
@@ -30,7 +49,15 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((key) => key !== CACHE && key.startsWith("english-automaticity-")).map((key) => caches.delete(key))),
+        Promise.all(
+          keys
+            .filter(
+              (key) =>
+                (key !== CACHE && key.startsWith("english-automaticity-")) ||
+                key === "english-local-transcription-pinned-v1",
+            )
+            .map((key) => caches.delete(key)),
+        ),
       )
       .then(() => self.clients.claim()),
   );
@@ -38,27 +65,42 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
-  if (new URL(event.request.url).pathname.startsWith("/api/")) return;
+  const url = new URL(event.request.url);
+  if (
+    url.origin !== self.location.origin ||
+    url.pathname.startsWith("/api/") ||
+    url.searchParams.has("_rsc") ||
+    event.request.headers.get("RSC") === "1"
+  )
+    return;
 
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        if (response.ok && new URL(event.request.url).origin === self.location.origin) {
+        if (
+          response.ok &&
+          !response.headers.get("content-type")?.includes("text/x-component") &&
+          new URL(event.request.url).origin === self.location.origin
+        ) {
           const copy = response.clone();
-          event.waitUntil(caches.open(CACHE).then((cache) => cache.put(event.request, copy)));
+          event.waitUntil(
+            caches.open(CACHE).then((cache) => cache.put(event.request, copy)),
+          );
         }
         return response;
       })
       .catch(async () => {
-        // Task selection lives in the query string; every task uses this same shell.
-        if (event.request.mode === "navigate" && new URL(event.request.url).pathname === "/practice") {
-          const practice = await caches.match("/practice");
-          if (practice) return practice;
+        // Lesson parameters select local content inside the same route shell.
+        if (event.request.mode === "navigate") {
+          const page =
+            (await caches.match(event.request)) ??
+            (await caches.match(url.pathname));
+          if (page) return page;
         }
         return (
           (await caches.match(event.request)) ??
           (event.request.mode === "navigate"
-            ? ((await caches.match("/")) ?? (await caches.match("/offline")))
+            ? ((await caches.match("/offline")) ?? Response.error())
             : Response.error())
         );
       }),

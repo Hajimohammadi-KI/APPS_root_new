@@ -2,7 +2,12 @@ node_modules/
 .bun-install-cache*/
 .build-caches/
 .git.backup-*/
+backups/
+/APPS_root/
+/Apps/Tracker/Tracker-chart-test-build-2026-09-06/
+/Apps/Tracker/Tracker-test-build-2026-09-06/
 .next/
+.vinext/
 .vercel/
 dist/
 build/
@@ -68,3 +73,9 @@ release/
 
 # Interrupted atomic document writes are disposable local intermediates.
 *.html.*.tmp
+Apps/English/English-Automaticity/apps/web/public/local-transcription/wasm/ort-wasm-simd-threaded.jspi.*
+Apps/English/English-Automaticity/apps/web/public/local-transcription/wasm/ort-wasm-simd-threaded.mjs
+Apps/English/English-Automaticity/apps/web/public/local-transcription/wasm/ort-wasm-simd-threaded.wasm
+# Generated from local-transcription-worker.ts during the English build.
+# Keeping the minified bundle out of Git avoids false secret matches in its vendored model code.
+Apps/English/English-Automaticity/apps/web/public/local-transcription/worker.js

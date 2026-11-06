@@ -1,0 +1,107 @@
+/* Grid items with auto margins shrink to fit; keep the guide full width inside lesson stacks. */
+.native-language-guide-host {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  margin: 0.75rem 0;
+  padding: 0;
+  z-index: 1;
+}
+.support-language-guide {
+  border: 1px solid #cfe2e3;
+  border-radius: 1rem;
+  background: #fff;
+  color: #08364a;
+  box-shadow: 0 3px 12px rgb(8 54 74 / 4%);
+  font: inherit;
+  overflow: hidden;
+  margin-block: 0.65rem;
+}
+.support-language-guide > summary {
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  font-weight: 750;
+  color: #00767a;
+  background: #eaf6f7;
+}
+.support-language-guide > label {
+  display: block;
+  padding: 0.8rem 1rem 0.2rem;
+}
+.support-language-guide .explanation-language-select {
+  min-height: 44px;
+  min-width: 9rem;
+  border: 1px solid #007f83;
+  border-radius: 0.65rem;
+  background: #fff;
+  color: #08364a;
+  padding: 0.5rem 0.8rem;
+  font: inherit;
+  direction: ltr;
+}
+.support-language-copy {
+  background: #fff5d7;
+  border-radius: 0.7rem;
+  padding: 0.65rem 1rem;
+  margin: 0.6rem 1rem 1rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+.support-language-copy p {
+  margin: 0.35rem 0;
+}
+.support-language-guide [dir="rtl"],
+.support-language-guide[dir="rtl"] {
+  text-align: right;
+}
+.support-language-source {
+  border-block-start: 1px dashed #a5bcbc;
+  padding-block-start: 0.6rem;
+  text-align: left;
+}
+.support-language-status:empty {
+  display: none;
+}
+.support-language-status {
+  margin: 0.7rem 1rem;
+  font-size: 0.9rem;
+}
+.support-language-fallback {
+  background: #fff5d7;
+  color: #08364a;
+  border-radius: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  line-height: 1.7;
+}
+.support-language-guide :is(select, summary):focus-visible {
+  outline: 3px solid #007f83;
+  outline-offset: 3px;
+}
+.native-language-guide-host > .support-language-copy {
+  margin: 0.65rem 0 1rem;
+  border: 1px solid #e8d9a0;
+  text-align: right;
+}
+.native-language-guide-host > .support-language-copy h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+.native-language-guide-host > .support-language-copy ol {
+  list-style: decimal;
+  padding-inline-start: 1.6rem;
+  margin: 0.5rem 0;
+}
+.native-language-guide-host > .support-language-copy li + li {
+  margin-block-start: 0.3rem;
+}
+.native-language-guide-host > .support-language-copy a {
+  color: #006c70;
+  font-weight: 700;
+  text-decoration: underline;
+}
+@media (max-width: 600px) {
+  .support-language-copy {
+    margin-inline: 0.65rem;
+  }
+}

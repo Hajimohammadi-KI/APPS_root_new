@@ -4,6 +4,10 @@ for (const [entry, file] of [
   ["browser-entry.ts", "automaticity-v2.js"],
   ["practice-entry.ts", "practice.js"],
   ["overview-entry.ts", "overview.js"],
+  // Independent content review page (W33).
+  ["content-review-entry.ts", "content-review.js"],
+  // R77: explanation-language guide for the static grammar and today pages.
+  ["support-language-entry.ts", "support-language.js"],
 ]) {
   const result = await Bun.build({
     entrypoints: [
@@ -20,7 +24,8 @@ for (const [entry, file] of [
 }
 for (const command of [
   ["bun", "scripts/build-automaticity-curriculum.ts"],
-  ["node", "shared/learning-core/sync-workspaces.mjs"],
+  ["bun", "scripts/prepare-assessment-readiness.ts"],
+  ["bun", "shared/learning-core/sync-workspaces.mjs"],
 ]) {
   const child = Bun.spawn(command, {
     cwd: root,

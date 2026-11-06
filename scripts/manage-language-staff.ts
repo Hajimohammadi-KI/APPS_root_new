@@ -134,13 +134,16 @@ async function textInput(prompt: string): Promise<string> {
 }
 
 /** Passwords never enter readline history, command arguments or console output. */
-async function hiddenPassword(prompt: string): Promise<string> {
-  const input = process.stdin;
+export async function hiddenPassword(
+  prompt: string,
+  input: NodeJS.ReadStream = process.stdin,
+  output: Pick<NodeJS.WriteStream, "write"> = process.stdout,
+): Promise<string> {
   if (!input.isTTY) throw new StaffAdminError("interactive_terminal_required");
   const wasRaw = input.isRaw;
   const wasPaused = input.isPaused();
   emitKeypressEvents(input);
-  process.stdout.write(prompt);
+  output.write(prompt);
   return new Promise((resolveValue, reject) => {
     let value = "";
     let finished = false;
@@ -150,7 +153,7 @@ async function hiddenPassword(prompt: string): Promise<string> {
       input.removeListener("end", cancelled);
       input.setRawMode(wasRaw);
       if (wasPaused) input.pause();
-      process.stdout.write("\n");
+      output.write("\n");
     };
     const finish = (error?: Error) => {
       if (finished) return;
@@ -176,21 +179,25 @@ async function hiddenPassword(prompt: string): Promise<string> {
         !/[\u0000-\u001f\u007f]/u.test(character)
       ) {
         value += character;
-        if (value.length > 512)
+        if (value.length > 128)
           finish(new StaffAdminError("password_too_long"));
       }
     };
     input.on("keypress", keypress);
     input.once("error", failed);
     input.once("end", cancelled);
-    input.setRawMode(true);
-    input.resume();
+    try {
+      input.setRawMode(true);
+      input.resume();
+    } catch {
+      failed();
+    }
   });
 }
 
 async function newPassword(): Promise<string> {
   const password = await hiddenPassword(
-    "New password (12–512 characters; hidden): ",
+    "New password (12–128 characters; hidden): ",
   );
   const confirmation = await hiddenPassword("Repeat new password (hidden): ");
   if (password !== confirmation)

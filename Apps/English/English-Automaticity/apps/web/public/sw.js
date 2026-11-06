@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "english-automaticity-web-2026.11.06.4";
+const CACHE = "english-automaticity-web-2026.11.06.5";
 const PRECACHE = [
   "/learning-core/text.js",
   "/learning-core/task-guide.js",
@@ -10,8 +10,6 @@ const PRECACHE = [
   "/device-access/grammar-layout.js",
   "/device-access/mobile-drawer.js",
   "/device-access/mobile-drawer.css",
-  "/assessment-benchmarks.html",
-  "/assessment-benchmarks.json",
   "/microphone-check.html",
   "/microphone-check.js",
   "/practice",
@@ -67,6 +65,27 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
   const url = new URL(event.request.url);
+  // Professional sessions are network-only: never cache or replay them after logout.
+  let protectedPath;
+  try {
+    protectedPath = decodeURIComponent(url.pathname).toLowerCase();
+  } catch {
+    return;
+  }
+  if (
+    /^\/(?:staff|teacher|lehrkraft)(?:\/|$)/u.test(protectedPath) ||
+    [
+      "/roadmap.html",
+      "/assessment-readiness.html",
+      "/assessment-readiness.json",
+      "/assessment-benchmarks.html",
+      "/assessment-benchmarks.json",
+      "/learning-core/content-review.html",
+      "/learning-core/feedback-review.html",
+    ].includes(protectedPath)
+  )
+    return;
+
   if (
     url.origin !== self.location.origin ||
     url.pathname.startsWith("/api/") ||
@@ -80,6 +99,9 @@ self.addEventListener("fetch", (event) => {
       .then((response) => {
         if (
           response.ok &&
+          !/private|no-store/iu.test(
+            response.headers.get("cache-control") ?? "",
+          ) &&
           !response.headers.get("content-type")?.includes("text/x-component") &&
           new URL(event.request.url).origin === self.location.origin
         ) {

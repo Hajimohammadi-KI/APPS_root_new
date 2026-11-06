@@ -1,5 +1,10 @@
 import type { StudioLanguage } from "./conversation-data";
-import { type EvaluationResponse, formatTime, issueSegments } from "./studio-helpers";
+import { StaffOnly } from "@/components/staff-access";
+import {
+  type EvaluationResponse,
+  formatTime,
+  issueSegments,
+} from "./studio-helpers";
 
 export function ListenPanel({
   language,
@@ -206,7 +211,10 @@ export function CorrectPanel({
                     segment.issue === null ? (
                       segment.text
                     ) : (
-                      <mark key={index} title={evaluation.issues[segment.issue]?.message}>
+                      <mark
+                        key={index}
+                        title={evaluation.issues[segment.issue]?.message}
+                      >
                         {segment.text}
                       </mark>
                     ),
@@ -215,7 +223,9 @@ export function CorrectPanel({
             </article>
             <article>
               <small>
-                {language === "de" ? "KORRIGIERTE VERSION" : "CORRECTED VERSION"}
+                {language === "de"
+                  ? "KORRIGIERTE VERSION"
+                  : "CORRECTED VERSION"}
               </small>
               <p>{evaluation.corrected}</p>
             </article>
@@ -368,14 +378,20 @@ export function SavePanel({
           <b>{formatTime(seconds)}</b> speaking
         </span>
         <span>
-          <b>{evaluation ? "LanguageTool" : "Not evaluated"}</b> result
+          <b>{evaluation ? "Checked" : "Not checked"}</b> result
         </span>
       </div>
       <p className="flow-note">
         {language === "de"
-          ? "Audio, Transkript und Auswertung werden in IndexedDB dieses Browsers gespeichert."
-          : "Audio, transcript, and provider evaluation are stored in this browser’s IndexedDB."}
+          ? "Deine Sitzung wird auf diesem Gerät gespeichert. Audio wird nur mit deiner Zustimmung aufbewahrt."
+          : "Your session is saved on this device. Audio is kept only with your consent."}
       </p>
+      <StaffOnly roles={["developer"]}>
+        <p className="flow-note">
+          Session data uses this browser's IndexedDB storage. Audio retention
+          follows the learner's recording-save consent.
+        </p>
+      </StaffOnly>
       <div className="flow-actions">
         <button onClick={onBack}>Back</button>
         <button className="primary" disabled={!canSave} onClick={onSave}>

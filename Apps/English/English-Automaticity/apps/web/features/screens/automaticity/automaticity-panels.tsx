@@ -1,4 +1,5 @@
 import type * as React from "react";
+import { StaffOnly } from "@/components/staff-access";
 import {
   BookOpenCheck,
   Check,
@@ -131,9 +132,21 @@ export function MissionProgressCard({
 }
 
 const stepCards = [
-  [BookOpenCheck, "1. Activate & use accurately", "3 min · three controlled transformations"],
-  [PenLine, "2. Automate & write", "4 min · six sentences with four target forms"],
-  [Mic, "3. Speak freely & transfer", "5 min · shadowing and 60 seconds without a script"],
+  [
+    BookOpenCheck,
+    "1. Activate & use accurately",
+    "3 min · three controlled transformations",
+  ],
+  [
+    PenLine,
+    "2. Automate & write",
+    "4 min · six sentences with four target forms",
+  ],
+  [
+    Mic,
+    "3. Speak freely & transfer",
+    "5 min · shadowing and 60 seconds without a script",
+  ],
 ] as const;
 
 export function StepCards({
@@ -174,35 +187,37 @@ export function StepCards({
 
 export function QualityGateCard() {
   return (
-    <Card className="border-worksheet-line!">
-      <CardHeader>
-        <CardTitle>Mission quality gate</CardTitle>
-        <CardDescription>
-          Completed does not automatically mean mastered. Automaticity needs
-          three separate kinds of evidence.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
-          <strong>Accurate</strong>
-          <p className="mt-1 text-muted-foreground">
-            Use the target form correctly in your own sentences.
-          </p>
-        </div>
-        <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
-          <strong>Spontaneous</strong>
-          <p className="mt-1 text-muted-foreground">
-            Speak for at least 60 seconds without reading.
-          </p>
-        </div>
-        <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
-          <strong>Retained</strong>
-          <p className="mt-1 text-muted-foreground">
-            Recall the same form again in a later review.
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <StaffOnly>
+      <Card className="border-worksheet-line!">
+        <CardHeader>
+          <CardTitle>Mission quality gate</CardTitle>
+          <CardDescription>
+            Completed does not automatically mean mastered. Automaticity needs
+            three separate kinds of evidence.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
+            <strong>Accurate</strong>
+            <p className="mt-1 text-muted-foreground">
+              Use the target form correctly in your own sentences.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
+            <strong>Spontaneous</strong>
+            <p className="mt-1 text-muted-foreground">
+              Speak for at least 60 seconds without reading.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
+            <strong>Retained</strong>
+            <p className="mt-1 text-muted-foreground">
+              Recall the same form again in a later review.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </StaffOnly>
   );
 }
 
@@ -225,7 +240,7 @@ export function DelayedTransferCard({
         <CardTitle>Delayed recall and novel transfer</CardTitle>
         <CardDescription>
           Recall {topic} without copying your earlier answer, then use it in a
-          genuinely new situation. These are saved as two separate events.
+          new situation.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -387,9 +402,7 @@ export function SpeakingStepCard({
   return (
     <Card id={`daily-activity-${number}`}>
       <CardHeader>
-        <CardTitle>
-          {number}. Five-stage shadowing and free speaking
-        </CardTitle>
+        <CardTitle>{number}. Five-stage shadowing and free speaking</CardTitle>
         <CardDescription>
           Listen, copy the rhythm, then retell the idea for 45–60 seconds
           without reading.
@@ -461,10 +474,9 @@ export function MasteryCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Transparent mastery</CardTitle>
+        <CardTitle>Your practice progress</CardTitle>
         <CardDescription>
-          Practice evidence is visible now. Only externally checked attempts
-          raise verified mastery.
+          Review what you have practised in each activity.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -473,16 +485,20 @@ export function MasteryCard({
         <Axis label="Speaking practice" value={speaking} />
         <div className="flex gap-2">
           <Badge>Offline practice</Badge>
-          <Badge variant="secondary">
-            Verified mastery: {verifiedAutomaticity}%
-          </Badge>
+          <StaffOnly>
+            <Badge variant="secondary">
+              Verified mastery: {verifiedAutomaticity}%
+            </Badge>
+          </StaffOnly>
         </div>
         {/* External app checks are evidence signals, not a teacher decision. */}
-        <Notice role="note" tone="info">
-          <strong>Teacher-verified mastery:</strong> not recorded. The score
-          above is externally app-checked evidence and remains labelled
-          separately from human verification.
-        </Notice>
+        <StaffOnly>
+          <Notice role="note" tone="info">
+            <strong>Teacher-verified mastery:</strong> not recorded. The score
+            above is externally app-checked evidence and remains labelled
+            separately from human verification.
+          </Notice>
+        </StaffOnly>
       </CardContent>
     </Card>
   );

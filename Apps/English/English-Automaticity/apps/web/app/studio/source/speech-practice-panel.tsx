@@ -1,6 +1,7 @@
 "use client";
 import { discourseFeedback } from "@automaticity/learning-core/discourse";
 import { useState } from "react";
+import { StaffOnly } from "@/components/staff-access";
 import {
   compareSpeechTarget,
   compareSpeechSounds,
@@ -42,7 +43,7 @@ export function SpeechPracticePanel({
         <h3>{en ? "Read aloud practice" : "Laut lesen"}</h3>
         <p>
           {en
-            ? "These comparisons use your manually entered words. For sound estimates, use the local audio analysis above; text comparisons do not score pronunciation."
+            ? "Compare your words with the target and listen to both. A text match does not give a pronunciation grade."
             : "Die Erkennung kann Laute übersehen. Prüfe das Transkript; dieser Vergleich bewertet keine Aussprache."}
         </p>
         {evidence && (
@@ -68,29 +69,32 @@ export function SpeechPracticePanel({
             </ul>
           </details>
         )}
-        {waveform && (
-          <p>
-            {en ? "Waveform description" : "Beschreibung der Wellenform"}:{" "}
-            {waveform.durationSeconds.toFixed(1)} s;{" "}
-            {en ? "active signal" : "aktives Signal"}{" "}
-            {waveform.activeSeconds.toFixed(1)} s;{" "}
-            {en ? "interior quiet intervals" : "innere ruhige Abschnitte"}:{" "}
-            {waveform.quietIntervals}.{" "}
-            {en
-              ? "Background noise affects these measurements. No fluency score."
-              : "Hintergrundgeräusche beeinflussen diese Messwerte. Keine Flüssigkeitsnote."}
-          </p>
-        )}
-        {transcript.trim() && <p>{discourse.description}</p>}
-        {discourse.advanced && (
-          <p>
-            {en
-              ? "Connectors / cautious stance cues"
-              : "Konnektoren / vorsichtige Haltung"}
-            : {discourse.advanced.connectors.length} /{" "}
-            {discourse.advanced.hedges.length}. {discourse.advanced.suggestion}
-          </p>
-        )}
+        <StaffOnly>
+          {waveform && (
+            <p>
+              {en ? "Waveform description" : "Beschreibung der Wellenform"}:{" "}
+              {waveform.durationSeconds.toFixed(1)} s;{" "}
+              {en ? "active signal" : "aktives Signal"}{" "}
+              {waveform.activeSeconds.toFixed(1)} s;{" "}
+              {en ? "interior quiet intervals" : "innere ruhige Abschnitte"}:{" "}
+              {waveform.quietIntervals}.{" "}
+              {en
+                ? "Background noise affects these measurements. No fluency score."
+                : "Hintergrundgeräusche beeinflussen diese Messwerte. Keine Flüssigkeitsnote."}
+            </p>
+          )}
+          {transcript.trim() && <p>{discourse.description}</p>}
+          {discourse.advanced && (
+            <p>
+              {en
+                ? "Connectors / cautious stance cues"
+                : "Konnektoren / vorsichtige Haltung"}
+              : {discourse.advanced.connectors.length} /{" "}
+              {discourse.advanced.hedges.length}.{" "}
+              {discourse.advanced.suggestion}
+            </p>
+          )}
+        </StaffOnly>
         <label>
           {en ? "Target sentence (optional)" : "Zielsatz (optional)"}
           <input

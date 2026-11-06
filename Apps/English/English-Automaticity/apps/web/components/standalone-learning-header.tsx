@@ -43,7 +43,13 @@ export function StandaloneLearningHeader() {
     if (navigationRef.current) navigationRef.current.open = false;
   }, [pathname]);
 
-  if (isAppShellPath(pathname)) return null;
+  if (
+    isAppShellPath(pathname) ||
+    pathname === "/staff" ||
+    pathname.startsWith("/staff/") ||
+    pathname === "/teacher"
+  )
+    return null;
   const currentPath = pathname === "/pdf-reader" ? "/notebook" : pathname;
   const current = [
     ...navigationConfig.en.main,

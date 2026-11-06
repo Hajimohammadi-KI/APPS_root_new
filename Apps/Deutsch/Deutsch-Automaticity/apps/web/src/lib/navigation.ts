@@ -12,7 +12,6 @@ import {
   Route,
   Shapes,
   Settings,
-  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -107,12 +106,6 @@ export const secondaryNavigation = [
     label: "Einstellungen",
     subtitle: "Speicher, Installation und Daten",
     icon: Settings,
-  },
-  {
-    href: "/lehrkraft",
-    label: "Lehrkraft-Studio",
-    subtitle: "Inhalte und menschliche Aufnahmen verwalten",
-    icon: GraduationCap,
   },
   {
     href: "/support",

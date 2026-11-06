@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { StaffOnly } from "@/components/staff-access";
 
 import {
   API_BASE_URL,
@@ -20,6 +21,14 @@ const statusCopy: Record<ConnectionState, string> = {
 };
 
 export function ApiConnectionStatus() {
+  return (
+    <StaffOnly roles={["developer"]}>
+      <ConnectionDiagnostics />
+    </StaffOnly>
+  );
+}
+
+function ConnectionDiagnostics() {
   const [status, setStatus] = useState<ConnectionState>("checking");
   const [retryRequest, setRetryRequest] = useState(0);
 

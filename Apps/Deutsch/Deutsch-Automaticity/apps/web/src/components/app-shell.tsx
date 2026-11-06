@@ -80,6 +80,12 @@ export function AppShell({
       : pathname === navigationConfig.de.settings
         ? "Einstellungen"
         : current.label);
+  if (
+    pathname === "/staff" ||
+    pathname.startsWith("/staff/") ||
+    pathname === "/lehrkraft"
+  )
+    return <>{children}</>;
   return (
     <div className="min-h-screen">
       <a className="skip-link" href="#main-content">

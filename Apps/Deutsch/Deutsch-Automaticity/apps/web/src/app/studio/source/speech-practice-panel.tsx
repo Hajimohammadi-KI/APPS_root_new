@@ -1,6 +1,7 @@
 "use client";
 import { discourseFeedback } from "@automaticity/learning-core/discourse";
 import { useState } from "react";
+import { StaffOnly } from "@/components/staff-access";
 import {
   compareSpeechTarget,
   compareSpeechSounds,
@@ -69,27 +70,38 @@ export function SpeechPracticePanel({
           </details>
         )}
         {waveform && (
-          <p>
-            {en ? "Waveform description" : "Beschreibung der Wellenform"}:{" "}
-            {waveform.durationSeconds.toFixed(1)} s;{" "}
-            {en ? "active signal" : "aktives Signal"}{" "}
-            {waveform.activeSeconds.toFixed(1)} s;{" "}
-            {en ? "interior quiet intervals" : "innere ruhige Abschnitte"}:{" "}
-            {waveform.quietIntervals}.{" "}
-            {en
-              ? "Background noise affects these measurements. No fluency score."
-              : "Hintergrundgeräusche beeinflussen diese Messwerte. Keine Flüssigkeitsnote."}
-          </p>
+          <StaffOnly>
+            <p>
+              {en ? "Waveform description" : "Beschreibung der Wellenform"}:{" "}
+              {waveform.durationSeconds.toFixed(1)} s;{" "}
+              {en ? "active signal" : "aktives Signal"}{" "}
+              {waveform.activeSeconds.toFixed(1)} s;{" "}
+              {en ? "interior quiet intervals" : "innere ruhige Abschnitte"}:{" "}
+              {waveform.quietIntervals}.{" "}
+              {en
+                ? "Background noise affects these measurements. No fluency score."
+                : "Hintergrundgeräusche beeinflussen diese Messwerte. Keine Flüssigkeitsnote."}
+            </p>
+          </StaffOnly>
         )}
-        {transcript.trim() && <p>{discourse.description}</p>}
+        {transcript.trim() && (
+          <StaffOnly>
+            <p>{discourse.description}</p>
+          </StaffOnly>
+        )}
         {discourse.advanced && (
-          <p>
-            {en
-              ? "Connectors / cautious stance cues"
-              : "Konnektoren / vorsichtige Haltung"}
-            : {discourse.advanced.connectors.length} /{" "}
-            {discourse.advanced.hedges.length}. {discourse.advanced.suggestion}
-          </p>
+          <>
+            <StaffOnly>
+              <p>
+                {en
+                  ? "Connectors / cautious stance cues"
+                  : "Konnektoren / vorsichtige Haltung"}
+                : {discourse.advanced.connectors.length} /{" "}
+                {discourse.advanced.hedges.length}.
+              </p>
+            </StaffOnly>
+            <p>{discourse.advanced.suggestion}</p>
+          </>
         )}
         <label>
           {en ? "Target sentence (optional)" : "Zielsatz (optional)"}

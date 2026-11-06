@@ -1,5 +1,6 @@
 import type { ConversationTopic } from "./conversation-data";
 import { type EvaluationResponse, formatTime } from "./studio-helpers";
+import { StaffOnly } from "@/components/staff-access";
 
 export function SessionEvidence({
   seconds,
@@ -29,15 +30,15 @@ export function SessionEvidence({
       <summary>Sitzungsdetails & Rückmeldung</summary>
       <aside className="evidence">
         <section className="panel feedback">
-          <h3>Echte Sprechdaten</h3>
+          <h3>Deine Aufnahme</h3>
           <div className="feedback-row f0">
             <span>◫</span>
             <div>
-              <b>Fluency</b>
+              <b>Sprechtempo</b>
               <small>
                 {seconds
-                  ? `${wordsPerMinute} WPM from ${formatTime(seconds)} audio`
-                  : "Waiting for recorded timing"}
+                  ? `${wordsPerMinute} Wörter pro Minute · Aufnahme: ${formatTime(seconds)}`
+                  : "Noch keine Aufnahme"}
               </small>
             </div>
             <strong>{seconds ? `${wordsPerMinute}` : "—"}</strong>
@@ -45,7 +46,7 @@ export function SessionEvidence({
           <div className="feedback-row f1">
             <span>◉</span>
             <div>
-              <b>Pronunciation</b>
+              <b>Aussprache</b>
               <small>{pronunciation}</small>
             </div>
             <strong>—</strong>
@@ -53,11 +54,11 @@ export function SessionEvidence({
           <div className="feedback-row f2">
             <span>G</span>
             <div>
-              <b>Grammar</b>
+              <b>Grammatik</b>
               <small>
                 {evaluation
-                  ? `${evaluation.issues.length} LanguageTool issue(s)`
-                  : "Not checked"}
+                  ? `${evaluation.issues.length} Hinweise zur Überarbeitung`
+                  : "Noch nicht geprüft"}
               </small>
             </div>
             <strong>{evaluation ? evaluation.issues.length : "—"}</strong>
@@ -65,50 +66,52 @@ export function SessionEvidence({
           <div className="feedback-row f3">
             <span>Aa</span>
             <div>
-              <b>Transcript</b>
+              <b>Transkript</b>
               <small>
                 {transcript
-                  ? "Browser transcript reviewed by learner"
-                  : "Waiting for speech"}
+                  ? "Dein Text zur Aufnahme"
+                  : "Noch kein gesprochener Text"}
               </small>
             </div>
             <strong>{wordCount || "—"}</strong>
           </div>
-          <div className="coach-tip">
-            <b>☼ Evidence rule</b>
-            <p>
-              Keine Bewertung wird angezeigt, wenn der echte Anbieter nicht
-              geantwortet hat.
-            </p>
-          </div>
+          <StaffOnly>
+            <div className="coach-tip">
+              <b>☼ Evidence rule</b>
+              <p>
+                Keine Bewertung wird angezeigt, wenn der echte Anbieter nicht
+                geantwortet hat.
+              </p>
+            </div>
+          </StaffOnly>
         </section>
         <section className="panel">
-          <h3>Session evidence</h3>
+          <h3>Deine Sitzung</h3>
           <div className="metrics">
             <div>
               <b>{attempts}</b>
-              <span>Turns</span>
+              <span>Antworten</span>
             </div>
             <div>
               <b>{formatTime(seconds)}</b>
-              <span>Speaking</span>
+              <span>Sprechzeit</span>
             </div>
             <div>
               <b>{wordCount}</b>
-              <span>Words</span>
+              <span>Wörter</span>
             </div>
             <div>
               <b>{wordsPerMinute}</b>
-              <span>WPM</span>
+              <span>Wörter/Min.</span>
             </div>
           </div>
           <p className="encourage">♙ {selected.goal}</p>
         </section>
         <section className="panel correction">
           <div className="panel-title">
-            <h3>Grammar correction</h3>
+            <h3>Grammatik-Rückmeldung</h3>
             <label>
-              Show{" "}
+              Anzeigen{" "}
               <input
                 type="checkbox"
                 checked={showCorrections}
@@ -124,7 +127,7 @@ export function SessionEvidence({
               </div>
               <div className="corrected">
                 <b>
-                  {evaluation?.issues.length ? "Corrected" : "Provider result"}
+                  {evaluation?.issues.length ? "Überarbeitet" : "Rückmeldung"}
                 </b>
                 <p>{evaluation?.corrected ?? "—"}</p>
               </div>

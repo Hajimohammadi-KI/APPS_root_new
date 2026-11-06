@@ -26,7 +26,6 @@ import {
   MessagesSquare,
   Settings,
   Languages,
-  GraduationCap,
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -153,12 +152,6 @@ const navigation: NavigationItem[] = [
     label: "Settings",
     subtitle: "Learning, storage, and platform",
     icon: Settings,
-  },
-  {
-    id: "teacher",
-    label: "Teacher Studio",
-    subtitle: "Manage content and human recordings",
-    icon: GraduationCap,
   },
 ];
 

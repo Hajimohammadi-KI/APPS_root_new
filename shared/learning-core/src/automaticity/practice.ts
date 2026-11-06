@@ -20,6 +20,7 @@ import {
 } from "./storage";
 import { preserveLegacyStateDurable } from "./migration";
 import { mountReviewPanel } from "./review-panel";
+import { initializeStaffWorkspace } from "./staff-interface";
 import {
   appendLearnerFeedbackPanel,
   pausedTaskIds,
@@ -126,6 +127,19 @@ const stages: Stage[] = [
 const now = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 const qualifiedTransformer = createTransformerClient();
+/** A learner card carries progress; provenance and counting rules belong to staff. */
+export function notebookCardLines(
+  language: Language,
+  level: string,
+  atLevel: { passed: number; total: number },
+  all: { passed: number; total: number },
+  staff = false,
+): readonly string[] {
+  const copy = notebookCopy(language);
+  return staff
+    ? [copy.progress(level, atLevel, all), copy.source, copy.progressBasis]
+    : [copy.progress(level, atLevel, all)];
+}
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
   text?: string,
@@ -245,6 +259,7 @@ export async function mountPractice(
     t = (english: string, german: string) => (en ? english : german);
   const f = (persian: string, english: string, german: string) =>
     readSupportLanguage(language) === "fa" ? persian : t(english, german);
+  const staffRole = await initializeStaffWorkspace();
   const persistence = { storage: localStorage, indexedDB };
   await recoverBeforeMount(persistence, language);
   await preserveLegacyStateDurable(persistence, language, now());
@@ -685,6 +700,14 @@ export async function mountPractice(
   const header = element("header", undefined, "practice-header");
   const nav = element("nav");
   nav.setAttribute("aria-label", t("App navigation", "App-Navigation"));
+  if (staffRole) {
+    const staffLink = element(
+      "a",
+      t("Teacher & developer workspace", "Bereich für Lehrkraft & Entwicklung"),
+    );
+    staffLink.href = "/staff";
+    nav.append(staffLink);
+  }
   for (const [label, href] of [
     [t("Home", "Start"), "/"],
     [t("Today", "Heute"), en ? "/daily" : "/heute"],
@@ -692,7 +715,10 @@ export async function mountPractice(
       t("Grammar library", "Grammatikbibliothek"),
       en ? "/grammar" : "/grammatik",
     ],
-    [t("Settings", "Einstellungen"), en ? "/settings" : "/einstellungen"],
+    [
+      t("Settings", "Einstellungen"),
+      staffRole ? "/staff/settings" : en ? "/settings" : "/einstellungen",
+    ],
   ]) {
     const link = element("a", label);
     link.href = href!;
@@ -787,7 +813,7 @@ export async function mountPractice(
       ),
     ),
   );
-  controls.append(timingLabel);
+  if (staffRole) controls.append(timingLabel);
   const persianHelp = element("details");
   persianHelp.append(element("summary", "راهنمای فارسی"));
   persianHelp.dir = "rtl";
@@ -806,7 +832,8 @@ export async function mountPractice(
     criteriaList,
     element("p", PERSIAN_PRACTICE_GUIDE.limitation),
   );
-  persianHelp.append(practiceSteps, criteria);
+  persianHelp.append(practiceSteps);
+  if (staffRole) persianHelp.append(criteria);
   controls.append(persianHelp);
   const recordChoice = (reason: string) => {
     const selection = selectDailyFocus(
@@ -866,6 +893,8 @@ export async function mountPractice(
     undefined,
     "card practice-disclosure",
   );
+  historyDisclosure.id = "practice-history";
+  historyDisclosure.open = requested.has("review") || requested.has("attempt");
   historyDisclosure.append(
     element("summary", t("My recent responses", "Meine letzten Antworten")),
     historyPanel,
@@ -994,25 +1023,30 @@ export async function mountPractice(
       importInput.click(),
     ),
     importInput,
-    button(
-      t("Export responses for review", "Antworten zur Prüfung exportieren"),
-      () => {
-        const rows = ledger().attempts.filter((row) => !row.eligibleForMastery);
-        download(`automaticity-${language}-review-queue.json`, {
-          version: 2,
-          language,
-          exportedAt: now(),
-          notice:
-            "Contains your original writing and transcripts. Share only with a reviewer you choose. Recordings remain in the complete backup.",
-          attempts: rows.map((row) => ({
-            attempt: row.attempt,
-            assessment: row.assessment,
-            task: taskById.get(row.attempt.task.id),
-          })),
-        });
-      },
-    ),
   );
+  if (staffRole)
+    tools.append(
+      button(
+        t("Export responses for review", "Antworten zur Prüfung exportieren"),
+        () => {
+          const rows = ledger().attempts.filter(
+            (row) => !row.eligibleForMastery,
+          );
+          download(`automaticity-${language}-review-queue.json`, {
+            version: 2,
+            language,
+            exportedAt: now(),
+            notice:
+              "Contains your original writing and transcripts. Share only with a reviewer you choose. Recordings remain in the complete backup.",
+            attempts: rows.map((row) => ({
+              attempt: row.attempt,
+              assessment: row.assessment,
+              task: taskById.get(row.attempt.task.id),
+            })),
+          });
+        },
+      ),
+    );
   root.replaceChildren(
     header,
     errorBox,
@@ -1021,17 +1055,18 @@ export async function mountPractice(
     grid,
     tools,
   );
-  refreshPilot = mountSchedulerPilotPanel(
-    tools,
-    pack,
-    localStorage,
-    pilot,
-    () => renderFocus(),
-    (task) => {
-      void fresh(task).catch(writeError);
-    },
-    () => editing,
-  );
+  if (staffRole)
+    refreshPilot = mountSchedulerPilotPanel(
+      tools,
+      pack,
+      localStorage,
+      pilot,
+      () => renderFocus(),
+      (task) => {
+        void fresh(task).catch(writeError);
+      },
+      () => editing,
+    );
   if (!editing) {
     errorBox.textContent = t(
       "Another practice tab is open. You can view progress here; close the other tab and reload to continue.",
@@ -1086,18 +1121,17 @@ export async function mountPractice(
             )
           : `${copy.title} · ${level}`,
       ),
-      element(
-        "p",
-        recentNotebook
-          ? f(
-              `${all.passed} تمرین از ${all.total} درست بوده است. مثال‌ها بدون اطلاعات شخصی‌اند. متن تشخیص خودکار گفتار ممکن است اشتباه باشد و به‌تنهایی خطای گفتاری شما را ثابت نمی‌کند.`,
-              `${all.passed} of ${all.total} passed. Automatic speech transcripts can be wrong and do not prove a speaking error.`,
-              `${all.passed} von ${all.total} bestanden. Die Beispiele sind anonymisiert. Ein automatisches Transkript kann ungenau sein und belegt keinen Sprechfehler.`,
-            )
-          : `${copy.progress(level, atLevel, all)} ${copy.source}`,
-        "muted",
-      ),
-      element("p", copy.progressBasis, "muted"),
+      ...(recentNotebook
+        ? [
+            f(
+              `${all.passed} تمرین از ${all.total} درست بوده است.`,
+              `${all.passed} of ${all.total} passed.`,
+              `${all.passed} von ${all.total} bestanden.`,
+            ),
+            ...(staffRole ? [copy.source, copy.progressBasis] : []),
+          ]
+        : notebookCardLines(language, level, atLevel, all, !!staffRole)
+      ).map((line) => element("p", line, "muted")),
     );
     if (!next)
       notebookPanel.append(
@@ -1109,9 +1143,9 @@ export async function mountPractice(
           ),
         ),
       );
-    else if (next.task.id === task.id && !session?.submittedId)
+    else if (next.task.id === task.id && !session?.submittedId && staffRole)
       notebookPanel.append(element("p", copy.thisTask));
-    else
+    else if (next.task.id !== task.id || session?.submittedId)
       notebookPanel.append(
         button(
           (next.previousAttemptId
@@ -1162,8 +1196,12 @@ export async function mountPractice(
                 "Kehre zu einem Muster zurück, das noch Korrektur braucht.",
               )
             : t(
-                "Continue your current pattern. Unchecked responses do not establish mastery.",
-                "Übe dein aktuelles Muster weiter. Ungeprüfte Antworten belegen noch keine Beherrschung.",
+                staffRole
+                  ? "Continue your current pattern. Unchecked responses do not establish mastery."
+                  : "Continue practising your current pattern.",
+                staffRole
+                  ? "Übe dein aktuelles Muster weiter. Ungeprüfte Antworten belegen noch keine Beherrschung."
+                  : "Übe dein aktuelles Muster weiter.",
               ),
       ),
     );
@@ -1313,13 +1351,17 @@ export async function mountPractice(
       label,
       goal,
       status,
-      element(
-        "p",
-        t(
-          "This counts practice effort, including help and repairs. It does not measure mastery.",
-          "Hier zählt dein Übungsaufwand, auch mit Hilfe und Korrekturen. Das ist kein Nachweis für sichere Beherrschung.",
-        ),
-      ),
+      ...(staffRole
+        ? [
+            element(
+              "p",
+              t(
+                "This counts practice effort, including help and repairs. It does not measure mastery.",
+                "Hier zählt dein Übungsaufwand, auch mit Hilfe und Korrekturen. Das ist kein Nachweis für sichere Beherrschung.",
+              ),
+            ),
+          ]
+        : []),
       pause,
     );
     if (count >= plan.responseGoal && !plan.paused)
@@ -1373,157 +1415,187 @@ export async function mountPractice(
   function renderProgress(): void {
     const reduced = ledger(),
       rows = reduced.progress.filter((row) => row.constructionId === unit.id);
-    progressPanel.replaceChildren(
-      element(
-        "h2",
-        t("Evidence for this pattern", "Nachweise für dieses Muster"),
-      ),
-      element(
-        "p",
-        t(
-          "Goal: at least 90% independent accuracy for this pattern, in writing and speaking separately.",
-          "Ziel: mindestens 90 % selbstständige Genauigkeit bei diesem Muster, getrennt für Schreiben und Sprechen.",
-        ),
-      ),
-    );
-    for (const modality of ["writing", "speaking"] as const) {
-      const row = rows.find((value) => value.modality === modality);
-      const group = element("div", undefined, "metric");
-      const modeTasks = activePracticeTasks(unit).filter(
-        (candidate) => candidate.modality === modality,
+    if (!staffRole) {
+      progressPanel.replaceChildren(
+        element("h2", t("Your practice", "Deine Übungen")),
       );
-      const hasReviewedTasks = modeTasks.some(
-        (candidate) => candidate.contentReview === "human_reviewed",
-      );
-      group.append(
-        element(
-          "h3",
-          modality === "writing"
-            ? t("Writing", "Schreiben")
-            : t("Speaking", "Sprechen"),
-        ),
-        element(
-          "p",
-          `${row?.attempts ?? 0} ${row?.attempts === 1 ? t("attempt", "Versuch") : t("attempts", "Versuche")} · ${row?.assessed ?? 0} ${row?.assessed === 1 ? t("practice check", "Übungsprüfung") : t("practice checks", "Übungsprüfungen")}`,
-        ),
-        element(
-          "p",
-          row?.accuracy !== null && row?.accuracy !== undefined
-            ? `${Math.round(row.accuracy * 100)}% ${t("independent accuracy", "unabhängige Genauigkeit")}`
-            : t(
-                "Independent accuracy: not yet established",
-                "Unabhängige Genauigkeit: noch nicht belegt",
-              ),
-        ),
-        element(
-          "p",
-          `${row?.delayedSuccesses ?? 0} ${row?.delayedSuccesses === 1 ? t("delayed check", "verzögerte Prüfung") : t("delayed checks", "verzögerte Prüfungen")} · ${row?.novelSuccesses ?? 0} ${row?.novelSuccesses === 1 ? t("new-context check", "Prüfung in neuem Kontext") : t("new-context checks", "Prüfungen in neuem Kontext")}`,
-        ),
-      );
-      const target = learningTarget(reduced, unit.id, modality);
-      if (!modeTasks.length) {
-        group.append(
+      for (const modality of ["writing", "speaking"] as const) {
+        const attempts = reduced.attempts.filter(
+          (row) =>
+            row.attempt.task.constructionId === unit.id &&
+            row.attempt.task.modality === modality,
+        );
+        progressPanel.append(
           element(
             "p",
-            t(
-              "This topic has no exercises in this response mode.",
-              "Dieses Thema enthält keine Aufgaben in dieser Antwortform.",
-            ),
+            `${modality === "writing" ? t("Writing", "Schreiben") : t("Speaking", "Sprechen")}: ${attempts.length} ${t("saved responses", "gespeicherte Antworten")}`,
           ),
         );
-        progressPanel.append(group);
-        continue;
       }
-      if (!hasReviewedTasks)
-        group.append(
-          element(
-            "p",
-            t(
-              "The current exercises for this topic still need content review before they can provide verified evidence for the 90% target. Keep practising and review saved responses; a practice score does not verify this target.",
-              "Die aktuellen Aufgaben zu diesem Thema benötigen noch eine Inhaltsprüfung, bevor sie geprüfte Nachweise für das 90-%-Ziel liefern können. Übe weiter und prüfe gespeicherte Antworten; ein Übungsergebnis bestätigt dieses Ziel noch nicht.",
-            ),
-          ),
-        );
-      const criteria = element("details");
-      criteria.append(
+    } else {
+      progressPanel.replaceChildren(
         element(
-          "summary",
-          target.met
-            ? t(
-                "90% accuracy and retention target met",
-                "90-%-Ziel für Genauigkeit und Behalten erreicht",
-              )
-            : t("Progress towards the 90% target", "Fortschritt zum 90-%-Ziel"),
-        ),
-        element(
-          "p",
-          `${target.checked}/${LEARNING_TARGET.checks} ${t("reviewed independent responses", "geprüfte selbstständige Antworten")} · ${target.successes} ${t("correct", "richtig")}`,
-        ),
-        element(
-          "p",
-          `${Math.min(target.delayedDays, LEARNING_TARGET.delayedDays)}/${LEARNING_TARGET.delayedDays} ${t("separate days with successful delayed recall", "getrennte Tage mit erfolgreichem späterem Abruf")}`,
-        ),
-        element(
-          "p",
-          `${Math.min(target.newContexts, LEARNING_TARGET.newContexts)}/${LEARNING_TARGET.newContexts} ${t("new contexts used successfully without naming the rule", "neue Kontexte erfolgreich ohne Nennung der Regel")}`,
+          "h2",
+          t("Evidence for this pattern", "Nachweise für dieses Muster"),
         ),
         element(
           "p",
           t(
-            "Requires at least 18 correct answers among the latest 20 reviewed independent responses, two delayed-recall days, two new contexts and no unresolved errors. Helped answers and self-checks do not count. These are training criteria; fluency needs separate assessment.",
-            "Erfordert mindestens 18 richtige unter den letzten 20 geprüften selbstständigen Antworten, zwei Tage mit späterem Abruf, zwei neue Kontexte und keine offenen Fehler. Antworten mit Hilfe und Selbstprüfungen zählen nicht. Dies sind Übungskriterien; Flüssigkeit muss separat beurteilt werden.",
+            "Goal: at least 90% independent accuracy for this pattern, in writing and speaking separately.",
+            "Ziel: mindestens 90 % selbstständige Genauigkeit bei diesem Muster, getrennt für Schreiben und Sprechen.",
+          ),
+        ),
+      );
+      for (const modality of ["writing", "speaking"] as const) {
+        const row = rows.find((value) => value.modality === modality);
+        const group = element("div", undefined, "metric");
+        const modeTasks = activePracticeTasks(unit).filter(
+          (candidate) => candidate.modality === modality,
+        );
+        const hasReviewedTasks = modeTasks.some(
+          (candidate) => candidate.contentReview === "human_reviewed",
+        );
+        group.append(
+          element(
+            "h3",
+            modality === "writing"
+              ? t("Writing", "Schreiben")
+              : t("Speaking", "Sprechen"),
+          ),
+          element(
+            "p",
+            `${row?.attempts ?? 0} ${row?.attempts === 1 ? t("attempt", "Versuch") : t("attempts", "Versuche")} · ${row?.assessed ?? 0} ${row?.assessed === 1 ? t("practice check", "Übungsprüfung") : t("practice checks", "Übungsprüfungen")}`,
+          ),
+          element(
+            "p",
+            row?.accuracy !== null && row?.accuracy !== undefined
+              ? `${Math.round(row.accuracy * 100)}% ${t("independent accuracy", "unabhängige Genauigkeit")}`
+              : t(
+                  "Independent accuracy: not yet established",
+                  "Unabhängige Genauigkeit: noch nicht belegt",
+                ),
+          ),
+          element(
+            "p",
+            `${row?.delayedSuccesses ?? 0} ${row?.delayedSuccesses === 1 ? t("delayed check", "verzögerte Prüfung") : t("delayed checks", "verzögerte Prüfungen")} · ${row?.novelSuccesses ?? 0} ${row?.novelSuccesses === 1 ? t("new-context check", "Prüfung in neuem Kontext") : t("new-context checks", "Prüfungen in neuem Kontext")}`,
+          ),
+        );
+        const target = learningTarget(reduced, unit.id, modality);
+        if (!modeTasks.length) {
+          group.append(
+            element(
+              "p",
+              t(
+                "This topic has no exercises in this response mode.",
+                "Dieses Thema enthält keine Aufgaben in dieser Antwortform.",
+              ),
+            ),
+          );
+          progressPanel.append(group);
+          continue;
+        }
+        if (!hasReviewedTasks)
+          group.append(
+            element(
+              "p",
+              t(
+                "The current exercises for this topic still need content review before they can provide verified evidence for the 90% target. Keep practising and review saved responses; a practice score does not verify this target.",
+                "Die aktuellen Aufgaben zu diesem Thema benötigen noch eine Inhaltsprüfung, bevor sie geprüfte Nachweise für das 90-%-Ziel liefern können. Übe weiter und prüfe gespeicherte Antworten; ein Übungsergebnis bestätigt dieses Ziel noch nicht.",
+              ),
+            ),
+          );
+        const criteria = element("details");
+        criteria.append(
+          element(
+            "summary",
+            target.met
+              ? t(
+                  "90% accuracy and retention target met",
+                  "90-%-Ziel für Genauigkeit und Behalten erreicht",
+                )
+              : t(
+                  "Progress towards the 90% target",
+                  "Fortschritt zum 90-%-Ziel",
+                ),
+          ),
+          element(
+            "p",
+            `${target.checked}/${LEARNING_TARGET.checks} ${t("reviewed independent responses", "geprüfte selbstständige Antworten")} · ${target.successes} ${t("correct", "richtig")}`,
+          ),
+          element(
+            "p",
+            `${Math.min(target.delayedDays, LEARNING_TARGET.delayedDays)}/${LEARNING_TARGET.delayedDays} ${t("separate days with successful delayed recall", "getrennte Tage mit erfolgreichem späterem Abruf")}`,
+          ),
+          element(
+            "p",
+            `${Math.min(target.newContexts, LEARNING_TARGET.newContexts)}/${LEARNING_TARGET.newContexts} ${t("new contexts used successfully without naming the rule", "neue Kontexte erfolgreich ohne Nennung der Regel")}`,
+          ),
+          element(
+            "p",
+            t(
+              "Requires at least 18 correct answers among the latest 20 reviewed independent responses, two delayed-recall days, two new contexts and no unresolved errors. Helped answers and self-checks do not count. These are training criteria; fluency needs separate assessment.",
+              "Erfordert mindestens 18 richtige unter den letzten 20 geprüften selbstständigen Antworten, zwei Tage mit späterem Abruf, zwei neue Kontexte und keine offenen Fehler. Antworten mit Hilfe und Selbstprüfungen zählen nicht. Dies sind Übungskriterien; Flüssigkeit muss separat beurteilt werden.",
+            ),
+            "muted",
+          ),
+        );
+        if (target.repairs)
+          criteria.append(
+            element(
+              "p",
+              `${target.repairs} ${t("responses still need repair", "Antworten müssen noch korrigiert werden")}`,
+            ),
+          );
+        group.append(criteria);
+        progressPanel.append(group);
+      }
+      progressPanel.append(
+        element(
+          "p",
+          t(
+            "Practice results stay separate from reviewed evidence. A fast answer alone does not establish automaticity.",
+            "Übungsergebnisse bleiben von geprüften Nachweisen getrennt. Eine schnelle Antwort allein belegt noch keine Automatisierung.",
           ),
           "muted",
         ),
       );
-      if (target.repairs)
-        criteria.append(
-          element(
-            "p",
-            `${target.repairs} ${t("responses still need repair", "Antworten müssen noch korrigiert werden")}`,
-          ),
-        );
-      group.append(criteria);
-      progressPanel.append(group);
-    }
-    progressPanel.append(
-      element(
-        "p",
+      const coverageLink = element(
+        "a",
         t(
-          "Practice results stay separate from reviewed evidence. A fast answer alone does not establish automaticity.",
-          "Übungsergebnisse bleiben von geprüften Nachweisen getrennt. Eine schnelle Antwort allein belegt noch keine Automatisierung.",
+          "See assessment coverage for every topic",
+          "Prüfungsabdeckung aller Themen ansehen",
         ),
-        "muted",
-      ),
-    );
-    const coverageLink = element(
-      "a",
-      t(
-        "See assessment coverage for every topic",
-        "Prüfungsabdeckung aller Themen ansehen",
-      ),
-    );
-    coverageLink.href = "/assessment-readiness.html";
-    progressPanel.append(coverageLink);
-    const benchmarkLink = element(
-      "a",
-      t(
-        "Text and audio evaluator test results",
-        "Testergebnisse der Text- und Audioauswertung",
-      ),
-    );
-    benchmarkLink.href = "/assessment-benchmarks.html";
-    const microphoneLink = element(
-      "a",
-      t("Check microphone and playback", "Mikrofon und Wiedergabe prüfen"),
-    );
-    microphoneLink.href = "/microphone-check.html";
-    progressPanel.append(
-      element("p"),
-      benchmarkLink,
-      element("p"),
-      microphoneLink,
-    );
+      );
+      coverageLink.href = "/assessment-readiness.html";
+      progressPanel.append(coverageLink);
+      const benchmarkLink = element(
+        "a",
+        t(
+          "Text and audio evaluator test results",
+          "Testergebnisse der Text- und Audioauswertung",
+        ),
+      );
+      benchmarkLink.href = "/assessment-benchmarks.html";
+      const microphoneLink = element(
+        "a",
+        t("Check microphone and playback", "Mikrofon und Wiedergabe prüfen"),
+      );
+      microphoneLink.href = "/microphone-check.html";
+      progressPanel.append(
+        element("p"),
+        ...(staffRole === "developer" ? [benchmarkLink] : []),
+        element("p"),
+        microphoneLink,
+      );
+    }
+    if (!staffRole) {
+      const microphoneLink = element(
+        "a",
+        t("Check microphone and playback", "Mikrofon und Wiedergabe prüfen"),
+      );
+      microphoneLink.href = "/microphone-check.html";
+      progressPanel.append(microphoneLink);
+    }
     const rowsForUnit = reduced.attempts
       .filter((row) => row.attempt.task.constructionId === unit.id)
       .slice(-5)
@@ -1927,7 +1999,9 @@ export async function mountPractice(
             "p",
             readSupportLanguage(language) === "fa"
               ? persianStageAction(task.stage)
-              : step.purpose,
+              : staffRole
+                ? step.purpose
+                : step.purpose.replace(/;.*$/u, "."),
             "learning-cycle-purpose",
           ),
         );
@@ -1972,8 +2046,12 @@ export async function mountPractice(
         element(
           "p",
           t(
-            "Revise the response below. A correction is practice; it does not count as a new independent success.",
-            "Überarbeite die Antwort unten. Eine Korrektur ist Übung; sie zählt nicht als neuer selbstständiger Erfolg.",
+            staffRole
+              ? "Revise the response below. A correction is practice; it does not count as a new independent success."
+              : "Revise your response below, using the feedback above.",
+            staffRole
+              ? "Überarbeite die Antwort unten. Eine Korrektur ist Übung; sie zählt nicht als neuer selbstständiger Erfolg."
+              : "Überarbeite deine Antwort unten mit der Rückmeldung oben.",
           ),
           "muted",
         ),
@@ -2041,7 +2119,9 @@ export async function mountPractice(
         path,
         element(
           "p",
-          "اگر پاسخی نیاز به اصلاح دارد، اول همان را بررسی کن. انجام یک تمرین به‌تنهایی به معنی تسلط نیست.",
+          staffRole
+            ? "اگر پاسخی نیاز به اصلاح دارد، اول همان را بررسی کن. انجام یک تمرین به‌تنهایی به معنی تسلط نیست."
+            : "اگر پاسخی نیاز به اصلاح دارد، اول همان را بررسی کن.",
           "muted",
         ),
       );
@@ -2050,8 +2130,12 @@ export async function mountPractice(
         element(
           "p",
           t(
-            "Your path: recall → vary → produce → use in a new situation → return later. Repairs and due reviews come first. Completing a step is practice; independent accuracy, transfer and delayed recall need checked evidence.",
-            "Dein Lernweg: abrufen → variieren → selbst formulieren → in neuer Situation anwenden → später wiederholen. Korrekturen und fällige Wiederholungen haben Vorrang. Ein erledigter Schritt ist Übung; selbstständige Genauigkeit, Transfer und späterer Abruf brauchen geprüfte Nachweise.",
+            staffRole
+              ? "Your path: recall → vary → produce → use in a new situation → return later. Repairs and due reviews come first. Completing a step is practice; independent accuracy, transfer and delayed recall need checked evidence."
+              : "Your path: recall → vary → produce → use in a new situation → return later. Start with corrections and due reviews.",
+            staffRole
+              ? "Dein Lernweg: abrufen → variieren → selbst formulieren → in neuer Situation anwenden → später wiederholen. Korrekturen und fällige Wiederholungen haben Vorrang. Ein erledigter Schritt ist Übung; selbstständige Genauigkeit, Transfer und späterer Abruf brauchen geprüfte Nachweise."
+              : "Dein Lernweg: abrufen → variieren → selbst formulieren → in neuer Situation anwenden → später wiederholen. Beginne mit Korrekturen und fälligen Wiederholungen.",
           ),
           "muted",
         ),
@@ -2217,7 +2301,7 @@ export async function mountPractice(
           ),
         );
     });
-    if (task.stage === "retain")
+    if (staffRole && task.stage === "retain")
       taskPanel.append(
         element(
           "p",
@@ -3243,18 +3327,20 @@ export async function mountPractice(
     ),
     reviews,
   );
-  root.append(reviewsDisclosure);
-  const refreshReviews = mountReviewPanel(
-    reviews,
-    language,
-    pack,
-    () => {
-      renderTask();
-      renderProgress();
-      renderFocus();
-    },
-    editing,
-  );
+  if (staffRole) root.append(reviewsDisclosure);
+  const refreshReviews = staffRole
+    ? mountReviewPanel(
+        reviews,
+        language,
+        pack,
+        () => {
+          renderTask();
+          renderProgress();
+          renderFocus();
+        },
+        editing,
+      )
+    : () => {};
   if (location.hash === "#backup-tools") {
     tools.open = true;
     transferGuide.open = true;

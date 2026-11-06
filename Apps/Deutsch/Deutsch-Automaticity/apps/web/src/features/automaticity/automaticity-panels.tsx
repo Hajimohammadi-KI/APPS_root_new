@@ -22,6 +22,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { StaffOnly } from "@/components/staff-access";
 import type { AutomatikAnalysis } from "@/features/automaticity/automaticity-analysis";
 import { shadowingStages } from "./lesson-content";
 
@@ -80,8 +81,8 @@ export function Feedback({
         </ul>
       ) : (
         <p className="flex items-center gap-2 text-sm font-bold text-worksheet-teal!">
-          <Check className="size-4" /> Die Offline-Musterprüfung findet keinen
-          Zielfehler.
+          <Check className="size-4" /> Die Prüfung hat keinen Fehler im geübten
+          Muster gefunden.
         </p>
       )}
     </div>
@@ -99,12 +100,11 @@ export function MissionHero({
           Heute · {missionMinutes} Minuten
         </Badge>
         <h2 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">
-          {embedded ? "Vertiefender Nachweis" : "Automatik-Mission"}
+          {embedded ? "Vertiefende Übung" : "Deine Sprachübung"}
         </h2>
         <p className="mt-2 max-w-3xl text-muted-foreground">
-          Aktivieren, korrekt anwenden, laut automatisieren und frei übertragen.
-          Die Mission endet mit einem gespeicherten Nachweis, nicht mit bloßem
-          Durchklicken.
+          Übe das Muster, schreibe eigene Sätze und wende es anschließend beim
+          freien Sprechen an. Speichere danach deine Antwort.
         </p>
       </div>
       <Button
@@ -116,7 +116,7 @@ export function MissionHero({
             ?.scrollIntoView({ behavior: "smooth" })
         }
       >
-        <Play /> Nachweis starten
+        <Play /> Übung starten
       </Button>
     </section>
   );
@@ -232,35 +232,37 @@ export function StepCards({
 
 export function QualityGateCard() {
   return (
-    <Card className="border-worksheet-line!">
-      <CardHeader>
-        <CardTitle>Qualitätsgrenze der Mission</CardTitle>
-        <CardDescription>
-          „Erledigt“ bedeutet nicht automatisch „beherrscht“. Automatik wird
-          erst durch drei getrennte Nachweise sichtbar.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
-          <strong>Genau</strong>
-          <p className="mt-1 text-muted-foreground">
-            Zielstruktur korrekt in eigenen Sätzen.
-          </p>
-        </div>
-        <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
-          <strong>Spontan</strong>
-          <p className="mt-1 text-muted-foreground">
-            Mindestens 60 Sekunden ohne Ablesen sprechen.
-          </p>
-        </div>
-        <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
-          <strong>Behalten</strong>
-          <p className="mt-1 text-muted-foreground">
-            Die Struktur bei der nächsten Wiederholung erneut abrufen.
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <StaffOnly>
+      <Card className="border-worksheet-line!">
+        <CardHeader>
+          <CardTitle>Qualitätsgrenze der Mission</CardTitle>
+          <CardDescription>
+            „Erledigt“ bedeutet nicht automatisch „beherrscht“. Automatik wird
+            erst durch drei getrennte Nachweise sichtbar.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
+            <strong>Genau</strong>
+            <p className="mt-1 text-muted-foreground">
+              Zielstruktur korrekt in eigenen Sätzen.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
+            <strong>Spontan</strong>
+            <p className="mt-1 text-muted-foreground">
+              Mindestens 60 Sekunden ohne Ablesen sprechen.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-worksheet-cyan! p-4 text-sm">
+            <strong>Behalten</strong>
+            <p className="mt-1 text-muted-foreground">
+              Die Struktur bei der nächsten Wiederholung erneut abrufen.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </StaffOnly>
   );
 }
 
@@ -531,8 +533,9 @@ export function SpeakingStepCard({
           value={transcript}
         />
         <p className="text-sm leading-6 text-muted-foreground">
-          Für einen gültigen Nachweis brauchst du alle fünf Stufen, eine echte
-          Aufnahme und mindestens {requiredSeconds} Sekunden freie Sprache.
+          Bearbeite alle fünf Stufen und nimm danach mindestens{" "}
+          {requiredSeconds}
+          Sekunden freie Sprache auf.
         </p>
         <Button disabled={!canSave} onClick={onSave}>
           Sprechen analysieren und speichern
@@ -557,22 +560,30 @@ export function MasteryCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Transparente Beherrschung</CardTitle>
+        <CardTitle>Dein Übungsfortschritt</CardTitle>
         <CardDescription>
-          Übungsnachweise sind sofort sichtbar. Nur online oder fachlich
-          geprüfte Versuche erhöhen den bestätigten Beherrschungswert.
+          Hier siehst du deinen gespeicherten Fortschritt beim Erkennen,
+          Schreiben und Sprechen.
         </CardDescription>
+        <StaffOnly>
+          <CardDescription>
+            Nur online oder fachlich geprüfte Versuche erhöhen den bestätigten
+            Beherrschungswert.
+          </CardDescription>
+        </StaffOnly>
       </CardHeader>
       <CardContent className="space-y-4">
         <Axis label="Erkennen und Umformen" value={recognition} />
         <Axis label="Eigenes Schreiben" value={writing} />
         <Axis label="Freies Sprechen" value={speaking} />
-        <div className="flex flex-wrap gap-2">
-          <Badge>Offline-Übung</Badge>
-          <Badge variant="outline">
-            Frühere Übungsschwelle: {previousThreshold}%
-          </Badge>
-        </div>
+        <StaffOnly>
+          <div className="flex flex-wrap gap-2">
+            <Badge>Offline-Übung</Badge>
+            <Badge variant="outline">
+              Frühere Übungsschwelle: {previousThreshold}%
+            </Badge>
+          </div>
+        </StaffOnly>
       </CardContent>
     </Card>
   );

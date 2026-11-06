@@ -8,6 +8,10 @@ import { DeepLSelectionTranslator } from "@/features/components/deepl-selection-
 import { PersianStandaloneGuide } from "@/features/components/persian-standalone-guide";
 import { GuardedNudge } from "@/features/adherence/guarded-nudge";
 import "./globals.css";
+import {
+  StaffAccessProvider,
+  StaffWorkspaceBar,
+} from "@/components/staff-access";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -59,13 +63,16 @@ export default function RootLayout({
       <body>
         <LearningRecoveryBoundary>
           <AppStoreProvider>
-            <StandaloneLearningHeader />
-            {children}
-            <PersianStandaloneGuide />
-            <GlobalReadingRuler />
-            <ContextualHoverHelp />
-            <DeepLSelectionTranslator />
-            <GuardedNudge />
+            <StaffAccessProvider>
+              <StaffWorkspaceBar />
+              <StandaloneLearningHeader />
+              {children}
+              <PersianStandaloneGuide />
+              <GlobalReadingRuler />
+              <ContextualHoverHelp />
+              <DeepLSelectionTranslator />
+              <GuardedNudge />
+            </StaffAccessProvider>
           </AppStoreProvider>
         </LearningRecoveryBoundary>
       </body>

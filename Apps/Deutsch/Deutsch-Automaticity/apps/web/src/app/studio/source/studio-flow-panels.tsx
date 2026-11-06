@@ -309,12 +309,12 @@ export function SavePanel({
           <b>{formatTime(seconds)}</b> speaking
         </span>
         <span>
-          <b>{evaluation ? "LanguageTool" : "Not evaluated"}</b> result
+          <b>{evaluation ? "Rückmeldung vorhanden" : "Noch nicht geprüft"}</b>
         </span>
       </div>
       <p className="flow-note">
-        Audio, Transkript und Auswertung werden in IndexedDB dieses Browsers
-        gespeichert.
+        Deine Sitzung wird auf diesem Gerät gespeichert. Die Aufnahme wird nur
+        mit deiner Zustimmung mitgespeichert.
       </p>
       <div className="flow-actions">
         <button onClick={onBack}>Back</button>

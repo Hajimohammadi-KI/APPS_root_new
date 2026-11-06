@@ -58,10 +58,6 @@ window.languageNavigation = {
         "label": "Audio library"
       },
       {
-        "href": "/teacher",
-        "label": "Teacher studio"
-      },
-      {
         "href": "/support",
         "label": "Help"
       },
@@ -124,10 +120,6 @@ window.languageNavigation = {
       {
         "href": "/audio",
         "label": "Audio-Bibliothek"
-      },
-      {
-        "href": "/lehrkraft",
-        "label": "Lehrkraft-Studio"
       },
       {
         "href": "/support",

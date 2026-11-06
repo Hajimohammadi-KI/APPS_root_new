@@ -54,6 +54,8 @@ import { InstallAppButton } from "@/features/pwa/install-app-button";
 import { ContentReviewLinkCard } from "@/features/settings/content-review-link-card";
 import { DeleteAllDataCard } from "@/features/settings/delete-all-data-card";
 import { ImplementationIntentionsCard } from "@/features/settings/implementation-intentions-card";
+import { StaffOnly, LearnerOnly } from "@/components/staff-access";
+import { MeasurementParticipationControls } from "./measurement-participation-controls";
 import {
   STORAGE_RECOVERY_NAMESPACE,
   useLearnerState,
@@ -206,7 +208,7 @@ export function SettingsScreen() {
   function deleteMeasurementData() {
     if (
       !window.confirm(
-        "Lokale Einwilligung und Ausgangsmessung löschen? Lernfortschritt und private Sicherungen bleiben erhalten.",
+        "Lokale Teilnahmedaten löschen? Lernfortschritt und private Sicherungen bleiben erhalten.",
       )
     ) {
       return;
@@ -451,84 +453,97 @@ export function SettingsScreen() {
 
       <ImplementationIntentionsCard />
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <h2 className="flex items-center gap-2">
-              <ShieldCheck className="size-5 text-worksheet-success-ink" />
-              Optionale Wirksamkeitsmessung
-            </h2>
-          </CardTitle>
-          <CardDescription>
-            Wenn du helfen möchtest zu prüfen, ob diese App dein Sprechen und
-            Schreiben verbessert, kannst du eine anonyme Zusammenfassung deiner
-            Übungen herunterladen. Es wird nichts automatisch gesendet.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="settings-controls">
-          <label className="settings-toggle">
-            <input
-              checked={measurementConsent?.status === "granted"}
-              onChange={(event) =>
-                updateMeasurementConsent(event.target.checked)
-              }
-              type="checkbox"
-            />
-            <span>
-              <strong>
-                Ich willige in die optionale Wirksamkeitsmessung ein
-              </strong>
-              <small>
-                Die Zusammenfassung enthält nur Zahlen: eine zufällige ID für
-                dieses Gerät, Datum und Uhrzeit, App-Versionen, Ergebnisse,
-                bestandene Prüfungen und ob eine Person eine Antwort beurteilt
-                hat. Sie enthält nie deine Antworten, Transkripte, Aufnahmen,
-                E-Mail-Adresse oder Gerätekennung.
-              </small>
-            </span>
-          </label>
-          <div className="settings-measurement-summary">
-            <p>
-              Die Zusammenfassung bleibt höchstens 365 Tage auf diesem Gerät und
-              verlässt es nur, wenn du die Datei herunterlädst. Nach einem
-              Widerruf kann keine weitere Datei exportiert werden.
-            </p>
-            <p>
-              Ausgangswert:{" "}
-              {measurementBaseline ? "erfasst" : "noch nicht erfasst"}. Diese
-              App sammelt im Hintergrund keine Nutzungsstatistiken.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Button
-              disabled={
-                measurementConsent?.status !== "granted" || !measurementBaseline
-              }
-              onClick={exportMeasurementData}
-            >
-              <Download />
-              Datenschutzsichere Messdaten herunterladen
-            </Button>
-            <Button
-              disabled={!measurementConsent && !measurementBaseline}
-              onClick={deleteMeasurementData}
-              variant="outline"
-            >
-              <Trash2 />
-              Messdaten löschen
-            </Button>
-          </div>
-          {measurementStatus ? (
-            <p
-              aria-live="polite"
-              className="text-sm font-semibold"
-              role="status"
-            >
-              {measurementStatus}
-            </p>
-          ) : null}
-        </CardContent>
-      </Card>
+      <StaffOnly>
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <h2 className="flex items-center gap-2">
+                <ShieldCheck className="size-5 text-worksheet-success-ink" />
+                Optionale Wirksamkeitsmessung
+              </h2>
+            </CardTitle>
+            <CardDescription>
+              Wenn du helfen möchtest zu prüfen, ob diese App dein Sprechen und
+              Schreiben verbessert, kannst du eine anonyme Zusammenfassung
+              deiner Übungen herunterladen. Es wird nichts automatisch gesendet.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="settings-controls">
+            <label className="settings-toggle">
+              <input
+                checked={measurementConsent?.status === "granted"}
+                onChange={(event) =>
+                  updateMeasurementConsent(event.target.checked)
+                }
+                type="checkbox"
+              />
+              <span>
+                <strong>
+                  Ich willige in die optionale Wirksamkeitsmessung ein
+                </strong>
+                <small>
+                  Die Zusammenfassung enthält nur Zahlen: eine zufällige ID für
+                  dieses Gerät, Datum und Uhrzeit, App-Versionen, Ergebnisse,
+                  bestandene Prüfungen und ob eine Person eine Antwort beurteilt
+                  hat. Sie enthält nie deine Antworten, Transkripte, Aufnahmen,
+                  E-Mail-Adresse oder Gerätekennung.
+                </small>
+              </span>
+            </label>
+            <div className="settings-measurement-summary">
+              <p>
+                Die Zusammenfassung bleibt höchstens 365 Tage auf diesem Gerät
+                und verlässt es nur, wenn du die Datei herunterlädst. Nach einem
+                Widerruf kann keine weitere Datei exportiert werden.
+              </p>
+              <p>
+                Ausgangswert:{" "}
+                {measurementBaseline ? "erfasst" : "noch nicht erfasst"}. Diese
+                App sammelt im Hintergrund keine Nutzungsstatistiken.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <Button
+                disabled={
+                  measurementConsent?.status !== "granted" ||
+                  !measurementBaseline
+                }
+                onClick={exportMeasurementData}
+              >
+                <Download />
+                Datenschutzsichere Messdaten herunterladen
+              </Button>
+              <Button
+                disabled={!measurementConsent && !measurementBaseline}
+                onClick={deleteMeasurementData}
+                variant="outline"
+              >
+                <Trash2 />
+                Messdaten löschen
+              </Button>
+            </div>
+            {measurementStatus ? (
+              <p
+                aria-live="polite"
+                className="text-sm font-semibold"
+                role="status"
+              >
+                {measurementStatus}
+              </p>
+            ) : null}
+          </CardContent>
+        </Card>
+      </StaffOnly>
+      <LearnerOnly>
+        {measurementConsent || measurementBaseline ? (
+          <MeasurementParticipationControls
+            active={measurementConsent?.status === "granted"}
+            onWithdraw={() => updateMeasurementConsent(false)}
+            onDelete={deleteMeasurementData}
+            status={measurementStatus}
+          />
+        ) : null}
+      </LearnerOnly>
 
       <Card>
         <CardHeader>
@@ -676,7 +691,9 @@ export function SettingsScreen() {
           </div>
         </CardContent>
       </Card>
-      <ContentReviewLinkCard />
+      <StaffOnly>
+        <ContentReviewLinkCard />
+      </StaffOnly>
       <DeleteAllDataCard onExport={exportData} />
     </div>
   );

@@ -15,14 +15,15 @@ test("local audio workflow starts without uploading audio or inventing a transcr
   );
   expect(html).toContain("Pronunciation from recording");
   expect(html).toContain("Words you intended to say");
-  expect(html).toContain("Load local speech model");
-  expect(html).toContain("Analyze sounds on this device");
+  expect(html).not.toContain("Load local speech model");
+  expect(html).not.toContain("Analyze sounds on this device");
+  expect(html).toContain("Listen to your original recording");
   expect(html).not.toContain("Azure");
   expect(html).not.toContain("Hello");
   expect(html).not.toContain("Pronunciation score");
 });
 
-test("local estimated phonemes retain acoustic differences without a corrected word or grade", () => {
+test("phoneme diagnostics are absent from the learner's server-rendered page", () => {
   const html = renderToStaticMarkup(
     <PronunciationResult
       observation={{
@@ -37,9 +38,9 @@ test("local estimated phonemes retain acoustic differences without a corrected w
       onReplay={() => {}}
     />,
   );
-  expect(html).toContain("/h ɑ l oʊ/");
-  expect(html).toContain("Replay this sound");
-  expect(html).toContain("experimental");
+  expect(html).not.toContain("/h ɑ l oʊ/");
+  expect(html).not.toContain("Replay this sound");
+  expect(html).not.toContain("experimental");
   expect(html).not.toContain("Hello");
   expect(html).not.toContain("Correct pronunciation");
   expect(html).not.toContain("Pronunciation score");

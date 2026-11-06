@@ -7,6 +7,7 @@ import {
 } from "./evidence";
 import { repairTaskForAttempt } from "./selector";
 import { readAutomaticityEvents } from "./storage";
+import { initializeStaffWorkspace } from "./staff-interface";
 
 /** Every surface derives actions from current judgments, never completion flags. */
 export function evidenceOverview(
@@ -154,6 +155,8 @@ export function mountEvidenceOverview(
     t = (a: string, b: string) => (en ? a : b);
   let active = true,
     pack: CurriculumPack | null = null;
+  let staff = false;
+  const practicePath = () => (staff ? "/staff/practice" : "/practice");
   const node = <K extends keyof HTMLElementTagNameMap>(
     tag: K,
     text?: string,
@@ -163,10 +166,7 @@ export function mountEvidenceOverview(
     return value;
   };
   root.className = "automaticity-overview";
-  root.setAttribute(
-    "aria-label",
-    t("Independent learning evidence", "Unabhängige Lernnachweise"),
-  );
+  root.setAttribute("aria-label", t("Saved practice", "Gespeicherte Übungen"));
   root.style.cssText =
     "border-radius:14px;padding:20px;margin:16px 0;line-height:1.55;overflow-wrap:anywhere";
   const refresh = () => {
@@ -194,29 +194,32 @@ export function mountEvidenceOverview(
         "a",
         t("Open your learning path", "Deinen Lernweg öffnen"),
       );
-      link.href = "/practice";
+      link.href = practicePath();
       dailySummary.replaceChildren(
-        node("h3", t("Your learning evidence", "Deine Lernnachweise")),
+        node("h3", t("Your practice", "Deine Übungen")),
         node(
           "p",
           `${reduced.attempts.length} ${t("saved responses", "gespeicherte Antworten")}`,
         ),
         node("p", `${due} ${t("due reviews", "fällige Wiederholungen")}`),
-        node(
-          "p",
-          checked
-            ? `${checked} ${t("independent checks", "unabhängige Prüfungen")}`
-            : t(
-                "Independent accuracy is not yet established.",
-                "Selbstständige Genauigkeit ist noch nicht belegt.",
-              ),
-        ),
-        node(
-          "p",
-          `${delayed} ${t("delayed successes", "erfolgreiche spätere Abrufe")} · ${transfer} ${t("new-context successes", "Erfolge in neuem Kontext")}`,
-        ),
-        link,
       );
+      if (staff)
+        dailySummary.append(
+          node(
+            "p",
+            checked
+              ? `${checked} ${t("independent checks", "unabhängige Prüfungen")}`
+              : t(
+                  "Independent accuracy is not yet established.",
+                  "Selbstständige Genauigkeit ist noch nicht belegt.",
+                ),
+          ),
+          node(
+            "p",
+            `${delayed} ${t("delayed successes", "erfolgreiche spätere Abrufe")} · ${transfer} ${t("new-context successes", "Erfolge in neuem Kontext")}`,
+          ),
+        );
+      dailySummary.append(link);
     }
     root.replaceChildren(
       node(
@@ -241,7 +244,7 @@ export function mountEvidenceOverview(
           )
         : t("Resume independent practice", "Eigenständige Übung fortsetzen"),
     );
-    start.href = query.size ? `/practice?${query}` : "/practice";
+    start.href = query.size ? `${practicePath()}?${query}` : practicePath();
     start.className = "automaticity-primary-action";
     start.style.cssText =
       "display:inline-block;padding:10px 14px;margin:8px 8px 12px 0";
@@ -250,7 +253,7 @@ export function mountEvidenceOverview(
       "a",
       t("Review saved responses", "Gespeicherte Antworten prüfen"),
     );
-    review.href = "/practice?review=1";
+    review.href = `${practicePath()}?review=1#practice-history`;
     review.className = "automaticity-secondary-action";
     review.style.cssText =
       "display:inline-block;padding:10px 12px;margin:8px 8px 12px 0";
@@ -259,7 +262,7 @@ export function mountEvidenceOverview(
       "a",
       t("Transfer to another device", "Auf ein anderes Gerät übertragen"),
     );
-    transfer.href = "/practice#backup-tools";
+    transfer.href = `${practicePath()}#backup-tools`;
     transfer.style.cssText =
       "display:inline-block;padding:10px 12px;margin:8px 0 12px";
     root.append(transfer);
@@ -273,125 +276,140 @@ export function mountEvidenceOverview(
             "a",
             `${repair.title ?? t("Saved response", "Gespeicherte Antwort")} · ${repair.modality === "writing" ? t("Writing", "Schreiben") : t("Speaking", "Sprechen")}`,
           );
-        link.href = repair.href;
+        link.href = staff
+          ? repair.href.replace(/^\/practice/u, "/staff/practice")
+          : repair.href;
         link.dataset.attempt = repair.attemptId;
         item.append(link);
         list.append(item);
       }
       root.append(list);
     }
-    // R97: every skill is listed, so a skill without evidence is visible.
-    const names = {
-      reading: t("Reading", "Lesen"),
-      listening: t("Listening", "Hören"),
-      writing: t("Writing", "Schreiben"),
-      speaking: t("Speaking", "Sprechen"),
-      interaction: t("Interaction", "Interaktion"),
-      transfer: t("Transfer to new contexts", "Transfer in neue Kontexte"),
-    };
-    const count = (n: number, one: string, many: string) =>
-      `${n} ${n === 1 ? one : many}`;
-    const skills = node("section");
-    skills.dataset.skillReport = "true";
-    const skillList = node("ul");
-    for (const row of skillReport(view.modes)) {
-      const name = names[row.skill];
-      const item = node(
-        "li",
-        row.status === "not_measured"
-          ? t(
-              `${name}: not measured; the app has no checked tasks for this skill yet.`,
-              `${name}: nicht gemessen; die App hat dafür noch keine geprüften Aufgaben.`,
-            )
-          : row.status === "none"
-            ? t(`${name}: no evidence yet.`, `${name}: noch kein Nachweis.`)
-            : row.status === "practice_only"
-              ? t(
-                  `${name}: ${count(row.saved, "saved response", "saved responses")}, none checked yet.`,
-                  `${name}: ${count(row.saved, "gespeicherte Antwort", "gespeicherte Antworten")}, noch keine geprüft.`,
-                )
-              : row.skill === "transfer"
-                ? t(
-                    `${name}: ${count(row.checked, "success", "successes")} in a new context.`,
-                    `${name}: ${count(row.checked, "Erfolg", "Erfolge")} in neuem Kontext.`,
-                  )
-                : t(
-                    `${name}: ${count(row.checked, "independent check", "independent checks")}, ${Math.round((row.accuracy ?? 0) * 100)}% matched · ${count(row.delayed, "delayed success", "delayed successes")}.`,
-                    `${name}: ${count(row.checked, "unabhängige Prüfung", "unabhängige Prüfungen")}, ${Math.round((row.accuracy ?? 0) * 100)} % richtig · ${count(row.delayed, "verzögerter Erfolg", "verzögerte Erfolge")}.`,
-                  ),
-      );
-      item.dataset.skill = row.skill;
-      item.dataset.status = row.status;
-      skillList.append(item);
-    }
-    skills.append(
-      node("h3", t("Evidence by skill", "Nachweise nach Fertigkeit")),
-      skillList,
-    );
-    root.append(skills);
-    const details = node("details"),
-      summary = node(
-        "summary",
-        t(
-          "Practice, accuracy, transfer and timing",
-          "Übung, Genauigkeit, Transfer und Zeit",
-        ),
-      );
-    summary.style.cssText = "cursor:pointer;padding:8px 0;font-weight:600";
-    details.append(summary);
-    const grid = node("div");
-    grid.style.cssText =
-      "display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px";
-    for (const mode of view.modes) {
-      const card = node("section");
-      card.dataset.evidenceMode = mode.modality;
-      card.append(
-        node(
-          "h3",
-          mode.modality === "writing"
-            ? t("Writing", "Schreiben")
-            : t("Speaking", "Sprechen"),
-        ),
-        node(
-          "p",
-          mode.accuracy === null
-            ? t("Accuracy not yet established", "Genauigkeit noch nicht belegt")
-            : `${Math.round(mode.accuracy * 100)}% · ${mode.assessed} ${mode.assessed === 1 ? t("independent check", "unabhängige Prüfung") : t("independent checks", "unabhängige Prüfungen")}`,
-        ),
-        node(
-          "p",
-          `${mode.attempts} ${mode.attempts === 1 ? t("saved attempt", "gespeicherter Versuch") : t("saved attempts", "gespeicherte Versuche")} · ${mode.assisted} ${t("with recorded support", "mit erfasster Hilfe")}`,
-        ),
-        node(
-          "p",
-          `${mode.delayed} ${mode.delayed === 1 ? t("delayed success", "erfolgreicher verzögerter Abruf") : t("delayed successes", "erfolgreiche verzögerte Abrufe")} · ${mode.transfer} ${mode.transfer === 1 ? t("new-context success", "Erfolg in neuem Kontext") : t("new-context successes", "Erfolge in neuem Kontext")}`,
-        ),
-        node(
-          "p",
-          mode.timing.length
+    if (!staff) {
+      for (const mode of view.modes)
+        root.append(
+          node(
+            "p",
+            `${mode.modality === "writing" ? t("Writing", "Schreiben") : t("Speaking", "Sprechen")}: ${mode.attempts} ${t("saved responses", "gespeicherte Antworten")}`,
+          ),
+        );
+    } else {
+      // R97: staff can inspect missing evidence without putting methodology on the learner path.
+      const names = {
+        reading: t("Reading", "Lesen"),
+        listening: t("Listening", "Hören"),
+        writing: t("Writing", "Schreiben"),
+        speaking: t("Speaking", "Sprechen"),
+        interaction: t("Interaction", "Interaktion"),
+        transfer: t("Transfer to new contexts", "Transfer in neue Kontexte"),
+      };
+      const count = (n: number, one: string, many: string) =>
+        `${n} ${n === 1 ? one : many}`;
+      const skills = node("section");
+      skills.dataset.skillReport = "true";
+      const skillList = node("ul");
+      for (const row of skillReport(view.modes)) {
+        const name = names[row.skill];
+        const item = node(
+          "li",
+          row.status === "not_measured"
             ? t(
-                "Response timing is available by topic in practice; it is not a speech-fluency score.",
-                "Antwortzeiten sind je Thema in der Übung verfügbar; sie sind kein Sprechflüssigkeitswert.",
+                `${name}: not measured; the app has no checked tasks for this skill yet.`,
+                `${name}: nicht gemessen; die App hat dafür noch keine geprüften Aufgaben.`,
               )
-            : t(
-                "Response timing unavailable; untimed work remains usable.",
-                "Antwortzeit nicht verfügbar; Übungen ohne Zeitmessung bleiben nutzbar.",
-              ),
+            : row.status === "none"
+              ? t(`${name}: no evidence yet.`, `${name}: noch kein Nachweis.`)
+              : row.status === "practice_only"
+                ? t(
+                    `${name}: ${count(row.saved, "saved response", "saved responses")}, none checked yet.`,
+                    `${name}: ${count(row.saved, "gespeicherte Antwort", "gespeicherte Antworten")}, noch keine geprüft.`,
+                  )
+                : row.skill === "transfer"
+                  ? t(
+                      `${name}: ${count(row.checked, "success", "successes")} in a new context.`,
+                      `${name}: ${count(row.checked, "Erfolg", "Erfolge")} in neuem Kontext.`,
+                    )
+                  : t(
+                      `${name}: ${count(row.checked, "independent check", "independent checks")}, ${Math.round((row.accuracy ?? 0) * 100)}% matched · ${count(row.delayed, "delayed success", "delayed successes")}.`,
+                      `${name}: ${count(row.checked, "unabhängige Prüfung", "unabhängige Prüfungen")}, ${Math.round((row.accuracy ?? 0) * 100)} % richtig · ${count(row.delayed, "verzögerter Erfolg", "verzögerte Erfolge")}.`,
+                    ),
+        );
+        item.dataset.skill = row.skill;
+        item.dataset.status = row.status;
+        skillList.append(item);
+      }
+      skills.append(
+        node("h3", t("Evidence by skill", "Nachweise nach Fertigkeit")),
+        skillList,
+      );
+      root.append(skills);
+      const details = node("details"),
+        summary = node(
+          "summary",
+          t(
+            "Practice, accuracy, transfer and timing",
+            "Übung, Genauigkeit, Transfer und Zeit",
+          ),
+        );
+      summary.style.cssText = "cursor:pointer;padding:8px 0;font-weight:600";
+      details.append(summary);
+      const grid = node("div");
+      grid.style.cssText =
+        "display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:16px";
+      for (const mode of view.modes) {
+        const card = node("section");
+        card.dataset.evidenceMode = mode.modality;
+        card.append(
+          node(
+            "h3",
+            mode.modality === "writing"
+              ? t("Writing", "Schreiben")
+              : t("Speaking", "Sprechen"),
+          ),
+          node(
+            "p",
+            mode.accuracy === null
+              ? t(
+                  "Accuracy not yet established",
+                  "Genauigkeit noch nicht belegt",
+                )
+              : `${Math.round(mode.accuracy * 100)}% · ${mode.assessed} ${mode.assessed === 1 ? t("independent check", "unabhängige Prüfung") : t("independent checks", "unabhängige Prüfungen")}`,
+          ),
+          node(
+            "p",
+            `${mode.attempts} ${mode.attempts === 1 ? t("saved attempt", "gespeicherter Versuch") : t("saved attempts", "gespeicherte Versuche")} · ${mode.assisted} ${t("with recorded support", "mit erfasster Hilfe")}`,
+          ),
+          node(
+            "p",
+            `${mode.delayed} ${mode.delayed === 1 ? t("delayed success", "erfolgreicher verzögerter Abruf") : t("delayed successes", "erfolgreiche verzögerte Abrufe")} · ${mode.transfer} ${mode.transfer === 1 ? t("new-context success", "Erfolg in neuem Kontext") : t("new-context successes", "Erfolge in neuem Kontext")}`,
+          ),
+          node(
+            "p",
+            mode.timing.length
+              ? t(
+                  "Response timing is available by topic in practice; it is not a speech-fluency score.",
+                  "Antwortzeiten sind je Thema in der Übung verfügbar; sie sind kein Sprechflüssigkeitswert.",
+                )
+              : t(
+                  "Response timing unavailable; untimed work remains usable.",
+                  "Antwortzeit nicht verfügbar; Übungen ohne Zeitmessung bleiben nutzbar.",
+                ),
+          ),
+        );
+        grid.append(card);
+      }
+      details.append(
+        grid,
+        node(
+          "p",
+          t(
+            "Practice completion does not certify a CEFR level. Original answers and earlier records remain in your history.",
+            "Abgeschlossene Übungen bestätigen kein GER-Niveau. Originalantworten und frühere Einträge bleiben in deinem Verlauf.",
+          ),
         ),
       );
-      grid.append(card);
+      root.append(details);
     }
-    details.append(
-      grid,
-      node(
-        "p",
-        t(
-          "Practice completion does not certify a CEFR level. Original answers and earlier records remain in your history.",
-          "Abgeschlossene Übungen bestätigen kein GER-Niveau. Originalantworten und frühere Einträge bleiben in deinem Verlauf.",
-        ),
-      ),
-    );
-    root.append(details);
     if (read.unreadable.length || reduced.rejected.length) {
       const warning = node(
         "p",
@@ -429,7 +447,7 @@ export function mountEvidenceOverview(
         ),
       );
       const link = node("a", t("Open practice", "Übung öffnen"));
-      link.href = "/practice";
+      link.href = practicePath();
       root.append(link);
     }
   };
@@ -439,9 +457,10 @@ export function mountEvidenceOverview(
       t("Loading saved practice…", "Gespeicherte Übungen werden geladen…"),
     ),
   );
-  void loadCurriculumPack(language)
-    .then((value) => {
+  void Promise.all([loadCurriculumPack(language), initializeStaffWorkspace()])
+    .then(([value, role]) => {
       pack = value;
+      staff = !!role;
       refresh();
     })
     .catch(fail);

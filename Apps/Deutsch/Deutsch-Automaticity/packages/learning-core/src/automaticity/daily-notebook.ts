@@ -10,6 +10,7 @@ import {
 import { loadCurriculumPack } from "./overview";
 import { readAutomaticityEvents } from "./storage";
 import { readSupportLanguage } from "./support-language";
+import { initializeStaffWorkspace } from "./staff-interface";
 
 /** The daily plan's part of the error notebook: the items of the
  * grammar level the daily page shows (its `data-level`), today's count and a
@@ -20,6 +21,7 @@ export function mountDailyNotebook(
 ): () => void {
   const t = (en: string, de: string) => (language === "en" ? en : de);
   let pack: CurriculumPack | null = null;
+  let staff = false;
   const node = <K extends keyof HTMLElementTagNameMap>(
     tag: K,
     text: string,
@@ -30,7 +32,7 @@ export function mountDailyNotebook(
   };
   const link = (text: string, href: string) => {
     const value = node("a", text);
-    value.href = href;
+    value.href = staff ? href.replace(/^\/practice/u, "/staff/practice") : href;
     value.style.cssText =
       "justify-self:start;display:inline-flex;min-height:40px;align-items:center;padding:8px 16px;border-radius:12px;background:#007f83;color:#fff;font-weight:700;text-decoration:none";
     return value;
@@ -114,7 +116,7 @@ export function mountDailyNotebook(
       heading,
       node(
         "p",
-        `${t(`Today: ${progress.today} of ${DAILY_NOTEBOOK_GOAL} exercises`, `Heute: ${progress.today} von ${DAILY_NOTEBOOK_GOAL} Übungen`)} · ${t(`${progress.passed} of ${progress.total} passed at ${level}`, `${progress.passed} von ${progress.total} auf ${level} bestanden`)}. ${copy.source}`,
+        `${t(`Today: ${progress.today} of ${DAILY_NOTEBOOK_GOAL} exercises`, `Heute: ${progress.today} von ${DAILY_NOTEBOOK_GOAL} Übungen`)} · ${t(`${progress.passed} of ${progress.total} passed at ${level}`, `${progress.passed} von ${progress.total} auf ${level} bestanden`)}.`,
       ),
       progress.next
         ? link(
@@ -134,6 +136,8 @@ export function mountDailyNotebook(
             ),
           ),
     );
+    if (staff)
+      root.append(node("p", copy.source), node("p", copy.progressBasis));
   };
   const changed = () => {
     try {
@@ -148,9 +152,10 @@ export function mountDailyNotebook(
   window.addEventListener("storage", changed);
   window.addEventListener("focus", changed);
   window.addEventListener("pageshow", changed);
-  void loadCurriculumPack(language)
-    .then((value) => {
+  void Promise.all([loadCurriculumPack(language), initializeStaffWorkspace()])
+    .then(([value, role]) => {
       pack = value;
+      staff = !!role;
       changed();
     })
     .catch(() => {

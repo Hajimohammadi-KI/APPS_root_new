@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { normalizeDailySessionMinutes } from "@automaticity/learning-core";
 import { useLearnerState } from "@/features/learner-state/learner-state-provider";
 import { playTeacherAudioByContextKey } from "@/lib/teacher-content";
+import { StaffOnly } from "@/components/staff-access";
 import {
   conversationTopics,
   copy,
@@ -174,7 +175,7 @@ export default function Home() {
       : false;
     if (!played)
       recorder.setMessage(
-        "Noch keine menschliche Aufnahme vorhanden. Bitte im Lehrkraft-Studio hinzufügen.",
+        "Für diesen Text ist noch keine Aufnahme zum Anhören verfügbar.",
       );
   }
 
@@ -185,6 +186,12 @@ export default function Home() {
 
   return (
     <div className="conversation-page">
+      <StaffOnly>
+        <p className="studio-staff-note">
+          Fehlende menschliche Aufnahmen können im{" "}
+          <a href="/lehrkraft">Lehrkraft-Studio</a> ergänzt werden.
+        </p>
+      </StaffOnly>
       <div className="studio-main">
         <header>
           <div>

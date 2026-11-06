@@ -1,5 +1,6 @@
 import type { ConversationTopic, StudioLanguage } from "./conversation-data";
 import { type EvaluationResponse, formatTime } from "./studio-helpers";
+import { StaffOnly } from "@/components/staff-access";
 
 export function SessionEvidence({
   language,
@@ -40,18 +41,20 @@ export function SessionEvidence({
               ? "Aufnahme und Textfeedback"
               : "Recording and transcript feedback"}
           </h3>
-          <div className="feedback-row f0">
-            <span>◫</span>
-            <div>
-              <b>Transcript word rate</b>
-              <small>
-                {seconds
-                  ? `${wordsPerMinute} transcript words per minute of recording; not a fluency score`
-                  : "Waiting for recorded timing"}
-              </small>
+          <StaffOnly>
+            <div className="feedback-row f0">
+              <span>◫</span>
+              <div>
+                <b>Transcript word rate</b>
+                <small>
+                  {seconds
+                    ? `${wordsPerMinute} transcript words per minute of recording; not a fluency score`
+                    : "Waiting for recorded timing"}
+                </small>
+              </div>
+              <strong>{seconds ? `${wordsPerMinute}` : "—"}</strong>
             </div>
-            <strong>{seconds ? `${wordsPerMinute}` : "—"}</strong>
-          </div>
+          </StaffOnly>
           <div className="feedback-row f1">
             <span>◉</span>
             <div>
@@ -66,7 +69,7 @@ export function SessionEvidence({
               <b>Transcript grammar</b>
               <small>
                 {evaluation
-                  ? `${evaluation.issues.length} LanguageTool issue(s)`
+                  ? `${evaluation.issues.length} suggested correction(s)`
                   : "Not checked"}
               </small>
             </div>
@@ -78,7 +81,7 @@ export function SessionEvidence({
               <b>Transcript</b>
               <small>
                 {transcript
-                  ? "Manually entered text; review against the original audio"
+                  ? "Listen again and check these words against your recording"
                   : "Waiting for speech"}
               </small>
             </div>
@@ -96,17 +99,19 @@ export function SessionEvidence({
               {matchedChunks}/{totalChunks}
             </strong>
           </div>
-          <div className="coach-tip">
-            <b>☼ Evidence rule</b>
-            <p>
-              {language === "de"
-                ? "Keine Bewertung wird angezeigt, wenn der echte Anbieter nicht geantwortet hat."
-                : "No evaluation is shown when the real provider has not responded."}
-            </p>
-          </div>
+          <StaffOnly>
+            <div className="coach-tip">
+              <b>☼ Evidence rule</b>
+              <p>
+                {language === "de"
+                  ? "Keine Bewertung wird angezeigt, wenn der echte Anbieter nicht geantwortet hat."
+                  : "No evaluation is shown when the real provider has not responded."}
+              </p>
+            </div>
+          </StaffOnly>
         </section>
         <section className="panel">
-          <h3>Session evidence</h3>
+          <h3>Your session</h3>
           <div className="metrics">
             <div>
               <b>{attempts}</b>
@@ -120,10 +125,12 @@ export function SessionEvidence({
               <b>{wordCount}</b>
               <span>Transcript words</span>
             </div>
-            <div>
-              <b>{wordsPerMinute}</b>
-              <span>Transcript WPM</span>
-            </div>
+            <StaffOnly>
+              <div>
+                <b>{wordsPerMinute}</b>
+                <span>Transcript WPM</span>
+              </div>
+            </StaffOnly>
           </div>
           <p className="encourage">♙ {selected.goal}</p>
         </section>
@@ -147,7 +154,7 @@ export function SessionEvidence({
               </div>
               <div className="corrected">
                 <b>
-                  {evaluation?.issues.length ? "Corrected" : "Provider result"}
+                  {evaluation?.issues.length ? "Corrected" : "Checked text"}
                 </b>
                 <p>{evaluation?.corrected ?? "—"}</p>
               </div>

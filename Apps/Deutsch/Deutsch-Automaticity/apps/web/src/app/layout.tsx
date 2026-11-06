@@ -7,6 +7,10 @@ import { AppShell } from "@/components/app-shell";
 import { Providers } from "@/components/providers";
 import { DeepLSelectionTranslator } from "@/components/deepl-selection-translator";
 import { GuardedNudge } from "@/features/adherence/guarded-nudge";
+import {
+  StaffAccessProvider,
+  StaffWorkspaceBar,
+} from "@/components/staff-access";
 
 export const metadata: Metadata = {
   title: {
@@ -59,9 +63,12 @@ export default function RootLayout({
       <body>
         <LearningRecoveryBoundary>
           <Providers>
-            <AppShell>{children}</AppShell>
-            <DeepLSelectionTranslator />
-            <GuardedNudge />
+            <StaffAccessProvider>
+              <StaffWorkspaceBar />
+              <AppShell>{children}</AppShell>
+              <DeepLSelectionTranslator />
+              <GuardedNudge />
+            </StaffAccessProvider>
           </Providers>
         </LearningRecoveryBoundary>
       </body>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { StaffOnly } from "@/components/staff-access";
 import {
   parseLocalPronunciationObservation,
   type LocalPronunciationObservation,
@@ -27,46 +28,51 @@ export function PronunciationResult({
   readonly onReplay: (start: number, duration: number) => void;
 }) {
   return (
-    <section aria-label="Acoustic observations">
-      <h4>Sounds estimated from your recording</h4>
-      <p role="status">
-        Local sound estimates are ready. Listen to the original recording to
-        review them.
-      </p>
-      <p>
-        This experimental model estimates sounds directly from audio. It can
-        make mistakes and does not verify pronunciation, accent or mastery.
-      </p>
-      <p style={{ overflowWrap: "anywhere", fontSize: "1.25rem" }}>
-        /{observation.phonemes.join(" ")}/
-      </p>
-      <p>
-        The model received only your audio samples. It did not receive the
-        intended words or your transcript.
-      </p>
-      <ul style={{ paddingInlineStart: "1.5rem" }}>
-        {observation.spans.map((span, index) => (
-          <li key={`${index}:${span.startMs}`} style={{ marginBlock: ".4rem" }}>
-            /{span.phoneme}/{" "}
-            <button
-              type="button"
-              onClick={() =>
-                onReplay(
-                  span.startMs / 1000,
-                  (span.endMs - span.startMs) / 1000,
-                )
-              }
+    <StaffOnly>
+      <section aria-label="Acoustic observations">
+        <h4>Sounds estimated from your recording</h4>
+        <p role="status">
+          Local sound estimates are ready. Listen to the original recording to
+          review them.
+        </p>
+        <p>
+          This experimental model estimates sounds directly from audio. It can
+          make mistakes and does not verify pronunciation, accent or mastery.
+        </p>
+        <p style={{ overflowWrap: "anywhere", fontSize: "1.25rem" }}>
+          /{observation.phonemes.join(" ")}/
+        </p>
+        <p>
+          The model received only your audio samples. It did not receive the
+          intended words or your transcript.
+        </p>
+        <ul style={{ paddingInlineStart: "1.5rem" }}>
+          {observation.spans.map((span, index) => (
+            <li
+              key={`${index}:${span.startMs}`}
+              style={{ marginBlock: ".4rem" }}
             >
-              Replay this sound
-            </button>
-          </li>
-        ))}
-      </ul>
-      <p>
-        Timing is approximate. Review unclear sounds with your teacher using the
-        original audio.
-      </p>
-    </section>
+              /{span.phoneme}/{" "}
+              <button
+                type="button"
+                onClick={() =>
+                  onReplay(
+                    span.startMs / 1000,
+                    (span.endMs - span.startMs) / 1000,
+                  )
+                }
+              >
+                Replay this sound
+              </button>
+            </li>
+          ))}
+        </ul>
+        <p>
+          Timing is approximate. Review unclear sounds with your teacher using
+          the original audio.
+        </p>
+      </section>
+    </StaffOnly>
   );
 }
 
@@ -432,11 +438,13 @@ function PronunciationRecording({
         </>
       )}
       {playbackMessage && <p role="status">{playbackMessage}</p>}
-      <LocalSoundAnalysis
-        audioBlob={audioBlob}
-        recordingBusy={recordingBusy}
-        onReplay={replayWord}
-      />
+      <StaffOnly>
+        <LocalSoundAnalysis
+          audioBlob={audioBlob}
+          recordingBusy={recordingBusy}
+          onReplay={replayWord}
+        />
+      </StaffOnly>
     </>
   );
 }
@@ -463,9 +471,8 @@ export function PronunciationPanel({
       <div className="record-main" style={{ minWidth: 0 }}>
         <h3>Pronunciation from recording</h3>
         <p>
-          The local model estimates sounds from your recording instead of
-          replacing them with a guessed word. Record a short phrase of up to 30
-          seconds.
+          Listen to your original recording and compare it with the words you
+          intended to say. Record a short phrase of up to 30 seconds.
         </p>
         <label style={{ display: "block" }}>
           Words you intended to say
@@ -483,10 +490,15 @@ export function PronunciationPanel({
           />
         </label>
         <p>
-          Optional notes for your own comparison. These words are never sent to
-          the sound model. Selected practice variant: {variant}; the model does
-          not grade your accent.
+          Optional notes for your own comparison. Listening to your recording
+          helps you practise; the app does not give a pronunciation grade.
         </p>
+        <StaffOnly>
+          <p>
+            Selected practice variant: {variant}. Intended words are not sent to
+            the sound model.
+          </p>
+        </StaffOnly>
         <PronunciationRecording
           key={`${recordingVersion}:${audioUrl ?? ""}`}
           audioBlob={audioBlob}

@@ -37,6 +37,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
+    "@vercel/blob": "^2.8.2",
     "ts-fsrs": "5.4.1"
   }
 }

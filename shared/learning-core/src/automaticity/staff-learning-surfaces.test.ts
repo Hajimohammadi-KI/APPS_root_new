@@ -47,14 +47,19 @@ function workspaceRoot() {
   }
   return directory;
 }
-const pack = JSON.parse(
-  readFileSync(
-    join(
-      workspaceRoot(),
-      "Apps/Deutsch/Deutsch-Automaticity/apps/web/public/learning-core/curriculum-de.json",
+const packs = Object.fromEntries(
+  (["en", "de"] as const).map((language) => [
+    language,
+    JSON.parse(
+      readFileSync(
+        join(
+          workspaceRoot(),
+          `Apps/${language === "en" ? "English/English" : "Deutsch/Deutsch"}-Automaticity/apps/web/public/learning-core/curriculum-${language}.json`,
+        ),
+        "utf8",
+      ),
     ),
-    "utf8",
-  ),
+  ]),
 );
 const originals = new Map<string, PropertyDescriptor | undefined>();
 const disposers: (() => void)[] = [];
@@ -67,7 +72,7 @@ function put(key: string, value: unknown) {
     value,
   });
 }
-function browser(pathname: string, staff = false) {
+function browser(pathname: string, staff = false, language: "en" | "de" = "de") {
   const summary = new ElementStub("section");
   put("document", {
     createElement: (tag: string) => new ElementStub(tag),
@@ -90,7 +95,7 @@ function browser(pathname: string, staff = false) {
         JSON.stringify(
           url === "/api/staff-session"
             ? { role: staff ? "developer" : null }
-            : pack,
+            : packs[language],
         ),
         { status: 200 },
       ),
@@ -124,12 +129,12 @@ test("learner progress shows next actions without technical skill evidence metho
 
 for (const language of ["en", "de"] as const)
   test(`${language}: daily learner notebook keeps the next exercise without progress counters`, async () => {
-    browser(language === "de" ? "/heute" : "/today");
+    browser(language === "de" ? "/heute" : "/today", false, language);
     const root = new ElementStub("section");
     root.dataset.level = "A1";
     disposers.push(mountDailyNotebook(root as unknown as HTMLElement, language));
     await Bun.sleep(0);
-    expect(root.textContent).not.toMatch(/\d+ (?:von|of) \d+/u);
+    expect(root.textContent).not.toMatch(/\d+ (?:von|of|از) \d+/u);
     expect(root.textContent).not.toContain("Today:");
     expect(root.textContent).not.toContain("Heute:");
     expect(root.textContent).toContain(

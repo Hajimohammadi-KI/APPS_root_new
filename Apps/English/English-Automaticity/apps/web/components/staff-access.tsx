@@ -13,47 +13,64 @@ import {
   watchStaffSession,
   broadcastStaffLogout,
 } from "@automaticity/learning-core/automaticity";
+import { StaffOwnerSetup } from "./staff-owner-setup";
 
 type StaffRole = "teacher" | "developer";
+type Language = "en" | "de";
 type Access = {
   role: StaffRole | null;
   active: boolean;
   loading: boolean;
   configured: boolean;
+  email: string | null;
+  isOwner: boolean;
+  setupAvailable: boolean;
 };
-const Context = createContext<Access>({
+type StaffContext = Access & { language: Language };
+const emptyAccess: Access = {
   role: null,
   active: false,
   loading: false,
   configured: true,
-});
+  email: null,
+  isOwner: false,
+  setupAvailable: false,
+};
+const Context = createContext<StaffContext>({ ...emptyAccess, language: "en" });
+
+/** ورودی مسیر فعلی است؛ خروجی فقط مشخص می‌کند آیا رابط حرفه‌ای باید جلسهٔ سرور را بررسی کند. */
 const professionalPath = (path: string) =>
   path === "/staff" ||
   path.startsWith("/staff/") ||
   /^\/(teacher|lehrkraft)(?:\/|$)/u.test(path);
 
-export function StaffAccessProvider({ children }: { children: ReactNode }) {
+/**
+ * ورودی فرزندان و زبان ثابت اپ است؛ خروجی context دسترسی تأییدشده برای همان مسیر است.
+ * نقش، ایمیل و مالکیت فقط از /api/staff-session می‌آیند؛ هیچ ترجیح یادگیرنده مجوز ورود نیست.
+ * watchStaffSession انقضا و خروج تب‌های دیگر را کنترل می‌کند و پاک‌سازی effect ناظر قبلی را می‌بندد.
+ */
+export function StaffAccessProvider({
+  children,
+  language = "en",
+}: {
+  children: ReactNode;
+  language?: Language;
+}) {
   const pathname = usePathname() ?? "/";
   const workspace = professionalPath(pathname);
   const [access, setAccess] = useState<Access>({
-    role: null,
-    active: false,
+    ...emptyAccess,
     loading: workspace,
-    configured: true,
   });
   const [verifiedPath, setVerifiedPath] = useState("");
   useEffect(() => {
     document.documentElement.removeAttribute("data-staff-role");
+    // ورود به مسیر یادگیری، نمایش حرفه‌ای را خاموش می‌کند؛ داده و انتخاب ذخیره‌شده دست‌نخورده می‌مانند.
     if (!workspace) {
-      setAccess({
-        role: null,
-        active: false,
-        loading: false,
-        configured: true,
-      });
+      setAccess({ ...emptyAccess });
       return;
     }
-    setAccess({ role: null, active: false, loading: true, configured: true });
+    setAccess({ ...emptyAccess, loading: true });
     return watchStaffSession(
       pathname,
       (data) => {
@@ -65,17 +82,16 @@ export function StaffAccessProvider({ children }: { children: ReactNode }) {
           active: !!data.role,
           loading: false,
           configured: data.configured,
+          email: data.email,
+          isOwner: data.isOwner,
+          setupAvailable: data.setupAvailable,
         });
       },
       (reason) => {
         document.documentElement.removeAttribute("data-staff-role");
         setVerifiedPath("");
-        setAccess({
-          role: null,
-          active: false,
-          loading: false,
-          configured: true,
-        });
+        setAccess({ ...emptyAccess });
+        // خروج به یادگیری می‌رود؛ انقضا در مسیر خصوصی، مقصد قبلی را برای ورود دوباره نگه می‌دارد.
         if (reason === "logout") location.replace("/");
         else if (pathname !== "/staff")
           location.replace(
@@ -84,22 +100,28 @@ export function StaffAccessProvider({ children }: { children: ReactNode }) {
       },
     );
   }, [workspace, pathname]);
+  // نقش مسیر قبلی حتی برای یک رندر نباید روی مسیر تازه استفاده شود.
   const verified = workspace && verifiedPath === pathname;
   return (
     <Context.Provider
       value={{
         ...access,
+        language,
         role: verified ? access.role : null,
         active: verified && access.active,
+        isOwner: verified && access.isOwner,
       }}
     >
       {children}
     </Context.Provider>
   );
 }
+
+/** ورودی فرزندان خصوصی است؛ خروجی محتوای مجاز یا راهنمای ورود است. مجوز واقعی همچنان سمت سرور کنترل می‌شود. */
 export function StaffRouteGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const access = useStaffAccess();
+  const t = (en: string, de: string) => (access.language === "en" ? en : de);
   if (pathname === "/staff" || pathname === "/staff/") return children;
   if (
     access.active &&
@@ -107,17 +129,29 @@ export function StaffRouteGuard({ children }: { children: ReactNode }) {
   )
     return children;
   return (
-    <main dir="rtl" lang="fa" style={{ padding: 24 }}>
+    <main dir="ltr" lang={access.language} style={{ padding: 24 }}>
       <p role="status">
         {access.loading
-          ? "در حال بررسی ورود…"
-          : "برای بازکردن این بخش وارد محیط حرفه‌ای شوید."}
+          ? t("Checking sign-in…", "Anmeldung wird geprüft…")
+          : t(
+              "Sign in to open this workspace.",
+              "Melde dich an, um diesen Bereich zu öffnen.",
+            )}
       </p>
-      <a href="/staff">ورود معلم و توسعه‌دهنده</a>
+      <a href="/staff">
+        {t(
+          "Teacher and developer sign-in",
+          "Anmeldung für Lehrkräfte und Entwicklung",
+        )}
+      </a>
     </main>
   );
 }
+
+/** خروجی context جاری است؛ مصرف‌کننده حق ندارد با تغییر محلی این مقدار، مجوز سرور بسازد. */
 export const useStaffAccess = () => useContext(Context);
+
+/** ورودی محتوا و نقش‌های مجاز اختیاری است؛ خروجی فقط در جلسهٔ تأییدشده نمایش داده می‌شود. */
 export function StaffOnly({
   children,
   roles,
@@ -130,15 +164,26 @@ export function StaffOnly({
     ? children
     : null;
 }
+
+/** ورودی محتوای زبان‌آموز است؛ خروجی در محیط حرفه‌ای پنهان می‌ماند تا توضیحات دو مخاطب مخلوط نشوند. */
 export function LearnerOnly({ children }: { children: ReactNode }) {
   return useStaffAccess().active ? null : children;
 }
-export function StaffPortal({ language }: { language: "en" | "de" }) {
+
+/**
+ * ورودی زبان اپ است؛ خروجی ورود ایمیل/رمز، راه‌اندازی نخستین مالک یا منوی نقش تأییدشده است.
+ * فرم نقش را انتخاب نمی‌کند؛ سرور نقش و مالکیت حسابِ ایمیل را تعیین می‌کند.
+ * رمز فقط در state موقت و بدنهٔ درخواست هم‌مبدأ استفاده می‌شود؛ در URL یا ذخیرهٔ مرورگر نوشته نمی‌شود.
+ */
+export function StaffPortal({ language }: { language: Language }) {
   const access = useStaffAccess();
-  const [role, setRole] = useState<StaffRole>("teacher");
+  const t = (en: string, de: string) => (language === "en" ? en : de);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
+
+  /** رویداد فرم را به درخواست ایمیل/رمز تبدیل می‌کند؛ خروجی Promise<void> و مقصد فقط هم‌مبدأ است. */
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setPending(true);
@@ -148,183 +193,284 @@ export function StaffPortal({ language }: { language: "en" | "de" }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          role,
+          email,
           password,
           returnTo: new URLSearchParams(location.search).get("returnTo"),
         }),
       });
-      if (!response.ok)
-        throw new Error(
+      if (!response.ok) {
+        setMessage(
           response.status === 429
-            ? "تعداد تلاش‌ها زیاد است؛ یک دقیقه بعد دوباره امتحان کن."
+            ? t(
+                "Too many attempts. Try again in one minute.",
+                "Zu viele Versuche. Bitte in einer Minute erneut versuchen.",
+              )
             : response.status === 503
-              ? "ورود این محیط هنوز فعال نشده است."
-              : "نقش یا رمز ورود درست نیست.",
+              ? t(
+                  "Sign-in is not available yet. Contact the site owner.",
+                  "Die Anmeldung ist noch nicht verfügbar. Wende dich an den Betreiber.",
+                )
+              : t(
+                  "The email address or password is incorrect.",
+                  "E-Mail-Adresse oder Passwort ist nicht korrekt.",
+                ),
         );
+        return;
+      }
       const data = (await response.json()) as { redirectTo?: string };
       setPassword("");
       const target = new URL(data.redirectTo ?? "/staff", location.origin);
+      // فقط مسیر معتبر همین سایت را دنبال می‌کنیم؛ سرور نیز مقصد را با نقش حساب تطبیق می‌دهد.
       location.assign(
         target.origin === location.origin
           ? target.pathname + target.search
           : "/staff",
       );
-    } catch (error) {
+    } catch {
+      // متن خطای شبکه و بدنهٔ خام سرور ممکن است فنی باشد؛ پیام قابل اقدامِ زبان اپ نمایش داده می‌شود.
       setMessage(
-        error instanceof Error
-          ? error.message
-          : "ورود ممکن نشد؛ دوباره تلاش کن.",
+        t(
+          "Sign-in failed. Check your connection and try again.",
+          "Anmeldung fehlgeschlagen. Prüfe die Verbindung und versuche es erneut.",
+        ),
       );
     } finally {
       setPending(false);
     }
   }
+
   return (
     <main
       className="staff-workspace"
-      lang="fa"
-      dir="rtl"
+      lang={language}
+      dir="ltr"
       style={{
         maxWidth: 1000,
         margin: "32px auto",
         padding: 24,
-        lineHeight: 1.9,
+        lineHeight: 1.7,
       }}
     >
-      <h1>محیط معلم و توسعه‌دهنده</h1>
-      <p>ابزارهای نظارت، بازبینی محتوا و تنظیمات فنی در این بخش قرار دارند.</p>
+      <h1>
+        {t(
+          "Teacher and developer workspace",
+          "Bereich für Lehrkräfte und Entwicklung",
+        )}
+      </h1>
+      <p>
+        {t(
+          "Supervision, content review and technical settings are available here.",
+          "Hier findest du Betreuung, Inhaltsprüfung und technische Einstellungen.",
+        )}
+      </p>
       {access.loading ? (
-        <p role="status">در حال بررسی ورود…</p>
+        <p role="status">{t("Checking sign-in…", "Anmeldung wird geprüft…")}</p>
+      ) : !access.configured && access.setupAvailable ? (
+        <StaffOwnerSetup language={language} />
       ) : !access.active ? (
-        <form
-          onSubmit={(event) => void login(event)}
-          style={{ display: "grid", gap: 16, maxWidth: 440 }}
-        >
-          <label>
-            نقش ورود
-            <select
-              aria-label="نقش ورود"
-              value={role}
-              onChange={(event) =>
-                setRole(
-                  event.target.value === "developer" ? "developer" : "teacher",
-                )
-              }
-            >
-              <option value="teacher">معلم ناظر</option>
-              <option value="developer">توسعه‌دهنده</option>
-            </select>
-          </label>
-          <label>
-            رمز ورود
-            <input
-              type="password"
-              name="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              maxLength={512}
-            />
-          </label>
-          <button type="submit" disabled={pending || !access.configured}>
-            {pending ? "در حال ورود…" : "ورود به محیط حرفه‌ای"}
-          </button>
-          {!access.configured ? (
-            <p role="status">ورود این محیط هنوز فعال نشده است.</p>
-          ) : null}
-          {message ? <p role="alert">{message}</p> : null}
-        </form>
+        <>
+          <p>
+            {t(
+              "The site owner creates accounts and provides the email address and initial password. There is no public registration.",
+              "Der Betreiber legt Konten an und vergibt E-Mail-Adresse und erstes Passwort. Eine öffentliche Registrierung gibt es nicht.",
+            )}
+          </p>
+          <form
+            onSubmit={(event) => void login(event)}
+            style={{ display: "grid", gap: 16, maxWidth: 440 }}
+          >
+            <label>
+              {t("Email address", "E-Mail-Adresse")}
+              <input
+                type="email"
+                name="email"
+                autoComplete="username"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+                maxLength={254}
+              />
+            </label>
+            <label>
+              {t("Password", "Passwort")}
+              <input
+                type="password"
+                name="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                maxLength={512}
+              />
+            </label>
+            <button type="submit" disabled={pending || !access.configured}>
+              {pending
+                ? t("Signing in…", "Anmeldung läuft…")
+                : t("Sign in", "Anmelden")}
+            </button>
+            {!access.configured ? (
+              <p role="status">
+                {t(
+                  "Sign-in is not available yet. Contact the site owner.",
+                  "Die Anmeldung ist noch nicht verfügbar. Wende dich an den Betreiber.",
+                )}
+              </p>
+            ) : null}
+            {message ? <p role="alert">{message}</p> : null}
+          </form>
+        </>
       ) : (
         <>
+          <p>
+            {t("Signed in as", "Angemeldet als")} {access.email}
+          </p>
           <section>
-            <h2>منوی معلم ناظر</h2>
+            <h2>{t("Teacher menu", "Menü für Lehrkräfte")}</h2>
             <ul>
               <li>
                 <a href={language === "en" ? "/teacher" : "/lehrkraft"}>
-                  استودیوی معلم، تکلیف و بازبینی پاسخ‌ها
+                  {t(
+                    "Teacher studio, assignments and response review",
+                    "Lehrkraft-Studio, Aufgaben und Antworten prüfen",
+                  )}
                 </a>
               </li>
               <li>
                 <a href="/learning-core/content-review.html">
-                  بازبینی تخصصی سؤال‌ها و محتوای آموزشی
+                  {t(
+                    "Review questions and learning content",
+                    "Fragen und Lerninhalte prüfen",
+                  )}
                 </a>
               </li>
               <li>
                 <a href="/staff/practice?review=1">
-                  داوری پاسخ‌های ذخیره‌شده و گزارش تمرین
+                  {t(
+                    "Review saved responses and practice reports",
+                    "Gespeicherte Antworten und Übungsberichte prüfen",
+                  )}
                 </a>
               </li>
               <li>
-                <a href="/staff/progress">گزارش تفصیلی پیشرفت و روش محاسبه</a>
+                <a href="/staff/progress">
+                  {t(
+                    "Detailed progress and calculation method",
+                    "Ausführlicher Fortschritt und Berechnungsmethode",
+                  )}
+                </a>
               </li>
               <li>
-                <a href="/staff/settings">تنظیمات مطالعه، پژوهش و بازبینی</a>
+                <a href="/staff/settings">
+                  {t(
+                    "Study, research and review settings",
+                    "Einstellungen für Lernen, Forschung und Prüfung",
+                  )}
+                </a>
               </li>
               <li>
-                <a href="/staff/studio">بررسی ضبط و جزئیات استودیو</a>
+                <a href="/staff/studio">
+                  {t(
+                    "Recordings and studio details",
+                    "Aufnahmen und Studio-Details",
+                  )}
+                </a>
               </li>
               <li>
-                <a href="/staff/activities">معیارهای کیفیت و گزارش فعالیت‌ها</a>
+                <a href="/staff/activities">
+                  {t(
+                    "Quality criteria and activity reports",
+                    "Qualitätskriterien und Aktivitätsberichte",
+                  )}
+                </a>
               </li>
               <li>
                 <a href="/assessment-readiness.html">
-                  وضعیت داوری و آمادگی ارزیابی
+                  {t(
+                    "Review status and assessment readiness",
+                    "Prüfstatus und Bewertungsbereitschaft",
+                  )}
                 </a>
               </li>
             </ul>
           </section>
           <StaffOnly roles={["developer"]}>
             <section>
-              <h2>منوی توسعه‌دهنده</h2>
+              <h2>{t("Developer menu", "Entwicklungsmenü")}</h2>
               <ul>
                 <li>
-                  <a href="/staff/developer">توضیحات فنی و منشأ داده‌ها</a>
+                  <a href="/staff/developer">
+                    {t(
+                      "Technical notes and data sources",
+                      "Technische Hinweise und Datenquellen",
+                    )}
+                  </a>
                 </li>
                 <li>
-                  <a href="/assessment-benchmarks.html">آزمون‌های فنی ارزیاب</a>
+                  <a href="/assessment-benchmarks.html">
+                    {t("Evaluator benchmarks", "Bewertungs-Benchmarks")}
+                  </a>
                 </li>
                 <li>
-                  <a href="/roadmap.html">نقشهٔ راه توسعه</a>
+                  <a href="/roadmap.html">
+                    {t("Development roadmap", "Entwicklungsplan")}
+                  </a>
                 </li>
                 <li>
                   <a href="/learning-core/feedback-review.html">
-                    رسیدگی به گزارش‌های کاربران
+                    {t("Review user reports", "Nutzerrückmeldungen prüfen")}
                   </a>
                 </li>
+                {access.isOwner ? (
+                  <li>
+                    <a href="/staff/developer/accounts">
+                      {t(
+                        "Manage accounts and passwords",
+                        "Konten und Passwörter verwalten",
+                      )}
+                    </a>
+                  </li>
+                ) : null}
               </ul>
             </section>
           </StaffOnly>
         </>
       )}
       <p>
-        <a href="/">بازگشت به یادگیری</a>
+        <a href="/">{t("Back to learning", "Zurück zum Lernen")}</a>
       </p>
     </main>
   );
 }
+
+/** خروجی نوار نقشِ تأییدشده با زبان اپ است؛ خروج موفق کوکی را پاک و ناظرهای تمام تب‌ها را باخبر می‌کند. */
 export function StaffWorkspaceBar() {
   const access = useStaffAccess();
+  const t = (en: string, de: string) => (access.language === "en" ? en : de);
   const [logoutError, setLogoutError] = useState("");
   if (!access.active) return null;
+  /** بدون ورودی؛ خروجی Promise<void>. خطای خروج، نقش را محلی جعل یا کوکی سرور را معتبر فرض نمی‌کند. */
   async function logout() {
     try {
       setLogoutError("");
       const response = await fetch("/api/staff-session", { method: "DELETE" });
-      if (!response.ok)
-        throw new Error("خروج انجام نشد؛ اتصال را بررسی کن و دوباره تلاش کن.");
+      if (!response.ok) throw new Error("logout_failed");
       broadcastStaffLogout();
       document.documentElement.removeAttribute("data-staff-role");
       location.replace("/");
     } catch {
-      setLogoutError("خروج انجام نشد؛ اتصال را بررسی کن و دوباره تلاش کن.");
+      setLogoutError(
+        t(
+          "Sign-out failed. Check your connection and try again.",
+          "Abmeldung fehlgeschlagen. Prüfe die Verbindung und versuche es erneut.",
+        ),
+      );
     }
   }
   return (
     <nav
-      aria-label="منوی محیط حرفه‌ای"
-      dir="rtl"
-      lang="fa"
+      aria-label={t("Staff workspace menu", "Menü des geschützten Bereichs")}
+      dir="ltr"
+      lang={access.language}
       style={{
         display: "flex",
         gap: 20,
@@ -333,10 +479,15 @@ export function StaffWorkspaceBar() {
         background: "#e9f4f4",
       }}
     >
-      <a href="/staff">منوی معلم و توسعه‌دهنده</a>
-      <a href="/">یادگیری</a>
+      <a href="/staff">
+        {t("Teacher and developer menu", "Menü für Lehrkräfte und Entwicklung")}
+      </a>
+      <a href="/">{t("Learning", "Lernen")}</a>
       <button type="button" onClick={() => void logout()}>
-        خروج و پنهان‌کردن بخش حرفه‌ای
+        {t(
+          "Sign out and hide staff tools",
+          "Abmelden und geschützten Bereich schließen",
+        )}
       </button>
       {logoutError ? <span role="alert">{logoutError}</span> : null}
     </nav>

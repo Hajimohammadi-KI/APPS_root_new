@@ -200,10 +200,15 @@ const STATE_VERSION = 27;
 const LEGACY_KEY = "GrammarAutomaticityV11_en";
 const RETIRED_PRIVATE_STORAGE_KEY = "thesis-b2-sprint-v24";
 const CEFR_ORDER: readonly CefrLevel[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
+/** نشانی API تنظیم‌شده هنگام ساخت را با normalizeApiOrigin معتبر می‌کند؛ خروجی تنظیم پیش‌فرض است و وضعیت ذخیره‌شدهٔ کاربر را بازنویسی نمی‌کند. */
 function getDefaultApiBaseUrl() {
 	return normalizeApiOrigin(process.env.NEXT_PUBLIC_API_URL);
 }
 
+/**
+ * AppState جاری را محلی ذخیره می‌کند و boolean موفقیت نوشتن را به هشدار رابط می‌دهد.
+ * پس از نوشتن، همگامی دفتر تمرین قدیمی به‌صورت ناهمگام اجرا می‌شود؛ خطایش رویداد automaticity-sync-error دارد و قبولی ساختگی ایجاد نمی‌کند.
+ */
 function persistAppState(state: AppState) {
 	if (typeof window === "undefined") return false;
 	// An unreadable previous value was already quarantined during hydration,
@@ -275,16 +280,19 @@ export const DEFAULT_STATE: AppState = {
 	todayGrammar: null,
 };
 
+/** ورودی ناشناختهٔ دادهٔ واردشده را به شیء غیرآرایه‌ای محدود می‌کند تا نرمال‌سازی روی null/آرایه فیلد نخواند. */
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+/** از آرایهٔ ذخیره‌شده فقط اعضای شیئی را نگه می‌دارد؛ خروجی T[] صرفاً شکل اولیه را پالایش می‌کند و اعتبارسنجی کامل فیلدهای T نیست. */
 function recordArray<T>(value: unknown): T[] {
 	return Array.isArray(value)
 		? (value.filter((item) => isRecord(item)) as T[])
 		: [];
 }
 
+/** نگاشت ورودی را به مقادیر عددی متناهی محدود می‌کند؛ NaN/Infinity و ورودی غیرشیء وارد شمارنده‌های فعالیت نمی‌شوند. */
 function numericRecord(value: unknown): Record<string, number> {
 	if (!isRecord(value)) return {};
 	return Object.fromEntries(
@@ -295,6 +303,7 @@ function numericRecord(value: unknown): Record<string, number> {
 	);
 }
 
+/** پاسخ‌های متنی ذخیره‌شده را نگه می‌دارد و طول کلید/متن را محدود می‌کند؛ مقدار غیررشته‌ای برای پاسخ یادگیرنده ساخته نمی‌شود. */
 function stringRecord(value: unknown): Record<string, string> {
 	if (!isRecord(value)) return {};
 	return Object.fromEntries(
@@ -309,12 +318,18 @@ function stringRecord(value: unknown): Record<string, string> {
 	);
 }
 
+/** نمرهٔ واردشده را به عدد معتبر در بازهٔ گزارش محدود می‌کند؛ ورودی نامعتبر null می‌ماند تا به‌عنوان نتیجهٔ اندازه‌گیری نمایش داده نشود. */
 function normalizeOutcomeScore(value: unknown) {
 	return typeof value === "number" && Number.isFinite(value)
 		? Math.min(100, Math.max(0, Math.round(value)))
 		: null;
 }
 
+/**
+ * دادهٔ خوانده‌شده از مرورگر/پشتیبان را به AppState نسخهٔ فعلی تبدیل می‌کند؛ فیلدهای غایب از DEFAULT_STATE می‌آیند.
+ * انتخاب‌های صریح تنظیمات، پاسخ‌های متنی و سوابق موجود حفظ می‌شوند؛ سطح خوداظهاری به مدرک CEFR تبدیل نمی‌شود.
+ * مسیر hydration، جایگزینی پشتیبان و ادغام پروفایل همگی همین مرز نرمال‌سازی را مصرف می‌کنند.
+ */
 export function normalizeAppState(value: unknown): AppState {
 	const fallback = structuredClone(DEFAULT_STATE);
 	if (!isRecord(value)) return fallback;
@@ -511,6 +526,7 @@ export function normalizeAppState(value: unknown): AppState {
 	};
 }
 
+/** فقط نام شش سطح پشتیبانی‌شده را به‌عنوان CefrLevel می‌پذیرد؛ پذیرش نام سطح، اثبات مهارت آن سطح نیست. */
 function isCefrLevel(value: unknown): value is CefrLevel {
 	return (
 		typeof value === "string" &&
@@ -518,6 +534,7 @@ function isCefrLevel(value: unknown): value is CefrLevel {
 	);
 }
 
+/** روش تعیین سطح ذخیره‌شده را به سه برچسب قرارداد پروفایل محدود می‌کند تا دادهٔ واردشده وضعیت ناشناخته نسازد. */
 function isPlacementMode(value: unknown): value is PlacementMode {
 	return value === "not_set" || value === "manual" || value === "optional_test";
 }
@@ -553,6 +570,10 @@ type LegacyState = {
 	todayGrammar?: { title: string; level: string; date: string };
 };
 
+/**
+ * بدون تغییر کلید قدیمی، سوابق v11 را به شکل AppState فعلی نگاشت می‌کند؛ تاریخ/شناسهٔ موجود مقدم بر مقدار جایگزین است.
+ * نبود/خرابی JSON به کپی مستقل DEFAULT_STATE برمی‌گردد؛ این مهاجرت برای سوابق قدیمی شاهدِ تأیید مستقل نمی‌سازد.
+ */
 function migrateLegacy(): AppState {
 	const state = structuredClone(DEFAULT_STATE);
 	try {
@@ -610,6 +631,7 @@ function migrateLegacy(): AppState {
 	return state;
 }
 
+/** برای عنوان یک درس، رکورد اولیه با شمارنده‌های صفر و وضعیت new می‌سازد؛ پیش از وجود تلاش، موفقیت یا تاریخ مرور فرض نمی‌کند. */
 export function emptyMastery(grammarTitle: string): TopicMastery {
 	return {
 		grammarTitle,
@@ -627,6 +649,7 @@ export function emptyMastery(grammarTitle: string): TopicMastery {
 	};
 }
 
+/** میانگین گرد‌شدهٔ اعداد را برای نمایش شاخص تمرین می‌دهد؛ آرایهٔ خالی صفر است تا تقسیم بر صفر رخ ندهد. */
 function average(values: number[]) {
 	if (values.length === 0) return 0;
 	return Math.round(
@@ -634,11 +657,17 @@ function average(values: number[]) {
 	);
 }
 
+/**
+ * در draft قابل‌تغییر، شاخص‌های یک درس را از تلاش‌ها، اصلاح‌های باز و مرورهای همان درس بازحساب می‌کند؛ مقدار مستقلی برنمی‌گرداند.
+ * میانگین هر شیوه فقط از پنج تلاش آخرِ verified است؛ وضعیت‌های تاریخی این مدل برچسب تمرین‌اند و مدرک CEFR نیستند.
+ * recordAttempt و setTodayGrammar پس از تغییر سوابق این تابع را صدا می‌زنند تا کارت پیشرفت با همان داده سازگار بماند.
+ */
 export function recalculateMastery(draft: AppState, grammarTitle: string) {
 	const current = draft.mastery[grammarTitle] ?? emptyMastery(grammarTitle);
 	const attempts = draft.attempts.filter(
 		(attempt) => attempt.grammarTitle === grammarTitle,
 	);
+	// این محاسبهٔ محلی شیوه را می‌گیرد؛ تلاش تأییدنشده وارد میانگین عملکرد هیچ شیوه‌ای نمی‌شود.
 	const scoreFor = (mode: AttemptMode) =>
 		average(
 			attempts
@@ -716,10 +745,12 @@ export function recalculateMastery(draft: AppState, grammarTitle: string) {
 }
 
 // Grammar practice does not certify an overall CEFR level.
+/** عمداً null می‌دهد: درصد تمرین‌های گرامر ارزیابی مستقلِ سطح کلی زبان نیست و نباید خودکار سطح تأییدشده بسازد. */
 function deriveVerifiedLevel(): CefrLevel | null {
 	return null;
 }
 
+/** فیلد سطح تأییدشده را در state با سیاست deriveVerifiedLevel هماهنگ می‌کند؛ خوداظهاری و سایر انتخاب‌های کاربر دست‌نخورده‌اند. */
 function refreshVerifiedLevel(state: AppState) {
 	if (!state.learner.selfDeclaredLevel) {
 		state.learner.verifiedLevel = null;
@@ -730,6 +761,7 @@ function refreshVerifiedLevel(state: AppState) {
 
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30] as const;
 
+/** فاصلهٔ جاری، موفقیت، نمره و رشتهٔ موفقیت را به یکی از ۱/۳/۷/۱۴/۳۰ روز تبدیل می‌کند؛ شکست یک گام عقب و موفقیت قوی دو گام جلو می‌رود. */
 export function adaptiveReviewInterval(
 	currentInterval: number,
 	successful: boolean,
@@ -752,6 +784,7 @@ export function adaptiveReviewInterval(
 }
 
 /** The settings toggles are the learner's consent; the profile shares them across apps. */
+/** انتخاب‌های واقعی تنظیمات را به قرارداد حریم خصوصی پروفایل مشترک نگاشت می‌کند؛ فعال‌کردن اشتراک، صوت یا شبکه را از فعالیت تمرین حدس نمی‌زند. */
 export function profilePrivacy(state: AppState) {
 	return {
 		shareAcrossApps: state.learner.shareAcrossApps,
@@ -761,6 +794,7 @@ export function profilePrivacy(state: AppState) {
 	};
 }
 
+/** از سوابق واقعی تعداد فعالیت روزانه و خطاهای باز را می‌سازد؛ درصدها و متن‌های فاقد داوری، ابعاد مهارت یا نمونهٔ گفتار/نوشتار تأییدشده نمی‌شوند. */
 export function buildEnglishEvidence(state: AppState): EvidenceSummary {
 	const counts = new Map<string, number>();
 	for (const attempt of state.attempts) {
@@ -801,6 +835,11 @@ interface StoreValue {
 
 const AppStoreContext = React.createContext<StoreValue | null>(null);
 
+/**
+ * مالک وضعیت محلی انگلیسی است: hydration امن، ثبت تغییرات، ادغام پروفایل و اتصال اختیاری تقویم را برای فرزندان فراهم می‌کند.
+ * عملیات عمومی context داده را از mutate/replaceState عبور می‌دهند؛ mutationVersion مانع جایگزینی انتخاب تازه با خواندن دیررس پروفایل می‌شود.
+ * effectها پس از آماده‌شدن ذخیره اجرا می‌شوند؛ شکست ذخیره در رابط هشدار دارد و دادهٔ خوانده‌نشده پیش از بازیابی بازنویسی نمی‌شود.
+ */
 export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	const [persistenceProblem, setPersistenceProblem] = React.useState(false);
 	const [recoveryNotice, setRecoveryNotice] = React.useState("");
@@ -809,6 +848,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	const [profileReady, setProfileReady] = React.useState(false);
 	const mutationVersion = React.useRef(0);
 
+	// بارگذاری اولیه فقط یک‌بار است؛ دادهٔ خراب قرنطینه و نسخهٔ آینده پیش از نرمال‌سازی کپی می‌شود.
 	React.useEffect(() => {
 		localStorage.removeItem(RETIRED_PRIVATE_STORAGE_KEY);
 		const stored = readStoredState(
@@ -833,6 +873,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		setHydrated(true);
 	}, []);
 
+	// ذخیرهٔ واکنشی تا پایان hydration صبر می‌کند تا DEFAULT_STATE روی پیشرفت موجود نوشته نشود.
 	React.useEffect(() => {
 		if (hydrated) setPersistenceProblem(!persistAppState(state));
 	}, [hydrated, state]);
@@ -841,6 +882,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		// Browsers grant persistent storage more readily after a user gesture,
 		// so the request waits for the first interaction instead of page load.
 		if (!hydrated) return;
+		// اولین تعامل، درخواست پایداری را اجرا و هر دو شنونده را حذف می‌کند؛ مجوز را تکراری درخواست نمی‌کنیم.
 		const request = () => {
 			void requestPersistentStorage();
 			window.removeEventListener("pointerdown", request);
@@ -854,6 +896,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		};
 	}, [hydrated]);
 
+	// تنظیمات خواندن فقط ویژگی‌های نمایشی ریشه را عوض می‌کنند؛ cleanup اثر این provider را از DOM برمی‌دارد.
 	React.useEffect(() => {
 		const root = document.documentElement;
 		root.dataset.readingProfile = state.settings.readingProfile;
@@ -873,6 +916,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	React.useEffect(() => {
 		if (!hydrated) return;
 		let cancelled = false;
+		// اگر کاربر هنگام خواندن ناهمگام تغییری بدهد، نتیجهٔ قدیمی حق بازنویسی آن انتخاب را ندارد.
 		const versionAtRead = mutationVersion.current;
 		void readLearnerProfile()
 			.then((profile) => {
@@ -921,6 +965,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 
 	React.useEffect(() => {
 		if (!hydrated || !profileReady) return;
+		// ادغام پس از آماده‌شدن هر دو منبع با تأخیر کوتاه انجام می‌شود؛ دادهٔ سطح فقط با رضایت اشتراک ارسال می‌شود.
 		const timer = window.setTimeout(() => {
 			const update = {
 				displayName: state.learner.displayName,
@@ -947,6 +992,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	React.useEffect(() => {
 		if (!hydrated || !profileReady) return;
 		let cancelled = false;
+		// بازگشت به پنجره، فقط هویت نمایشی را از پروفایل مشترک تازه می‌کند و پاسخ‌ها/پیشرفت محلی را جایگزین نمی‌کند.
 		const refreshIdentity = () => {
 			void readLearnerProfile()
 				.then((profile) => {
@@ -988,6 +1034,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		return () => window.clearTimeout(timer);
 	}, [hydrated, state]);
 
+	/** callback تغییر را روی کپی مستقل state اجرا می‌کند؛ نتیجه ذخیره و منتشر می‌شود و شمارهٔ تغییر، خواندن دیررس پروفایل را بی‌اثر می‌کند. */
 	const mutate = React.useCallback((mutation: (draft: AppState) => void) => {
 		mutationVersion.current += 1;
 		setState((current) => {
@@ -999,6 +1046,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		});
 	}, []);
 
+	/** وضعیت جایگزینِ واردشده را نرمال و ذخیره می‌کند؛ سیاست سطح تأییدشده پیش از انتشار دوباره اعمال می‌شود. */
 	const replaceState = React.useCallback((next: AppState) => {
 		mutationVersion.current += 1;
 		const normalized = normalizeAppState(next);
@@ -1007,6 +1055,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		setState(normalized);
 	}, []);
 
+	/** تلاشِ بدون شناسه/زمان را دریافت، شناسه و زمان واقعی اضافه و فعالیت امروز و شاخص همان درس را از طریق mutate به‌روز می‌کند. */
 	const recordAttempt = React.useCallback(
 		(attempt: Omit<Attempt, "id" | "createdAt">) => {
 			mutate((draft) => {
@@ -1025,6 +1074,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		[mutate],
 	);
 
+	/** درس انتخاب‌شده را برای امروز ثبت می‌کند؛ فقط در نبود مرور معلقِ همان عنوان، یک مرور یک‌روزه می‌سازد تا انتخاب تکراری مرور تکراری نسازد. */
 	const setTodayGrammar = React.useCallback(
 		(grammar: GrammarUnit) => {
 			mutate((draft) => {
@@ -1063,6 +1113,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 		[mutate],
 	);
 
+	// context از وضعیت و چهار عمل عمومی ساخته می‌شود؛ مصرف‌کنندگان دسترسی مستقیم به setState دریافت نمی‌کنند.
 	const value = React.useMemo(
 		() => ({
 			state,
@@ -1099,6 +1150,7 @@ export function AppStoreProvider({ children }: { children: React.ReactNode }) {
 	);
 }
 
+/** context آمادهٔ provider را برمی‌گرداند؛ استفاده بیرون از provider خطای صریح دارد تا دادهٔ پیش‌فرض به‌جای دادهٔ واقعی مصرف نشود. */
 export function useAppStore() {
 	const store = React.useContext(AppStoreContext);
 	if (!store)
@@ -1106,6 +1158,7 @@ export function useAppStore() {
 	return store;
 }
 
+/** برنامهٔ تاریخ محلی امروز را می‌خواند؛ در نبود آن برنامهٔ خالیِ بدون پاسخ می‌دهد و سوابق روزهای دیگر را تغییر نمی‌دهد. */
 export function currentDailyPlan(state: AppState): DailyPlan {
 	return state.dailyPlans[todayKey()] ?? { completed: [], answers: {} };
 }

@@ -63,7 +63,7 @@ export default function RootLayout({
       <body>
         <LearningRecoveryBoundary>
           <AppStoreProvider>
-            <StaffAccessProvider>
+            <StaffAccessProvider language="en">
               <StaffWorkspaceBar />
               <StandaloneLearningHeader />
               {children}

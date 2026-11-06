@@ -127,7 +127,7 @@ const stages: Stage[] = [
 const now = () => new Date().toISOString();
 const id = () => crypto.randomUUID();
 const qualifiedTransformer = createTransformerClient();
-/** A learner card carries progress; provenance and counting rules belong to staff. */
+/** Progress counters, provenance and counting rules belong to the staff report. */
 export function notebookCardLines(
   language: Language,
   level: string,
@@ -138,7 +138,7 @@ export function notebookCardLines(
   const copy = notebookCopy(language);
   return staff
     ? [copy.progress(level, atLevel, all), copy.source, copy.progressBasis]
-    : [copy.progress(level, atLevel, all)];
+    : [];
 }
 function element<K extends keyof HTMLElementTagNameMap>(
   tag: K,
@@ -1122,14 +1122,17 @@ export async function mountPractice(
           : `${copy.title} · ${level}`,
       ),
       ...(recentNotebook
-        ? [
-            f(
-              `${all.passed} تمرین از ${all.total} درست بوده است.`,
-              `${all.passed} of ${all.total} passed.`,
-              `${all.passed} von ${all.total} bestanden.`,
-            ),
-            ...(staffRole ? [copy.source, copy.progressBasis] : []),
-          ]
+        ? staffRole
+          ? [
+              f(
+                `${all.passed} تمرین از ${all.total} درست بوده است.`,
+                `${all.passed} of ${all.total} passed.`,
+                `${all.passed} von ${all.total} bestanden.`,
+              ),
+              copy.source,
+              copy.progressBasis,
+            ]
+          : []
         : notebookCardLines(language, level, atLevel, all, !!staffRole)
       ).map((line) => element("p", line, "muted")),
     );

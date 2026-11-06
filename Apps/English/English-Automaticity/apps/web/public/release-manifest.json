@@ -1,8 +1,8 @@
 {
   "publishedAt": "2026-11-06",
   "version": "27.4.15",
-  "webRelease": "2026.11.06.5",
+  "webRelease": "2026.11.06.6",
   "changes": [
-    "Separate password-protected teacher and developer workspace. Learner pages show only practical guidance and progress; professional pages bypass offline caches and preserve all existing learning data."
+    "Native-language staff interface. Owner-chosen email/password accounts with private persistent storage, owner-only in-app and local account management, and no learner notebook counters."
   ]
 }

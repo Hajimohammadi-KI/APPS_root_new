@@ -269,14 +269,20 @@ function passwordTerminal() {
   const input = new PasswordInput();
   const output = new PassThrough();
   let printed = "";
-  output.on("data", (chunk) => { printed += chunk.toString(); });
+  output.on("data", (chunk) => {
+    printed += chunk.toString();
+  });
   return { input, output, printed: () => printed };
 }
 
 describe("hidden password terminal", () => {
   test("does not echo entered secrets and restores raw mode after Enter", async () => {
     const terminal = passwordTerminal();
-    const answer = hiddenPassword("Password: ", terminal.input as unknown as NodeJS.ReadStream, terminal.output);
+    const answer = hiddenPassword(
+      "Password: ",
+      terminal.input as unknown as NodeJS.ReadStream,
+      terminal.output,
+    );
     terminal.input.write("fixture-secret-value\r");
     expect(await answer).toBe("fixture-secret-value");
     expect(terminal.printed()).toBe("Password: \n");
@@ -286,7 +292,11 @@ describe("hidden password terminal", () => {
   test("Ctrl-C rejects and restores the previous terminal state without echoing", async () => {
     const terminal = passwordTerminal();
     terminal.input.isRaw = true;
-    const answer = hiddenPassword("Password: ", terminal.input as unknown as NodeJS.ReadStream, terminal.output);
+    const answer = hiddenPassword(
+      "Password: ",
+      terminal.input as unknown as NodeJS.ReadStream,
+      terminal.output,
+    );
     terminal.input.write("fixture-secret\u0003");
     await expect(answer).rejects.toThrow();
     expect(terminal.printed()).toBe("Password: \n");
@@ -295,7 +305,11 @@ describe("hidden password terminal", () => {
   });
   test("terminal errors restore mode and never print their contents", async () => {
     const terminal = passwordTerminal();
-    const answer = hiddenPassword("Password: ", terminal.input as unknown as NodeJS.ReadStream, terminal.output);
+    const answer = hiddenPassword(
+      "Password: ",
+      terminal.input as unknown as NodeJS.ReadStream,
+      terminal.output,
+    );
     terminal.input.emit("error", new Error("fixture sensitive provider error"));
     await expect(answer).rejects.toThrow("terminal_error");
     expect(terminal.input.isRaw).toBe(false);
@@ -305,21 +319,54 @@ describe("hidden password terminal", () => {
   test("rejects noninteractive input before accepting a password", async () => {
     const terminal = passwordTerminal();
     terminal.input.isTTY = false;
-    await expect(hiddenPassword("Password: ", terminal.input as unknown as NodeJS.ReadStream, terminal.output)).rejects.toThrow("interactive_terminal_required");
+    await expect(
+      hiddenPassword(
+        "Password: ",
+        terminal.input as unknown as NodeJS.ReadStream,
+        terminal.output,
+      ),
+    ).rejects.toThrow("interactive_terminal_required");
     expect(terminal.printed()).toBe("");
     expect(terminal.input.rawChanges).toEqual([]);
+  });
+  test("a failure while enabling raw mode cleans up listeners and attempts to restore mode", async () => {
+    const terminal = passwordTerminal();
+    terminal.input.setRawMode = (raw: boolean) => {
+      terminal.input.rawChanges.push(raw);
+      if (raw) throw new Error("fixture sensitive terminal error");
+      terminal.input.isRaw = raw;
+      return terminal.input;
+    };
+    await expect(
+      hiddenPassword(
+        "Password: ",
+        terminal.input as unknown as NodeJS.ReadStream,
+        terminal.output,
+      ),
+    ).rejects.toThrow("terminal_error");
+    expect(terminal.input.rawChanges).toEqual([true, false]);
+    expect(terminal.input.listenerCount("keypress")).toBe(0);
+    expect(terminal.printed()).toBe("Password: \n");
   });
 });
 
 describe("private manager startup configuration", () => {
   test("returns only the store token and does not expose unrelated private keys", () => {
-    expect(parseStaffAdminConfiguration({
-      blobToken: "fixture-private-token-long-enough",
-      sessionSecret: "fixture-private-signing-key",
-      setupSecret: "fixture-private-setup-key",
-    })).toEqual({ blobToken: "fixture-private-token-long-enough" });
-    expect(() => parseStaffAdminConfiguration({ blobToken: "fixture-token-with-secret\ncontent" })).toThrow("private_configuration_missing");
-    expect(() => parseStaffAdminConfiguration(null)).toThrow("private_configuration_missing");
+    expect(
+      parseStaffAdminConfiguration({
+        blobToken: "fixture-private-token-long-enough",
+        sessionSecret: "fixture-private-signing-key",
+        setupSecret: "fixture-private-setup-key",
+      }),
+    ).toEqual({ blobToken: "fixture-private-token-long-enough" });
+    expect(() =>
+      parseStaffAdminConfiguration({
+        blobToken: "fixture-token-with-secret\ncontent",
+      }),
+    ).toThrow("private_configuration_missing");
+    expect(() => parseStaffAdminConfiguration(null)).toThrow(
+      "private_configuration_missing",
+    );
   });
   test("reads the fixed private file beneath the supplied workspace and sanitizes malformed-file errors", async () => {
     const directory = await mkdtemp(join(tmpdir(), "language-staff-config-"));
@@ -327,12 +374,21 @@ describe("private manager startup configuration", () => {
       const folder = join(directory, "artifacts/private");
       await mkdir(folder, { recursive: true });
       const path = join(folder, "language-staff-admin.json");
-      await writeFile(path, JSON.stringify({ blobToken: "fixture-private-token-long-enough" }));
-      expect(await loadStaffAdminConfiguration(directory)).toEqual({ blobToken: "fixture-private-token-long-enough" });
+      await writeFile(
+        path,
+        JSON.stringify({ blobToken: "fixture-private-token-long-enough" }),
+      );
+      expect(await loadStaffAdminConfiguration(directory)).toEqual({
+        blobToken: "fixture-private-token-long-enough",
+      });
       await writeFile(path, "fixture-malformed-sensitive-token");
-      await expect(loadStaffAdminConfiguration(directory)).rejects.toThrow("private_configuration_missing");
+      await expect(loadStaffAdminConfiguration(directory)).rejects.toThrow(
+        "private_configuration_missing",
+      );
       await rm(path);
-      await expect(loadStaffAdminConfiguration(directory)).rejects.toThrow("private_configuration_missing");
+      await expect(loadStaffAdminConfiguration(directory)).rejects.toThrow(
+        "private_configuration_missing",
+      );
     } finally {
       await rm(directory, { recursive: true, force: true });
     }

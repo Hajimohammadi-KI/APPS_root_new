@@ -11,6 +11,7 @@ import {
   type StaffAccountDocument,
 } from "../shared/learning-core/src/staff-account-store";
 
+/** قرارداد خواندن سند حساب‌ها و ذخیرهٔ شرطی؛ ETag مانع بازنویسی تغییر هم‌زمان است. */
 export interface AdminAccountStore {
   read(): Promise<{ document: StaffAccountDocument; etag: string } | null>;
   write(
@@ -31,16 +32,22 @@ type StaffAdminCommand =
   | { action: "password"; id: string; password: string }
   | { action: "deactivate"; id: string };
 
+/** فقط کد خطای کنترل‌شده دارد؛ متن پاسخ سرویس یا رمز در آن قرار نمی‌گیرد. */
 class StaffAdminError extends Error {}
+/** لغو تعاملی را از خطای ذخیره جدا می‌کند تا خروج Ctrl-C کد صحیح داشته باشد. */
 class CancelledError extends Error {}
 
+/** ورودی حساب کامل است؛ خروجی فقط مشخصات نمایشی است و هش رمز را حذف می‌کند. */
 export function staffAccountMetadata(account: StaffAccount) {
   const { id, email, role, isOwner, active, version, createdAt, updatedAt } =
     account;
   return { id, email, role, isOwner, active, version, createdAt, updatedAt };
 }
 
-/** Every mutation reads current state, reauthenticates and commits by ETag. */
+/**
+ * فرمان و مشخصات مالک را می‌گیرد و پس از خواندن تازه و احراز هویت، مشخصات امن حساب را برمی‌گرداند.
+ * ذخیره با ETag انجام می‌شود؛ شکست اعتبارسنجی یا تعارض هیچ موفقیتی گزارش نمی‌کند.
+ */
 export async function runStaffAdminCommand(
   store: AdminAccountStore,
   command: StaffAdminCommand,
@@ -49,6 +56,7 @@ export async function runStaffAdminCommand(
   const snapshot = await store.read();
   const now = Date.now();
   if (command.action === "bootstrap") {
+    // فقط مخزن واقعاً خالی اجازهٔ ساخت مالک نخست دارد؛ حساب موجود جایگزین نمی‌شود.
     if (snapshot) throw new StaffAdminError("already_initialized");
     const account = await createStaffAccount(
       {
@@ -105,19 +113,22 @@ export async function runStaffAdminCommand(
     } else if (command.action === "password") {
       target.passwordHash = await hashStaffPassword(command.password);
     } else {
-      // An owner cannot be disabled here, including by another owner.
+      // حتی مالک دیگر هم نمی‌تواند حساب مالک را غیرفعال کند؛ راه مدیریت نباید بسته شود.
       if (target.isOwner || target.id === actor.id)
         throw new StaffAdminError("owner_lockout");
       target.active = false;
     }
+    // تغییر هویت/رمز/وضعیت، نسخه را عوض می‌کند تا نشست‌های قبلی دیگر معتبر نباشند.
     target.version++;
     target.updatedAt = now;
     changed = target;
   }
+  // نوشتن فقط با نسخه‌ای که خوانده‌ایم مجاز است؛ تغییر هم‌زمان سرویس را بازنویسی نمی‌کنیم.
   await store.write({ schemaVersion: 1, accounts }, snapshot.etag);
   return staffAccountMetadata(changed);
 }
 
+/** پرسش غیرمحرمانه را نمایش می‌دهد و پاسخ را می‌گیرد؛ رابط حتی پس از لغو بسته می‌شود. */
 async function textInput(prompt: string): Promise<string> {
   const reader = createInterface({
     input: process.stdin,
@@ -133,7 +144,10 @@ async function textInput(prompt: string): Promise<string> {
   }
 }
 
-/** Passwords never enter readline history, command arguments or console output. */
+/**
+ * رمز را از ترمینال تعاملی بدون بازتاب می‌خواند و به فراخواننده برمی‌گرداند.
+ * ورودی فایل/pipe پذیرفته نیست؛ وضعیت قبلی ترمینال در پایان، خطا یا Ctrl-C برگردانده می‌شود.
+ */
 export async function hiddenPassword(
   prompt: string,
   input: NodeJS.ReadStream = process.stdin,
@@ -147,24 +161,40 @@ export async function hiddenPassword(
   return new Promise((resolveValue, reject) => {
     let value = "";
     let finished = false;
+    /** شنونده‌های رمز را حذف و وضعیت قبلی ترمینال را بازیابی می‌کند؛ خرابی را برمی‌گرداند. */
     const cleanup = () => {
       input.removeListener("keypress", keypress);
       input.removeListener("error", failed);
       input.removeListener("end", cancelled);
-      input.setRawMode(wasRaw);
-      if (wasPaused) input.pause();
-      output.write("\n");
+      let failedRestore = false;
+      try {
+        input.setRawMode(wasRaw);
+      } catch {
+        failedRestore = true;
+      }
+      try {
+        if (wasPaused) input.pause();
+        output.write("\n");
+      } catch {
+        failedRestore = true;
+      }
+      return failedRestore;
     };
+    /** عملیات را یک بار تمام می‌کند؛ در خطای ترمینال رمز به‌عنوان پاسخ تحویل داده نمی‌شود. */
     const finish = (error?: Error) => {
       if (finished) return;
       finished = true;
-      cleanup();
-      if (error) reject(error);
+      const failedRestore = cleanup();
+      if (error || failedRestore)
+        reject(error ?? new StaffAdminError("terminal_error"));
       else resolveValue(value);
       value = "";
     };
+    /** خطای خام ترمینال به کد امن تبدیل می‌شود؛ محتوای خطا چاپ یا بازگردانده نمی‌شود. */
     const failed = () => finish(new StaffAdminError("terminal_error"));
+    /** قطع ورودی یا Ctrl-C هیچ رمز نیمه‌واردشده‌ای را تحویل نمی‌دهد. */
     const cancelled = () => finish(new CancelledError());
+    /** Enter پایان است، Backspace آخرین نویسه را حذف می‌کند و کلیدهای کنترلی ذخیره نمی‌شوند. */
     const keypress = (character: string | undefined, key: Key) => {
       if (key.ctrl && key.name === "c") return cancelled();
       if (key.name === "return" || key.name === "enter") return finish();
@@ -190,11 +220,13 @@ export async function hiddenPassword(
       input.setRawMode(true);
       input.resume();
     } catch {
+      // اگر فعال‌کردن حالت خام شکست بخورد هم مسیر پاک‌سازی و بازیابی اجرا می‌شود.
       failed();
     }
   });
 }
 
+/** رمز تازه را دو بار پنهانی می‌گیرد؛ فقط پاسخ‌های یکسان به اعتبارسنجی و هش‌سازی می‌رسند. */
 async function newPassword(): Promise<string> {
   const password = await hiddenPassword(
     "New password (12–128 characters; hidden): ",
@@ -205,6 +237,7 @@ async function newPassword(): Promise<string> {
   return password;
 }
 
+/** ایمیل و رمز فعلی مالک را برای یک عملیات می‌گیرد؛ چیزی روی دیسک ذخیره نمی‌شود. */
 async function authenticateOwner(): Promise<OwnerCredentials> {
   return {
     email: await textInput("Owner email: "),
@@ -212,24 +245,47 @@ async function authenticateOwner(): Promise<OwnerCredentials> {
   };
 }
 
+/** فقط توکن مخزن را از تنظیمات معتبر برمی‌گرداند؛ کلیدهای دیگر وارد مسیر نمایش نمی‌شوند. */
+export function parseStaffAdminConfiguration(value: unknown): {
+  blobToken: string;
+} {
+  if (
+    !value ||
+    typeof value !== "object" ||
+    !("blobToken" in value) ||
+    typeof value.blobToken !== "string" ||
+    value.blobToken.length < 20 ||
+    value.blobToken.length > 512 ||
+    /\s/u.test(value.blobToken)
+  )
+    throw new StaffAdminError("private_configuration_missing");
+  return { blobToken: value.blobToken };
+}
+
+/** مسیر ثابت خصوصی زیر ریشهٔ پروژه را می‌خواند؛ خطای فایل/JSON بدون محتوای محرمانه گزارش می‌شود. */
+export async function loadStaffAdminConfiguration(
+  root = resolve(import.meta.dir, ".."),
+): Promise<{ blobToken: string }> {
+  try {
+    const text = await readFile(
+      resolve(root, "artifacts/private/language-staff-admin.json"),
+      "utf8",
+    );
+    if (text.length > 8192)
+      throw new StaffAdminError("private_configuration_missing");
+    return parseStaffAdminConfiguration(JSON.parse(text) as unknown);
+  } catch {
+    throw new StaffAdminError("private_configuration_missing");
+  }
+}
+
+/** منوی تعاملی دو اپ را اجرا می‌کند؛ هیچ رمز یا فرمان تغییری از آرگومان خط فرمان نمی‌پذیرد. */
 async function main() {
   if (Bun.argv.length > 2)
     throw new StaffAdminError("interactive_only_no_arguments");
   if (!process.stdin.isTTY || !process.stdout.isTTY)
     throw new StaffAdminError("interactive_terminal_required");
-  const configPath = resolve(
-    import.meta.dir,
-    "../artifacts/private/language-staff-admin.json",
-  );
-  const config: unknown = JSON.parse(await readFile(configPath, "utf8"));
-  if (
-    !config ||
-    typeof config !== "object" ||
-    !("blobToken" in config) ||
-    typeof config.blobToken !== "string" ||
-    config.blobToken.length < 20
-  )
-    throw new StaffAdminError("private_configuration_missing");
+  const config = await loadStaffAdminConfiguration();
   const store = createBlobStaffAccountStore(config.blobToken);
   console.log(
     "Private staff account manager · English Automaticity and DeutschFlow",
@@ -240,6 +296,7 @@ async function main() {
   for (;;) {
     const snapshot = await store.read();
     if (!snapshot) {
+      // توکن خصوصی همین رایانه فقط در نبود همهٔ حساب‌ها اجازهٔ راه‌اندازی نخست را می‌دهد.
       console.log(
         "No owner account exists. Create the initial owner for both apps.",
       );
@@ -261,6 +318,7 @@ async function main() {
     const action = (await textInput("Choose: ")).trim();
     if (action === "0") return;
     if (action === "1") {
+      // فهرست فقط مشخصات امن دارد؛ هش یا رمز در جدول خروجی قرار نمی‌گیرد.
       console.table(snapshot.document.accounts.map(staffAccountMetadata));
       continue;
     }
@@ -314,6 +372,7 @@ async function main() {
         continue;
       }
     }
+    // تابع فرمان دوباره سند را می‌خواند؛ انتخاب منو مجوز عبور از احراز هویت نیست.
     const result = await runStaffAdminCommand(store, command, credentials);
     console.log(
       `Saved ${result.email}. Changes apply to both apps; existing sessions for this account must sign in again.`,
@@ -322,6 +381,7 @@ async function main() {
 }
 
 if (import.meta.main) {
+  // واردکردن فایل در آزمون، منو را اجرا نمی‌کند و تنظیمات خصوصی را نمی‌خواند.
   try {
     await main();
   } catch (error) {
@@ -329,7 +389,7 @@ if (import.meta.main) {
       console.error("Cancelled. No pending operation was saved.");
       process.exitCode = 130;
     } else {
-      // Provider errors may contain authorization details: never print raw errors.
+      // خطای سرویس ممکن است جزئیات مجوز داشته باشد؛ تنها کدهای کنترل‌شده چاپ می‌شوند.
       console.error(
         error instanceof StaffAdminError
           ? `Unable to continue: ${error.message}.`

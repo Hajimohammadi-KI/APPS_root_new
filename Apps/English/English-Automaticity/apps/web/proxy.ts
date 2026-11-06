@@ -12,8 +12,12 @@ import {
 // Shell screens used to be addressed as `/?screen=<id>`. Redirecting here,
 // before rendering, keeps old bookmarks working even though the root layout
 // only mounts page content after client-side recovery of saved learning data.
-export function proxy(request: NextRequest) {
-  const denied = protectStaffRequest(request, staffConfigFromEnvironment());
+/** مجوز از سند خصوصیِ جاری خوانده می‌شود؛ پروکسی تا پایان این بررسی اجازهٔ رندر نمی‌دهد. */
+export async function proxy(request: NextRequest) {
+  const denied = await protectStaffRequest(
+    request,
+    staffConfigFromEnvironment(),
+  );
   if (denied) return denied;
   if (requiredStaffRoles(request.nextUrl.pathname)) {
     const response = NextResponse.next();

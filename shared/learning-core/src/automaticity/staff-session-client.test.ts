@@ -105,9 +105,27 @@ test("an earlier pending verification cannot restore a role after logout", async
 
 test("verified server metadata determines account ownership and first setup availability", async () => {
   setup({ role: null });
-  put("fetch", async () => Response.json({ role: null, email: "ignored@example.org", isOwner: true, configured: false, setupAvailable: true }));
+  put("fetch", async () =>
+    Response.json({
+      role: null,
+      email: "ignored@example.org",
+      isOwner: true,
+      configured: false,
+      setupAvailable: true,
+    }),
+  );
   const values: unknown[] = [];
-  stop = watchStaffSession("/staff", data => values.push(data), () => {});
+  stop = watchStaffSession(
+    "/staff",
+    (data) => values.push(data),
+    () => {},
+  );
   await settle();
-  expect(values[0]).toEqual({ role: null, email: null, isOwner: false, configured: false, setupAvailable: true });
+  expect(values[0]).toEqual({
+    role: null,
+    email: null,
+    isOwner: false,
+    configured: false,
+    setupAvailable: true,
+  });
 });

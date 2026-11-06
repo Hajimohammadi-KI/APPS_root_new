@@ -1,3 +1,5 @@
+/** منطق خالص دامنهٔ آلمانی؛ این ماژول مستقیماً شبکه، حافظهٔ مرورگر یا حساب کاربری را تغییر نمی‌دهد. */
+/** ساختار «DailyPracticeStep» ارتباط تایپی مصرف‌کننده‌های این ماژول را مشخص می‌کند؛ این تعریف به‌تنهایی اعتبارسنجی زمان اجرا یا ذخیرهٔ داده انجام نمی‌دهد. */
 export interface DailyPracticeStep {
   readonly id: "grammar" | "read_aloud" | "coach_conversation";
   readonly label: string;
@@ -5,6 +7,7 @@ export interface DailyPracticeStep {
   readonly minutes: number;
 }
 
+/** شناسه، متن و زمان فعالیت‌های معرفی‌شده را تعریف می‌کند؛ تعریف مرحله ثبت تکمیل یا ارزیابی آن نیست. */
 export const DAILY_PRACTICE_STEPS = [
   {
     id: "grammar",

@@ -1,8 +1,12 @@
+/** منطق خالص دامنهٔ آلمانی؛ این ماژول مستقیماً شبکه، حافظهٔ مرورگر یا حساب کاربری را تغییر نمی‌دهد. */
+/** ساختار «DailySessionMinutes» ارتباط تایپی مصرف‌کننده‌های این ماژول را مشخص می‌کند؛ این تعریف به‌تنهایی اعتبارسنجی زمان اجرا یا ذخیرهٔ داده انجام نمی‌دهد. */
 export type DailySessionMinutes = 15 | 30 | 45 | 60;
 
+/** ساختار «DailyMissionKind» ارتباط تایپی مصرف‌کننده‌های این ماژول را مشخص می‌کند؛ این تعریف به‌تنهایی اعتبارسنجی زمان اجرا یا ذخیرهٔ داده انجام نمی‌دهد. */
 export type DailyMissionKind =
   "recall" | "review" | "resume" | "consolidate" | "advance";
 
+/** ساختار «DailyBlockId» ارتباط تایپی مصرف‌کننده‌های این ماژول را مشخص می‌کند؛ این تعریف به‌تنهایی اعتبارسنجی زمان اجرا یا ذخیرهٔ داده انجام نمی‌دهد. */
 export type DailyBlockId =
   | "recall"
   | "review"
@@ -13,6 +17,7 @@ export type DailyBlockId =
   | "speaking_grammar"
   | "save_schedule";
 
+/** ساختار «AdaptiveDailySignals» ارتباط تایپی مصرف‌کننده‌های این ماژول را مشخص می‌کند؛ این تعریف به‌تنهایی اعتبارسنجی زمان اجرا یا ذخیرهٔ داده انجام نمی‌دهد. */
 export interface AdaptiveDailySignals {
   readonly sessionMinutes: DailySessionMinutes;
   readonly hasPreviousLesson: boolean;
@@ -24,18 +29,21 @@ export interface AdaptiveDailySignals {
   readonly automaticityScore: number;
 }
 
+/** ساختار «AdaptiveDailyBlock» ارتباط تایپی مصرف‌کننده‌های این ماژول را مشخص می‌کند؛ این تعریف به‌تنهایی اعتبارسنجی زمان اجرا یا ذخیرهٔ داده انجام نمی‌دهد. */
 export interface AdaptiveDailyBlock {
   readonly id: DailyBlockId;
   readonly minutes: number;
   readonly breakAfterMinutes: number;
 }
 
+/** ساختار «AdaptiveDailyPlan» ارتباط تایپی مصرف‌کننده‌های این ماژول را مشخص می‌کند؛ این تعریف به‌تنهایی اعتبارسنجی زمان اجرا یا ذخیرهٔ داده انجام نمی‌دهد. */
 export interface AdaptiveDailyPlan {
   readonly mission: DailyMissionKind;
   readonly canAdvance: boolean;
   readonly blocks: readonly AdaptiveDailyBlock[];
 }
 
+/** سهم شش فعالیت اصلی برای هر مدت جلسه از پیش مشخص است؛ انتخاب زمان زبان‌آموز بازنویسی نمی‌شود. */
 const CORE_MISSION_MINUTES: Record<
   DailySessionMinutes,
   readonly [number, number, number, number, number, number]
@@ -47,12 +55,14 @@ const CORE_MISSION_MINUTES: Record<
 };
 
 /** Die sechs Kernaktivitäten ergeben immer genau die gewählte Lernzeit. */
+/** مدت جلسه را به شش سهم مصوب تبدیل می‌کند که مجموعشان زمان انتخاب‌شده است؛ برنامهٔ ذخیره‌شده را تغییر نمی‌دهد. ورودی‌ها: sessionMinutes. */
 export function allocateCoreMissionMinutes(
   sessionMinutes: DailySessionMinutes,
 ): readonly [number, number, number, number, number, number] {
   return CORE_MISSION_MINUTES[sessionMinutes];
 }
 
+/** چیدمان مدت فعالیت و استراحت را بر اساس زمان جلسه نگه می‌دارد؛ این جدول اعلان یا تایمر خودکار نیست. */
 const SESSION_LAYOUTS: Record<
   DailySessionMinutes,
   {
@@ -78,10 +88,12 @@ const SESSION_LAYOUTS: Record<
   },
 };
 
+/** عدد محاسبه‌شده را گرد و برای نمایش به دامنهٔ صفر تا صد محدود می‌کند؛ ورودی این مسیر عددِ محاسبهٔ دامنه است. ورودی‌ها: value. */
 function clampPercent(value: number): number {
   return Math.min(100, Math.max(0, Math.round(value)));
 }
 
+/** نشانه‌های یادگیری و مدت جلسه را به مأموریت و بلوک‌ها تبدیل می‌کند؛ یادآوری و اصلاح لازم بر درس تازه اولویت دارند و چیزی ذخیره نمی‌شود. ورودی‌ها: signals. */
 export function buildAdaptiveDailyPlan(
   signals: AdaptiveDailySignals,
 ): AdaptiveDailyPlan {
@@ -89,6 +101,7 @@ export function buildAdaptiveDailyPlan(
   const activeErrorCount = Math.max(0, signals.activeErrorCount);
   const masteryScore = clampPercent(signals.masteryScore);
   const automaticityScore = clampPercent(signals.automaticityScore);
+  /** پیشرویِ درس تازه به نبود کار نیمه‌تمام، مرور معوق و خطای فعال و رسیدن به آستانه‌های فعلی وابسته است؛ شروعِ بدون درس قبلی مسیر جدا دارد. */
   const canAdvance =
     !signals.hasPreviousLesson ||
     (!signals.hasIncompleteLesson &&
@@ -97,6 +110,7 @@ export function buildAdaptiveDailyPlan(
       masteryScore >= 75 &&
       automaticityScore >= 65);
 
+  /** اولویت‌های فعلی یادآوری، مرور و ادامهٔ درس قبل از گسترش انتخاب می‌شوند؛ این انتخاب فقط خروجی برنامه است و وضعیت را ذخیره نمی‌کند. */
   const mission: DailyMissionKind =
     signals.hasPreviousLesson && !signals.previousLessonRecalled
       ? "recall"
@@ -107,6 +121,7 @@ export function buildAdaptiveDailyPlan(
           : canAdvance
             ? "advance"
             : "consolidate";
+  /** اولویت‌های فعلی یادآوری، مرور و ادامهٔ درس قبل از گسترش انتخاب می‌شوند؛ این انتخاب فقط خروجی برنامه است و وضعیت را ذخیره نمی‌کند. */
   const priorityBlock: DailyBlockId =
     dueReviewCount > 0 || activeErrorCount > 0
       ? "review"
@@ -144,6 +159,7 @@ export function buildAdaptiveDailyPlan(
   };
 }
 
+/** پوشش، میانگین مهارت و شاخص خودکاری را به درصد نمایشی تبدیل می‌کند؛ نبود موضوع یا امتیاز، تقسیم بر صفر تولید نمی‌کند. ورودی‌ها: input. */
 export function calculateDailyProgress(input: {
   readonly levelTopicCount: number;
   readonly coveredTopicCount: number;
@@ -154,8 +170,11 @@ export function calculateDailyProgress(input: {
     ? (input.coveredTopicCount / input.levelTopicCount) * 100
     : 0;
   const mastery = input.masteryScores.length
-    ? input.masteryScores.reduce((sum, score) => sum + clampPercent(score), 0) /
-      input.masteryScores.length
+    ? input.masteryScores.reduce(
+        /** در calculateDailyProgress، انباشت از مقدار آغازین مشخص پیش می‌رود؛ سهم هر عضو فقط در نتیجهٔ محاسبه اعمال می‌شود. ورودی‌ها: sum، score. */
+        (sum, score) => sum + clampPercent(score),
+        0,
+      ) / input.masteryScores.length
     : 0;
   return {
     coverage: clampPercent(coverage),

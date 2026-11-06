@@ -38,5 +38,8 @@
     "concurrently": "10.0.4",
     "next": "16.1.7",
     "typescript": "5.9.3"
+  },
+  "overrides": {
+    "zod": "4.6.6"
   }
 }

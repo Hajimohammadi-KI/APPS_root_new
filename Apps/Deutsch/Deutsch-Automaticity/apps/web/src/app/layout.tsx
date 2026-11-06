@@ -63,7 +63,7 @@ export default function RootLayout({
       <body>
         <LearningRecoveryBoundary>
           <Providers>
-            <StaffAccessProvider>
+            <StaffAccessProvider language="de">
               <StaffWorkspaceBar />
               <AppShell>{children}</AppShell>
               <DeepLSelectionTranslator />

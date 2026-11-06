@@ -5,8 +5,12 @@ import {
   staffConfigFromEnvironment,
 } from "@automaticity/learning-core/staff-server";
 
-export function proxy(request: NextRequest) {
-  const denied = protectStaffRequest(request, staffConfigFromEnvironment());
+/** مجوز از سند خصوصیِ جاری خوانده می‌شود؛ پروکسی تا پایان این بررسی اجازهٔ رندر نمی‌دهد. */
+export async function proxy(request: NextRequest) {
+  const denied = await protectStaffRequest(
+    request,
+    staffConfigFromEnvironment(),
+  );
   if (denied) return denied;
   const response = NextResponse.next();
   if (requiredStaffRoles(request.nextUrl.pathname)) {

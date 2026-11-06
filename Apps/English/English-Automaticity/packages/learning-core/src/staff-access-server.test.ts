@@ -5,159 +5,236 @@ import {
   requiredStaffRoles,
   staffSessionResponse,
   protectStaffRequest,
+  staffAccountsResponse,
+  staffSetupResponse,
+  type StaffConfig,
 } from "./staff-access-server";
-
-const config = {
-  teacherPassword: "test-teacher-password-123456",
-  developerPassword: "test-developer-password-789012",
-  sessionSecret: "test-only-session-secret-at-least-thirty-two-characters",
-};
+import {
+  createStaffAccount,
+  type StaffAccountDocument,
+  type StaffAccountStore,
+  StaffAccountConflictError,
+} from "./staff-account-store";
 const now = 1_800_000_000_000;
-test("staff sessions are signed, expire and cannot change roles", () => {
-  const cookie = createStaffSession("teacher", config, now);
-  expect(readStaffSession(cookie, config, now)?.role).toBe("teacher");
-  expect(readStaffSession(cookie + "x", config, now)).toBeNull();
-  expect(readStaffSession(cookie, config, now + 9 * 60 * 60 * 1000)).toBeNull();
+const password = "private-test-password-123456";
+const secret = "test-only-session-secret-at-least-thirty-two-characters";
+let requestSequence = 0;
+function request(
+  path: string,
+  body?: unknown,
+  cookie?: string,
+  origin = "https://app.test",
+) {
+  return new Request(`https://app.test${path}`, {
+    method: body === undefined ? "GET" : "POST",
+    headers: {
+      origin,
+      "content-type": "application/json",
+      "x-forwarded-for": `test-${requestSequence++}`,
+      ...(cookie ? { cookie } : {}),
+    },
+    ...(body === undefined
+      ? {}
+      : { body: typeof body === "string" ? body : JSON.stringify(body) }),
+  });
+}
+function memoryStore(initial: StaffAccountDocument | null = null) {
+  let document = initial;
+  let revision = 0;
+  const store: StaffAccountStore = {
+    async read() {
+      return document
+        ? { document: structuredClone(document), etag: `${revision}` }
+        : null;
+    },
+    async write(next, expected) {
+      if (expected !== (document ? `${revision}` : null))
+        throw new StaffAccountConflictError("conflict");
+      document = structuredClone(next);
+      revision++;
+    },
+  };
+  return { store, value: () => document };
+}
+async function fixture() {
+  const owner = await createStaffAccount(
+    { email: "owner@example.test", password, role: "developer", isOwner: true },
+    now,
+  );
+  const teacher = await createStaffAccount(
+    { email: "teacher@example.test", password, role: "teacher" },
+    now,
+  );
+  const memory = memoryStore({ schemaVersion: 1, accounts: [owner, teacher] });
+  const config: StaffConfig = { sessionSecret: secret, store: memory.store };
+  return { owner, teacher, memory, config };
+}
+test("signed account sessions reject tampering, expiry, rotation and disabled accounts", async () => {
+  const { owner, teacher, config, memory } = await fixture();
+  const token = createStaffSession(teacher, config, now);
+  expect((await readStaffSession(token, config, now))?.role).toBe("teacher");
+  expect(await readStaffSession(token + "x", config, now)).toBeNull();
+  expect(await readStaffSession(token, config, now + 9 * 3600_000)).toBeNull();
   expect(
-    readStaffSession(
-      cookie,
-      { ...config, teacherPassword: "rotated-long-password" },
+    await readStaffSession(
+      token,
+      { ...config, sessionSecret: "different-long-secret-value-12345678" },
       now,
     ),
   ).toBeNull();
-  const [payload, signed] = cookie.split(".");
-  const fields = JSON.parse(
-    Buffer.from(payload!, "base64url").toString("utf8"),
-  );
-  fields.role = "developer";
+  const [payload, signature] = token.split(".");
+  const fields = JSON.parse(Buffer.from(payload!, "base64url").toString());
+  fields.id = owner.id;
   expect(
-    readStaffSession(
-      `${Buffer.from(JSON.stringify(fields)).toString("base64url")}.${signed}`,
+    await readStaffSession(
+      `${Buffer.from(JSON.stringify(fields)).toString("base64url")}.${signature}`,
       config,
       now,
     ),
   ).toBeNull();
+  const current = (await memory.store.read())!;
+  current.document.accounts[1]!.version++;
+  await memory.store.write(current.document, current.etag);
+  expect(await readStaffSession(token, config, now)).toBeNull();
+  const disabled = createStaffSession({ ...teacher, version: 2 }, config, now);
+  const next = (await memory.store.read())!;
+  next.document.accounts[1]!.active = false;
+  await memory.store.write(next.document, next.etag);
+  expect(await readStaffSession(disabled, config, now)).toBeNull();
 });
-test("learner routes stay public and teacher/developer routes require the appropriate role", () => {
+test("learner pages stay public and professional access comes from the stored role", async () => {
+  const { teacher, config } = await fixture();
   expect(requiredStaffRoles("/practice")).toBeNull();
   expect(requiredStaffRoles("/staff")).toBeNull();
-  expect(requiredStaffRoles("/teacher")).toContain("teacher");
-  expect(requiredStaffRoles("/lehrkraft")).toContain("teacher");
-  expect(requiredStaffRoles("/staff/developer")).toEqual(["developer"]);
-  expect(requiredStaffRoles("/roadmap.html")).toEqual(["developer"]);
-  expect(requiredStaffRoles("/api/learner-feedback/review")).toEqual([
-    "developer",
-  ]);
-  expect(requiredStaffRoles("/staff%2Fdeveloper")).toEqual(["developer"]);
-  expect(requiredStaffRoles("/staff%252Fdeveloper")).toEqual(["developer"]);
-  expect(requiredStaffRoles("/ROADMAP.HTML")).toEqual(["developer"]);
+  for (const path of [
+    "/staff/developer",
+    "/roadmap.html",
+    "/staff%252Fdeveloper",
+    "/ROADMAP.HTML",
+    "/api/staff-accounts",
+  ])
+    expect(requiredStaffRoles(path)).toEqual(["developer"]);
   expect(
-    protectStaffRequest(new Request("https://app.test/teacher"), config, now)
-      ?.status,
+    (await protectStaffRequest(request("/teacher"), config, now))?.status,
   ).toBe(307);
-  const cookie = `language-staff-session=${createStaffSession("teacher", config, now)}`;
+  const cookie = `language-staff-session=${createStaffSession(teacher, config, now)}`;
   expect(
-    protectStaffRequest(
-      new Request("https://app.test/teacher", { headers: { cookie } }),
+    await protectStaffRequest(
+      request("/teacher", undefined, cookie),
       config,
       now,
     ),
   ).toBeNull();
   expect(
-    protectStaffRequest(
-      new Request("https://app.test/roadmap.html", { headers: { cookie } }),
-      config,
-      now,
+    (
+      await protectStaffRequest(
+        request("/roadmap.html", undefined, cookie),
+        config,
+        now,
+      )
     )?.status,
   ).toBe(307);
+  const response = await staffSessionResponse(
+    request("/api/staff-session", {
+      email: " TEACHER@example.test ",
+      password,
+      role: "developer",
+      returnTo: "/roadmap.html",
+    }),
+    config,
+    now,
+  );
+  expect(await response.json()).toMatchObject({
+    role: "teacher",
+    email: "teacher@example.test",
+    isOwner: false,
+    redirectTo: "/staff",
+  });
 });
-
-test("malformed and excessive login bodies fail closed and repeated guessing is limited", async () => {
-  const base = now + 120_000;
-  const request = (body: string, ip: string) =>
-    new Request("https://app.test/api/staff-session", {
-      method: "POST",
-      headers: {
-        origin: "https://app.test",
-        "content-type": "application/json",
-        "x-forwarded-for": ip,
-      },
-      body,
-    });
-  expect(
-    (await staffSessionResponse(request("not json", "bad-body"), config, base))
-      .status,
-  ).toBe(400);
-  expect(
-    (
-      await staffSessionResponse(
-        request("x".repeat(5000), "large-body"),
-        config,
-        base,
-      )
-    ).status,
-  ).toBe(400);
-  for (let index = 0; index < 10; index++)
+test("email login rejects legacy role-only, invalid, cross-origin, oversized and repeated guesses", async () => {
+  const { config } = await fixture();
+  for (const body of [
+    { role: "developer", password },
+    "not json",
+    "x".repeat(5000),
+  ])
     expect(
       (
         await staffSessionResponse(
-          request(
-            JSON.stringify({ role: "teacher", password: "wrong" }),
-            "guesses",
-          ),
+          request("/api/staff-session", body),
           config,
-          base,
+          now,
         )
       ).status,
-    ).toBe(401);
+    ).toBe(400);
+  const crossSite = await staffSessionResponse(
+    request(
+      "/api/staff-session",
+      { email: "owner@example.test", password },
+      undefined,
+      "https://evil.test",
+    ),
+    config,
+    now,
+  );
+  expect(crossSite.status).toBe(403);
+  expect(crossSite.headers.get("set-cookie")).toBeNull();
   expect(
     (
       await staffSessionResponse(
-        request(
-          JSON.stringify({ role: "teacher", password: config.teacherPassword }),
-          "guesses",
-        ),
+        request("/api/staff-session", {
+          email: "owner@example.test",
+          password: "wrong",
+        }),
         config,
-        base,
+        now,
       )
     ).status,
-  ).toBe(429);
-});
-test("login rejects wrong passwords and cross-site requests without issuing cookies", async () => {
-  for (const [origin, password] of [
-    ["https://evil.test", config.teacherPassword],
-    ["https://app.test", "wrong"],
-  ]) {
-    const result = await staffSessionResponse(
-      new Request("https://app.test/api/staff-session", {
-        method: "POST",
-        headers: { origin, "content-type": "application/json" },
-        body: JSON.stringify({ role: "teacher", password }),
+  ).toBe(401);
+  for (let index = 0; index < 11; index++) {
+    const guessing = new Request("https://app.test/api/staff-session", {
+      method: "POST",
+      headers: {
+        origin: "https://app.test",
+        "x-forwarded-for": "repeated-guesses",
+      },
+      body: JSON.stringify({
+        email: "unknown@example.test",
+        password: "wrong",
       }),
-      config,
-      now,
-    );
-    expect(result.status).toBe(origin.includes("evil") ? 403 : 401);
-    expect(result.headers.get("set-cookie")).toBeNull();
+    });
+    expect(
+      (await staffSessionResponse(guessing, config, now + 120_000)).status,
+    ).toBe(index < 10 ? 401 : 429);
   }
 });
-test("login uses an HttpOnly cookie and logout clears it; configuration absence fails closed", async () => {
-  const request = new Request("https://app.test/api/staff-session", {
-    method: "POST",
-    headers: { origin: "https://app.test", "content-type": "application/json" },
-    body: JSON.stringify({
-      role: "developer",
-      password: config.developerPassword,
-      returnTo: "https://evil.test",
+test("login sets private HttpOnly cookie, logout clears it and public Host controls origin", async () => {
+  const { config } = await fixture();
+  const response = await staffSessionResponse(
+    new Request("http://localhost:3000/api/staff-session", {
+      method: "POST",
+      headers: {
+        host: "app.test",
+        origin: "https://app.test",
+        "x-forwarded-proto": "https",
+        "x-forwarded-for": "public-host",
+      },
+      body: JSON.stringify({
+        email: "owner@example.test",
+        password,
+        returnTo: "https://evil.test",
+      }),
     }),
-  });
-  const response = await staffSessionResponse(request, config, now);
+    config,
+    now + 300_000,
+  );
   expect(response.status).toBe(200);
-  expect(response.headers.get("set-cookie")).toContain("HttpOnly");
-  expect(response.headers.get("set-cookie")).toContain("Secure");
-  expect(response.headers.get("set-cookie")).toContain("SameSite=Strict");
+  for (const value of ["HttpOnly", "Secure", "SameSite=Strict"])
+    expect(response.headers.get("set-cookie")).toContain(value);
+  expect(response.headers.get("cache-control")).toContain("no-store");
   expect(await response.json()).toMatchObject({
     role: "developer",
+    isOwner: true,
     redirectTo: "/staff",
   });
   const logout = await staffSessionResponse(
@@ -169,48 +246,269 @@ test("login uses an HttpOnly cookie and logout clears it; configuration absence 
     now,
   );
   expect(logout.headers.get("set-cookie")).toContain("Max-Age=0");
+});
+test("storage outage fails closed without legacy-password fallback", async () => {
+  const unavailable: StaffConfig = {
+    sessionSecret: secret,
+    store: {
+      async read() {
+        throw new Error("offline");
+      },
+      async write() {
+        throw new Error("offline");
+      },
+    },
+  };
+  const account = await createStaffAccount(
+    { email: "owner@example.test", password, role: "developer", isOwner: true },
+    now,
+  );
+  const cookie = `language-staff-session=${createStaffSession(account, unavailable, now)}`;
   expect(
-    readStaffSession(createStaffSession("teacher", config, now), {}, now),
+    (
+      await staffSessionResponse(
+        request("/api/staff-session"),
+        unavailable,
+        now,
+      )
+    ).status,
+  ).toBe(503);
+  expect(
+    (
+      await protectStaffRequest(
+        request("/teacher", undefined, cookie),
+        unavailable,
+        now,
+      )
+    )?.status,
+  ).toBe(503);
+  expect(
+    await protectStaffRequest(request("/practice"), unavailable, now),
   ).toBeNull();
 });
-
-test("Next internal URLs use the public Host and forwarded protocol for same-origin login", async () => {
-  const response = await staffSessionResponse(
-    new Request("http://localhost:3202/api/staff-session", {
-      method: "POST",
-      headers: {
-        host: "127.0.0.1:3202",
-        origin: "http://127.0.0.1:3202",
-        "content-type": "application/json",
-        "x-forwarded-for": "proxy-local",
+test("only the owner can list or mutate accounts after current-password reauthentication", async () => {
+  const { owner, teacher, config } = await fixture();
+  const ownerCookie = `language-staff-session=${createStaffSession(owner, config, now)}`;
+  const teacherCookie = `language-staff-session=${createStaffSession(teacher, config, now)}`;
+  expect(
+    (await staffAccountsResponse(request("/api/staff-accounts"), config, now))
+      .status,
+  ).toBe(401);
+  expect(
+    (
+      await staffAccountsResponse(
+        request("/api/staff-accounts", undefined, teacherCookie),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(403);
+  const listing = await staffAccountsResponse(
+    request("/api/staff-accounts", undefined, ownerCookie),
+    config,
+    now,
+  );
+  const text = await listing.text();
+  expect(text).toContain("owner@example.test");
+  expect(text).not.toContain("passwordHash");
+  expect(text).not.toContain("scrypt");
+  expect(
+    (
+      await staffAccountsResponse(
+        request(
+          "/api/staff-accounts",
+          {
+            action: "create",
+            email: "new@example.test",
+            password,
+            role: "teacher",
+            currentPassword: "wrong",
+          },
+          ownerCookie,
+        ),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(401);
+  expect(
+    (
+      await staffAccountsResponse(
+        request(
+          "/api/staff-accounts",
+          {
+            action: "create",
+            email: "new@example.test",
+            password,
+            role: "teacher",
+            currentPassword: password,
+          },
+          ownerCookie,
+        ),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(200);
+  expect(
+    (
+      await staffAccountsResponse(
+        request(
+          "/api/staff-accounts",
+          {
+            action: "create",
+            email: "NEW@example.test",
+            password,
+            role: "teacher",
+            currentPassword: password,
+          },
+          ownerCookie,
+        ),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(409);
+  expect(
+    (
+      await staffAccountsResponse(
+        request(
+          "/api/staff-accounts",
+          { action: "disable", id: owner.id, currentPassword: password },
+          ownerCookie,
+        ),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(400);
+  expect(
+    (
+      await staffAccountsResponse(
+        request(
+          "/api/staff-accounts",
+          {
+            action: "update",
+            id: owner.id,
+            role: "teacher",
+            currentPassword: password,
+          },
+          ownerCookie,
+        ),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(400);
+});
+test("password changes invalidate old sessions and refresh the owner's current session", async () => {
+  const { owner, teacher, config } = await fixture();
+  const ownerCookie = `language-staff-session=${createStaffSession(owner, config, now)}`;
+  const teacherToken = createStaffSession(teacher, config, now);
+  expect(
+    (
+      await staffAccountsResponse(
+        request(
+          "/api/staff-accounts",
+          {
+            action: "update",
+            id: teacher.id,
+            password: "new-private-password-1234",
+            currentPassword: password,
+          },
+          ownerCookie,
+        ),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(200);
+  expect(await readStaffSession(teacherToken, config, now)).toBeNull();
+  const ownChange = await staffAccountsResponse(
+    request(
+      "/api/staff-accounts",
+      {
+        action: "update",
+        id: owner.id,
+        email: "renamed@example.test",
+        password: "new-owner-password-1234",
+        currentPassword: password,
       },
-      body: JSON.stringify({
-        role: "teacher",
-        password: config.teacherPassword,
-      }),
+      ownerCookie,
+    ),
+    config,
+    now,
+  );
+  expect(ownChange.status).toBe(200);
+  expect(ownChange.headers.get("set-cookie")).toContain("HttpOnly");
+  const nextToken = ownChange.headers
+    .get("set-cookie")!
+    .split(";")[0]!
+    .split("=")[1]!;
+  expect((await readStaffSession(nextToken, config, now))?.email).toBe(
+    "renamed@example.test",
+  );
+  expect(
+    await readStaffSession(ownerCookie.split("=")[1], config, now),
+  ).toBeNull();
+});
+test("first-owner setup needs the private key and cannot reopen registration", async () => {
+  const memory = memoryStore();
+  const config: StaffConfig = {
+    sessionSecret: secret,
+    setupSecret: "private-setup-key-with-at-least-32-characters",
+    store: memory.store,
+  };
+  expect(
+    await (
+      await staffSessionResponse(request("/api/staff-session"), config, now)
+    ).json(),
+  ).toMatchObject({ configured: false, setupAvailable: true, role: null });
+  expect(
+    (
+      await staffSetupResponse(
+        request("/api/staff-setup", {
+          email: "owner@example.test",
+          password,
+          setupKey: "wrong",
+        }),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(401);
+  const setup = await staffSetupResponse(
+    request("/api/staff-setup", {
+      email: "owner@example.test",
+      password,
+      setupKey: config.setupSecret,
     }),
     config,
-    now + 300_000,
+    now,
   );
-  expect(response.status).toBe(200);
-  const remote = await staffSessionResponse(
-    new Request("http://localhost:3000/api/staff-session", {
-      method: "POST",
-      headers: {
-        host: "app.test",
-        origin: "https://app.test",
-        "x-forwarded-proto": "https",
-        "content-type": "application/json",
-        "x-forwarded-for": "proxy-remote",
-      },
-      body: JSON.stringify({
-        role: "teacher",
-        password: config.teacherPassword,
-      }),
-    }),
-    config,
-    now + 300_000,
-  );
-  expect(remote.status).toBe(200);
-  expect(remote.headers.get("set-cookie")).toContain("Secure");
+  expect(setup.status).toBe(200);
+  expect(setup.headers.get("set-cookie")).toContain("HttpOnly");
+  expect(memory.value()?.accounts[0]).toMatchObject({
+    email: "owner@example.test",
+    role: "developer",
+    isOwner: true,
+  });
+  expect(
+    (
+      await staffSetupResponse(
+        request("/api/staff-setup", {
+          email: "attacker@example.test",
+          password,
+          setupKey: config.setupSecret,
+        }),
+        config,
+        now,
+      )
+    ).status,
+  ).toBe(409);
+  expect(
+    await (
+      await staffSessionResponse(request("/api/staff-session"), config, now)
+    ).json(),
+  ).toMatchObject({ configured: true, setupAvailable: false });
 });

@@ -1,41 +1,51 @@
 import { notebookCopy } from "@automaticity/learning-core/automaticity";
+
+/**
+ * ورودی زبان اپ است؛ خروجی توضیح روش و منشأ تمرین‌ها برای محیط حرفه‌ای با همان زبان است.
+ * متن اصلی دفتر خطا از هستهٔ مشترک می‌آید؛ این مؤلفه نمره، تاریخچه یا انتخاب یادگیرنده را تغییر نمی‌دهد.
+ */
 export function StaffMethodNotes({ language }: { language: "en" | "de" }) {
   const notes = notebookCopy(language);
+  const t = (en: string, de: string) => (language === "en" ? en : de);
   return (
     <section
-      lang="fa"
-      dir="rtl"
+      lang={language}
+      dir="ltr"
       style={{
         marginBlock: 24,
         padding: 24,
         border: "1px solid #cfe2e3",
         borderRadius: 16,
-        lineHeight: 1.9,
+        lineHeight: 1.7,
       }}
     >
-      <h2>روش ارزیابی و منشأ تمرین‌ها</h2>
-      <h3>دفتر خطا</h3>
-      <p lang={language} dir="ltr">
-        {notes.source}
+      <h2>
+        {t(
+          "Assessment method and exercise sources",
+          "Bewertungsmethode und Herkunft der Übungen",
+        )}
+      </h2>
+      <h3>{t("Error notebook", "Fehlerheft")}</h3>
+      <p>{notes.source}</p>
+      <p>{notes.progressBasis}</p>
+      <p>
+        {t(
+          "Progress counts use the latest response to each active exercise version. A new response requiring correction replaces an earlier pass in the current count. The original history is preserved.",
+          "Der Fortschrittsstand beruht auf der letzten Antwort zur aktiven Version jeder Übung. Eine neue Antwort mit Korrekturbedarf ersetzt ein früheres Bestehen in der aktuellen Zählung. Der ursprüngliche Verlauf bleibt erhalten.",
+        )}
       </p>
-      <p lang={language} dir="ltr">
-        {notes.progressBasis}
+      <h3>{t("Limits of the reports", "Grenzen der Berichte")}</h3>
+      <p>
+        {t(
+          "Practice completion, independent assessment, transfer to a new situation and delayed retrieval are recorded separately. Free responses and automatic transcripts alone do not establish spoken accuracy or a CEFR level.",
+          "Übungsabschluss, unabhängige Bewertung, Übertragung auf neue Situationen und zeitversetzter Abruf werden getrennt erfasst. Freie Antworten und automatische Transkripte allein belegen weder korrekte Sprache noch ein GER-Niveau.",
+        )}
       </p>
       <p>
-        شمار پیشرفت بر اساس آخرین پاسخ به نسخهٔ فعال هر تمرین است؛ پاسخِ تازهٔ
-        نیازمند اصلاح، قبولیِ قبلی را در شمار فعلی جایگزین می‌کند. سابقهٔ اصلی
-        حذف نمی‌شود.
-      </p>
-      <h3>حدود گزارش</h3>
-      <p>
-        انجام تمرین، ارزیابی مستقل، انتقال به موقعیت تازه و بازیابی پس از فاصلهٔ
-        زمانی جدا ثبت می‌شوند. پاسخ آزاد یا رونویسی خودکار، به‌تنهایی تأیید صحت
-        گفتار یا سطح CEFR نیست.
-      </p>
-      <p>
-        منشأ داده، روش محاسبه، معیارهای کیفیت، وضعیت داوری و جزئیات مدل در همین
-        محیط حرفه‌ای بررسی می‌شوند. در محیط زبان‌آموز فقط نتیجهٔ کاربردی و
-        راهنمای قدم بعدی نمایش داده می‌شود.
+        {t(
+          "Data sources, calculation methods, quality criteria, review status and model details belong to this staff workspace. Learners see practical results and guidance for their next step.",
+          "Datenquellen, Berechnungsmethoden, Qualitätskriterien, Prüfstatus und Modelldetails gehören in diesen geschützten Bereich. Lernende sehen praktische Ergebnisse und Hinweise zum nächsten Schritt.",
+        )}
       </p>
     </section>
   );

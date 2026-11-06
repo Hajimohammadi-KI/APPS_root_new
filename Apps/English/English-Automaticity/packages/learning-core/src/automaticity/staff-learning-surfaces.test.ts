@@ -47,14 +47,19 @@ function workspaceRoot() {
   }
   return directory;
 }
-const pack = JSON.parse(
-  readFileSync(
-    join(
-      workspaceRoot(),
-      "Apps/Deutsch/Deutsch-Automaticity/apps/web/public/learning-core/curriculum-de.json",
+const packs = Object.fromEntries(
+  (["en", "de"] as const).map((language) => [
+    language,
+    JSON.parse(
+      readFileSync(
+        join(
+          workspaceRoot(),
+          `Apps/${language === "en" ? "English/English" : "Deutsch/Deutsch"}-Automaticity/apps/web/public/learning-core/curriculum-${language}.json`,
+        ),
+        "utf8",
+      ),
     ),
-    "utf8",
-  ),
+  ]),
 );
 const originals = new Map<string, PropertyDescriptor | undefined>();
 const disposers: (() => void)[] = [];
@@ -67,7 +72,11 @@ function put(key: string, value: unknown) {
     value,
   });
 }
-function browser(pathname: string, staff = false) {
+function browser(
+  pathname: string,
+  staff = false,
+  language: "en" | "de" = "de",
+) {
   const summary = new ElementStub("section");
   put("document", {
     createElement: (tag: string) => new ElementStub(tag),
@@ -90,7 +99,7 @@ function browser(pathname: string, staff = false) {
         JSON.stringify(
           url === "/api/staff-session"
             ? { role: staff ? "developer" : null }
-            : pack,
+            : packs[language],
         ),
         { status: 200 },
       ),
@@ -122,16 +131,23 @@ test("learner progress shows next actions without technical skill evidence metho
   expect(summary.textContent).not.toContain("Selbstständige Genauigkeit");
 });
 
-test("daily learner notebook keeps counts and next exercise without source methodology", async () => {
-  browser("/heute");
-  const root = new ElementStub("section");
-  root.dataset.level = "A1";
-  disposers.push(mountDailyNotebook(root as unknown as HTMLElement, "de"));
-  await Bun.sleep(0);
-  expect(root.textContent).toContain("auf A1 bestanden");
-  expect(root.textContent).toContain("Nächste Übung machen");
-  expect(root.textContent).not.toContain(notebookCopy("de").source);
-});
+for (const language of ["en", "de"] as const)
+  test(`${language}: daily learner notebook keeps the next exercise without progress counters`, async () => {
+    browser(language === "de" ? "/heute" : "/today", false, language);
+    const root = new ElementStub("section");
+    root.dataset.level = "A1";
+    disposers.push(
+      mountDailyNotebook(root as unknown as HTMLElement, language),
+    );
+    await Bun.sleep(0);
+    expect(root.textContent).not.toMatch(/\d+ (?:von|of|از) \d+/u);
+    expect(root.textContent).not.toContain("Today:");
+    expect(root.textContent).not.toContain("Heute:");
+    expect(root.textContent).toContain(
+      language === "de" ? "Nächste Übung machen" : "Practise the next exercise",
+    );
+    expect(root.textContent).not.toContain(notebookCopy(language).source);
+  });
 
 test("professional workspace retains detailed evidence and notebook metadata", async () => {
   browser("/staff/progress", true);
@@ -145,6 +161,8 @@ test("professional workspace retains detailed evidence and notebook metadata", a
   disposers.push(mountDailyNotebook(notebook as unknown as HTMLElement, "de"));
   await Bun.sleep(0);
   expect(notebook.textContent).toContain(notebookCopy("de").source);
+  expect(notebook.textContent).toContain("auf A1 bestanden");
+  expect(notebook.textContent).toContain("Heute:");
   const links = root.children.filter(
     (child) => child instanceof ElementStub && child.tag === "a",
   ) as ElementStub[];
@@ -154,13 +172,11 @@ test("professional workspace retains detailed evidence and notebook metadata", a
   );
 });
 
-test("practice notebook card shows only counts by default; staff receives preserved metadata", () => {
+test("practice notebook card hides counters from learners; staff receives preserved counts and metadata", () => {
   for (const language of ["en", "de"] as const) {
     const copy = notebookCopy(language);
     const counts = { passed: 1, total: 3 };
-    expect(notebookCardLines(language, "A1", counts, counts)).toEqual([
-      copy.progress("A1", counts, counts),
-    ]);
+    expect(notebookCardLines(language, "A1", counts, counts)).toEqual([]);
     expect(notebookCardLines(language, "A1", counts, counts, true)).toEqual([
       copy.progress("A1", counts, counts),
       copy.source,

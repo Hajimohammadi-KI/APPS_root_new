@@ -5,7 +5,12 @@ for (const destination of [
   "Apps/English/English-Automaticity/apps/web/components",
   "Apps/Deutsch/Deutsch-Automaticity/apps/web/src/components",
 ]) {
-  for (const name of ["staff-access.tsx", "staff-method-notes.tsx", "staff-owner-setup.tsx", "staff-accounts.tsx"]) {
+  for (const name of [
+    "staff-access.tsx",
+    "staff-method-notes.tsx",
+    "staff-owner-setup.tsx",
+    "staff-accounts.tsx",
+  ]) {
     const source = await readFile(resolve(root, "shared/language-home", name));
     const target = resolve(root, destination, name);
     if (process.argv.includes("--check")) {

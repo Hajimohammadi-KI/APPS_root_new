@@ -105,7 +105,8 @@ export function watchStaffSession(
         configured: data.configured === true,
         email: role && typeof data.email === "string" ? data.email : null,
         isOwner: role === "developer" && data.isOwner === true,
-        setupAvailable: !role && data.configured !== true && data.setupAvailable === true,
+        setupAvailable:
+          !role && data.configured !== true && data.setupAvailable === true,
       });
       clearTimeout(timer);
       if (role && typeof data.expiresAt === "number")

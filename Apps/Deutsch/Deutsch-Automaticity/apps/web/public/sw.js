@@ -1,5 +1,5 @@
 // Use only local, valid assets so installation can complete without unretrievable LFS media.
-const CACHE = "deutschflow-web-2026.11.06.5";
+const CACHE = "deutschflow-web-2026.11.06.6";
 const CORE = [
   "/learning-core/text.js",
   "/learning-core/task-guide.js",

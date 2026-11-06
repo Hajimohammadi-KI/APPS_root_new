@@ -30,28 +30,38 @@ export type StoredStateRead =
 export const BACKUP_REMINDER_DAYS = 30;
 
 /** Namespace for the recovery keys that belong to one stored state key. */
+/** زبان و کلید وضعیت را به پیشوند بازیابی اختصاصی همان داده تبدیل می‌کند؛ جداسازی en/de مانع آمیختن نسخه‌های پشتیبان دو اپ می‌شود. */
 export function recoveryNamespace(language: "en" | "de", key: string) {
 	return `automaticity:v2:${language}:recovery:${key}`;
 }
 
+/** از پیشوند بازیابی، کلید نگهداری JSON خراب را می‌سازد؛ readStoredState و recoveryEntries از همین نام مشترک استفاده می‌کنند. */
 export function quarantineKey(namespace: string) {
 	return `${namespace}:quarantine`;
 }
 
+/** پیشوند و شمارهٔ نسخهٔ خوانده‌شده را به کلید snapshot تبدیل می‌کند تا اجرای نسخهٔ قدیمی‌تر، نسخهٔ جدید داده را از بین نبرد. */
 export function newerVersionKey(namespace: string, version: number) {
 	return `${namespace}:newer-v${version}`;
 }
 
+/** کلید تاریخ آخرین خروجی پشتیبان را برای recordBackup و backupReminder یکسان می‌سازد؛ خود دادهٔ پشتیبان در این کلید ذخیره نمی‌شود. */
 export function lastBackupKey(namespace: string) {
 	return `${namespace}:last-backup`;
 }
 
+/** از ورودی ناشناخته فقط فیلد version عددیِ یک شیء را می‌خواند؛ در نبود آن null می‌دهد و شیء را تغییر نمی‌دهد. */
 function storedVersion(value: unknown) {
 	return value && typeof value === "object" && typeof (value as { version?: unknown }).version === "number"
 		? (value as { version: number }).version
 		: null;
 }
 
+/**
+ * storage، کلید اصلی، نسخهٔ قابل‌فهم اپ و پیشوند بازیابی را می‌گیرد و وضعیت missing/ok/corrupt برمی‌گرداند.
+ * JSON خراب پیش از کنارگذاشتن در quarantine کپی می‌شود؛ دادهٔ نسخهٔ جدیدتر نیز پیش از نرمال‌سازی snapshot می‌گیرد.
+ * شکست نوشتن کپی بازیابی، نتیجهٔ تشخیص را پنهان نمی‌کند؛ AppStoreProvider براساس kind پیام مناسب نشان می‌دهد.
+ */
 export function readStoredState(
 	storage: KeyValueStorage,
 	key: string,
@@ -59,6 +69,7 @@ export function readStoredState(
 	namespace: string,
 ): StoredStateRead {
 	const raw = storage.getItem(key);
+	// نبود رکورد با خراب‌بودن JSON فرق دارد؛ مهاجرت دادهٔ قدیمی فقط به تصمیم فراخواننده انجام می‌شود.
 	if (raw === null) return { kind: "missing" };
 	let value: unknown;
 	try {
@@ -76,6 +87,7 @@ export function readStoredState(
 	}
 	const version = storedVersion(value);
 	let newerSnapshotKey: string | null = null;
+	// نسخهٔ آینده را فقط یک‌بار کپی می‌کنیم؛ اجرای چندبارهٔ نسخهٔ قدیمی نباید snapshot اصلی را بازنویسی کند.
 	if (version !== null && version > currentVersion) {
 		newerSnapshotKey = newerVersionKey(namespace, version);
 		try {
@@ -87,6 +99,7 @@ export function readStoredState(
 	return { kind: "ok", value, version, newerSnapshotKey };
 }
 
+/** مقدار را به JSON تبدیل و در کلید مشخص می‌نویسد؛ true یعنی setItem موفق بود و false خطای ظرفیت/دسترسی را برای هشدارِ رابط گزارش می‌کند. */
 export function writeStoredState(storage: KeyValueStorage, key: string, value: unknown) {
 	try {
 		storage.setItem(key, JSON.stringify(value));
@@ -96,6 +109,7 @@ export function writeStoredState(storage: KeyValueStorage, key: string, value: u
 	}
 }
 
+/** فقط زوج‌های کلید/متنِ quarantine و snapshotهای نسخهٔ جدیدتر این پیشوند را برای خروجی پشتیبان جمع می‌کند؛ کلیدهای نامرتبط را صادر نمی‌کند. */
 export function recoveryEntries(storage: KeyValueStorage, namespace: string) {
 	const entries: Array<[string, string]> = [];
 	for (let index = 0; index < storage.length; index += 1) {
@@ -107,6 +121,7 @@ export function recoveryEntries(storage: KeyValueStorage, namespace: string) {
 	return entries;
 }
 
+/** زمان خروجی پشتیبان موفق را در کلید یادآوری می‌نویسد؛ شکست آن عمداً دادهٔ یادگیرنده یا فایل خروجی را تغییر نمی‌دهد و فقط زمان یادآوری نامعلوم می‌ماند. */
 export function recordBackup(storage: KeyValueStorage, namespace: string, at: string) {
 	try {
 		storage.setItem(lastBackupKey(namespace), at);
@@ -115,6 +130,7 @@ export function recordBackup(storage: KeyValueStorage, namespace: string, at: st
 	}
 }
 
+/** نسبت به now، تاریخ معتبر آخرین پشتیبان و overdue پس از ۳۰ روز را می‌دهد؛ تاریخ مفقود/نامعتبر overdue است تا تنظیمات یادآوری را پنهان نکند. */
 export function backupReminder(storage: KeyValueStorage, namespace: string, now: Date) {
 	const raw = storage.getItem(lastBackupKey(namespace));
 	const lastBackupAt = raw && !Number.isNaN(Date.parse(raw)) ? raw : null;
@@ -129,6 +145,7 @@ export interface PersistenceStatus {
 
 type StorageNavigator = { storage?: { persist?: () => Promise<boolean>; persisted?: () => Promise<boolean> } };
 
+/** بدون درخواست مجوز تازه، پایداری فعلی ذخیرهٔ مرورگر را می‌خواند؛ ناوبری تزریقی آزمون آفلاین را ممکن می‌کند و نبود API/خطا به وضعیت غیرپایدار تبدیل می‌شود. */
 export async function persistentStorageStatus(nav: StorageNavigator | undefined = globalThis.navigator): Promise<PersistenceStatus> {
 	const persisted = nav?.storage?.persisted;
 	if (!persisted) return { supported: false, persisted: false };
@@ -139,6 +156,7 @@ export async function persistentStorageStatus(nav: StorageNavigator | undefined 
 	}
 }
 
+/** پس از تعامل کاربر توسط AppStoreProvider فراخوانی می‌شود و درخواست persist را به مرورگر می‌دهد؛ نتیجه تضمین پشتیبان نیست و رد/خطا به persisted:false تبدیل می‌شود. */
 export async function requestPersistentStorage(nav: StorageNavigator | undefined = globalThis.navigator): Promise<PersistenceStatus> {
 	const persist = nav?.storage?.persist;
 	if (!persist) return { supported: false, persisted: false };

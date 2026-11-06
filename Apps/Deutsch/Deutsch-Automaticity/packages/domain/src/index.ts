@@ -1,3 +1,4 @@
+/** منطق خالص دامنهٔ آلمانی؛ این ماژول مستقیماً شبکه، حافظهٔ مرورگر یا حساب کاربری را تغییر نمی‌دهد. */
 export { DAILY_PRACTICE_STEPS, type DailyPracticeStep } from "./practice-plan";
 export {
   allocateCoreMissionMinutes,

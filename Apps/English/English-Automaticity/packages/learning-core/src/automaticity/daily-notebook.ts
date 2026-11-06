@@ -12,9 +12,8 @@ import { readAutomaticityEvents } from "./storage";
 import { readSupportLanguage } from "./support-language";
 import { initializeStaffWorkspace } from "./staff-interface";
 
-/** The daily plan's part of the error notebook: the items of the
- * grammar level the daily page shows (its `data-level`), today's count and a
- * link to the next item in the learning path. */
+/** The daily plan's notebook entry links to the next item at its selected level.
+ * Progress counters and methodology are shown only in the staff workspace. */
 export function mountDailyNotebook(
   root: HTMLElement,
   language: Language,
@@ -73,13 +72,13 @@ export function mountDailyNotebook(
       ? [
           recentNode(
             "h3",
-            `Neue Übungen vom 6. November · ${recent.total} kurze Aufgaben`,
-            `تمرین‌های تازهٔ ۶ نوامبر · ${recent.total} تمرین کوتاه`,
+            `Neue Übungen vom 6. November${staff ? ` · ${recent.total} kurze Aufgaben` : ""}`,
+            `تمرین‌های تازهٔ ۶ نوامبر${staff ? ` · ${recent.total} تمرین کوتاه` : ""}`,
           ),
           recentNode(
             "p",
-            `${recent.passed} von ${recent.total} bestanden. 1. Schreibe den ganzen Satz ohne Vorlage. 2. Prüfe und verbessere ihn. 3. Sage einen ähnlichen Satz mit anderen Wörtern laut. 4. Wiederhole die Übung später. Das Sprechen hier wird nicht bewertet.`,
-            `${recent.passed} از ${recent.total} تمرین درست بوده است. ۱. جملهٔ کامل را بدون دیدن الگو به آلمانی بنویس. ۲. پاسخ را بررسی و اصلاح کن. ۳. جمله‌ای مشابه را با واژه‌های دیگر با صدای بلند بگو. ۴. روز دیگری دوباره تمرین کن. گفتن جمله در این بخش نمره ندارد.`,
+            `${staff ? `${recent.passed} von ${recent.total} bestanden. ` : ""}1. Schreibe den ganzen Satz ohne Vorlage. 2. Prüfe und verbessere ihn. 3. Sage einen ähnlichen Satz mit anderen Wörtern laut. 4. Wiederhole die Übung später. Das Sprechen hier wird nicht bewertet.`,
+            `${staff ? `${recent.passed} از ${recent.total} تمرین درست بوده است. ` : ""}۱. جملهٔ کامل را بدون دیدن الگو به آلمانی بنویس. ۲. پاسخ را بررسی و اصلاح کن. ۳. جمله‌ای مشابه را با واژه‌های دیگر با صدای بلند بگو. ۴. روز دیگری دوباره تمرین کن. گفتن جمله در این بخش نمره ندارد.`,
           ),
           recent.next
             ? link(
@@ -114,13 +113,17 @@ export function mountDailyNotebook(
     root.replaceChildren(
       ...recentNodes,
       heading,
-      node(
-        "p",
-        `${t(`Today: ${progress.today} of ${DAILY_NOTEBOOK_GOAL} exercises`, `Heute: ${progress.today} von ${DAILY_NOTEBOOK_GOAL} Übungen`)} · ${t(`${progress.passed} of ${progress.total} passed at ${level}`, `${progress.passed} von ${progress.total} auf ${level} bestanden`)}.`,
-      ),
+      ...(staff
+        ? [
+            node(
+              "p",
+              `${t(`Today: ${progress.today} of ${DAILY_NOTEBOOK_GOAL} exercises`, `Heute: ${progress.today} von ${DAILY_NOTEBOOK_GOAL} Übungen`)} · ${t(`${progress.passed} of ${progress.total} passed at ${level}`, `${progress.passed} von ${progress.total} auf ${level} bestanden`)}.`,
+            ),
+          ]
+        : []),
       progress.next
         ? link(
-            progress.today >= DAILY_NOTEBOOK_GOAL
+            staff && progress.today >= DAILY_NOTEBOOK_GOAL
               ? t(
                   "Daily goal reached · practise one more",
                   "Tagesziel erreicht · noch eine üben",

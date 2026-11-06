@@ -633,6 +633,14 @@ a {
   margin: 0 0 0.5rem;
   font-size: 1rem;
 }
+.practice-prompt-heading {
+  margin: 1.25rem 0 0;
+  font-size: 1rem;
+}
+.practice-prompt-heading + .task-prompt {
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
 .practice-task-steps li + li,
 .practice-persian-path li + li {
   margin-top: 0.35rem;

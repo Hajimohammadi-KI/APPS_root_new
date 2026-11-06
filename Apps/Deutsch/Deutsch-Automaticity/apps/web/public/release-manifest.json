@@ -3,6 +3,7 @@
   "version": "20.9.13",
   "webRelease": "2026.11.06.4",
   "changes": [
+    "Clear task-specific Persian guidance, separate question and answer labels, clarified/versioned practice prompts, repaired mismatched German spoken models, and guidance in both grammar libraries and studios. Previous learner work and accepted-answer keys are preserved.",
     "Die Hilfe erklärt Lernweg, Erinnerung und Kalenderimport in der gewählten Hilfssprache. Übungsanweisungen sind kürzer; Beispielsätze beginnen in einer neuen Zeile."
   ]
 }

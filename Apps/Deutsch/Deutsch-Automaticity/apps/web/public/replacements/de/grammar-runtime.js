@@ -78,22 +78,37 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     let valid = false;
     try {
       const value = JSON.parse(raw);
-      const record = value && typeof value === "object" && !Array.isArray(value);
-      valid = !!record && levels.includes(value.level) && (
-        canonical
-          ? value.version === 1 && typeof value.updatedAt === "string" && Number.isFinite(Date.parse(value.updatedAt)) &&
-            (value.topic === undefined || (typeof value.topic === "string" && !!value.topic.trim())) &&
-            (value.constructionId === undefined || (typeof value.constructionId === "string" && value.constructionId.startsWith("de.")))
-          : typeof (value.topic ?? value.title) === "string" && !!(value.topic ?? value.title).trim() &&
-            (value.updatedAt === undefined || (typeof value.updatedAt === "string" && Number.isFinite(Date.parse(value.updatedAt))))
-      );
-    } catch { /* The original string is backed up below, never parsed away. */ }
+      const record =
+        value && typeof value === "object" && !Array.isArray(value);
+      valid =
+        !!record &&
+        levels.includes(value.level) &&
+        (canonical
+          ? value.version === 1 &&
+            typeof value.updatedAt === "string" &&
+            Number.isFinite(Date.parse(value.updatedAt)) &&
+            (value.topic === undefined ||
+              (typeof value.topic === "string" && !!value.topic.trim())) &&
+            (value.constructionId === undefined ||
+              (typeof value.constructionId === "string" &&
+                value.constructionId.startsWith("de.")))
+          : typeof (value.topic ?? value.title) === "string" &&
+            !!(value.topic ?? value.title).trim() &&
+            (value.updatedAt === undefined ||
+              (typeof value.updatedAt === "string" &&
+                Number.isFinite(Date.parse(value.updatedAt)))));
+    } catch {
+      /* The original string is backed up below, never parsed away. */
+    }
     if (valid) return;
     const prefix = `${key}:recovery:${at}`;
-    let recoveryKey = prefix, suffix = 0;
-    while (localStorage.getItem(recoveryKey) !== null) recoveryKey = `${prefix}:${++suffix}`;
+    let recoveryKey = prefix,
+      suffix = 0;
+    while (localStorage.getItem(recoveryKey) !== null)
+      recoveryKey = `${prefix}:${++suffix}`;
     localStorage.setItem(recoveryKey, raw);
-    if (localStorage.getItem(recoveryKey) !== raw) throw new Error("Saved choice backup could not be verified.");
+    if (localStorage.getItem(recoveryKey) !== raw)
+      throw new Error("Saved choice backup could not be verified.");
   };
 
   // Only the explicit "use today" action changes the shared topic preference.
@@ -101,9 +116,19 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const updatedAt = new Date().toISOString();
     const choice = { level: unit.level, topic: unit.title, updatedAt };
     preserveUnreadableChoice("automaticity:v2:de:choice", true, updatedAt);
-    preserveUnreadableChoice("deutsch-automaticity:today-grammar", false, updatedAt);
-    localStorage.setItem("deutsch-automaticity:today-grammar", JSON.stringify(choice));
-    localStorage.setItem("automaticity:v2:de:choice", JSON.stringify({ version: 1, ...choice }));
+    preserveUnreadableChoice(
+      "deutsch-automaticity:today-grammar",
+      false,
+      updatedAt,
+    );
+    localStorage.setItem(
+      "deutsch-automaticity:today-grammar",
+      JSON.stringify(choice),
+    );
+    localStorage.setItem(
+      "automaticity:v2:de:choice",
+      JSON.stringify({ version: 1, ...choice }),
+    );
     window.dispatchEvent(new Event("automaticity-choice-updated"));
   };
 
@@ -273,7 +298,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         "با کمک انجام شد: این تمرین هدایت‌شده است و نشانهٔ تسلط مستقل نیست.",
       closedVerdict: {
         rejected: "این شکل بررسی شده و اینجا درست نیست.",
-        option: "این یکی از گزینه‌های داده‌شده است، اما گزینهٔ مناسب اینجا نیست.",
+        option:
+          "این یکی از گزینه‌های داده‌شده است، اما گزینهٔ مناسب اینجا نیست.",
         unchanged:
           "این هنوز همان جمله‌ای است که باید اصلاح شود. بخشی را که در دستور آمده تغییر بده و جملهٔ کامل را بنویس.",
         case: "حروف بزرگ و کوچک را بررسی کن، به‌ویژه در آغاز جمله و در اسم‌ها.",
@@ -962,6 +988,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
     const copy = activeCopy();
     renderExamples(unit, !open);
     const language = instructionLanguage();
+    $("#exercisePrompt").dataset.sourcePrompt = exercise[0];
+    $("#exercisePrompt").dataset.taskStage = open ? "produce" : "retrieve";
     window.languageWriting.render(
       $("#exercisePrompt"),
       localizedExerciseText(exercise, "prompt", exercise[0]),
@@ -1384,7 +1412,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       const points = localIssue?.points || [
         {
           type: wrong ? "target_grammar" : "check",
-          message: copy.closedVerdict[check.reason] || copy.closedVerdict.unmatched,
+          message:
+            copy.closedVerdict[check.reason] || copy.closedVerdict.unmatched,
         },
         ...(rejectedExplanation
           ? [{ type: "target_grammar", message: rejectedExplanation }]
@@ -1402,7 +1431,8 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
         if (
           unitKey(currentUnit()) !== repairUnit ||
           exerciseIndex !== repairExercise
-        ) return;
+        )
+          return;
         drafts.markAssisted();
         feedback.innerHTML = `${repairFeedback}<p><strong>${escapeHtml(localizedIssueLabel("expected"))}:</strong> <span lang="de">${escapeHtml(expected)}</span></p><p>${escapeHtml(copy.assistedPractice)}</p>`;
       });
@@ -1618,7 +1648,9 @@ window.GERMAN_GRAMMAR_RUNTIME = true;
       try {
         saveTodayChoice(unit);
       } catch {
-        notify("Das gewählte Thema konnte nicht sicher gespeichert werden. Bitte sichere deine Daten und versuche es erneut.");
+        notify(
+          "Das gewählte Thema konnte nicht sicher gespeichert werden. Bitte sichere deine Daten und versuche es erneut.",
+        );
         return;
       }
       location.href = `/heute?from=grammar&level=${encodeURIComponent(unit.level)}&topic=${encodeURIComponent(unit.title)}`;

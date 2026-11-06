@@ -2096,18 +2096,22 @@ export async function mountPractice(
     taskPanel.append(modalityNav);
     if (isCheckedTask(task)) taskPanel.append(optionalPractice(activeTasks));
     if (readSupportLanguage(language) === "fa") {
+      const guideTask = retirement
+        ? taskById.get(retirement.replacementTaskId)!
+        : task;
       const guide = element("section", undefined, "practice-task-steps");
+      guide.id = "practice-task-instructions";
       guide.lang = "fa";
       guide.dir = "rtl";
       const list = element("ol");
       for (const step of persianTaskSteps(
         language,
-        task.stage,
-        task.modality,
-        task.prompt,
+        guideTask.stage,
+        guideTask.modality,
+        guideTask.prompt,
       ))
         list.append(element("li", step));
-      guide.append(element("h3", "این سؤال را چگونه انجام دهم؟"), list);
+      guide.append(element("h3", "از من چه پاسخی خواسته شده؟"), list);
       taskPanel.append(guide);
     }
     const prompt = element("p", undefined, "task-prompt");
@@ -2190,7 +2194,15 @@ export async function mountPractice(
       taskPanel.append(archive);
       return;
     }
-    taskPanel.append(prompt);
+    const promptHeading = element(
+      "h3",
+      f("صورت سؤال", "Question", "Aufgabe"),
+      "practice-prompt-heading",
+    );
+    promptHeading.lang =
+      readSupportLanguage(language) === "fa" ? "fa" : language;
+    promptHeading.dir = readSupportLanguage(language) === "fa" ? "rtl" : "ltr";
+    taskPanel.append(promptHeading, prompt);
     const shownTask = task.id;
     void pausedTaskIds(language).then((paused) => {
       if (paused.has(shownTask) && prompt.isConnected && task.id === shownTask)
@@ -2271,10 +2283,20 @@ export async function mountPractice(
     const label = element(
       "label",
       task.modality === "writing"
-        ? t("Your response", "Deine Antwort")
-        : t("Transcript of your recording", "Transkript deiner Aufnahme"),
+        ? f(
+            `پاسخ تو به ${language === "de" ? "آلمانی" : "انگلیسی"}`,
+            "Your response in English",
+            "Deine Antwort auf Deutsch",
+          )
+        : f(
+            "متنِ همان چیزی که ضبط کردی",
+            "Transcript of your recording",
+            "Transkript deiner Aufnahme",
+          ),
     );
     label.htmlFor = "practice-response";
+    label.lang = readSupportLanguage(language) === "fa" ? "fa" : language;
+    label.dir = readSupportLanguage(language) === "fa" ? "rtl" : "ltr";
     const answer = element("textarea");
     answer.id = "practice-response";
     answer.lang = language;
@@ -2284,7 +2306,10 @@ export async function mountPractice(
     answer.maxLength = 100000;
     answer.spellcheck = false;
     answer.autocomplete = "off";
-    answer.setAttribute("aria-describedby", "practice-prompt practice-error");
+    answer.setAttribute(
+      "aria-describedby",
+      `${readSupportLanguage(language) === "fa" ? "practice-task-instructions " : ""}practice-prompt practice-error`,
+    );
     answer.disabled = !!session.submittedId || !editing;
     answer.addEventListener("input", () => {
       try {

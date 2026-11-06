@@ -28,5 +28,19 @@ for (const app of [
     listeners.get("install")({ waitUntil: (promise) => pending.push(promise) });
     await Promise.all(pending);
     expect(cached).toContain("/learning-core/text.js");
+    expect(cached).toContain("/learning-core/task-guide.js");
+  });
+  test(`${app}: the grammar library loads shared question guidance`, () => {
+    const file = app.startsWith("English")
+      ? "en/grammar.html"
+      : "de/grammatik.html";
+    const html = readFileSync(
+      new URL(
+        `../Apps/${app}/apps/web/public/replacements/${file}`,
+        import.meta.url,
+      ),
+      "utf8",
+    );
+    expect(html).toContain('src="/learning-core/task-guide.js"');
   });
 }

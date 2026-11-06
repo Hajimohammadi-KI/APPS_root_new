@@ -2,6 +2,7 @@
 const CACHE = "english-automaticity-web-2026.11.06.4";
 const PRECACHE = [
   "/learning-core/text.js",
+  "/learning-core/task-guide.js",
   "/device-access/learning-path.js",
   "/device-access/grammar-drafts.js",
   "/device-access/writing.js",

@@ -3,6 +3,7 @@
   "version": "27.4.15",
   "webRelease": "2026.11.06.4",
   "changes": [
+    "Clear task-specific Persian guidance, separate question and answer labels, clarified/versioned practice prompts, repaired mismatched German spoken models, and guidance in both grammar libraries and studios. Previous learner work and accepted-answer keys are preserved.",
     "Help now explains the daily route, reminder and calendar import in the learner's support language. Practice instructions use short steps, and example sentences start on a new line."
   ]
 }

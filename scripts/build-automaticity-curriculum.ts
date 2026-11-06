@@ -15,6 +15,7 @@ import {
 } from "./lib/learner-decisions";
 import { applyControlledErrorRevisions } from "./lib/controlled-error-revisions";
 import { applyLearningCycles } from "./lib/learning-cycle-revisions";
+import { revisePromptClarity } from "./lib/prompt-clarity-revisions";
 
 const root = resolve(import.meta.dir, "..");
 const checkOnly = Bun.argv.includes("--check");
@@ -69,7 +70,9 @@ for (const [language, app] of [
     console.log(
       `${language}: decision #${row.issue} not applied: ${row.reason}`,
     );
-  const pack = applyLearningCycles(applyControlledErrorRevisions(applied.pack));
+  const pack = revisePromptClarity(
+    applyLearningCycles(applyControlledErrorRevisions(applied.pack)),
+  );
   const revisedIssues = validateCurriculum(pack);
   if (revisedIssues.length) throw new Error(revisedIssues.join("\n"));
   const active = pack.units.flatMap(activePracticeTasks);

@@ -57,7 +57,7 @@ test("German model-copy and Perfekt tasks give the requested action instead of a
     "writing",
     "Bilde das Perfekt: Ich gehe nach Hause.",
   ).join(" ");
-  expect(perfect).toContain("گذشتهٔ کامل");
+  expect(perfect).toContain("گذشتهٔ نقلی");
 });
 
 test("the first conversation prompts explain their actual speaking requirements in Persian", () => {
@@ -67,7 +67,7 @@ test("the first conversation prompts explain their actual speaking requirements 
     "speaking",
     "Sprich über das Thema „Sich vorstellen“. Nenne drei persönliche Informationen und stelle am Ende eine einfache Frage.",
   ).join(" ");
-  expect(german).toContain("سه اطلاعات شخصی");
+  expect(german).toContain("سه نکتهٔ شخصی");
   expect(german).toContain("سؤال ساده");
   const english = persianTaskSteps(
     "en",

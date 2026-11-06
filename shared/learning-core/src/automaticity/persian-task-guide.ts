@@ -1,4 +1,5 @@
 import type { Language, Modality, Stage } from "./contracts";
+import { cyclePromptGuide } from "./cycle-prompt-guide";
 
 const stageLabels: Record<Stage, string> = {
   notice: "الگو را پیدا کن",
@@ -35,43 +36,168 @@ export function persianTaskSteps(
   prompt: string,
 ): readonly string[] {
   const target = language === "de" ? "آلمانی" : "انگلیسی";
-  const words = prompt.toLocaleLowerCase();
+  // Quoted/source sentences are not commands (e.g. “Choose your seat”).
+  const words = prompt.split(/:\s/u, 1)[0]!.toLocaleLowerCase();
+  const allWords = prompt.toLocaleLowerCase();
+  const submit =
+    modality === "speaking"
+      ? `پاسخ را به ${target} بلند بگو و ضبط کن. سپس متن ثبت‌شده را بررسی کن.`
+      : `پاسخ را به ${target} بنویس. سپس آن را ثبت کن و بازخورد را بخوان.`;
+  const authored = cyclePromptGuide(language, stage, prompt);
+  if (authored) return [...authored, submit];
+  if (
+    /^you are sending a short message to a new classmate\.|^du schickst einem neuen kursmitglied eine kurze nachricht\./u.test(
+      allWords,
+    )
+  )
+    return [
+      "برای یک هم‌کلاسی تازه پیام کوتاهی بساز. یک اتفاق یا برنامه از زندگی روزمرهٔ خودت انتخاب کن.",
+      "دو جملهٔ مرتبط با ساختارِ نام‌برده‌شده در سؤال بساز؛ جزئیات کافی بده تا مخاطب منظورت را بفهمد.",
+      "خودِ پیام را بنویس یا بگو؛ جمله‌ای مثل «من می‌توانم این گرامر را استفاده کنم» پاسخ این تمرین نیست.",
+      submit,
+    ];
+  if (
+    /(?:write|say and record) two new versions\. in the first, change one detail/u.test(
+      allWords,
+    ) ||
+    /(?:schreibe|sprich) zwei neue fassungen/u.test(allWords)
+  )
+    return [
+      "از مثالِ سؤال دو نسخهٔ تازه بساز و هر دو را کامل بنویس یا بگو.",
+      "در نسخهٔ اول یک جزئیات، مثلاً شخص، کار، شیء، مکان یا زمان را تغییر بده. در نسخهٔ دوم جزئیات دیگری را عوض کن.",
+      "ساختار دستوریِ تمرین را حفظ کن و واژه‌هایی را که باید با هم هماهنگ باشند تغییر بده.",
+      submit,
+    ];
   let action = stageActions[stage];
-  if (/schreibe (?:den|einen weiteren) modellsatz/u.test(words))
+  if (/(?<!\p{L})(?:übersetze|translate)(?!\p{L})/u.test(words))
+    action = `جملهٔ داده‌شده را به ${target} ترجمه کن؛ معنی آن را حفظ کن.`;
+  else if (/write the noun phrase/iu.test(prompt))
+    action =
+      "واژه‌های داده‌شده را به ترتیب درست در یک عبارت اسمی بنویس؛ جملهٔ کامل لازم نیست.";
+  else if (
+    /\b(?:write|give|type) only (?:the )?(?:missing )?word|\bwrite only (?:the ).*form|schreibe nur (?:das|ein) (?:fehlende )?wort/u.test(
+      words,
+    )
+  )
+    action =
+      "فقط واژهٔ خواسته‌شده را بنویس؛ لازم نیست تمام جمله را دوباره بنویسی.";
+  else if (/schreibe (?:den|einen weiteren) modellsatz/u.test(words))
     action =
       "جملهٔ نمونهٔ داده‌شده را دقیق بخوان و همان جمله را به آلمانی بنویس.";
   else if (/bilde das perfekt/u.test(words))
-    action = "جمله را به گذشتهٔ کامل (Perfekt) تبدیل کن و شکل فعل را بررسی کن.";
+    action = "جمله را به گذشتهٔ نقلی (Perfekt) تبدیل کن و شکل فعل را بررسی کن.";
   else if (/entscheide haben oder sein/u.test(words))
     action =
-      "برای زمان گذشتهٔ کامل، از میان haben و sein فعل کمکی درست را انتخاب کن.";
+      "برای گذشتهٔ نقلی (Perfekt)، از میان haben و sein فعل کمکی درست را انتخاب کن.";
   else if (/verdichte den satz/u.test(words))
     action = "جمله را کوتاه‌تر بنویس، اما معنی اصلی آن را حفظ کن.";
   else if (/formuliere höflicher/u.test(words))
     action = "همان درخواست را مؤدبانه‌تر بیان کن و معنی آن را نگه دار.";
+  else if (/rewrite.*without if.*beginning had/u.test(words))
+    action =
+      "جملهٔ شرطی را بدون if بازنویسی کن و با Had شروع کن؛ معنی و اطلاعات اصلی را نگه دار.";
+  else if (/combine.*although.*which/u.test(words))
+    action =
+      "اطلاعاتِ سه جمله را در یک جمله ترکیب کن؛ از Although و یک جملهٔ موصولی با which استفاده کن و هیچ اطلاعاتی را حذف نکن.";
+  else if (/combine.*into one sentence/u.test(words))
+    action =
+      "جمله‌های داده‌شده را در یک جمله ترکیب کن؛ اطلاعات و رابطهٔ معنایی آن‌ها را نگه دار.";
   else if (
-    /_{2,}|\b(?:lücke|missing|fehlende|complete the sentence)\b/u.test(words)
+    /^(?:object|speaker|subject|action|time|sprecher|handlung|gegenstand|zeit)\s*:/u.test(
+      allWords,
+    )
+  )
+    action =
+      "با اطلاعاتِ داده‌شده دربارهٔ شخص، کار یا زمان، جملهٔ خواسته‌شده را بساز؛ اطلاعات اصلی را تغییر نده.";
+  else if (/formuliere denselben wunsch/u.test(words))
+    action =
+      "همان خواسته را با واژه‌های داده‌شده در دستور بازنویسی کن؛ شخص، کار و معنی اصلی را تغییر نده.";
+  else if (/gib .*aussage.*konjunktiv i/u.test(words))
+    action =
+      "گفتهٔ شخص را به نقل غیرمستقیم در Konjunktiv I تبدیل کن؛ مشخص باشد این گفته از چه کسی است.";
+  else if (/formuliere dieselbe möglichkeit/u.test(words))
+    action =
+      "جمله را با könnte بازنویسی کن؛ پیامد باید همچنان احتمالی باشد، نه قطعی.";
+  else if (
+    /_{2,}|\b(?:lücke|missing|fehlende|complete the sentence)\b/u.test(words) ||
+    /_{2,}/u.test(prompt)
   )
     action = "جای خالی را با شکل درست پر کن و جملهٔ کامل را بساز.";
   else if (/\b(?:ordne|reorder|put .* in order)\b/u.test(words))
     action = "بخش‌های داده‌شده را به ترتیب درست بچین و جملهٔ کامل را بساز.";
-  else if (/\b(?:korrigiere|correct|repair|überarbeite)\b/u.test(words))
+  else if (
+    /(?<!\p{L})(?:korrigiere|überarbeite|repair|correct(?= (?:the|this|only|each|a)\b))(?!\p{L})/u.test(
+      words,
+    )
+  )
     action = "خطا را پیدا کن، جمله را اصلاح کن و اطلاعات اصلی را تغییر نده.";
-  else if (/\b(?:wähle|choose|select)\b/u.test(words))
+  else if (
+    /\b(?:wähle|choose|select)\b/u.test(words) &&
+    !/choose your own|select your own|wähle (?:eigene|selbst)/u.test(allWords)
+  )
     action =
       "از میان شکل‌های داده‌شده، گزینهٔ مناسبِ معنی و موقعیت را انتخاب کن.";
-  else if (/\b(?:erkläre|explain|describe)\b/u.test(words))
-    action = "با واژه‌های خودت توضیح بده این ساختار چه معنی و کاربردی دارد.";
+  else if (/explain the rule|erkläre die regel/u.test(words))
+    action = "قاعدهٔ موضوعِ نام‌برده‌شده را با واژه‌های خودت توضیح بده.";
+  else if (
+    stage === "notice" ||
+    /(?:explain|erkläre).*(?:pattern|muster|rule|regel)/u.test(words)
+  )
+    action =
+      "مثال‌ها را بخوان و به پرسش دربارهٔ تفاوت یا کاربرد آن‌ها با واژه‌های خودت پاسخ بده.";
+  else if (/\b(?:describe|beschreibe|explain|erkläre)\b/u.test(words))
+    action =
+      "دربارهٔ موضوع خواسته‌شده توضیح بده؛ شخص، اتفاق یا وضعیت موردنظر سؤال را توصیف کن.";
   else if (/\b(?:schreibe|write|formuliere|compose)\b/u.test(words))
     action = "با توجه به موقعیت سؤال، پاسخ خودت را در جملهٔ کامل بساز.";
   const requirements: string[] = [];
+  if (
+    /beabsichtigte bedeutung auf persisch|first state your intended meaning in persian/u.test(
+      allWords,
+    )
+  )
+    requirements.push(
+      "ابتدا منظورت را در کادر فارسی بنویس؛ سپس جملهٔ آلمانیِ خودت را در کادر پاسخ بساز.",
+    );
   if (/drei persönliche informationen/u.test(words))
-    requirements.push("سه اطلاعات شخصی دربارهٔ خودت بگو.");
+    requirements.push("سه نکتهٔ شخصی دربارهٔ خودت بگو.");
+  if (/keinen dass-satz/u.test(words))
+    requirements.push("از جملهٔ وابسته با dass استفاده نکن.");
   if (/am ende eine einfache frage/u.test(words))
     requirements.push("در پایان یک سؤال ساده از طرف مقابل بپرس.");
-  if (/four short sentences/u.test(words))
+  if (
+    /four short sentences: one fact, one personal detail, one example, and one question/iu.test(
+      prompt,
+    )
+  )
     requirements.push(
       "چهار جملهٔ کوتاه بساز: یک واقعیت، یک نکتهٔ شخصی، یک مثال و یک سؤال.",
+    );
+  // Bind counts to the output verb. “Combine two sentences into one” names
+  // two INPUT sentences and must not request two answers.
+  const count = allWords.match(
+    /\b(?:write|say|give|schreibe|sprich|formuliere)\s+(?:exactly |genau )?(one or two|one|two|three|four|1|2|3|4|einen|einem|einer|zwei|drei|vier)\s+(?:(?:short|complete|connected|english|german|deutschen?|kurzen?|vollständigen?|zusammenhängenden?)\s+)*(?:sentences?|sätze|sätzen|satz)\b/u,
+  )?.[1];
+  const counts: Record<string, string> = {
+    "one or two": "یک یا دو",
+    one: "یک",
+    "1": "یک",
+    einen: "یک",
+    einem: "یک",
+    einer: "یک",
+    two: "دو",
+    "2": "دو",
+    zwei: "دو",
+    three: "سه",
+    "3": "سه",
+    drei: "سه",
+    four: "چهار",
+    "4": "چهار",
+    vier: "چهار",
+  };
+  if (count && !/four short sentences: one fact/iu.test(prompt))
+    requirements.push(
+      `${counts[count]} جمله ${modality === "speaking" ? "بگو" : "بنویس"}؛ موضوع و جزئیات را از متن سؤال بردار.`,
     );
   if (/schreibe genau einen vollständigen satz/u.test(words))
     requirements.push("دقیقاً یک جملهٔ کامل بنویس.");
@@ -83,9 +209,7 @@ export function persianTaskSteps(
     `متن ${target} سؤال و مثال آن را بخوان؛ اول معنی و موقعیت را مشخص کن.`,
     action,
     ...requirements,
-    modality === "speaking"
-      ? `پاسخ را به ${target} بلند بگو و ضبط کن. سپس متن ثبت‌شده را بررسی کن.`
-      : `پاسخ را به ${target} بنویس. سپس آن را ثبت کن و بازخورد را بخوان.`,
+    submit,
   ];
 }
 

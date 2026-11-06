@@ -80,7 +80,7 @@ try {
           page.locator(".support-language-guide[open]"),
         ).toBeVisible();
         await expect(page.locator(".practice-task-steps")).toContainText(
-          "این سؤال را چگونه انجام دهم؟",
+          "از من چه پاسخی خواسته شده؟",
         );
         await expect(page.locator(".learning-cycle-goals[open]")).toBeVisible();
         await expect(

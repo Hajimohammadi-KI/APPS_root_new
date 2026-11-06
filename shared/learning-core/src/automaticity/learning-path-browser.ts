@@ -129,6 +129,7 @@ export function mountDailyLearningPath(
   link.href = "/practice";
   const route = document.createElement("section");
   route.dataset.dailyPathPlan = "";
+  route.id = "daily-path-plan";
   route.style.cssText =
     "display:grid;gap:8px;margin-top:8px;padding-top:14px;border-top:1px solid #cfe0e4";
   const routeHeading = document.createElement("h3");
@@ -137,7 +138,11 @@ export function mountDailyLearningPath(
   const routeSteps = document.createElement("ol");
   routeSteps.style.cssText =
     "display:grid;gap:8px;margin:0;padding-inline-start:24px";
-  route.append(routeHeading, routeSteps);
+  const helpLink = document.createElement("a");
+  helpLink.href = "/support#daily-plan";
+  helpLink.style.cssText =
+    "justify-self:start;min-height:44px;display:inline-flex;align-items:center;color:#007f83;font-weight:700;text-decoration:underline";
+  route.append(routeHeading, routeSteps, helpLink);
   const reminder = mountDailyReminder(language);
   root.replaceChildren(
     heading,
@@ -147,6 +152,14 @@ export function mountDailyLearningPath(
     route,
     reminder.element,
   );
+  if (
+    location.hash === "#daily-path-plan" ||
+    location.hash === "#daily-reminder"
+  ) {
+    requestAnimationFrame(() =>
+      document.getElementById(location.hash.slice(1))?.scrollIntoView(),
+    );
+  }
   let currentSelection: LearningPathSelection | null = null;
   const renderRoute = () => {
     const displayLanguage = readSupportLanguage(language);
@@ -156,6 +169,12 @@ export function mountDailyLearningPath(
         : displayLanguage === "en"
           ? "Today's learning route"
           : "Dein Lernweg heute";
+    helpLink.textContent =
+      displayLanguage === "fa"
+        ? "راهنمای استفاده از برنامه"
+        : displayLanguage === "en"
+          ? "How to use this plan"
+          : "So benutzt du diesen Plan";
     route.dir = displayLanguage === "fa" ? "rtl" : "ltr";
     route.lang = displayLanguage;
     routeSteps.dir = displayLanguage === "fa" ? "rtl" : "ltr";

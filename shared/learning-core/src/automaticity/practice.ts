@@ -28,6 +28,7 @@ import { reduceAutomaticityEvents } from "./evidence";
 import { assessControlledTask } from "./assessment";
 import { learningCycleTask } from "./learning-cycle";
 import { markedAnswer } from "./answer-alignment";
+import { PERSIAN_PRACTICE_GUIDE } from "./app-usage-guide";
 import {
   collectAssessmentFeedback,
   guardAssessmentWithFeedback,
@@ -134,6 +135,21 @@ function element<K extends keyof HTMLElementTagNameMap>(
   if (text !== undefined) node.textContent = text;
   if (className) node.className = className;
   return node;
+}
+function appendPromptParts(
+  prompt: HTMLElement,
+  text: string,
+  language: Language,
+) {
+  prompt.lang = language;
+  prompt.dir = "ltr";
+  for (const part of promptTextParts(text, language)) {
+    if (part.breakBefore) prompt.append(document.createElement("br"));
+    const segment = element("span", part.text, "prompt-segment");
+    segment.lang = part.lang;
+    segment.dir = part.dir;
+    prompt.append(segment);
+  }
 }
 /** The check's sentence and, when it names differences, the learner's own
  * answer with those words marked; several differences are listed on request.
@@ -774,13 +790,23 @@ export async function mountPractice(
   controls.append(timingLabel);
   const persianHelp = element("details");
   persianHelp.append(element("summary", "راهنمای فارسی"));
-  const guide = element(
-    "p",
-    "اول بدون دیدن مثال پاسخ بده. اگر لازم شد از راهنما استفاده کن؛ این پاسخ تمرین کمکی است. بعد یک جملهٔ تازه بساز و روز دیگری دوباره تلاش کن. هدف برای هر مبحث و هر یک از نوشتن و گفتن جداست: دست‌کم ۱۸ پاسخ صحیح از ۲۰ پاسخ مستقل با ارزیابی معتبر، مرور موفق در دو روز جدا و کاربرد در دو موقعیت تازه بدون نام‌بردن قاعده در سؤال. خطای حل‌نشده باید اصلاح شود. این معیار تمرینی، تضمین روانی یا خودکارشدن گفتار نیست؛ سرعت تایپ هم روانی گفتار را ثابت نمی‌کند.",
+  persianHelp.dir = "rtl";
+  persianHelp.lang = "fa";
+  const practiceSteps = element("ol");
+  for (const step of PERSIAN_PRACTICE_GUIDE.steps) {
+    practiceSteps.append(element("li", step));
+  }
+  const criteria = element("details");
+  criteria.append(element("summary", "پیشرفت چگونه بررسی می‌شود؟"));
+  const criteriaList = element("ul");
+  for (const point of PERSIAN_PRACTICE_GUIDE.criteria) {
+    criteriaList.append(element("li", point));
+  }
+  criteria.append(
+    criteriaList,
+    element("p", PERSIAN_PRACTICE_GUIDE.limitation),
   );
-  guide.dir = "rtl";
-  guide.lang = "fa";
-  persianHelp.append(guide);
+  persianHelp.append(practiceSteps, criteria);
   controls.append(persianHelp);
   const recordChoice = (reason: string) => {
     const selection = selectDailyFocus(
@@ -2085,14 +2111,7 @@ export async function mountPractice(
       taskPanel.append(guide);
     }
     const prompt = element("p", undefined, "task-prompt");
-    prompt.lang = language;
-    prompt.dir = "ltr";
-    for (const part of promptTextParts(task.prompt, language)) {
-      const segment = element("span", part.text, "prompt-segment");
-      segment.lang = part.lang;
-      segment.dir = part.dir;
-      prompt.append(segment);
-    }
+    appendPromptParts(prompt, task.prompt, language);
     prompt.id = "practice-prompt";
     const promptIcon = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -2134,9 +2153,11 @@ export async function mountPractice(
         t("Archived response", "Archivierte Antwort"),
       );
       const replacement = taskById.get(retirement.replacementTaskId)!;
+      const updatedPrompt = element("p", undefined, "task-prompt");
+      appendPromptParts(updatedPrompt, replacement.prompt, language);
       taskPanel.append(
         message,
-        element("p", replacement.prompt, "task-prompt"),
+        updatedPrompt,
         button(
           t(
             "Continue with the updated exercise",

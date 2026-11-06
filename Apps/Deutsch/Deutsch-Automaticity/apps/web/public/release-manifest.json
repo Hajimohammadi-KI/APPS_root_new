@@ -1,8 +1,8 @@
 {
   "publishedAt": "2026-11-06",
-  "version": "20.9.12",
-  "webRelease": "2026.11.06.3",
+  "version": "20.9.13",
+  "webRelease": "2026.11.06.4",
   "changes": [
-    "Der Tagesplan zeigt die empfohlene Frage, eine neue Situation und die spätere Wiederholung; eine Uhrzeit kann lokal gespeichert und als Kalendertermin exportiert werden."
+    "Die Hilfe erklärt Lernweg, Erinnerung und Kalenderimport in der gewählten Hilfssprache. Übungsanweisungen sind kürzer; Beispielsätze beginnen in einer neuen Zeile."
   ]
 }

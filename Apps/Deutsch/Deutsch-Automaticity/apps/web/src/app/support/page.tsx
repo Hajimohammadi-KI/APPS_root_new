@@ -6,6 +6,7 @@ import { feedbackAddress } from "@automaticity/learning-core/feedback";
 import { ContactFeedback } from "@/components/contact-feedback";
 import { PageHeader } from "@/components/page-header";
 import { SectionBox } from "@/components/ui/section-box";
+import { SupportUsageGuide } from "@/components/support-usage-guide";
 
 export const metadata: Metadata = {
   description:
@@ -26,9 +27,11 @@ export default function SupportPage() {
       <PageHeader
         description="Öffne diese Web-App auf Handy, Tablet oder Computer. Dein Fortschritt wird in jedem Browser auf jedem Gerät separat gespeichert."
         framed
-        kicker="Einmal installieren, überall lernen"
-        title="Installation und Support"
+        kicker="Schritt für Schritt lernen"
+        title="Hilfe und Support"
       />
+
+      <SupportUsageGuide />
 
       <div className="grid gap-4 sm:grid-cols-2">
         <SectionBox title="Windows">

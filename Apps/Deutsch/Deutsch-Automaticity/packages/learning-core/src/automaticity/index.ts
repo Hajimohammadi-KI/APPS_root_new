@@ -12,6 +12,7 @@ export * from "./daily-dashboard";
 export * from "./persian-task-guide";
 export * from "./persian-route-guide";
 export * from "./support-language";
+export * from "./app-usage-guide";
 export * from "./assessment";
 export * from "./assessment-feedback";
 export * from "./media";

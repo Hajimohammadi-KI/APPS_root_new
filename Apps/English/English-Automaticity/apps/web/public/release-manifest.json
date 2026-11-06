@@ -1,8 +1,8 @@
 {
   "publishedAt": "2026-11-06",
-  "version": "27.4.14",
-  "webRelease": "2026.11.06.3",
+  "version": "27.4.15",
+  "webRelease": "2026.11.06.4",
   "changes": [
-    "Daily practice now has a short route from the recommended question to a new situation and later review, plus an optional local reminder time and calendar export."
+    "Help now explains the daily route, reminder and calendar import in the learner's support language. Practice instructions use short steps, and example sentences start on a new line."
   ]
 }

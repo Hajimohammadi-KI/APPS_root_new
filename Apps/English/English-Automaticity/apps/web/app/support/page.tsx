@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { feedbackAddress } from "@automaticity/learning-core/feedback";
 import { ContactFeedback } from "@/features/components/contact-feedback";
+import { SupportUsageGuide } from "@/features/components/support-usage-guide";
 
 export const metadata: Metadata = {
   description:
@@ -19,13 +20,15 @@ export default function SupportPage() {
         </Link>
 
         <header className="legal-hero legal-hero-support">
-          <span className="legal-kicker">Install once, practice anywhere</span>
-          <h1>Installation and Support</h1>
+          <span className="legal-kicker">Learn one step at a time</span>
+          <h1>Help and support</h1>
           <p>
             Open this web app on your phone, tablet, or computer. Your progress
             is saved separately in each browser on each device.
           </p>
         </header>
+
+        <SupportUsageGuide />
 
         <div className="legal-grid">
           <section className="legal-card">

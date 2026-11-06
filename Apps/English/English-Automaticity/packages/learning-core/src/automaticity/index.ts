@@ -14,6 +14,10 @@ export * from "./persian-route-guide";
 export * from "./support-language";
 export * from "./app-usage-guide";
 export { notebookCopy } from "./notebook-practice";
+export {
+  watchStaffSession,
+  broadcastStaffLogout,
+} from "./staff-session-client";
 export * from "./assessment";
 export * from "./assessment-feedback";
 export * from "./media";

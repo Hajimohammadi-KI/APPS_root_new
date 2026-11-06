@@ -77,7 +77,7 @@ export function readStaffSession(
   value: string | null | undefined,
   config: StaffConfig,
   now = Date.now(),
-): { role: StaffRole } | null {
+): { role: StaffRole; expiresAt: number } | null {
   if (!value || value.length > 1024) return null;
   const [payload, signed, extra] = value.split(".");
   if (!payload || !signed || extra) return null;
@@ -95,7 +95,9 @@ export function readStaffSession(
     )
       return null;
     const expected = signature(payload, fields.role, config);
-    return expected && equal(signed, expected) ? { role: fields.role } : null;
+    return expected && equal(signed, expected)
+      ? { role: fields.role, expiresAt: fields.expires }
+      : null;
   } catch {
     return null;
   }
@@ -231,6 +233,9 @@ export async function staffSessionResponse(
   if (request.method === "GET")
     return json({
       role: readStaffSession(sessionCookie(request), config, now)?.role ?? null,
+      expiresAt:
+        readStaffSession(sessionCookie(request), config, now)?.expiresAt ??
+        null,
       configured:
         !!passwordFor("teacher", config) || !!passwordFor("developer", config),
     });

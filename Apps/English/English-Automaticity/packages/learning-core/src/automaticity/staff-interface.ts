@@ -1,13 +1,11 @@
 export type StaffRole = "teacher" | "developer";
+import { watchStaffSession, staffDocument } from "./staff-session-client";
 export function professionalWorkspace(path: string): boolean {
-  return (
-    path.startsWith("/staff/") ||
-    path === "/staff" ||
-    /^\/(teacher|lehrkraft)(?:\/|$)/u.test(path)
-  );
+  return staffDocument(path);
 }
 let role: StaffRole | null = null;
 let pending: Promise<StaffRole | null> | null = null;
+let stop: (() => void) | null = null;
 export function readStaffWorkspaceRole(): StaffRole | null {
   return role;
 }
@@ -19,26 +17,35 @@ export function initializeStaffWorkspace(): Promise<StaffRole | null> {
   ) {
     role = null;
     pending = null;
+    stop?.();
+    stop = null;
     return Promise.resolve(null);
   }
   if (pending) return pending;
   const path = location.pathname;
-  pending = fetch("/api/staff-session", { cache: "no-store" })
-    .then(async (response) => {
-      if (!response.ok) return null;
-      const value: unknown = await response.json();
-      const data =
-        value && typeof value === "object"
-          ? (value as Record<string, unknown>)
-          : {};
-      if (location.pathname !== path) return null;
-      role =
-        data.role === "teacher" || data.role === "developer" ? data.role : null;
-      return role;
-    })
-    .catch(() => {
-      role = null;
-      return null;
-    });
+  pending = new Promise((resolve) => {
+    stop = watchStaffSession(
+      path,
+      (data) => {
+        if (location.pathname !== path) {
+          resolve(null);
+          return;
+        }
+        role = data.role;
+        resolve(role);
+      },
+      (reason) => {
+        role = null;
+        pending = null;
+        resolve(null);
+        if (typeof location.replace === "function")
+          location.replace(
+            reason === "logout"
+              ? "/"
+              : "/staff?returnTo=" + encodeURIComponent(path + location.search),
+          );
+      },
+    );
+  });
   return pending;
 }

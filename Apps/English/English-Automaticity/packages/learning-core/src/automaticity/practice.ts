@@ -1583,7 +1583,7 @@ export async function mountPractice(
       microphoneLink.href = "/microphone-check.html";
       progressPanel.append(
         element("p"),
-        benchmarkLink,
+        ...(staffRole === "developer" ? [benchmarkLink] : []),
         element("p"),
         microphoneLink,
       );
